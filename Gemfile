@@ -3,6 +3,8 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 ruby "3.1.2"
 
+gem "dotenv-rails", "~> 2.8", groups: [:development, :test]
+
 # Use main development branch of Rails
 gem "rails", github: "rails/rails", branch: "main"
 
