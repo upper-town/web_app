@@ -66,5 +66,5 @@ RSpec.configure do |config|
   # config.filter_gems_from_backtrace("gem name")
 end
 
-require 'support/shoulda_matchers'
+require 'support/shoulda_matchers_config'
 require 'support/capybara_config'
