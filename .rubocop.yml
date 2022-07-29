@@ -13,6 +13,10 @@ Metrics/MethodLength:
   Exclude:
     - spec/**/*.rb
 
+# https://docs.rubocop.org/rubocop/cops_lint.htm
+Lint/MixedRegexpCaptureTypes:
+  Enabled: false
+
 # https://docs.rubocop.org/rubocop/cops_style.html
 Style/BlockComments:
   Enabled: false
