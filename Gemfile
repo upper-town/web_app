@@ -62,6 +62,11 @@ group :development, :test do
   gem "rspec-rails", "~> 5.1"
   gem "simplecov", "~> 0.21", require: false
 
+  gem "rubocop", "~> 1.32", require: false
+  gem "rubocop-rails", "~> 2.15", require: false
+  gem "rubocop-rspec", "~> 2.12", require: false
+  gem "rubocop-performance", "~> 1.14", require: false
+
   gem "pry-byebug", "~> 3.9"
 end
 
