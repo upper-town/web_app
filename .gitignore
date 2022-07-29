@@ -34,4 +34,7 @@
 !.env.development
 !.env.test
 
+# Ignore coverage result from the simplecov gem
+coverage/
+
 NOTE.md
