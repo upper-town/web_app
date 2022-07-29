@@ -10,10 +10,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2022_07_29_002340) do
+ActiveRecord::Schema[7.1].define(version: 2022_07_29_005202) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
+
+  create_table "server_votes", force: :cascade do |t|
+    t.bigint "server_id", null: false
+    t.uuid "uuid", default: -> { "gen_random_uuid()" }, null: false
+    t.jsonb "metadata", default: {}, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["server_id"], name: "index_server_votes_on_server_id"
+  end
 
   create_table "servers", force: :cascade do |t|
     t.uuid "uuid", default: -> { "gen_random_uuid()" }, null: false
@@ -25,4 +34,5 @@ ActiveRecord::Schema[7.1].define(version: 2022_07_29_002340) do
     t.datetime "updated_at", null: false
   end
 
+  add_foreign_key "server_votes", "servers"
 end
