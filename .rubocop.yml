@@ -7,7 +7,9 @@ AllCops:
   TargetRubyVersion: 3.1.2
   NewCops: enable
 
+# https://docs.rubocop.org/rubocop/cops_metrics.html
 Metrics/MethodLength:
+  Max: 30
   Exclude:
     - spec/**/*.rb
 
@@ -20,15 +22,29 @@ Style/FrozenStringLiteralComment:
   Enabled: false
 Style/GuardClause:
   Enabled: false
+Style/HashSyntax:
+  Enabled: false
 Style/IfUnlessModifier:
   Enabled: false
 Style/NegatedIf:
+  Enabled: false
+Style/NumericLiterals:
+  Enabled: false
+Style/RegexpLiteral:
   Enabled: false
 Style/StringConcatenation:
   Enabled: false
 Style/StringLiterals:
   Enabled: false
 Style/SymbolArray:
+  Enabled: false
+Style/TrailingCommaInArguments:
+  Enabled: false
+Style/TrailingCommaInArrayLiteral:
+  Enabled: false
+Style/TrailingCommaInHashLiteral:
+  Enabled: false
+Style/WordArray:
   Enabled: false
 
 # https://docs.rubocop.org/rubocop/cops_layout.html
@@ -37,6 +53,25 @@ Layout/SpaceInsideArrayLiteralBrackets:
 Layout/SpaceInsidePercentLiteralDelimiters:
   Enabled: false
 
+# https://docs.rubocop.org/rubocop/cops_naming.html
+Naming/BlockForwarding:
+  Enabled: false
+Naming/MethodParameterName:
+  MinNameLength: 1
+Naming/VariableNumber:
+  Enabled: false
+
 # https://docs.rubocop.org/rubocop/cops_bundler.html
 Bundler/OrderedGems:
   Enabled: false
+
+RSpec/BeEq:
+  Enabled: false
+RSpec/ExampleLength:
+  Enabled: false
+RSpec/ImplicitSubject:
+  Enabled: false
+RSpec/MultipleExpectations:
+  Enabled: false
+RSpec/NestedGroups:
+  Max: 5
