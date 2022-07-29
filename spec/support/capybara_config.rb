@@ -1,5 +1,6 @@
-if ENV['HEADFUL'] == 'true'
-  Capybara.default_driver = :selenium
-else
-  Capybara.default_driver = :selenium_headless
-end
+Capybara.default_driver =
+  if ENV['HEADFUL'] == 'true'
+    :selenium
+  else
+    :selenium_headless
+  end

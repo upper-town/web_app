@@ -6,3 +6,37 @@ require:
 AllCops:
   TargetRubyVersion: 3.1.2
   NewCops: enable
+
+Metrics/MethodLength:
+  Exclude:
+    - spec/**/*.rb
+
+# https://docs.rubocop.org/rubocop/cops_style.html
+Style/BlockComments:
+  Enabled: false
+Style/Documentation:
+  Enabled: false
+Style/FrozenStringLiteralComment:
+  Enabled: false
+Style/GuardClause:
+  Enabled: false
+Style/IfUnlessModifier:
+  Enabled: false
+Style/NegatedIf:
+  Enabled: false
+Style/StringConcatenation:
+  Enabled: false
+Style/StringLiterals:
+  Enabled: false
+Style/SymbolArray:
+  Enabled: false
+
+# https://docs.rubocop.org/rubocop/cops_layout.html
+Layout/SpaceInsideArrayLiteralBrackets:
+  Enabled: false
+Layout/SpaceInsidePercentLiteralDelimiters:
+  Enabled: false
+
+# https://docs.rubocop.org/rubocop/cops_bundler.html
+Bundler/OrderedGems:
+  Enabled: false
