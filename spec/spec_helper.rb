@@ -101,3 +101,4 @@ RSpec.configure do |config|
 end
 
 require 'support/vcr_config'
+require 'support/factory_bot_config'
