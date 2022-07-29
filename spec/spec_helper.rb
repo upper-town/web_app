@@ -1,5 +1,3 @@
-ENV['APP_ENV'] ||= 'test'
-
 require 'simplecov'
 SimpleCov.start 'rails'
 
