@@ -9,6 +9,5 @@ require 'sidekiq/testing'
 require 'support/rspec_config'
 
 require 'support/vcr_config'
-require 'support/factory_bot_config'
 require 'support/webmock_config'
 require 'support/sidekiq_config'
