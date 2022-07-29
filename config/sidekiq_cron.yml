@@ -1,0 +1,4 @@
+hello_world_job:
+  cron: "*/1 * * * *"
+  class: HelloWorldJob
+  queue: default
