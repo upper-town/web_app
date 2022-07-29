@@ -33,3 +33,5 @@
 .env*
 !.env.development
 !.env.test
+
+NOTE.md
