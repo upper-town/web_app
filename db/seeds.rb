@@ -18,6 +18,8 @@ class SeederDevelopmentOnly
     Rails.logger.info "Seeding development-only data"
 
     add_servers
+    add_users
+    add_admin_users
   end
 
   private
@@ -26,6 +28,16 @@ class SeederDevelopmentOnly
     10.times do
       FactoryBot.create(:server)
     end
+  end
+
+  def add_users
+    FactoryBot.create(:user, email: 'user.1@example.com', password: 'testpass')
+    FactoryBot.create(:user, email: 'user.2@example.com', password: 'testpass')
+    FactoryBot.create(:user, email: 'user.3@example.com', password: 'testpass')
+  end
+
+  def add_admin_users
+    FactoryBot.create(:admin_user, email: 'admin.user.1@example.com', password: 'testpass')
   end
 end
 

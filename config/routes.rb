@@ -15,5 +15,11 @@ Rails.application.routes.draw do
   # Defines the root path route ("/")
   # root "articles#index"
 
+  namespace :admin do
+    resource :dashboard, only: [:show]
+    resource :users, only: [:index, :show, :edit, :update]
+    resource :admin_users
+  end
+
   mount Sidekiq::Web => '/sidekiq', as: :sidekiq_web
 end
