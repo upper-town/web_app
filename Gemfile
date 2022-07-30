@@ -50,6 +50,8 @@ gem "bootsnap", require: false
 # Use Sass to process CSS
 # gem "sassc-rails"
 
+gem "devise", "~> 4.8"
+
 gem "view_component", "~> 2.62"
 
 gem "faraday", "~> 2.4"

@@ -23,6 +23,7 @@ end
 
 require 'support/rspec_rails_config'
 
+require 'support/devise_config'
 require 'support/factory_bot_config'
 require 'support/shoulda_matchers_config'
 require 'support/capybara_config'
