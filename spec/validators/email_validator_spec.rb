@@ -9,7 +9,7 @@ RSpec.describe EmailValidator do
   end
 
   describe '#valid?' do
-    context 'when email is not valid' do
+    context 'when email format is not valid' do
       it 'returns false and set errors' do
         [
           nil,
@@ -17,15 +17,15 @@ RSpec.describe EmailValidator do
           " \n  ",
           'user',
           'user@',
-          'user@example',
-          'user@example.com1.com2.com3.com4',
-          '.user@@example.com',
-          '_user@@example.com',
-          'user@@example.com',
-          'user#@example.com',
-          'user+test@example.com',
-          'user-test@example.com',
-          'user,test@example.com'
+          'user@google',
+          'user@google.com1.com2.com3.com4',
+          '.user@@google.com',
+          '_user@@google.com',
+          'user@@google.com',
+          'user#@google.com',
+          'user+test@google.com',
+          'user-test@google.com',
+          'user,test@google.com'
         ].each do |invalid_email|
           validator = described_class.new(invalid_email)
 
@@ -36,7 +36,7 @@ RSpec.describe EmailValidator do
 
         invalid_long_email =
           'userxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx52@' \
-          'examplexxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx52.' \
+          'googlexxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx52.' \
           'com1xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx52.' \
           'com2xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx52.' \
           'com3xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx52'
@@ -49,14 +49,60 @@ RSpec.describe EmailValidator do
       end
     end
 
+    context 'when email domain is reserved' do
+      it 'returns false and set errors' do
+        [
+          'user@example.com',
+          'user@example.net',
+          'user@example.org',
+          'user@sub.example.com',
+          'user@sub.example.net',
+          'user@sub.example.org',
+          'user@sub.example.com.br',
+          'user@sub.example.net.br',
+          'user@sub.example.org.br',
+          'user@google.test',
+          'user@google.example',
+          'user@google.invalid',
+          'user@google.localhost',
+          'user@google.com.test',
+          'user@google.com.example',
+          'user@google.com.invalid',
+          'user@google.com.localhost',
+        ].each do |email_with_reserved_domain|
+          validator = described_class.new(email_with_reserved_domain)
+
+          expect(validator.valid?).to be(false)
+          expect(validator.errors).not_to be_empty
+          expect(validator.errors).to include('invalid domain')
+        end
+      end
+    end
+
+    context 'when email domain is from a disposable email service' do
+      it 'returns false and set errors' do
+        file_path = Rails.root.join('vendor/disposable_email_domains/list.txt')
+
+        File.foreach(file_path, chomp: true) do |disposable_email_host|
+          disposable_email = "user@#{disposable_email_host}"
+
+          validator = described_class.new(disposable_email)
+
+          expect(validator.valid?).to be(false)
+          expect(validator.errors).not_to be_empty
+          expect(validator.errors).to include('invalid domain')
+        end
+      end
+    end
+
     context 'when email is valid' do
       it 'returns true and does not set errors' do
         [
-          'user@example.com',
-          'USER@EXAMPLE.COM',
-          'user@example.com1.com2.com3',
-          'user.test@example.com',
-          'user_test@example.com'
+          'user@google.com',
+          'USER@GOOGLE.COM',
+          'user@google.com1.com2.com3',
+          'user.test@google.com',
+          'user_test@google.com'
         ].each do |valid_email|
           validator = described_class.new(valid_email)
 
@@ -66,7 +112,7 @@ RSpec.describe EmailValidator do
 
         valid_long_email =
           'userxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx51@' \
-          'examplexxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx51.' \
+          'googlexxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx51.' \
           'com1xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx51.' \
           'com2xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx51.' \
           'com3xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx51'

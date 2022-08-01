@@ -16,6 +16,16 @@ class EmailValidator
     \z
   }xi
 
+  RESERVED_DOMAIN_PATTERNS = [
+    /[@.]example\.(com|net|org)/,
+    /\.(test|example|invalid|localhost)\z/
+  ].freeze
+
+  DISPOSABLE_EMAIL_DOMAINS_LIST = File.readlines(
+    Rails.root.join('vendor/disposable_email_domains/list.txt'),
+    chomp: true
+  )
+
   def initialize(email)
     @email = email.to_s
     @errors = ['not validated yet']
@@ -25,7 +35,7 @@ class EmailValidator
     @errors.clear
 
     validate_format
-    validate_denylist
+    validate_email_domain
 
     @errors.empty?
   end
@@ -38,7 +48,19 @@ class EmailValidator
     end
   end
 
-  def validate_denylist
-    # TODO: check if host is not included in a denylist
+  def validate_email_domain
+    if match_reserved_domain? || match_disposable_email_domains?
+      @errors << 'invalid domain'
+    end
+  end
+
+  def match_reserved_domain?
+    RESERVED_DOMAIN_PATTERNS.any? { |pattern| pattern.match?(@email) }
+  end
+
+  def match_disposable_email_domains?
+    match_data = @email.match(PATTERN)
+
+    match_data.present? && DISPOSABLE_EMAIL_DOMAINS_LIST.include?(match_data[:host])
   end
 end
