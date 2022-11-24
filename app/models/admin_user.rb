@@ -14,9 +14,9 @@ class AdminUser < ApplicationRecord
     :trackable
   )
 
-  has_many :admin_user_roles
-  has_many :roles, class_name: 'AdminRole', through: :admin_user_roles
-  has_many :permissions, class_name: 'AdminPermission', through: :roles
+  has_many :admin_user_roles, dependent: :destroy
+  has_many :roles, through: :admin_user_roles, source: :admin_role
+  has_many :permissions, through: :roles
 
   # Super Admin status can only be granted through env var.
   def super_admin?

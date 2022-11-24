@@ -1,0 +1,16 @@
+module Admin
+  class AccessPolicy
+    def initialize(admin_user, admin_permission_key)
+      @admin_user = admin_user
+      @admin_permission_key = admin_permission_key
+    end
+
+    def allowed?
+      if @admin_user.super_admin?
+        return true
+      end
+
+      @admin_user.permissions.exists?(key: @admin_permission_key)
+    end
+  end
+end
