@@ -10,10 +10,44 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2022_07_30_012537) do
+ActiveRecord::Schema[7.1].define(version: 2022_11_24_021856) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
+
+  create_table "admin_permissions", force: :cascade do |t|
+    t.string "key", default: "", null: false
+    t.string "description", default: "", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["key"], name: "index_admin_permissions_on_key", unique: true
+  end
+
+  create_table "admin_role_permissions", force: :cascade do |t|
+    t.bigint "admin_role_id", null: false
+    t.bigint "admin_permission_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["admin_permission_id"], name: "index_admin_role_permissions_on_admin_permission_id"
+    t.index ["admin_role_id", "admin_permission_id"], name: "index_admin_role_permissions_on_role_and_permission", unique: true
+  end
+
+  create_table "admin_roles", force: :cascade do |t|
+    t.string "key", default: "", null: false
+    t.string "description", default: "", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["key"], name: "index_admin_roles_on_key", unique: true
+  end
+
+  create_table "admin_user_roles", force: :cascade do |t|
+    t.bigint "admin_user_id", null: false
+    t.bigint "admin_role_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["admin_role_id"], name: "index_admin_user_roles_on_admin_role_id"
+    t.index ["admin_user_id", "admin_role_id"], name: "index_admin_user_roles_on_admin_user_id_and_admin_role_id", unique: true
+  end
 
   create_table "admin_users", force: :cascade do |t|
     t.string "email", default: "", null: false
@@ -92,5 +126,9 @@ ActiveRecord::Schema[7.1].define(version: 2022_07_30_012537) do
     t.index ["uuid"], name: "index_users_on_uuid", unique: true
   end
 
+  add_foreign_key "admin_role_permissions", "admin_permissions"
+  add_foreign_key "admin_role_permissions", "admin_roles"
+  add_foreign_key "admin_user_roles", "admin_roles"
+  add_foreign_key "admin_user_roles", "admin_users"
   add_foreign_key "server_votes", "servers"
 end
