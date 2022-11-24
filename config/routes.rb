@@ -21,5 +21,12 @@ Rails.application.routes.draw do
     resource :admin_users
   end
 
-  mount Sidekiq::Web => '/sidekiq', as: :sidekiq_web
+  # Sidekiq
+
+  authenticate(
+    :admin_user,
+    lambda { |admin_user| Admin::AccessPolicy.new(admin_user, 'access_sidekiq').allowed? }
+  ) do
+    mount Sidekiq::Web => '/sidekiq', as: :sidekiq_web
+  end
 end
