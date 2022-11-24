@@ -1,23 +1,28 @@
 class EnvVarHelper
   def self.with_values(hash)
-    original_env_hash = backup_and_override(hash)
+    with_backup_and_restore do
+      ENV.update(hash)
+
+      yield
+    end
+  end
+
+  def self.without_values(*keys)
+    with_backup_and_restore do
+      ENV.delete_if { |key| keys.include?(key) }
+
+      yield
+    end
+  end
+
+  def self.with_backup_and_restore
+    original_env_hash = ENV.to_h
 
     yield
 
-    restore(original_env_hash)
-  end
-
-  def self.backup_and_override(hash)
-    original_env_hash = ENV.to_h
-    ENV.update(hash)
-
-    original_env_hash
-  end
-
-  def self.restore(original_env_hash)
     ENV.clear
     ENV.update(original_env_hash)
   end
 
-  private_class_method :backup_and_override, :restore
+  private_class_method :with_backup_and_restore
 end
