@@ -1,21 +1,12 @@
 # This file should contain all the record creation needed to seed the database with its default values.
 # The data can then be loaded with the bin/rails db:seed command (or created alongside the database with db:setup).
 
-require "factory_bot_rails"
 
-class SeederAll
-  def run
-    return if Rails.env.test?
-
-    Rails.logger.info "Seeding data for all environments"
-  end
-end
-
-class SeederDevelopmentOnly
-  def run
+class SeedsDevelopment
+  def call
     return unless Rails.env.development?
 
-    Rails.logger.info "Seeding development-only data"
+    Rails.logger.info 'Seeding data for development environment'
 
     add_servers
     add_users
@@ -25,21 +16,21 @@ class SeederDevelopmentOnly
   private
 
   def add_servers
-    10.times do
-      FactoryBot.create(:server)
+    1.upto(10) do |n|
+      Server.create!(name: "Server #{n}", site_url: "https://server-#{n}.example.com/")
     end
   end
 
   def add_users
-    FactoryBot.create(:user, email: 'user.1@example.com', password: 'testpass')
-    FactoryBot.create(:user, email: 'user.2@example.com', password: 'testpass')
-    FactoryBot.create(:user, email: 'user.3@example.com', password: 'testpass')
+    1.upto(10) do |n|
+      User.create!(email: "user.#{n}@example.com", password: 'testpass')
+    end
   end
 
   def add_admin_users
-    FactoryBot.create(:admin_user, email: 'admin.user.1@example.com', password: 'testpass')
+    AdminUser.create!(email: 'super.admin.user@example.com', password: 'testpass')
+    AdminUser.create!(email: 'some.admin.user@example.com', password: 'testpass')
   end
 end
 
-SeederAll.new.run
-SeederDevelopmentOnly.new.run
+SeedsDevelopment.new.call
