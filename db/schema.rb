@@ -69,17 +69,15 @@ ActiveRecord::Schema[7.1].define(version: 2022_11_24_021856) do
     t.datetime "locked_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.uuid "uuid", default: -> { "gen_random_uuid()" }, null: false
     t.index ["confirmation_token"], name: "index_admin_users_on_confirmation_token", unique: true
     t.index ["email"], name: "index_admin_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_admin_users_on_reset_password_token", unique: true
     t.index ["unlock_token"], name: "index_admin_users_on_unlock_token", unique: true
-    t.index ["uuid"], name: "index_admin_users_on_uuid", unique: true
   end
 
   create_table "server_votes", force: :cascade do |t|
     t.bigint "server_id", null: false
-    t.uuid "uuid", default: -> { "gen_random_uuid()" }, null: false
+    t.uuid "uuid", null: false
     t.jsonb "metadata", default: {}, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -88,7 +86,7 @@ ActiveRecord::Schema[7.1].define(version: 2022_11_24_021856) do
   end
 
   create_table "servers", force: :cascade do |t|
-    t.uuid "uuid", default: -> { "gen_random_uuid()" }, null: false
+    t.uuid "uuid", null: false
     t.string "name", default: "", null: false
     t.string "description", default: "", null: false
     t.string "site_url", default: "", null: false
@@ -118,7 +116,7 @@ ActiveRecord::Schema[7.1].define(version: 2022_11_24_021856) do
     t.datetime "locked_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.uuid "uuid", default: -> { "gen_random_uuid()" }, null: false
+    t.uuid "uuid", null: false
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true

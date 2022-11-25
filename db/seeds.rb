@@ -17,13 +17,21 @@ class SeedsDevelopment
 
   def add_servers
     1.upto(10) do |n|
-      Server.create!(name: "Server #{n}", site_url: "https://server-#{n}.example.com/")
+      Server.create!(
+        name: "Server #{n}",
+        site_url: "https://server-#{n}.example.com/",
+        uuid: SecureRandom.uuid,
+      )
     end
   end
 
   def add_users
     1.upto(10) do |n|
-      User.create!(email: "user.#{n}@example.com", password: 'testpass')
+      User.create!(
+        email: "user.#{n}@example.com",
+        password: 'testpass',
+        uuid: SecureRandom.uuid
+      )
     end
   end
 
