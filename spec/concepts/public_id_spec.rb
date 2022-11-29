@@ -2,27 +2,27 @@
 
 require 'rails_helper'
 
-RSpec.describe ShortId do
+RSpec.describe PublicId do
   describe '.from_uuid' do
-    it 'converts UUID to ShortId' do
+    it 'converts UUID to PublicId' do
       given_uuid = '6bcaee2a-0275-4d2c-abca-bba6bd67c19b'
-      expected_short_id = 'PUBMnwHjz6QL4jXKAtB6jB'
+      expected_public_id = 'PUBMnwHjz6QL4jXKAtB6jB'
 
-      expect(described_class.from_uuid(given_uuid)).to eq(expected_short_id)
+      expect(described_class.from_uuid(given_uuid)).to eq(expected_public_id)
 
       random_uuid = SecureRandom.uuid
-      short_id = described_class.from_uuid(random_uuid)
+      public_id = described_class.from_uuid(random_uuid)
 
-      expect(short_id.count("^#{base58_chars.join}")).to eq(0)
+      expect(public_id.count("^#{base58_chars.join}")).to eq(0)
     end
   end
 
   describe '.to_uuid' do
-    it 'converts ShortId to UUID' do
-      given_short_id = 'PUBMnwHjz6QL4jXKAtB6jB'
+    it 'converts PublicId to UUID' do
+      given_public_id = 'PUBMnwHjz6QL4jXKAtB6jB'
       expected_uuid = '6bcaee2a-0275-4d2c-abca-bba6bd67c19b'
 
-      expect(described_class.to_uuid(given_short_id)).to eq(expected_uuid)
+      expect(described_class.to_uuid(given_public_id)).to eq(expected_uuid)
 
       random_base58_id = Base58Id.random_number
       uuid = described_class.to_uuid(random_base58_id)
