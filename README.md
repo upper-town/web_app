@@ -186,3 +186,69 @@ Embracing Rails, we can think of a layered architecture as:
 - __Infrastructure layer__: Rails Models, API clients, Sidekiq, and other gems
 - __Presentation layter__: Rails Views, Helpers, Presenters, ViewComponents
 - __Domain layer__: services, jobs, queries, concepts
+
+## Tests
+
+To run the test suite, simply run `bundle exec rspec`.
+
+For a given feature, there are different types of tests we can run varying from
+unit tests to system tests. In terms of time to write and compute time to run,
+unit tests are low-cost and system tests are more expensive. So, it is practical
+to follow a [testing pyramid] by only testing critical flows with system tests
+and being inclined to write more request and unit tests.
+
+[testing pyramid]: https://martinfowler.com/articles/practical-test-pyramid.html
+
+System specs (`type: :system`) spin up a browser while executing tests.
+By default, these tests run in a headless browser but for debugging purposes
+it can be useful to run them *headfully*. To run a system spec *headfully*,
+set the `HEADFUL` environment variable while running the test command:
+`HEADFUL=true bundle exec rspec`
+
+### VCR to record and replay HTTP requests
+
+During tests, external HTTP requests are blocked and, to allow requests to be
+sent, we need to set [VCR] to record them. VCR is a gem that records to YAML
+files the HTTP requests performed in a test case, and it replays them the next
+time the same test is run.
+
+[VCR]: https://rubygems.org/gems/vcr
+
+To use VCR, you can wrap your code in a block with
+
+```rb
+VCR.use_cassette('name_the/request_file_here') do
+  # HTTP requests are allowed within this block. Requests will be recorded
+  # and replayed during future test runs.
+end
+```
+
+Or use the RSpec [`:vcr` option] in an RSpec `describe`/`context`/`it` block
+and the request YAML file and path will be named based on the descriptions:
+
+[`:vcr` option]: https://relishapp.com/vcr/vcr/v/6-1-0/docs/test-frameworks/usage-with-rspec-metadata
+
+```rb
+RSpec.describe SomeClass do
+  describe '#some_method' do
+    context 'when user is present' do
+      it 'does something', :vcr do
+        # HTTP requests are allowed within this block. Requests will be recorded
+        # and replayed during future test runs.
+        #
+        # File: spec/cassettes/SomeClass/_some_method/when_user_is_present/does_something.yml
+      end
+    end
+  end
+end
+```
+
+And to force VCR to re-record requests when running a test instead of replaying
+existing records, just delete the specific YAML files, or set `VCR_RECORD_ALL`
+to `true` while running the test command. For example,
+`VCR_RECORD_ALL=true bundle exec rspec spec/services/some_class_spec.rb`.
+
+This feature is provided by setting [`default_cassette_options`] `:record`
+to `:all` in VCR configuration when `ENV["VCR_RECORD_ALL"]` is set to `"true"`
+
+[`default_cassette_options`]: https://relishapp.com/vcr/vcr/v/6-1-0/docs/configuration/default-cassette-options
