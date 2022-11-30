@@ -21,9 +21,8 @@ rescue ActiveRecord::PendingMigrationError => e
   exit 1
 end
 
-require 'support/rspec_rails_config'
-
-require 'support/devise_config'
-require 'support/factory_bot_config'
-require 'support/shoulda_matchers_config'
-require 'support/capybara_config'
+require 'support/config/rspec_rails_config'
+require 'support/config/devise_config'
+require 'support/config/factory_bot_config'
+require 'support/config/shoulda_matchers_config'
+require 'support/config/capybara_config'

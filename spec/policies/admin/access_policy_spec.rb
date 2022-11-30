@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'rails_helper'
-require 'support/env_var_helper'
+require 'support/helpers/env_var_helper'
 
 RSpec.describe Admin::AccessPolicy do
   describe '#allowed?' do
