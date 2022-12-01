@@ -94,8 +94,8 @@ group :development do
 end
 
 group :test do
-  gem "webmock", "~> 3.14"
-  gem "vcr", "~> 6.1"
   gem "capybara", "~> 3.37"
   gem "selenium-webdriver", "~> 4.3"
+  gem "vcr", "~> 6.1"
+  gem "webmock", "~> 3.14"
 end
