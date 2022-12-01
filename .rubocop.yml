@@ -1,7 +1,8 @@
 require:
+  - rubocop-performance
   - rubocop-rails
   - rubocop-rspec
-  - rubocop-performance
+  - rubocop-thread_safety
 
 AllCops:
   TargetRubyVersion: 3.1.2
