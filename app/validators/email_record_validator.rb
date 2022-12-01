@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class EmailRecordValidator
   DEFAULT_ATTRIBUTE_NAME = :email
 

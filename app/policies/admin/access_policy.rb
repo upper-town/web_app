@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Admin
   class AccessPolicy
     def initialize(admin_user, admin_permission_key)

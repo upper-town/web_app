@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CreateAdminRoles < ActiveRecord::Migration[7.1]
   def change
     create_table :admin_roles do |t|

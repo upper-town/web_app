@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class EmailValidator
   attr_reader :email, :errors
 

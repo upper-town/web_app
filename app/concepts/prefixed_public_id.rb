@@ -5,7 +5,7 @@ class PrefixedPublicId
     Server     => 'server',
     ServerVote => 'server_vote',
     User       => 'user',
-  }
+  }.freeze
   INVERTED_PREFIX_MAP = PREFIX_MAP.invert
 
   def self.generate(record)

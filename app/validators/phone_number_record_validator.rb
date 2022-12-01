@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class PhoneNumberRecordValidator
   DEFAULT_ATTRIBUTE_NAME = :phone_number
 

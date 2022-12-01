@@ -34,39 +34,39 @@ RSpec.describe PrefixedPublicId do
 
   describe '.parse' do
     it 'parses from a Server ppid' do
-      prefix = "server"
+      prefix = 'server'
       uuid = SecureRandom.uuid
       public_id = PublicId.from_uuid(uuid)
       ppid = "#{prefix}_#{public_id}"
 
-      record_class, uuid = described_class.parse(ppid)
+      parsed_record_class, parsed_uuid = described_class.parse(ppid)
 
-      expect(record_class).to eq(Server)
-      expect(uuid).to eq(uuid)
+      expect(parsed_record_class).to eq(Server)
+      expect(parsed_uuid).to eq(uuid)
     end
 
     it 'parses from a ServerVote ppid' do
-      prefix = "server_vote"
+      prefix = 'server_vote'
       uuid = SecureRandom.uuid
       public_id = PublicId.from_uuid(uuid)
       ppid = "#{prefix}_#{public_id}"
 
-      record_class, uuid = described_class.parse(ppid)
+      parsed_record_class, parsed_uuid = described_class.parse(ppid)
 
-      expect(record_class).to eq(ServerVote)
-      expect(uuid).to eq(uuid)
+      expect(parsed_record_class).to eq(ServerVote)
+      expect(parsed_uuid).to eq(uuid)
     end
 
     it 'parses from a User ppid' do
-      prefix = "user"
+      prefix = 'user'
       uuid = SecureRandom.uuid
       public_id = PublicId.from_uuid(uuid)
       ppid = "#{prefix}_#{public_id}"
 
-      record_class, uuid = described_class.parse(ppid)
+      parsed_record_class, parsed_uuid = described_class.parse(ppid)
 
-      expect(record_class).to eq(User)
-      expect(uuid).to eq(uuid)
+      expect(parsed_record_class).to eq(User)
+      expect(parsed_uuid).to eq(uuid)
     end
   end
 

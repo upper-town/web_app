@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class PhoneNumberValidator
   attr_reader :phone_number, :errors
 

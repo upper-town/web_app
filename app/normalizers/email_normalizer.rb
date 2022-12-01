@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class EmailNormalizer
   def initialize(email)
     @email = email.to_s

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class EnvVarHelper
   def self.with_values(hash)
     with_backup_and_restore do
