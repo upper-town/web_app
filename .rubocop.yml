@@ -33,6 +33,8 @@ Lint/DuplicateBranch:
   Enabled: false
 Lint/EmptyClass:
   Enabled: false
+Lint/MissingSuper:
+  Enabled: false
 Lint/MixedRegexpCaptureTypes:
   Enabled: false
 
