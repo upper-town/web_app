@@ -3,6 +3,17 @@
 @tailwind utilities;
 
 /*
+  Ref: https://tailwindcss.com/docs/reusing-styles#avoiding-premature-abstraction
+
+  If you start using @apply for everything, you are basically just writing CSS
+  again and throwing away all of the workflow and maintainability advantages
+  Tailwind gives you.
+
+  If you're going to use @apply, use it for very small, highly reusable things
+  like buttons and form controls.
+*/
+
+/*
 
 @layer components {
   .btn-primary {
