@@ -1,0 +1,26 @@
+<%= tag.div(**@options) do %>
+  <div class="w-full">
+    <% if @subject.present? %>
+      <p class="font-bold"><%= @subject %></p>
+    <% end %>
+
+    <% if content? %>
+      <%= content %>
+    <% end %>
+
+    <% if button_link_to? %>
+      <div class="mt-2"><%= button_link_to %></div>
+    <% end %>
+  </div>
+
+  <% if @dismissible %>
+    <div class="flex-none w-8">
+      <%= tag.button(**@button_dismiss_options) do %>
+        <span class="sr-only"><%= I18n.t("components.alert.close") %></span>
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      <% end %>
+    </div>
+  <% end %>
+<% end %>
