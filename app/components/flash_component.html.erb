@@ -1,0 +1,15 @@
+<div class="flex flex-col items-center" data-turbo-cache="false">
+  <% @flash.each do |flash_item| %>
+    <%=
+      alert_kwargs = build_alert_kwargs(flash_item)
+      alert_content = get_alert_content(flash_item)
+      alert_link_to_args = build_alert_link_to_args(flash_item)
+
+      render(AlertComponent.new(**alert_kwargs)) do |c|
+        c.button_link_to(*alert_link_to_args) if alert_link_to_args.present?
+
+        alert_content
+      end
+    %>
+  <% end %>
+</div>
