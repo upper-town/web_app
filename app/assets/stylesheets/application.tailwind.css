@@ -13,12 +13,58 @@
   like buttons and form controls.
 */
 
-/*
-
 @layer components {
+  .btn {
+    @apply
+      cursor-pointer
+      focus:ring-2
+      font-bold
+      inline-block
+      normal-case
+      px-4
+      py-2
+      rounded
+  }
   .btn-primary {
-    @apply py-2 px-4 bg-blue-200;
+    @apply
+      bg-blue-500
+      focus:ring-blue-300
+      hover:bg-blue-700
+      text-white
+  }
+  .btn-secondary {
+    @apply
+      bg-gray-200
+      focus:ring-gray-400
+      hover:bg-gray-300
+      text-gray-600
+  }
+  .btn-info {
+    @apply
+      bg-gray-200
+      focus:ring-gray-400
+      hover:bg-gray-300
+      text-gray-600
+  }
+  .btn-danger {
+    @apply
+      bg-red-200
+      focus:ring-red-400
+      hover:bg-red-300
+      text-red-600
+  }
+  .btn-warning {
+    @apply
+      bg-orange-200
+      focus:ring-orange-400
+      hover:bg-orange-300
+      text-orange-600
+  }
+  .btn-success {
+    @apply
+      bg-green-200
+      focus:ring-green-400
+      hover:bg-green-300
+      text-green-600
   }
 }
-
-*/
