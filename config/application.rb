@@ -36,6 +36,8 @@ module WebApp
     # Don't generate system test files.
     config.generators.system_tests = nil
 
+    config.view_component.component_parent_class = 'ApplicationComponent'
+
     config.active_record.encryption.primary_key =
       ENV.fetch('ACTIVE_RECORD_ENCRYPTION_PRIMARY_KEY').split(',')
     config.active_record.encryption.deterministic_key =
