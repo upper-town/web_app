@@ -5,10 +5,18 @@ require 'sidekiq/cron/web'
 
 Rails.application.routes.draw do
   devise_for :users, controllers: {
-    sessions: 'users/sessions'
+    confirmations:      'users/confirmations',
+    passwords:          'users/passwords',
+    registrations:      'users/registrations',
+    sessions:           'users/sessions',
+    unlocks:            'users/unlocks',
   }
   devise_for :admin_users, controllers: {
-    sessions: 'admin_users/sessions'
+    confirmations:      'admin_users/confirmations',
+    passwords:          'admin_users/passwords',
+    registrations:      'admin_users/registrations',
+    sessions:           'admin_users/sessions',
+    unlocks:            'admin_users/unlocks',
   }
 
   root to: 'home#index'
