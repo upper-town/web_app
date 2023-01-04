@@ -27,7 +27,7 @@ class SeedsDevelopment
   end
 
   def add_users
-    1.upto(10) do |n|
+    1.upto(100) do |n|
       User.create!(
         email: "user.#{n}@example.com",
         password: 'testpass',

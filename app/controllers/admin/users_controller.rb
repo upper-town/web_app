@@ -2,7 +2,14 @@
 
 module Admin
   class UsersController < Admin::BaseController
+    include Pagy::Backend
+
     def index
+      @pagy, @users = pagy(Admin::UsersQuery.new.call)
+    rescue Pagy::OverflowError
+      @users = []
+
+      render(status: :not_found)
     end
 
     def show
