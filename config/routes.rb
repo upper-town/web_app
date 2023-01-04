@@ -25,10 +25,12 @@ Rails.application.routes.draw do
   # Defines the root path route ("/")
   # root "articles#index"
 
+  get '/admin', to: redirect('/admin/dashboard')
+
   namespace :admin do
     resource :dashboard, only: [:show]
-    resource :users, only: [:index, :show, :edit, :update]
-    resource :admin_users
+    resources :users, only: [:index, :show, :edit, :update]
+    resources :admin_users
   end
 
   # Sidekiq
@@ -37,6 +39,6 @@ Rails.application.routes.draw do
     :admin_user,
     lambda { |admin_user| Admin::AccessPolicy.new(admin_user, 'access_sidekiq').allowed? }
   ) do
-    mount Sidekiq::Web => '/sidekiq', as: :sidekiq_web
+    mount Sidekiq::Web => '/admin/sidekiq', as: :sidekiq_web
   end
 end
