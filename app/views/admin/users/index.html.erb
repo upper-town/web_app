@@ -1,6 +1,7 @@
 <% if @users.empty? %>
   No results
 <% else %>
+  <%= render(PagyComponent.new(pagy: @pagy, pagy_link_proc: pagy_link_proc(@pagy))) %>
 
   <%=
     render(Admin::TableComponent.new(
@@ -14,5 +15,5 @@
     ))
   %>
 
-  <%== pagy_nav(@pagy) %>
+  <%= render(PagyComponent.new(pagy: @pagy, pagy_link_proc: pagy_link_proc(@pagy))) %>
 <% end %>
