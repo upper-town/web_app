@@ -9,8 +9,8 @@
       columns: [
         ['ID',      :id],
         ['email',   :email],
-        ['PID',     proc { |item| PublicId.from_uuid(item.uuid) } ],
-        ['Actions', proc { |_item| "Edit" }],
+        ['PID',     proc { |user| PublicId.from_uuid(user.uuid) } ],
+        ['Actions', proc { |_user| "Edit" }],
       ],
     ))
   %>
