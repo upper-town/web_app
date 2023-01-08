@@ -32,13 +32,6 @@
 #               admin_user_password PATCH  /admin_users/password(.:format)         admin_users/passwords#update
 #                                   PUT    /admin_users/password(.:format)         admin_users/passwords#update
 #                                   POST   /admin_users/password(.:format)         admin_users/passwords#create
-#    cancel_admin_user_registration GET    /admin_users/cancel(.:format)           admin_users/registrations#cancel
-#       new_admin_user_registration GET    /admin_users/sign_up(.:format)          admin_users/registrations#new
-#      edit_admin_user_registration GET    /admin_users/edit(.:format)             admin_users/registrations#edit
-#           admin_user_registration PATCH  /admin_users(.:format)                  admin_users/registrations#update
-#                                   PUT    /admin_users(.:format)                  admin_users/registrations#update
-#                                   DELETE /admin_users(.:format)                  admin_users/registrations#destroy
-#                                   POST   /admin_users(.:format)                  admin_users/registrations#create
 #       new_admin_user_confirmation GET    /admin_users/confirmation/new(.:format) admin_users/confirmations#new
 #           admin_user_confirmation GET    /admin_users/confirmation(.:format)     admin_users/confirmations#show
 #                                   POST   /admin_users/confirmation(.:format)     admin_users/confirmations#create
