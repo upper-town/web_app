@@ -31,14 +31,23 @@ class SeedsDevelopment
       User.create!(
         email: "user.#{n}@example.com",
         password: 'testpass',
+        confirmed_at: Time.current,
         uuid: SecureRandom.uuid
       )
     end
   end
 
   def add_admin_users
-    AdminUser.create!(email: 'super.admin.user@example.com', password: 'testpass')
-    AdminUser.create!(email: 'some.admin.user@example.com', password: 'testpass')
+    AdminUser.create!(
+      email: 'super.admin.user@example.com',
+      password: 'testpass',
+      confirmed_at: Time.current
+    )
+    AdminUser.create!(
+      email: 'some.admin.user@example.com',
+      password: 'testpass',
+      confirmed_at: Time.current
+    )
   end
 end
 
