@@ -1,25 +1,26 @@
 # frozen_string_literal: true
 
-class PrefixedPublicId
-  PREFIX_MAP = {
+class ScopedShortUuid
+  MAP = {
     Server     => 'server',
     ServerVote => 'server_vote',
     User       => 'user',
   }.freeze
-  INVERTED_PREFIX_MAP = PREFIX_MAP.invert
+
+  INVERTED_MAP = MAP.invert
 
   def self.generate(record)
-    prefix = PREFIX_MAP.fetch(record.class)
-    public_id = PublicId.from_uuid(record.uuid)
+    scope = MAP.fetch(record.class)
+    short_uuid = ShortUuid.from_uuid(record.uuid)
 
-    "#{prefix}_#{public_id}"
+    "#{scope}_#{short_uuid}"
   end
 
   def self.parse(string)
-    prefix, _separator, public_id = string.rpartition('_')
+    scope, _separator, short_uuid = string.rpartition('_')
 
-    record_class = INVERTED_PREFIX_MAP.fetch(prefix)
-    uuid = PublicId.to_uuid(public_id)
+    record_class = INVERTED_MAP.fetch(scope)
+    uuid = ShortUuid.to_uuid(short_uuid)
 
     [record_class, uuid]
   end
