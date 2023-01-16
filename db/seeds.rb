@@ -18,10 +18,20 @@ class SeedsDevelopment
 
   def add_servers
     1.upto(10) do |n|
+      name = "#{Faker::Lorem.words(number: 3).join(' ').titleize}-#{n}"
+      description = Faker::Lorem.sentence(word_count: 30)
+      info = [
+        Faker::Lorem.paragraphs(number: 10).join(' '),
+        Faker::Lorem.paragraphs(number: 15).join(' '),
+        Faker::Lorem.paragraphs(number: 10).join(' '),
+      ].join("\n\n")
+
       Server.create!(
-        name: "Server #{n}",
-        site_url: "https://server-#{n}.example.com/",
+        name: name,
         uuid: SecureRandom.uuid,
+        site_url: "https://nice-server-#{n}.example.com/",
+        description: description,
+        info: info,
       )
     end
   end

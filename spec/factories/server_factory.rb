@@ -6,6 +6,7 @@
 #
 #  id          :bigint           not null, primary key
 #  description :string           default(""), not null
+#  info        :text             default(""), not null
 #  kind        :string           default(""), not null
 #  name        :string           default(""), not null
 #  site_url    :string           default(""), not null

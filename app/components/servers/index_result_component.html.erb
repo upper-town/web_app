@@ -9,7 +9,10 @@
   <div>
     <%= @server.kind %><br>
     <%= @server.site_url %><br>
-    <%= @server.uuid %><br>
+    <%= ShortUuid.from_uuid(@server.uuid) %><br>
     <%= @server.description %><br>
+    <div class="prose">
+      <%= @server.info %>
+    </div>
   </div>
 </div>
