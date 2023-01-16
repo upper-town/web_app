@@ -85,6 +85,8 @@ group :development, :test do
   gem 'rubocop-thread_safety', '~> 0.4.4', require: false
 
   gem 'pry-byebug', '~> 3.9'
+
+  gem 'faker', '~> 3.1'
 end
 
 group :development do

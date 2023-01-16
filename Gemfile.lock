@@ -148,6 +148,8 @@ GEM
     factory_bot_rails (6.2.0)
       factory_bot (~> 6.2.0)
       railties (>= 5.0.0)
+    faker (3.1.0)
+      i18n (>= 1.8.11, < 2)
     faraday (2.4.0)
       faraday-net_http (~> 2.0)
       ruby2_keywords (>= 0.0.4)
@@ -358,6 +360,7 @@ DEPENDENCIES
   dotenv-rails (~> 2.8)
   factory_bot (~> 6.2)
   factory_bot_rails (~> 6.2)
+  faker (~> 3.1)
   faraday (~> 2.4)
   importmap-rails
   jbuilder
