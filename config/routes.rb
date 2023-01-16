@@ -42,10 +42,7 @@
 #                             admin GET    /admin(.:format)                        redirect(301, /admin/dashboard)
 #                   admin_dashboard GET    /admin/dashboard(.:format)              admin/dashboards#show
 #                       admin_users GET    /admin/users(.:format)                  admin/users#index
-#                   edit_admin_user GET    /admin/users/:id/edit(.:format)         admin/users#edit
 #                        admin_user GET    /admin/users/:id(.:format)              admin/users#show
-#                                   PATCH  /admin/users/:id(.:format)              admin/users#update
-#                                   PUT    /admin/users/:id(.:format)              admin/users#update
 #                 admin_admin_users GET    /admin/admin_users(.:format)            admin/admin_users#index
 #                                   POST   /admin/admin_users(.:format)            admin/admin_users#create
 #              new_admin_admin_user GET    /admin/admin_users/new(.:format)        admin/admin_users#new
@@ -87,7 +84,7 @@ Rails.application.routes.draw do
 
   namespace :admin do
     resource :dashboard, only: [:show]
-    resources :users, only: [:index, :show, :edit, :update]
+    resources :users, only: [:index, :show]
     resources :admin_users
   end
 

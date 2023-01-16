@@ -2,15 +2,14 @@
   No results
 <% else %>
   <%= render(PagyComponent.new(pagy: @pagy, pagy_link_proc: pagy_link_proc(@pagy))) %>
-
   <%=
     render(Admin::TableComponent.new(
       collection: @users,
       columns: [
         ['ID',      :id],
         ['email',   :email],
-        ['SUUID',   proc { |user| ShortUuid.from_uuid(user.uuid) } ],
-        ['Actions', proc { |_user| "Edit" }],
+        ['SUUID',   proc { |user| ShortUuid.from_uuid(user.uuid) }],
+        ['Actions', proc { |user| render(partial: 'edit_actions_index', locals: { user: user }) }],
       ],
     ))
   %>

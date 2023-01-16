@@ -13,12 +13,13 @@ module Admin
     end
 
     def show
+      @user = user_from_params
     end
 
-    def edit
-    end
+    private
 
-    def update
+    def user_from_params
+      User.find(params['id'])
     end
   end
 end

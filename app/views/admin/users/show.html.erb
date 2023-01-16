@@ -1,0 +1,53 @@
+
+<%= link_to('Edit', edit_admin_user_path(@user)) %>
+<%= link_to('Delete', admin_user_path(@user), method: :delete) %>
+
+
+<h3>Details</h3>
+
+<div>
+
+  <div>
+    <div>Email</div>
+    <div><%= @user.email %></div>
+  </div>
+
+  <div>
+    <div>ID</div>
+    <div><%= @user.id %></div>
+  </div>
+
+  <div>
+    <div>UUID</div>
+    <div><%= @user.uuid %></div>
+  </div>
+
+  <div>
+    <div>SUUID</div>
+    <div><%= ShortUuid.from_uuid(@user.uuid) %></div>
+  </div>
+</div>
+
+<div>
+  <%= @user.confirmed_at %>
+  <%= @user.unconfirmed_email %>
+  <%= @user.confirmation_sent_at %>
+
+  <%= @user.current_sign_in_at %>
+  <%= @user.current_sign_in_ip %>
+
+  <%= @user.failed_attempts %>
+
+  <%= @user.last_sign_in_at %>
+  <%= @user.last_sign_in_ip %>
+
+  <%= @user.locked_at %>
+  <%= @user.remember_created_at %>
+
+  <%= @user.reset_password_sent_at %>
+
+  <%= @user.sign_in_count %>
+
+  <%= @user.created_at %>
+  <%= @user.updated_at %>
+</div>
