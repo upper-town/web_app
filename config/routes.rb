@@ -51,6 +51,8 @@
 #                                   PATCH  /admin/admin_users/:id(.:format)        admin/admin_users#update
 #                                   PUT    /admin/admin_users/:id(.:format)        admin/admin_users#update
 #                                   DELETE /admin/admin_users/:id(.:format)        admin/admin_users#destroy
+#                           servers GET    /servers(.:format)                      servers#index
+#                            server GET    /servers/:id(.:format)                  servers#show
 #                       sidekiq_web        /admin/sidekiq                          Sidekiq::Web
 #  turbo_recede_historical_location GET    /recede_historical_location(.:format)   turbo/native/navigation#recede
 #  turbo_resume_historical_location GET    /resume_historical_location(.:format)   turbo/native/navigation#resume
@@ -87,6 +89,8 @@ Rails.application.routes.draw do
     resources :users, only: [:index, :show]
     resources :admin_users
   end
+
+  resources :servers, only: [:index, :show]
 
   # Sidekiq
 

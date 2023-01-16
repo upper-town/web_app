@@ -1,0 +1,13 @@
+Filters
+- Game
+- Vote count
+
+Results
+
+<ul>
+  <% @servers.each do |server| %>
+    <li>
+      <%= render(Servers::IndexResultComponent.new(server: server)) %>
+    </li>
+  <% end %>
+<ul>
