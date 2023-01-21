@@ -1,0 +1,17 @@
+<% if @servers.empty? %>
+  No results
+<% else %>
+  <%= render(PagyComponent.new(pagy: @pagy, pagy_link_proc: pagy_link_proc(@pagy))) %>
+  <%=
+    render(Admin::TableComponent.new(
+      collection: @servers,
+      columns: [
+        ['ID',      :id],
+        ['SUUID',   proc { |server| ShortUuid.from_uuid(server.uuid) }],
+        ['Actions', proc { |server| render(partial: 'edit_actions_index', locals: { server: server }) }],
+      ],
+    ))
+  %>
+
+  <%= render(PagyComponent.new(pagy: @pagy, pagy_link_proc: pagy_link_proc(@pagy))) %>
+<% end %>
