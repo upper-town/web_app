@@ -85,6 +85,7 @@ cases, defining a state machine is not necessary.
 ### Services
 
 Service objects encapsulate business logic code:
+
 - Create a service class in `app/services/`
 - Use a descriptive name for the service class with a verb, and do _not_ add a
   suffix to it
@@ -98,6 +99,7 @@ Service objects encapsulate business logic code:
 
 Query objects can compose or perform database queries using `ActiveRecord`
 or `SQL`:
+
 - Create a query class in `app/queries/`
 - Use a descriptive name for the query class and add a `Query` suffix to it
 - Use descriptive names for the query methods. If it only exposes one method,
@@ -113,6 +115,7 @@ or `SQL`:
 
 Jobs can perform an action asynchronously. [Sidekiq] is the background job
 framework in use:
+
 - Create a job class in `app/jobs/`
 - Use a descriptive name for the job class and add a `Job` suffix to it
 - Add `include Sidekiq::Job` to it
@@ -122,13 +125,14 @@ framework in use:
   from the queue, deserializes the args and performs it.
 - Follow the [Sidekiq best practices]
 
-[Sidekiq]: https://rubygems.org/gems/sidekiq
-[Sidekiq best practices]: https://github.com/mperham/sidekiq/wiki/Best-Practices
+[sidekiq]: https://rubygems.org/gems/sidekiq
+[sidekiq best practices]: https://github.com/mperham/sidekiq/wiki/Best-Practices
 
 ### Policies
 
 Policies are service/query objects specialized in checking if a user meets
 certain conditions:
+
 - Create a policy in `app/policies/`
 - Use a descriptive name for the policy class and add a `Policy` suffix to it
 - Use names like `#allowed?` for the policy methods
@@ -140,6 +144,7 @@ certain conditions:
 
 Validators run a set of validations on an `ActiveRecord`-like object. They can
 be Ruby classes or inherit from a Rails validator class:
+
 - Create a validator in `app/validators/`
 - Use a descriptive name for the validator class and add a `Validator`
   suffix to it
@@ -153,13 +158,14 @@ be Ruby classes or inherit from a Rails validator class:
 Presenters deal with presentation logic. If there is already a component
 framework in place, like [`ViewComponent`], that could be a replacement for
 your presenter logic:
+
 - Create a presenter in `app/presenters/`
 - Use a descriptive name for the presenter class and add a `Presenter`
   suffix to it
 - Use descriptive names for the presenter methods
 - Return primitive values that can be directly used in views
 
-[`ViewComponent`]: https://rubygems.org/gems/view_component
+[`viewcomponent`]: https://rubygems.org/gems/view_component
 
 ### Concepts
 
@@ -182,10 +188,10 @@ Vans.
 
 Embracing Rails, we can think of a layered architecture as:
 
-- __Application layer__: Rails Controllers, Routes
-- __Infrastructure layer__: Rails Models, API clients, Sidekiq, and other gems
-- __Presentation layter__: Rails Views, Helpers, Presenters, ViewComponents
-- __Domain layer__: services, jobs, queries, concepts
+- **Application layer**: Rails Controllers, Routes
+- **Infrastructure layer**: Rails Models, API clients, Sidekiq, and other gems
+- **Presentation layter**: Rails Views, Helpers, Presenters, ViewComponents
+- **Domain layer**: services, jobs, queries, concepts
 
 ## Tests
 
@@ -201,7 +207,7 @@ and being inclined to write more request and unit tests.
 
 System specs (`type: :system`) spin up a browser while executing tests.
 By default, these tests run in a headless browser but for debugging purposes
-it can be useful to run them *headfully*. To run a system spec *headfully*,
+it can be useful to run them _headfully_. To run a system spec _headfully_,
 set the `HEADFUL` environment variable while running the test command:
 `HEADFUL=true bundle exec rspec`
 
@@ -212,7 +218,7 @@ sent, we need to set [VCR] to record them. VCR is a gem that records to YAML
 files the HTTP requests performed in a test case, and it replays them the next
 time the same test is run.
 
-[VCR]: https://rubygems.org/gems/vcr
+[vcr]: https://rubygems.org/gems/vcr
 
 To use VCR, you can wrap your code in a block with
 
@@ -223,10 +229,10 @@ VCR.use_cassette('name_the/request_file_here') do
 end
 ```
 
-Or use the RSpec [`:vcr` option] in an RSpec `describe`/`context`/`it` block
+Or use the RSpec [`:vcr` tag] in an RSpec `describe`/`context`/`it` block
 and the request YAML file and path will be named based on the descriptions:
 
-[`:vcr` option]: https://relishapp.com/vcr/vcr/v/6-1-0/docs/test-frameworks/usage-with-rspec-metadata
+[`:vcr` tag]: https://relishapp.com/vcr/vcr/v/6-1-0/docs/test-frameworks/usage-with-rspec-metadata
 
 ```rb
 RSpec.describe SomeClass do
