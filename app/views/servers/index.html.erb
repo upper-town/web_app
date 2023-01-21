@@ -1,13 +1,18 @@
-Filters
-- Game
-- Vote count
-
-Results
-
-<ul>
-  <% @servers.each do |server| %>
-    <li>
-      <%= render(Servers::IndexResultComponent.new(server: server)) %>
-    </li>
-  <% end %>
-<ul>
+<% if @servers.any? %>
+  <ul>
+    <% @servers.each do |server| %>
+      <li>
+        <%=
+          render(Servers::IndexResultComponent.new(
+            server: server,
+            period: @period,
+            country_code: @country_code,
+            server_stats_hash: @server_stats_hash[server.id]
+          ))
+        %>
+      </li>
+    <% end %>
+  <ul>
+<% else %>
+  Not Found
+<% end %>

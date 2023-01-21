@@ -1,18 +1,118 @@
-<div>
-  <div>
-    Image
-  </div>
-  <div>
-    <%= @server.name %><br>
-    rank badge
-  </div>
-  <div>
-    <%= @server.kind %><br>
-    <%= @server.site_url %><br>
-    <%= ShortUuid.from_uuid(@server.uuid) %><br>
-    <%= @server.description %><br>
-    <div class="prose">
-      <%= @server.info %>
+<div class="max-w-[750px] mb-5 mx-auto">
+  <% if @server.banner_image_url.present? %>
+    <%= image_tag(@server.banner_image_url, class: 'block mx-auto aspect-[5/1] w-full') %>
+  <% end %>
+
+  <div class=" bg-slate-100 p-2">
+    <div class="flex mb-2 items-stretch text-lg md:text-xl font-bold">
+      <div class="grow-0 flex items-center p-3 bg-indigo-500 text-slate-50">
+        <span>
+          <%= format_ranking_number(@server_stats_hash[@period].ranking_number) %>
+        </span>
+      </div>
+      <div class="flex-auto flex items-center p-2 bg-slate-300">
+        <span>
+          <%= @server.name %>
+        </span>
+      </div>
     </div>
+
+    <div class="text-left font-semibold p-2">
+      <%= @server.app.name %> (<%= @server.country_code %> <%= ISO3166::Country[@server.country_code].emoji_flag %>)
+    </div>
+
+    <% if @server.description.present? %>
+      <div class="text-left p-1 mb-2">
+        <%= @server.description %>
+      </div>
+    <% end %>
+
+    <div class="text-center bg-slate-200 mb-2">
+      <div class="uppercase font-medium bg-slate-300 p-2">
+        Rankings <span class="text-xs">(<%= @country_code %>)</span>
+      </div>
+      <div class="flex divide-x divide-slate-50 p-2">
+        <div class="text-center flex-auto">
+          <div class="p-1 <%= @period == ServerStat::YEAR ? 'border-4 border-dashed border-indigo-500' : '' %>">
+            <span class="text-sm">
+              Year
+            </span>
+            <br>
+            <span class="font-medium text-lg">
+              <%= format_ranking_number(@server_stats_hash[ServerStat::YEAR].ranking_number) %>
+            </span>
+          </div>
+        </div>
+        <div class="text-center flex-auto">
+          <div class="p-1 <%= @period == ServerStat::MONTH ? 'border-4 border-dashed border-indigo-500' : '' %>">
+            <span class="text-sm">
+              Month
+            </span>
+            <br>
+            <span class="font-medium text-lg">
+              <%= format_ranking_number(@server_stats_hash[ServerStat::MONTH].ranking_number) %>
+            </span>
+          </div>
+        </div>
+        <div class="text-center flex-auto">
+          <div class="p-1 <%= @period == ServerStat::WEEK ? 'border-4 border-dashed border-indigo-500' : '' %>">
+            <span class="text-sm">
+              Week
+            </span>
+            <br>
+            <span class="font-medium text-lg">
+              <%= format_ranking_number(@server_stats_hash[ServerStat::WEEK].ranking_number) %>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="text-center bg-slate-200 mb-2">
+      <div class="uppercase font-medium bg-slate-300 p-2">
+        Vote Count
+      </div>
+      <div class="flex divide-x divide-slate-50 p-2">
+        <div class="text-center p-1 flex-auto">
+          <div class="p-1 <%= @period == ServerStat::YEAR ? 'border-4 border-dashed border-indigo-500' : '' %>">
+            <span class="text-sm">
+              Year
+            </span>
+            <br>
+            <span class="font-medium text-lg">
+              <%= format_vote_count(@server_stats_hash[ServerStat::YEAR].vote_count) %>
+            </span>
+          </div>
+        </div>
+        <div class="text-center p-1 flex-auto">
+          <div class="p-1 <%= @period == ServerStat::MONTH ? 'border-4 border-dashed border-indigo-500' : '' %>">
+            <span class="text-sm">
+              Month
+            </span>
+            <br>
+            <span class="font-medium text-lg">
+              <%= format_vote_count(@server_stats_hash[ServerStat::MONTH].vote_count) %>
+            </span>
+          </div>
+        </div>
+        <div class="text-center p-1 flex-auto">
+          <div class="p-1 <%= @period == ServerStat::WEEK ? 'border-4 border-dashed border-indigo-500' : '' %>">
+            <span class="text-sm">
+              Week
+            </span>
+            <br>
+            <span class="font-medium text-lg">
+              <%= format_vote_count(@server_stats_hash[ServerStat::WEEK].vote_count) %>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="text-center p-1 mb-2">
+      <%= link_to("Vote Up", "#", class: 'btn btn-primary') %>
+      <%= link_to("More Info", server_path(suuid: ShortUuid.from_uuid(@server.uuid)), class: 'btn btn-secondary') %>
+    </div>
+
   </div>
 </div>
