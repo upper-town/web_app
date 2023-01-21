@@ -1,0 +1,102 @@
+# frozen_string_literal: true
+
+# == Schema Information
+#
+# Table name: server_stats
+#
+#  id                             :bigint           not null, primary key
+#  country_code                   :string           not null
+#  period                         :string           not null
+#  ranking_number                 :bigint
+#  ranking_number_consolidated_at :datetime
+#  reference_date                 :date             not null
+#  vote_count                     :bigint           default(0), not null
+#  vote_count_consolidated_at     :datetime
+#  created_at                     :datetime         not null
+#  updated_at                     :datetime         not null
+#  app_id                         :bigint           not null
+#  server_id                      :bigint           not null
+#
+# Indexes
+#
+#  index_server_stats_on_app_id                               (app_id)
+#  index_server_stats_on_country_code                         (country_code)
+#  index_server_stats_on_server_period_reference_country_app  (period,reference_date,server_id,app_id,country_code) UNIQUE
+#
+# Foreign Keys
+#
+#  fk_rails_...  (app_id => apps.id)
+#  fk_rails_...  (server_id => servers.id)
+#
+class ServerStat < ApplicationRecord
+  MIN_PAST_TIME = Time.iso8601('2022-01-01T00:00:00Z')
+
+  YEAR  = 'year'
+  MONTH = 'month'
+  WEEK  = 'week'
+  PERIODS = [YEAR, MONTH, WEEK].freeze
+
+  GLOBAL = 'global'
+  COUNTRY_CODES = [GLOBAL, *Server::COUNTRY_CODES].freeze
+
+  validates :period, inclusion: { in: PERIODS }
+  validates :country_code, inclusion: { in: COUNTRY_CODES }
+
+  belongs_to :server
+  belongs_to :app
+
+  def self.loop_through(period, past_time = MIN_PAST_TIME, current_time = nil)
+    past_time = MIN_PAST_TIME if past_time < MIN_PAST_TIME
+    current_time = Time.current if current_time.nil?
+
+    if past_time > current_time
+      raise 'Invalid past_time or current_time for ServerStart.loop_through'
+    end
+
+    past_time = past_time.beginning_of_day
+    current_time = current_time.end_of_day
+
+    while past_time <= current_time
+      reference_date = reference_date_for(period, past_time)
+      reference_range = reference_range_for(period, past_time)
+
+      yield reference_date, reference_range
+
+      past_time = next_time_for(period, past_time)
+    end
+  end
+
+  def self.next_time_for(period, current_time)
+    case period
+    when YEAR  then current_time.next_year
+    when MONTH then current_time.next_month
+    when WEEK  then current_time.next_week
+    else
+      raise 'Invalid period for ServerStart.next_time_for'
+    end
+  end
+
+  def self.reference_range_for(period, current_time)
+    time_utc = current_time.utc
+
+    case period
+    when YEAR  then time_utc.all_year
+    when MONTH then time_utc.all_month
+    when WEEK  then time_utc.all_week
+    else
+      raise 'Invalid period for ServerStat.reference_range_for'
+    end
+  end
+
+  def self.reference_date_for(period, current_time)
+    time_utc = current_time.utc
+
+    case period
+    when ServerStat::YEAR  then time_utc.end_of_year.to_date
+    when ServerStat::MONTH then time_utc.end_of_month.to_date
+    when ServerStat::WEEK  then time_utc.end_of_week.to_date
+    else
+      raise 'Invalid period for ServerStat.reference_date_for'
+    end
+  end
+end

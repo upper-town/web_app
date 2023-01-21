@@ -47,4 +47,6 @@ class User < ApplicationRecord
     :timeoutable,
     :trackable
   )
+
+  has_one :user_account, dependent: :destroy
 end

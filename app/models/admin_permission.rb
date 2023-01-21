@@ -6,7 +6,7 @@
 #
 #  id          :bigint           not null, primary key
 #  description :string           default(""), not null
-#  key         :string           default(""), not null
+#  key         :string           not null
 #  created_at  :datetime         not null
 #  updated_at  :datetime         not null
 #
@@ -16,7 +16,8 @@
 #
 class AdminPermission < ApplicationRecord
   has_many :admin_role_permissions, dependent: :destroy
-  has_many :roles, through: :admin_role_permissions, source: :admin_role
+
+  has_many :roles,       through: :admin_role_permissions, source: :admin_role
   has_many :admin_users, through: :roles
 
   validates :key, :description, presence: true
