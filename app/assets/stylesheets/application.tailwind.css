@@ -16,6 +16,15 @@
 @layer base {
   h1 { @apply font-bold text-4xl }
   h2 { @apply font-bold text-2xl }
+
+  a:not(.btn) {
+    @apply
+      text-indigo-600
+      visited:text-violet-500
+      hover:underline
+      active:bg-violet-100
+      cursor-pointer
+  }
 }
 
 @layer components {
@@ -28,21 +37,23 @@
       normal-case
       px-4
       py-2
-      rounded
+      rounded-md
+      shadow-md
+      shadow-gray-400
   }
   .btn-primary {
     @apply
-      bg-blue-500
-      focus:ring-blue-300
-      hover:bg-blue-700
-      text-white
+      bg-violet-500
+      focus:ring-violet-300
+      hover:bg-violet-700
+      text-violet-50
   }
   .btn-secondary {
     @apply
-      bg-gray-200
-      focus:ring-gray-400
-      hover:bg-gray-300
-      text-gray-600
+      bg-slate-200
+      focus:ring-slate-400
+      hover:bg-slate-300
+      text-slate-600
   }
   .btn-info {
     @apply
@@ -53,23 +64,23 @@
   }
   .btn-danger {
     @apply
-      bg-red-200
-      focus:ring-red-400
-      hover:bg-red-300
-      text-red-600
+      bg-red-500
+      focus:ring-red-300
+      hover:bg-red-600
+      text-red-50
   }
   .btn-warning {
     @apply
-      bg-orange-200
-      focus:ring-orange-400
-      hover:bg-orange-300
-      text-orange-600
+      bg-orange-500
+      focus:ring-orange-300
+      hover:bg-orange-600
+      text-orange-50
   }
   .btn-success {
     @apply
-      bg-green-200
+      bg-green-600
       focus:ring-green-400
-      hover:bg-green-300
-      text-green-600
+      hover:bg-green-700
+      text-green-50
   }
 }
