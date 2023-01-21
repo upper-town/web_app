@@ -51,8 +51,16 @@
 #                                   PATCH  /admin/admin_users/:id(.:format)        admin/admin_users#update
 #                                   PUT    /admin/admin_users/:id(.:format)        admin/admin_users#update
 #                                   DELETE /admin/admin_users/:id(.:format)        admin/admin_users#destroy
+#                     admin_servers GET    /admin/servers(.:format)                admin/servers#index
+#                                   POST   /admin/servers(.:format)                admin/servers#create
+#                  new_admin_server GET    /admin/servers/new(.:format)            admin/servers#new
+#                 edit_admin_server GET    /admin/servers/:id/edit(.:format)       admin/servers#edit
+#                      admin_server GET    /admin/servers/:id(.:format)            admin/servers#show
+#                                   PATCH  /admin/servers/:id(.:format)            admin/servers#update
+#                                   PUT    /admin/servers/:id(.:format)            admin/servers#update
+#                                   DELETE /admin/servers/:id(.:format)            admin/servers#destroy
 #                           servers GET    /servers(.:format)                      servers#index
-#                            server GET    /servers/:id(.:format)                  servers#show
+#                            server GET    /servers/:suuid(.:format)               servers#show
 #                       sidekiq_web        /admin/sidekiq                          Sidekiq::Web
 #  turbo_recede_historical_location GET    /recede_historical_location(.:format)   turbo/native/navigation#recede
 #  turbo_resume_historical_location GET    /resume_historical_location(.:format)   turbo/native/navigation#resume
@@ -88,9 +96,10 @@ Rails.application.routes.draw do
     resource :dashboard, only: [:show]
     resources :users, only: [:index, :show]
     resources :admin_users
+    resources :servers, only: [:index, :show, :new, :create, :edit, :update, :destroy]
   end
 
-  resources :servers, only: [:index, :show]
+  resources :servers, only: [:index, :show], param: :suuid
 
   # Sidekiq
 
