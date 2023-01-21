@@ -10,13 +10,13 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2022_11_24_021856) do
+ActiveRecord::Schema[7.1].define(version: 2023_01_20_102025) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
 
   create_table "admin_permissions", force: :cascade do |t|
-    t.string "key", default: "", null: false
+    t.string "key", null: false
     t.string "description", default: "", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -33,7 +33,7 @@ ActiveRecord::Schema[7.1].define(version: 2022_11_24_021856) do
   end
 
   create_table "admin_roles", force: :cascade do |t|
-    t.string "key", default: "", null: false
+    t.string "key", null: false
     t.string "description", default: "", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -75,29 +75,83 @@ ActiveRecord::Schema[7.1].define(version: 2022_11_24_021856) do
     t.index ["unlock_token"], name: "index_admin_users_on_unlock_token", unique: true
   end
 
-  create_table "server_votes", force: :cascade do |t|
-    t.bigint "server_id", null: false
+  create_table "apps", force: :cascade do |t|
     t.uuid "uuid", null: false
-    t.jsonb "metadata", default: {}, null: false
+    t.string "slug", null: false
+    t.string "name", null: false
+    t.string "kind", null: false
+    t.string "site_url", default: "", null: false
+    t.string "description", default: "", null: false
+    t.text "info", default: "", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["kind"], name: "index_apps_on_kind"
+    t.index ["name"], name: "index_apps_on_name", unique: true
+    t.index ["slug"], name: "index_apps_on_slug", unique: true
+    t.index ["uuid"], name: "index_apps_on_uuid", unique: true
+  end
+
+  create_table "server_stats", force: :cascade do |t|
+    t.bigint "server_id", null: false
+    t.bigint "app_id", null: false
+    t.string "country_code", null: false
+    t.string "period", null: false
+    t.date "reference_date", null: false
+    t.bigint "vote_count", default: 0, null: false
+    t.datetime "vote_count_consolidated_at"
+    t.bigint "ranking_number"
+    t.datetime "ranking_number_consolidated_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["app_id"], name: "index_server_stats_on_app_id"
+    t.index ["country_code"], name: "index_server_stats_on_country_code"
+    t.index ["period", "reference_date", "server_id", "app_id", "country_code"], name: "index_server_stats_on_server_period_reference_country_app", unique: true
+  end
+
+  create_table "server_votes", force: :cascade do |t|
+    t.uuid "uuid", null: false
+    t.jsonb "metadata", default: {}, null: false
+    t.bigint "user_account_id", null: false
+    t.bigint "server_id", null: false
+    t.bigint "app_id", null: false
+    t.string "country_code", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["app_id"], name: "index_server_votes_on_app_id"
+    t.index ["country_code"], name: "index_server_votes_on_country_code"
     t.index ["server_id"], name: "index_server_votes_on_server_id"
+    t.index ["user_account_id"], name: "index_server_votes_on_user_account_id"
     t.index ["uuid"], name: "index_server_votes_on_uuid", unique: true
   end
 
   create_table "servers", force: :cascade do |t|
     t.uuid "uuid", null: false
-    t.string "name", default: "", null: false
+    t.string "name", null: false
+    t.string "country_code", null: false
+    t.string "site_url", default: "", null: false
+    t.string "banner_image_url", default: "", null: false
     t.string "description", default: "", null: false
     t.text "info", default: "", null: false
-    t.string "site_url", default: "", null: false
-    t.string "kind", default: "", null: false
+    t.bigint "app_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["app_id"], name: "index_servers_on_app_id"
+    t.index ["country_code"], name: "index_servers_on_country_code"
+    t.index ["name", "app_id"], name: "index_servers_on_name_and_app_id", unique: true
     t.index ["uuid"], name: "index_servers_on_uuid", unique: true
   end
 
+  create_table "user_accounts", force: :cascade do |t|
+    t.uuid "uuid", null: false
+    t.bigint "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_user_accounts_on_user_id", unique: true
+    t.index ["uuid"], name: "index_user_accounts_on_uuid", unique: true
+  end
+
   create_table "users", force: :cascade do |t|
+    t.uuid "uuid", null: false
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
     t.string "reset_password_token"
@@ -117,7 +171,6 @@ ActiveRecord::Schema[7.1].define(version: 2022_11_24_021856) do
     t.datetime "locked_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.uuid "uuid", null: false
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
@@ -129,5 +182,11 @@ ActiveRecord::Schema[7.1].define(version: 2022_11_24_021856) do
   add_foreign_key "admin_role_permissions", "admin_roles"
   add_foreign_key "admin_user_roles", "admin_roles"
   add_foreign_key "admin_user_roles", "admin_users"
+  add_foreign_key "server_stats", "apps"
+  add_foreign_key "server_stats", "servers"
+  add_foreign_key "server_votes", "apps"
   add_foreign_key "server_votes", "servers"
+  add_foreign_key "server_votes", "user_accounts"
+  add_foreign_key "servers", "apps"
+  add_foreign_key "user_accounts", "users"
 end

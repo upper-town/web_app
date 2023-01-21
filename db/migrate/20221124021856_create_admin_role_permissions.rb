@@ -4,7 +4,7 @@ class CreateAdminRolePermissions < ActiveRecord::Migration[7.1]
   def change
     create_table :admin_role_permissions do |t|
       t.references :admin_role,       null: false, foreign_key: true, index: false
-      t.references :admin_permission, null: false, foreign_key: true
+      t.references :admin_permission, null: false, foreign_key: true, index: false
 
       t.timestamps
     end
@@ -15,5 +15,6 @@ class CreateAdminRolePermissions < ActiveRecord::Migration[7.1]
       unique: true,
       name: 'index_admin_role_permissions_on_role_and_permission'
     )
+    add_index :admin_role_permissions, :admin_permission_id
   end
 end
