@@ -11,7 +11,7 @@ class PagyComponent < ApplicationComponent
     @pagy = pagy
     @pagy_link_proc = pagy_link_proc
 
-    @page_prev_classes = token_list("
+    @page_prev_classes = token_list('
       bg-white
       border
       border-gray-300
@@ -28,12 +28,12 @@ class PagyComponent < ApplicationComponent
       py-2
       rounded-l-lg
       text-gray-500
-    ")
+    ')
     @page_prev_disabled_classes = token_list(
       @page_prev_classes,
-      "cursor-default"
+      'cursor-default'
     )
-    @page_next_classes = token_list("
+    @page_next_classes = token_list('
       bg-white
       border
       border-gray-300
@@ -49,13 +49,13 @@ class PagyComponent < ApplicationComponent
       py-2
       rounded-r-lg
       text-gray-500
-    ")
+    ')
     @page_next_disabled_classes = token_list(
       @page_next_classes,
-      "cursor-default"
+      'cursor-default'
     )
 
-    @page_classes = token_list("
+    @page_classes = token_list('
       bg-white
       border
       border-gray-300
@@ -70,8 +70,8 @@ class PagyComponent < ApplicationComponent
       px-3
       py-2
       text-gray-500
-    ")
-    @page_current_classes = token_list("
+    ')
+    @page_current_classes = token_list('
       bg-blue-50
       border
       border-gray-300
@@ -84,6 +84,6 @@ class PagyComponent < ApplicationComponent
       px-3
       py-2
       text-blue-600
-    ")
+    ')
   end
 end

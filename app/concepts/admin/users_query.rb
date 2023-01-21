@@ -1,8 +1,7 @@
+# frozen_string_literal: true
+
 module Admin
   class UsersQuery
-    def initialize
-    end
-
     def call
       User.all
     end
