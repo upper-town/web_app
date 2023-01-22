@@ -3,8 +3,6 @@
 class ServersController < ApplicationController
   include Pagy::Backend
 
-  class InvalidQueryParam < StandardError; end
-
   def index
     current_time = Time.current
 
@@ -17,7 +15,7 @@ class ServersController < ApplicationController
 
     @server_stats_hash = Servers::IndexStatsQuery.new(@servers.ids, @country_code, current_time).call
 
-  rescue Pagy::OverflowError, InvalidQueryParam
+  rescue Pagy::OverflowError, InvalidQueryParamError
     @servers = []
     @server_stats_hash = {}
 
@@ -32,17 +30,17 @@ class ServersController < ApplicationController
     elsif (app = App.find_by(uuid: ShortUuid.to_uuid(params['app_id'])))
       app
     else
-      raise InvalidQueryParam
+      raise InvalidQueryParamError
     end
   end
 
   def period_from_params
     if params['period'].blank?
-      ServerStat::YEAR
+      ServerStat::MONTH
     elsif ServerStat::PERIODS.include?(params['period'])
       params['period']
     else
-      raise InvalidQueryParam
+      raise InvalidQueryParamError
     end
   end
 
@@ -52,7 +50,7 @@ class ServersController < ApplicationController
     elsif ServerStat::COUNTRY_CODES.include?(params['country_code'])
       params['country_code']
     else
-      raise InvalidQueryParam
+      raise InvalidQueryParamError
     end
   end
 end
