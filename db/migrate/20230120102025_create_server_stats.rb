@@ -3,11 +3,11 @@
 class CreateServerStats < ActiveRecord::Migration[7.1]
   def change
     create_table :server_stats do |t|
-      t.references :server,         null: false, foreign_key: true, index: false
-      t.references :app,            null: false, foreign_key: true, index: false
-      t.string     :country_code,   null: false
       t.string     :period,         null: false # "year", "month", "week"
       t.date       :reference_date, null: false
+      t.references :app,            null: false, foreign_key: true, index: false
+      t.string     :country_code,   null: false
+      t.references :server,         null: false, foreign_key: true, index: false
 
       t.bigint   :vote_count,                 null: false, default: 0
       t.datetime :vote_count_consolidated_at, null: true
@@ -20,11 +20,10 @@ class CreateServerStats < ActiveRecord::Migration[7.1]
 
     add_index(
       :server_stats,
-      [:period, :reference_date, :server_id, :app_id, :country_code],
+      [:period, :reference_date, :app_id, :country_code, :server_id],
       unique: true,
-      name: 'index_server_stats_on_server_period_reference_country_app'
+      name: 'index_server_stats_on_period_reference_app_country_server'
     )
-    add_index :server_stats, :app_id
-    add_index :server_stats, :country_code
+    add_index :server_stats, :server_id
   end
 end

@@ -19,9 +19,8 @@
 #
 # Indexes
 #
-#  index_server_stats_on_app_id                               (app_id)
-#  index_server_stats_on_country_code                         (country_code)
-#  index_server_stats_on_server_period_reference_country_app  (period,reference_date,server_id,app_id,country_code) UNIQUE
+#  index_server_stats_on_period_reference_app_country_server  (period,reference_date,app_id,country_code,server_id) UNIQUE
+#  index_server_stats_on_server_id                            (server_id)
 #
 # Foreign Keys
 #

@@ -16,11 +16,11 @@
 #
 # Indexes
 #
-#  index_server_votes_on_app_id           (app_id)
-#  index_server_votes_on_country_code     (country_code)
-#  index_server_votes_on_server_id        (server_id)
-#  index_server_votes_on_user_account_id  (user_account_id)
-#  index_server_votes_on_uuid             (uuid) UNIQUE
+#  index_server_votes_on_app_id_and_country_code  (app_id,country_code)
+#  index_server_votes_on_created_at               (created_at)
+#  index_server_votes_on_server_id                (server_id)
+#  index_server_votes_on_user_account_id          (user_account_id)
+#  index_server_votes_on_uuid                     (uuid) UNIQUE
 #
 # Foreign Keys
 #

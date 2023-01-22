@@ -92,33 +92,32 @@ ActiveRecord::Schema[7.1].define(version: 2023_01_20_102025) do
   end
 
   create_table "server_stats", force: :cascade do |t|
-    t.bigint "server_id", null: false
-    t.bigint "app_id", null: false
-    t.string "country_code", null: false
     t.string "period", null: false
     t.date "reference_date", null: false
+    t.bigint "app_id", null: false
+    t.string "country_code", null: false
+    t.bigint "server_id", null: false
     t.bigint "vote_count", default: 0, null: false
     t.datetime "vote_count_consolidated_at"
     t.bigint "ranking_number"
     t.datetime "ranking_number_consolidated_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["app_id"], name: "index_server_stats_on_app_id"
-    t.index ["country_code"], name: "index_server_stats_on_country_code"
-    t.index ["period", "reference_date", "server_id", "app_id", "country_code"], name: "index_server_stats_on_server_period_reference_country_app", unique: true
+    t.index ["period", "reference_date", "app_id", "country_code", "server_id"], name: "index_server_stats_on_period_reference_app_country_server", unique: true
+    t.index ["server_id"], name: "index_server_stats_on_server_id"
   end
 
   create_table "server_votes", force: :cascade do |t|
     t.uuid "uuid", null: false
     t.jsonb "metadata", default: {}, null: false
     t.bigint "user_account_id", null: false
-    t.bigint "server_id", null: false
     t.bigint "app_id", null: false
     t.string "country_code", null: false
+    t.bigint "server_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["app_id"], name: "index_server_votes_on_app_id"
-    t.index ["country_code"], name: "index_server_votes_on_country_code"
+    t.index ["app_id", "country_code"], name: "index_server_votes_on_app_id_and_country_code"
+    t.index ["created_at"], name: "index_server_votes_on_created_at"
     t.index ["server_id"], name: "index_server_votes_on_server_id"
     t.index ["user_account_id"], name: "index_server_votes_on_user_account_id"
     t.index ["uuid"], name: "index_server_votes_on_uuid", unique: true

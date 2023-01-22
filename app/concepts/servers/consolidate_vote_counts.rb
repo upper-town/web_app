@@ -2,9 +2,8 @@
 
 module Servers
   class ConsolidateVoteCounts
-    def initialize(server, period)
+    def initialize(server)
       @server = server
-      @period = period
     end
 
     def process_all
@@ -23,44 +22,46 @@ module Servers
     private
 
     def process(past_time, current_time)
-      ServerStat.loop_through(@period, past_time, current_time) do |reference_date, reference_range|
-        upsert_country_server_stats(reference_date, reference_range)
-        upsert_global_server_stats(reference_date, reference_range)
+      ServerStat::PERIODS.each do |period|
+        ServerStat.loop_through(period, past_time, current_time) do |reference_date, reference_range|
+          upsert_country_server_stats(period, reference_date, reference_range)
+          upsert_global_server_stats(period, reference_date, reference_range)
+        end
       end
     end
 
-    def upsert_country_server_stats(reference_date, reference_range)
+    def upsert_country_server_stats(period, reference_date, reference_range)
       country_app_vote_counts = query_country_server_vote_counts(reference_range)
       consolidated_at = Time.current
 
-      server_stat_hashes = country_app_vote_counts.map do |(country_code, app_id), country_vote_count|
+      server_stat_hashes = country_app_vote_counts.map do |(app_id, country_code), country_vote_count|
         {
+          period: period,
           reference_date: reference_date,
-          country_code: country_code,
           app_id: app_id,
+          country_code: country_code,
+          server_id: @server.id,
           vote_count: country_vote_count,
           vote_count_consolidated_at: consolidated_at,
-          server_id: @server.id,
-          period: @period,
         }
       end
 
       server_stat_upsert_all(server_stat_hashes) if server_stat_hashes.any?
     end
 
-    def upsert_global_server_stats(reference_date, reference_range)
+    def upsert_global_server_stats(period, reference_date, reference_range)
       global_app_vote_counts = query_global_server_vote_counts(reference_range)
       consolidated_at = Time.current
 
       server_stat_hashes = global_app_vote_counts.map do |app_id, global_vote_count|
         {
+          period: period,
           reference_date: reference_date,
-          country_code: ServerStat::GLOBAL,
           app_id: app_id,
+          country_code: ServerStat::GLOBAL,
+          server_id: @server.id,
           vote_count: global_vote_count,
           vote_count_consolidated_at: consolidated_at,
-          server_id: @server.id,
-          period: @period,
         }
       end
 
@@ -74,9 +75,9 @@ module Servers
         unique_by: [
           :period,
           :reference_date,
-          :server_id,
           :app_id,
           :country_code,
+          :server_id,
         ]
       )
     end
@@ -86,7 +87,7 @@ module Servers
       ServerVote
         .where(server: @server)
         .where(created_at: reference_range)
-        .group(:country_code, :app_id)
+        .group(:app_id, :country_code)
         .count
     end
 

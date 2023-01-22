@@ -2,9 +2,8 @@
 
 module Servers
   class ConsolidateRankings
-    def initialize(app, period)
+    def initialize(app)
       @app = app
-      @period = period
     end
 
     def process_all
@@ -23,14 +22,16 @@ module Servers
     private
 
     def process(past_time, current_time)
-      ServerStat.loop_through(@period, past_time, current_time) do |reference_date, _|
-        upsert_server_stats(reference_date)
+      ServerStat::PERIODS.each do |period|
+        ServerStat.loop_through(period, past_time, current_time) do |reference_date, _|
+          upsert_server_stats(period, reference_date)
+        end
       end
     end
 
     # rubocop:disable Rails/SkipsModelValidations
-    def upsert_server_stats(reference_date)
-      ordered_grouped_server_stat_values = query_server_stat_values(reference_date)
+    def upsert_server_stats(period, reference_date)
+      ordered_grouped_server_stat_values = query_server_stat_values(period, reference_date)
       consolidated_at = Time.current
 
       ordered_grouped_server_stat_values.each do |_country_code, values|
@@ -46,9 +47,9 @@ module Servers
     end
     # rubocop:enable Rails/SkipsModelValidations
 
-    def query_server_stat_values(reference_date)
+    def query_server_stat_values(period, reference_date)
       ServerStat
-        .where(app: @app, period: @period, reference_date: reference_date)
+        .where(period: period, reference_date: reference_date, app: @app)
         .where.not(vote_count_consolidated_at: nil)
         .order(:country_code, vote_count: :desc)
         .pluck(:country_code, :id)

@@ -45,18 +45,20 @@ class SeedsDevelopment
   end
 
   def create_admin_users
-    admin_user_hashes = [
+    admin_user_hashes = 1.upto(10).map do |n|
+      {
+        email: "admin.user.#{n}@example.com",
+        encrypted_password: Devise::Encryptor.digest(User, 'testpass'),
+        confirmed_at: Time.current
+      }
+    end
+    admin_user_hashes.append(
       {
         email: 'super.admin.user@example.com',
         encrypted_password: Devise::Encryptor.digest(User, 'testpass'),
         confirmed_at: Time.current
-      },
-      {
-        email: 'some.admin.user@example.com',
-        encrypted_password: Devise::Encryptor.digest(User, 'testpass'),
-        confirmed_at: Time.current
       }
-    ]
+    )
     result = AdminUser.insert_all(admin_user_hashes)
 
     result.rows.flatten # admin_user_ids
@@ -204,17 +206,13 @@ class SeedsDevelopment
     selected_server_ids = server_ids.shuffle.drop(server_ids.size / 10)
 
     selected_server_ids.each do |server_id|
-      ServerStat::PERIODS.each do |period|
-        Servers::ConsolidateVoteCountsJob.new.perform(server_id, period, 'all')
-      end
+      Servers::ConsolidateVoteCountsJob.new.perform(server_id, 'all')
     end
   end
 
   def consolidate_server_ranking_numbers(app_ids)
     app_ids.each do |app_id|
-      ServerStat::PERIODS.each do |period|
-        Servers::ConsolidateRankingsJob.new.perform(app_id, period, 'all')
-      end
+      Servers::ConsolidateRankingsJob.new.perform(app_id, 'all')
     end
   end
 end

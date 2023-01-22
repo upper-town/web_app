@@ -12,9 +12,9 @@ module Servers
       scope = Server.where(id: @server_ids)
 
       scope = scope.joins(sql_left_join)
+      scope = scope.where(sql_conditions_period_reference_date)
       scope = scope.where(sql_conditions_app_id)
       scope = scope.where(sql_conditions_country_code)
-      scope = scope.where(sql_conditions_period_reference_date)
       scope = scope.select(sql_select_fields)
 
       build_server_stats_hash(scope)
@@ -51,6 +51,27 @@ module Servers
       SQL
     end
 
+    def sql_conditions_period_reference_date
+      conditions = ServerStat::PERIODS.map do |period|
+        <<-SQL.squish
+          (
+            "server_stats"."period" = #{quote_for_sql(period)} AND
+            "server_stats"."reference_date" = #{quote_for_sql(ServerStat.reference_date_for(period, @current_time))}
+          )
+        SQL
+      end
+      conditions.append(
+        <<-SQL.squish
+          (
+            "server_stats"."period" IS NULL AND
+            "server_stats"."reference_date" IS NULL
+          )
+        SQL
+      )
+
+      conditions.join(' OR ')
+    end
+
     def sql_conditions_app_id
       <<-SQL.squish
         (
@@ -76,27 +97,6 @@ module Servers
           )
         SQL
       end
-    end
-
-    def sql_conditions_period_reference_date
-      conditions = ServerStat::PERIODS.map do |period|
-        <<-SQL.squish
-          (
-            "server_stats"."period" = #{quote_for_sql(period)} AND
-            "server_stats"."reference_date" = #{quote_for_sql(ServerStat.reference_date_for(period, @current_time))}
-          )
-        SQL
-      end
-      conditions.push(
-        <<-SQL.squish
-          (
-            "server_stats"."period" IS NULL AND
-            "server_stats"."reference_date" IS NULL
-          )
-        SQL
-      )
-
-      conditions.join(' OR ')
     end
 
     def sql_select_fields

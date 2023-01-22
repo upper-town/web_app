@@ -15,9 +15,9 @@ module Servers
       scope = scope.where(country_code: @country_code) if Server::COUNTRY_CODES.include?(@country_code)
 
       scope = scope.joins(sql_left_join)
+      scope = scope.where(sql_conditions_period_reference_date)
       scope = scope.where(sql_conditions_app_id)
       scope = scope.where(sql_conditions_country_code)
-      scope = scope.where(sql_conditions_period_reference_date)
 
       scope.order(sql_order)
     end
@@ -28,6 +28,18 @@ module Servers
       <<-SQL.squish
         LEFT OUTER JOIN "server_stats" ON
           "server_stats"."server_id" = "servers"."id"
+      SQL
+    end
+
+    def sql_conditions_period_reference_date
+      <<-SQL.squish
+        (
+          "server_stats"."period" = #{quote_for_sql(@period)} AND
+          "server_stats"."reference_date" = #{quote_for_sql(ServerStat.reference_date_for(@period, @current_time))}
+        ) OR (
+          "server_stats"."period" IS NULL AND
+          "server_stats"."reference_date" IS NULL
+        )
       SQL
     end
 
@@ -56,18 +68,6 @@ module Servers
           )
         SQL
       end
-    end
-
-    def sql_conditions_period_reference_date
-      <<-SQL.squish
-        (
-          "server_stats"."period" = #{quote_for_sql(@period)} AND
-          "server_stats"."reference_date" = #{quote_for_sql(ServerStat.reference_date_for(@period, @current_time))}
-        ) OR (
-          "server_stats"."period" IS NULL AND
-          "server_stats"."reference_date" IS NULL
-        )
-      SQL
     end
 
     def sql_order

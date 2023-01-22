@@ -4,14 +4,14 @@ module Servers
   class ConsolidateVoteCountsJob
     include Sidekiq::Job
 
-    def perform(server_id, period, method)
+    def perform(server_id, method)
       server = Server.find(server_id)
 
       case method
       when 'all'
-        ConsolidateVoteCounts.new(server, period).process_all
+        ConsolidateVoteCounts.new(server).process_all
       when 'current'
-        ConsolidateVoteCounts.new(server, period).process_current
+        ConsolidateVoteCounts.new(server).process_current
       else
         raise 'Invalid method for Servers::ConsolidateVoteCountsJob'
       end
