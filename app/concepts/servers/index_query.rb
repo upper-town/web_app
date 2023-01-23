@@ -4,7 +4,7 @@ module Servers
   class IndexQuery
     def initialize(app = nil, period = nil, country_code = nil, current_time = nil)
       @app = app
-      @period = period || ServerStat::YEAR
+      @period = period || ServerStat::MONTH
       @country_code = country_code || ServerStat::GLOBAL
       @current_time = current_time || Time.current
     end

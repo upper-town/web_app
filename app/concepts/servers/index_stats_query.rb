@@ -35,6 +35,8 @@ module Servers
     def build_server_stats_hash(servers_joined_stats)
       servers_joined_stats.group_by(&:id).transform_values do |values|
         values.each_with_object(Hash.new { ServerStat.new }) do |server_joined_stat, hash|
+          next if server_joined_stat.stat_period.nil?
+
           hash[server_joined_stat.stat_period] = ServerStat.new(
             period:         server_joined_stat.stat_period,
             ranking_number: server_joined_stat.stat_ranking_number,
