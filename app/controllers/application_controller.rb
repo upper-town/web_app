@@ -14,4 +14,8 @@ class ApplicationController < ActionController::Base
       super
     end
   end
+
+  def current_user_account
+    @_current_user_account ||= current_user && current_user.account
+  end
 end
