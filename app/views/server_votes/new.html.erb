@@ -1,0 +1,6 @@
+<h2>Vote for you server!</h2>
+
+<%= form_with(model: @server_vote) do |f| %>
+  <%= f.hidden_field(:reference_id, value: @reference_id) %>
+  <%= f.submit('Click to vote!', class: 'btn btn-primary') %>
+<% end %>
