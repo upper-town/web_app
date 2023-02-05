@@ -28,6 +28,8 @@
 #  fk_rails_...  (app_id => apps.id)
 #
 class Server < ApplicationRecord
+  include ShortUuidForModel
+
   COUNTRY_CODES = ISO3166::Country.codes
 
   validates :country_code, inclusion: { in: COUNTRY_CODES }

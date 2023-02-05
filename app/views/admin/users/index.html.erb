@@ -8,7 +8,7 @@
       columns: [
         ['ID',      :id],
         ['email',   :email],
-        ['SUUID',   proc { |user| ShortUuid.from_uuid(user.uuid) }],
+        ['SUUID',   proc { |user| user.suuid }],
         ['Actions', proc { |user| render(partial: 'edit_actions_index', locals: { user: user }) }],
       ],
     ))

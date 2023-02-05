@@ -23,6 +23,8 @@
 #  index_apps_on_uuid  (uuid) UNIQUE
 #
 class App < ApplicationRecord
+  include ShortUuidForModel
+
   GAME = 'game'
   KINDS = [GAME].freeze
 
