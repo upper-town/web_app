@@ -48,5 +48,5 @@ class User < ApplicationRecord
     :trackable
   )
 
-  has_one :user_account, dependent: :destroy
+  has_one :account, class_name: 'UserAccount', dependent: :destroy
 end

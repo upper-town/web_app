@@ -7,12 +7,14 @@
 #  id              :bigint           not null, primary key
 #  country_code    :string           not null
 #  metadata        :jsonb            not null
+#  remote_ip       :string           default(""), not null
 #  uuid            :uuid             not null
 #  created_at      :datetime         not null
 #  updated_at      :datetime         not null
 #  app_id          :bigint           not null
+#  reference_id    :string           default(""), not null
 #  server_id       :bigint           not null
-#  user_account_id :bigint           not null
+#  user_account_id :bigint
 #
 # Indexes
 #
@@ -31,7 +33,7 @@
 class ServerVote < ApplicationRecord
   validates :country_code, inclusion: { in: Server::COUNTRY_CODES }
 
-  belongs_to :user_account
   belongs_to :server
   belongs_to :app
+  belongs_to :user_account, optional: true
 end

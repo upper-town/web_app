@@ -110,7 +110,9 @@ ActiveRecord::Schema[7.1].define(version: 2023_01_20_102025) do
   create_table "server_votes", force: :cascade do |t|
     t.uuid "uuid", null: false
     t.jsonb "metadata", default: {}, null: false
-    t.bigint "user_account_id", null: false
+    t.string "reference_id", default: "", null: false
+    t.string "remote_ip", default: "", null: false
+    t.bigint "user_account_id"
     t.bigint "app_id", null: false
     t.string "country_code", null: false
     t.bigint "server_id", null: false
