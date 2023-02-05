@@ -1,4 +1,23 @@
-hello_world_job:
-  cron: "*/1 * * * *"
-  class: HelloWorldJob
+servers_consolidate_vote_counts_scheduler_job_current:
+  cron: "0 1 * * *"
+  class: Servers::ConsolidateVoteCountsSchedulerJob
+  args: ["current"]
+  queue: default
+
+servers_consolidate_rankings_scheduler_job_current:
+  cron: "0 2 * * *"
+  class: Servers::ConsolidateRankingsSchedulerJob
+  args: ["current"]
+  queue: default
+
+servers_consolidate_vote_counts_scheduler_job_all:
+  cron: "0 1 1 * *"
+  class: Servers::ConsolidateVoteCountsSchedulerJob
+  args: ["all"]
+  queue: default
+
+servers_consolidate_rankings_scheduler_job_all:
+  cron: "0 2 1 * *"
+  class: Servers::ConsolidateRankingsSchedulerJob
+  args: ["all"]
   queue: default
