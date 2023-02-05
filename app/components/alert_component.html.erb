@@ -4,7 +4,7 @@
       <p class="font-bold"><%= @subject %></p>
     <% end %>
 
-    <% if content? %>
+    <% if content.present? %>
       <%= content %>
     <% end %>
 

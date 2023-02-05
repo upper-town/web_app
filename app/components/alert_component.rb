@@ -33,7 +33,7 @@ class AlertComponent < ApplicationComponent
   end
 
   def render?
-    @subject.present? || content?
+    @subject.present? || content.present?
   end
 
   private
