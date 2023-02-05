@@ -23,10 +23,9 @@ class EmailValidator
     /\.(test|example|invalid|localhost)\z/
   ].freeze
 
-  DISPOSABLE_EMAIL_DOMAINS_LIST = File.readlines(
-    Rails.root.join('vendor/disposable_email_domains/list.txt'),
-    chomp: true
-  )
+  DISPOSABLE_EMAIL_DOMAINS_LIST = Rails.root.join(
+    'vendor/disposable_email_domains/list.txt'
+  ).readlines(chomp: true)
 
   def initialize(email)
     @email = email.to_s
