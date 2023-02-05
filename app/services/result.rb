@@ -6,6 +6,7 @@ class Result
   GENERIC_ERROR = 'An error has occurred'
 
   attr_reader :errors, :attributes
+  alias data attributes
 
   def self.success(attributes = {})
     new(nil, attributes)
