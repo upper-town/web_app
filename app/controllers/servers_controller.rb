@@ -22,6 +22,10 @@ class ServersController < ApplicationController
     render(status: :not_found)
   end
 
+  def show
+    @server = server_from_params
+  end
+
   private
 
   def app_from_params
@@ -52,5 +56,9 @@ class ServersController < ApplicationController
     else
       raise InvalidQueryParamError
     end
+  end
+
+  def server_from_params
+    Server.find_by_suuid!(params['suuid'])
   end
 end
