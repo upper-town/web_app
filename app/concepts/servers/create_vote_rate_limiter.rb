@@ -9,7 +9,7 @@ module Servers
       @server_id = server_id
       @remote_ip = remote_ip
 
-      @key = "scv:#{@server_id}:#{@remote_ip}" # scv: Servers Create Vote
+      @key = "sv:#{@server_id}:#{@remote_ip}" # sv: ServerVote
       @redis_client = RateLimiting.build_redis_client
     end
 
