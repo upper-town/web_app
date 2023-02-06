@@ -64,7 +64,7 @@
 #                   new_server_vote GET    /servers/:server_suuid/votes/new(.:format) server_votes#new
 #                           servers GET    /servers(.:format)                         servers#index
 #                            server GET    /servers/:suuid(.:format)                  servers#show
-#                       server_vote GET    /server_votes/:id(.:format)                server_votes#show
+#                       server_vote GET    /server_votes/:suuid(.:format)             server_votes#show
 #                       sidekiq_web        /admin/sidekiq                             Sidekiq::Web
 #  turbo_recede_historical_location GET    /recede_historical_location(.:format)      turbo/native/navigation#recede
 #  turbo_resume_historical_location GET    /resume_historical_location(.:format)      turbo/native/navigation#resume
