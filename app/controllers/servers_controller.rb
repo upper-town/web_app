@@ -31,7 +31,7 @@ class ServersController < ApplicationController
   def app_from_params
     if params['app_id'].blank? || !ShortUuid.valid?(params['app_id'])
       nil
-    elsif (app = App.find_by(uuid: ShortUuid.to_uuid(params['app_id'])))
+    elsif (app = App.find_by_suuid(params['app_id']))
       app
     else
       raise InvalidQueryParamError
