@@ -2,9 +2,9 @@
 
 module Servers
   class CreateVote
-    def initialize(server, from_attributes, request, user_account = nil)
+    def initialize(server, form_attributes, request, user_account = nil)
       @server = server
-      @from_attributes = from_attributes
+      @form_attributes = form_attributes
       @request = request
       @user_account = user_account
 
@@ -16,7 +16,7 @@ module Servers
       return result if result.failure?
 
       server_vote = build_server_vote
-      server_vote.assign_attributes(@from_attributes)
+      server_vote.assign_attributes(@form_attributes)
 
       if server_vote.invalid?
         @rate_limiter.uncall
