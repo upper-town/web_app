@@ -1,6 +1,19 @@
+<% content_for(:head) do %>
+  <%= @captcha.script_tag %>
+<% end %>
+
 <h2>Vote for you server!</h2>
 
-<%= form_with(model: @server_vote) do |f| %>
+<%= form_with(model: @new_form, url: @new_form.url(@server), method: @new_form.method) do |f| %>
+  <%= @captcha.widget_tag %>
+
   <%= f.hidden_field(:reference_id, value: @reference_id) %>
+
+  <% if @new_form.errors.include?(:reference_id) %>
+    <div class="">
+      <code>reference_id</code> <%= @new_form.errors[:reference_id].to_sentence %>
+    </div>
+  <% end %>
+
   <%= f.submit('Click to vote!', class: 'btn btn-primary') %>
 <% end %>
