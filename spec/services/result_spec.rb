@@ -12,6 +12,7 @@ RSpec.describe Result do
 
       expect(result.attributes).to be_empty
       expect(result.attributes).to be_a(Hash)
+      expect(result.attributes.object_id).to eq(result.data.object_id)
     end
 
     describe 'setting errors' do
