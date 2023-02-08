@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
 class ApplicationMailer < ActionMailer::Base
-  default from: 'noreplay@etherblade.city'
+  default from: ENV.fetch('NOREPLY_EMAIL')
   layout 'mailer'
 end
