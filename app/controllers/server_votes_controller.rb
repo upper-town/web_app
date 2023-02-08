@@ -9,19 +9,19 @@ class ServerVotesController < ApplicationController
 
   def new
     @server = server_from_params
-    @server_vote = ServerVote.new
     @reference_id = reference_id_from_params
+    @captcha = Captcha.new
+    @new_form = ServerVotes::NewForm.new
   end
 
   def create
     @server = server_from_params
-    @server_vote = ServerVote.new
-    @reference_id = server_vote_params_for_new['reference_id']
+    @reference_id = server_votes_new_form_params['reference_id']
+    @captcha = Captcha.new
+    @new_form = ServerVotes::NewForm.new(server_votes_new_form_params)
 
-    form = ServerVotes::NewForm.new(server_vote_params_for_new)
-
-    if form.valid?
-      result = Servers::CreateVote.new(@server, form.attributes, request, current_user_account).call
+    if @new_form.valid?
+      result = Servers::CreateVote.new(@server, @new_form.attributes, @captcha, request, current_user_account).call
 
       if result.success?
         flash[:success] = 'Your vote has been saved!'
@@ -31,7 +31,7 @@ class ServerVotesController < ApplicationController
         render(:new, status: :unprocessable_entity)
       end
     else
-      flash.now[:alert] = form.errors.full_messages
+      flash.now[:alert] = 'Form contains errors'
       render(:new, status: :unprocessable_entity)
     end
   end
@@ -50,7 +50,7 @@ class ServerVotesController < ApplicationController
     params['reference_id'].presence
   end
 
-  def server_vote_params_for_new
-    params.require('server_vote').permit('reference_id')
+  def server_votes_new_form_params
+    params.require('server_votes_new_form').permit('reference_id')
   end
 end
