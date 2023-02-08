@@ -2,9 +2,10 @@
 
 module Servers
   class CreateVote
-    def initialize(server, form_attributes, request, user_account = nil)
+    def initialize(server, form_attributes, captcha, request, user_account = nil)
       @server = server
       @form_attributes = form_attributes
+      @captcha = captcha
       @request = request
       @user_account = user_account
 
@@ -12,6 +13,9 @@ module Servers
     end
 
     def call
+      result = @captcha.call(@request)
+      return result if result.failure?
+
       result = @rate_limiter.call
       return result if result.failure?
 
