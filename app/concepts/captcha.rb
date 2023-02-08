@@ -7,6 +7,7 @@ class Captcha
   SITE_KEY   = ENV.fetch('H_CAPTCHA_SITE_KEY')
   SECRET_KEY = ENV.fetch('H_CAPTCHA_SECRET_KEY')
 
+  # rubocop:disable Rails/OutputSafety
   def script_tag
     <<~HTML.html_safe
       <script type="text/javascript">
@@ -30,6 +31,7 @@ class Captcha
       ></div>
     HTML
   end
+  # rubocop:enable Rails/OutputSafety
 
   def call(request)
     captcha_response, remote_ip = extract_values(request)

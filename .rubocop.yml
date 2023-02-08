@@ -83,6 +83,8 @@ Rails/ActionOrder:
   Enabled: false
 Rails/DynamicFindBy:
   Enabled: false
+Rails/I18nLocaleTexts:
+  Enabled: false
 
 RSpec/BeEq:
   Enabled: false
