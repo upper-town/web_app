@@ -3,7 +3,6 @@
 module Servers
   class ConsolidateVoteCountsJob
     include Sidekiq::Job
-    sidekiq_options queue: 'critical'
 
     def perform(server_id, method, schedule_consolidate_rankings_job = false)
       server = Server.find(server_id)
@@ -18,7 +17,7 @@ module Servers
       end
 
       if schedule_consolidate_rankings_job
-        ConsolidateRankingsJob.perform_async(server.app_id, method)
+        ConsolidateRankingsJob.set(queue: 'critical').perform_async(server.app_id, method)
       end
     end
   end

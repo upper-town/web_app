@@ -49,7 +49,7 @@ module Servers
     end
 
     def schedule_jobs(server_vote)
-      ConsolidateVoteCountsJob.perform_async(server_vote.server_id, 'current', true)
+      ConsolidateVoteCountsJob.set(queue: 'critical').perform_async(server_vote.server_id, 'current', true)
     end
   end
 end
