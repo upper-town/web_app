@@ -6,7 +6,7 @@ class EmailValidator
   PATTERN = %r{
     \A
       (?<user>
-        [a-z0-9] [a-z0-9._]{,50}
+        [a-z0-9] [a-z0-9._-]{,50}
       )
       @
       (?<host>
@@ -18,9 +18,22 @@ class EmailValidator
     \z
   }xi
 
-  RESERVED_DOMAIN_PATTERNS = [
-    /[@.]example\.(com|net|org)/,
-    /\.(test|example|invalid|localhost)\z/
+  RESERVED_NAMES = %w[
+    corp
+    domain
+    example
+    home
+    host
+    internal
+    intranet
+    invalid
+    lan
+    local
+    localdomain
+    localhost
+    onion
+    private
+    test
   ].freeze
 
   DISPOSABLE_EMAIL_DOMAINS_LIST = Rails.root.join(
@@ -56,12 +69,31 @@ class EmailValidator
   end
 
   def match_reserved_domain?
-    RESERVED_DOMAIN_PATTERNS.any? { |pattern| pattern.match?(@email) }
+    match_data = @email.match(PATTERN)
+
+    match_data.present? && host_has_reserved_name?(match_data[:host])
   end
 
   def match_disposable_email_domains?
     match_data = @email.match(PATTERN)
 
-    match_data.present? && DISPOSABLE_EMAIL_DOMAINS_LIST.include?(match_data[:host])
+    match_data.present? && host_is_disposable_email_domain?(match_data[:host])
+  end
+
+  def host_has_reserved_name?(host)
+    parts = host.split('.')
+
+    case parts.size
+    when 2, 3
+      parts.any? { |part| RESERVED_NAMES.include?(part) }
+    when 4
+      parts.drop(1).any? { |part| RESERVED_NAMES.include?(part) }
+    else
+      false
+    end
+  end
+
+  def host_is_disposable_email_domain?(host)
+    DISPOSABLE_EMAIL_DOMAINS_LIST.include?(host)
   end
 end
