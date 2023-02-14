@@ -7,6 +7,14 @@ module Servers
       @server_stats_hash = server_stats_hash
       @period = period
       @country_code = country_code
+
+      @server_country_code_emoji_flag = ISO3166::Country.new(@server.country_code).emoji_flag
+      @ranking_country_code_emoji_flag =
+        if @country_code == 'global'
+          ServerStat::GLOBAL_EMOJI_FLAG
+        else
+          ISO3166::Country.new(@country_code).emoji_flag
+        end
     end
 
     def render?

@@ -18,7 +18,7 @@
     </div>
 
     <div class="text-left font-semibold p-2">
-      <%= @server.app.name %> (<%= @server.country_code %> <%= ISO3166::Country[@server.country_code].emoji_flag %>)
+      <%= @server.app.name %> (<%= @server_country_code_emoji_flag %> <%= @server.country_code %>)
     </div>
 
     <% if @server.description.present? %>
@@ -29,7 +29,7 @@
 
     <div class="text-center bg-slate-200 mb-2">
       <div class="uppercase font-medium bg-slate-300 p-2">
-        Rankings <span class="text-xs">(<%= @country_code %>)</span>
+        Rankings <span class="text-xs">(<%= @ranking_country_code_emoji_flag  %> <%= @country_code %>)</span>
       </div>
       <div class="flex divide-x divide-slate-50 p-2">
         <div class="text-center flex-auto">
