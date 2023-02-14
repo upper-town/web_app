@@ -6,6 +6,9 @@ class ServersController < ApplicationController
   DEFAULT_APP_OPTION = ['All', nil].freeze
   DEFAULT_COUNTRY_CODE_OPTION = ["#{ServerStat::GLOBAL_EMOJI_FLAG} Global", ServerStat::GLOBAL].freeze
 
+  APP_OPTIONS_CACHE_KEY = 'servers#index:app_options'
+  COUNTRY_CODE_OPTIONS_CACHE_KEY = 'servers#index:country_code_options'
+
   def index
     current_time = Time.current
 
@@ -77,11 +80,13 @@ class ServersController < ApplicationController
   end
 
   def build_app_options
-    app_options_by_kind = App::KIND_OPTIONS.each_with_object({}) do |(kind_name, kind), hash|
-      hash[kind_name] = apps_query(kind)
-    end
+    Rails.cache.fetch(APP_OPTIONS_CACHE_KEY, expires_in: 5.minutes) do
+      app_options_by_kind = App::KIND_OPTIONS.each_with_object({}) do |(kind_name, kind), hash|
+        hash[kind_name] = apps_query(kind)
+      end
 
-    app_options_by_kind.compact_blank
+      app_options_by_kind.compact_blank
+    end
   end
 
   def build_period_options
@@ -89,14 +94,16 @@ class ServersController < ApplicationController
   end
 
   def build_country_code_options
-    most_common_country_codes, rest_country_codes = most_common_country_codes_query(3)
+    Rails.cache.fetch(COUNTRY_CODE_OPTIONS_CACHE_KEY, expires_in: 5.minutes) do
+      most_common_country_codes, rest_country_codes = most_common_country_codes_query(3)
 
-    most_common_options = most_common_country_codes.map { |cc| build_country_code_option(cc) }
-    more_options = rest_country_codes.sort.map { |cc| build_country_code_option(cc) }
+      most_common_options = most_common_country_codes.map { |cc| build_country_code_option(cc) }
+      more_options = rest_country_codes.sort.map { |cc| build_country_code_option(cc) }
 
-    {
-      'Country' => most_common_options + more_options,
-    }.compact_blank
+      {
+        'Country' => most_common_options + more_options,
+      }.compact_blank
+    end
   end
 
   def build_country_code_option(country_code)
