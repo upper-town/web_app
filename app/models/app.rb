@@ -27,6 +27,9 @@ class App < ApplicationRecord
 
   GAME = 'game'
   KINDS = [GAME].freeze
+  KIND_OPTIONS = [
+    ['Game', GAME],
+  ].freeze
 
   validates :kind, inclusion: { in: KINDS }
 
