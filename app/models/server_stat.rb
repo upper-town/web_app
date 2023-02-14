@@ -34,8 +34,14 @@ class ServerStat < ApplicationRecord
   MONTH = 'month'
   WEEK  = 'week'
   PERIODS = [YEAR, MONTH, WEEK].freeze
+  PERIOD_OPTIONS = [
+    ['Year',  YEAR],
+    ['Month', MONTH],
+    ['Week',  WEEK]
+  ].freeze
 
   GLOBAL = 'global'
+  GLOBAL_EMOJI_FLAG = '🌐'
   COUNTRY_CODES = [GLOBAL, *Server::COUNTRY_CODES].freeze
 
   validates :period, inclusion: { in: PERIODS }
