@@ -9,10 +9,10 @@
     ) do |form| %>
       <%=
         form.select(
-          :app_id,
+          :app,
           (
-            options_for_select([@default_app_option], @selected_value_for_app_id) +
-            grouped_options_for_select(@app_options, @selected_value_for_app_id)
+            options_for_select([@default_app_option], @selected_value_for_app) +
+            grouped_options_for_select(@app_options, @selected_value_for_app)
           ),
           {},
           { class: 'block w-full' }
@@ -29,10 +29,10 @@
         %>
         <%=
           form.select(
-            :country_code,
+            :country,
             (
-              options_for_select([@default_country_code_option], @selected_value_for_country_code) +
-              grouped_options_for_select(@country_code_options, @selected_value_for_country_code)
+              options_for_select([@default_country_code_option], @selected_value_for_country) +
+              grouped_options_for_select(@country_code_options, @selected_value_for_country)
             ),
             {},
             { class: 'block grow md:w-2/3' }

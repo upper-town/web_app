@@ -23,9 +23,9 @@ class ServersController < ApplicationController
     @period = period_from_params
     @country_code = country_code_from_params
 
-    @selected_value_for_app_id = @app.nil? ? DEFAULT_APP_OPTION[1] : @app.suuid
+    @selected_value_for_app = @app.nil? ? DEFAULT_APP_OPTION[1] : @app.suuid
     @selected_value_for_period = @period
-    @selected_value_for_country_code = @country_code
+    @selected_value_for_country = @country_code
 
     @pagy, @servers = pagy(
       Servers::IndexQuery.new(@app, @period, @country_code, current_time).call,
@@ -33,7 +33,6 @@ class ServersController < ApplicationController
       items: 20
     )
     @servers.load
-
     @server_stats_hash = Servers::IndexStatsQuery.new(@servers.ids, @country_code, current_time).call
 
   rescue Pagy::OverflowError, InvalidQueryParamError
@@ -50,9 +49,9 @@ class ServersController < ApplicationController
   private
 
   def app_from_params
-    if params['app_id'].blank? || !ShortUuid.valid?(params['app_id'])
+    if params['app'].blank? || !ShortUuid.valid?(params['app'])
       nil
-    elsif (app = App.find_by_suuid(params['app_id']))
+    elsif (app = App.find_by_suuid(params['app']))
       app
     else
       raise InvalidQueryParamError
@@ -70,10 +69,10 @@ class ServersController < ApplicationController
   end
 
   def country_code_from_params
-    if params['country_code'].blank?
+    if params['country'].blank?
       ServerStat::GLOBAL
-    elsif ServerStat::COUNTRY_CODES.include?(params['country_code'])
-      params['country_code']
+    elsif ServerStat::COUNTRY_CODES.include?(params['country'])
+      params['country']
     else
       raise InvalidQueryParamError
     end
