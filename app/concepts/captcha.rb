@@ -15,7 +15,7 @@ class Captcha
           window.dispatchEvent(new CustomEvent("custom-captcha-onload"));
         }
       </script>
-      <script src="https://js.hcaptcha.com/1/api.js?onload=captchaOnload&render=explicit" async defer></script>
+      <script src="https://js.hcaptcha.com/1/api.js?onload=captchaOnload&render=explicit&hl=en" async defer></script>
     HTML
   end
 
