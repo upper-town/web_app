@@ -7,83 +7,57 @@ class PagyComponent < ApplicationComponent
     @pagy.present? && @pagy_link_proc.present?
   end
 
-  def initialize(pagy:, pagy_link_proc:)
+  def initialize(pagy:, pagy_link_proc:, hidden_gap: false)
     @pagy = pagy
     @pagy_link_proc = pagy_link_proc
+    @hidden_gap = hidden_gap
 
-    @page_prev_classes = token_list('
-      bg-white
-      border
-      border-gray-300
-      dark:bg-gray-800
-      dark:border-gray-700
-      dark:hover:bg-gray-700
-      dark:hover:text-white
-      dark:text-gray-400
-      hover:bg-gray-100
-      hover:text-gray-700
-      leading-tight
-      ml-0
-      px-3
-      py-2
-      rounded-l-lg
-      text-gray-500
+    @page_nav_classes = token_list('
+      my-2
     ')
-    @page_prev_disabled_classes = token_list(
-      @page_prev_classes,
-      'cursor-default'
-    )
-    @page_next_classes = token_list('
-      bg-white
-      border
-      border-gray-300
-      dark:bg-gray-800
-      dark:border-gray-700
-      dark:hover:bg-gray-700
-      dark:hover:text-white
-      dark:text-gray-400
-      hover:bg-gray-100
-      hover:text-gray-700
-      leading-tight
-      px-3
-      py-2
-      rounded-r-lg
-      text-gray-500
+
+    @page_prev_enabled_classes = token_list('
+      mx-0.5
+      btn
+      btn-secondary
     ')
-    @page_next_disabled_classes = token_list(
-      @page_next_classes,
-      'cursor-default'
-    )
+    @page_prev_disabled_classes = token_list('
+      mx-0.5
+      btn
+      btn-secondary--disabled
+    ')
+
+    @page_next_enabled_classes = token_list('
+      mx-0.5
+      btn
+      btn-secondary
+    ')
+    @page_next_disabled_classes = token_list('
+      mx-0.5
+      btn
+      btn-secondary--disabled
+    ')
+
+    @page_gap_classes =
+      if @hidden_gap
+        'hidden'
+      else
+        token_list('
+          mx-0.5
+          btn
+          btn-secondary--disabled
+        ')
+      end
 
     @page_classes = token_list('
-      bg-white
-      border
-      border-gray-300
-      dark:bg-gray-800
-      dark:border-gray-700
-      dark:hover:bg-gray-700
-      dark:hover:text-white
-      dark:text-gray-400
-      hover:bg-gray-100
-      hover:text-gray-700
-      leading-tight
-      px-3
-      py-2
-      text-gray-500
+      mx-0.5
+      btn
+      btn btn-secondary
     ')
     @page_current_classes = token_list('
-      bg-blue-50
-      border
-      border-gray-300
-      cursor-default
-      dark:bg-gray-700
-      dark:border-gray-700
-      dark:text-white
-      hover:bg-blue-100
-      hover:text-blue-700
-      px-3
-      py-2
-      text-blue-600
+      mx-0.5
+      btn
+      btn-secondary--disabled
     ')
   end
 end

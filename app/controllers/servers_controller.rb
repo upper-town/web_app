@@ -27,7 +27,11 @@ class ServersController < ApplicationController
     @selected_value_for_period = @period
     @selected_value_for_country_code = @country_code
 
-    @pagy, @servers = pagy(Servers::IndexQuery.new(@app, @period, @country_code, current_time).call)
+    @pagy, @servers = pagy(
+      Servers::IndexQuery.new(@app, @period, @country_code, current_time).call,
+      size: [0, 0, 0, 0],
+      items: 20
+    )
     @servers.load
 
     @server_stats_hash = Servers::IndexStatsQuery.new(@servers.ids, @country_code, current_time).call
