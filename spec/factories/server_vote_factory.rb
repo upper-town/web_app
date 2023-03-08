@@ -32,7 +32,10 @@
 #
 FactoryBot.define do
   factory :server_vote do
-    uuid { SecureRandom.uuid }
     server
+    app
+
+    uuid { SecureRandom.uuid }
+    country_code { 'US' }
   end
 end

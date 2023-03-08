@@ -29,7 +29,10 @@
 #
 FactoryBot.define do
   factory :server do
+    app
+
     uuid { SecureRandom.uuid }
+    country_code { 'US' }
     sequence(:name) { |n| "Server #{n}" }
     sequence(:site_url) { |n| "https://server-#{n}.example.com/" }
   end
