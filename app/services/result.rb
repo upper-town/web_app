@@ -5,24 +5,25 @@ class Result
 
   GENERIC_ERROR = 'An error has occurred'
 
-  attr_reader :errors, :attributes
-  alias data attributes
+  attr_reader :errors
+  attr_reader :data
+  alias attributes data
 
-  def self.success(attributes = {})
-    new(nil, attributes)
+  def self.success(data = {})
+    new(nil, data)
   end
 
-  def self.failure(error_values = GENERIC_ERROR, attributes = {})
+  def self.failure(error_values = GENERIC_ERROR, data = {})
     # Ensure errors presence when creating a Result by calling .failure
     error_values = error_values.compact_blank if error_values.is_a?(Array) || error_values.is_a?(Hash)
     error_values = GENERIC_ERROR if error_values.blank?
 
-    new(error_values, attributes)
+    new(error_values, data)
   end
 
-  def initialize(error_values = {}, attributes = {})
+  def initialize(error_values = {}, data = {})
     @errors = ActiveModel::Errors.new(self)
-    @attributes = attributes.with_indifferent_access
+    @data = data.with_indifferent_access
 
     add_errors(error_values)
   end

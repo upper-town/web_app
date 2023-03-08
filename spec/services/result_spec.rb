@@ -4,15 +4,15 @@ require 'rails_helper'
 
 RSpec.describe Result do
   describe '#initialize' do
-    it 'has default values for errors and attributes' do
+    it 'has default values for errors and data' do
       result = described_class.new
 
       expect(result.errors).to be_empty
       expect(result.errors).to be_a(ActiveModel::Errors)
 
-      expect(result.attributes).to be_empty
-      expect(result.attributes).to be_a(Hash)
-      expect(result.attributes.object_id).to eq(result.data.object_id)
+      expect(result.data).to be_empty
+      expect(result.data).to be_a(Hash)
+      expect(result.data.object_id).to eq(result.attributes.object_id)
     end
 
     describe 'setting errors' do
@@ -105,7 +105,7 @@ RSpec.describe Result do
       end
     end
 
-    describe 'setting attributes' do
+    describe 'setting data' do
       it 'uses with_indifferent_access' do
         result = described_class.new(
           nil,
@@ -116,11 +116,11 @@ RSpec.describe Result do
           }
         )
 
-        expect(result.attributes['some_attr']).to eq('some value')
-        expect(result.attributes[:'another attr']).to eq('another value')
-        expect(result.attributes[42]).to eq('forty two')
+        expect(result.data['some_attr']).to eq('some value')
+        expect(result.data[:'another attr']).to eq('another value')
+        expect(result.data[42]).to eq('forty two')
 
-        expect(result.attributes).to eq(
+        expect(result.data).to eq(
           {
             'some_attr' => 'some value',
             'another attr' => 'another value',
@@ -285,18 +285,18 @@ RSpec.describe Result do
   end
 
   describe '.success' do
-    it 'creates an instance with empty errors and empty attributes' do
+    it 'creates an instance with empty errors and empty data' do
       result = described_class.success
 
       expect(result.errors).to be_empty
-      expect(result.attributes).to be_empty
+      expect(result.data).to be_empty
     end
 
-    it 'accepts attributes only' do
+    it 'accepts data only' do
       result = described_class.success(some_attr: 'some value')
 
       expect(result.errors).to be_empty
-      expect(result.attributes).to eq(
+      expect(result.data).to eq(
         { 'some_attr' => 'some value' }
       )
     end
@@ -312,14 +312,14 @@ RSpec.describe Result do
       )
     end
 
-    it 'accepts errors and attributes' do
+    it 'accepts errors and data' do
       result = described_class.failure('some error message', some_attr: 'some value')
 
       expect(result.errors).not_to be_empty
       expect(result.errors.messages).to eq(
         { base: ['some error message'] }
       )
-      expect(result.attributes).to eq(
+      expect(result.data).to eq(
         { 'some_attr' => 'some value' }
       )
     end
