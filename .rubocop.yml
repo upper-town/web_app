@@ -102,6 +102,8 @@ RSpec/NestedGroups:
   Max: 5
 
 # https://docs.rubocop.org/rubocop/cops_style.html
+Style/AccessorGrouping:
+  Enabled: false
 Style/BlockComments:
   Enabled: false
 Style/Documentation:
@@ -111,6 +113,8 @@ Style/EmptyMethod:
 Style/GuardClause:
   Enabled: false
 Style/HashSyntax:
+  Enabled: false
+Style/HashTransformValues:
   Enabled: false
 Style/IfUnlessModifier:
   Enabled: false
