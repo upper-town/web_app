@@ -4,6 +4,8 @@ module Servers
   class ConsolidateRankingsJob
     include Sidekiq::Job
 
+    sidekiq_options(lock: :while_executing)
+
     def perform(app_id, method)
       app = App.find(app_id)
 

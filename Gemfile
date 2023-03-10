@@ -60,8 +60,9 @@ gem 'view_component', '~> 2.62'
 
 gem 'faraday', '~> 2.4'
 
-gem 'sidekiq', '~> 6.5'
-gem 'sidekiq-cron', '~> 1.7'
+gem 'sidekiq', '~> 7.0'
+gem 'sidekiq-cron', '~> 1.9'
+gem 'sidekiq-unique-jobs', '~> 8.0'
 
 gem 'phonelib', '~> 0.7.0'
 
