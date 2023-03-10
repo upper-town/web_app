@@ -72,6 +72,7 @@
 
 require 'sidekiq/web'
 require 'sidekiq/cron/web'
+require 'sidekiq_unique_jobs/web'
 
 Rails.application.routes.draw do
   devise_for :users, controllers: {
