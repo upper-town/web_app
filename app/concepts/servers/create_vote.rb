@@ -9,7 +9,7 @@ module Servers
       @request = request
       @user_account = user_account
 
-      @rate_limiter = CreateVoteRateLimiter.new(@server.id, @request.remote_ip)
+      @rate_limiter = CreateVoteRateLimiter.build(@request, @server.id)
     end
 
     def call
