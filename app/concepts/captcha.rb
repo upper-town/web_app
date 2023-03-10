@@ -37,17 +37,17 @@ class Captcha
     captcha_response, remote_ip = extract_values(request)
 
     if captcha_response.blank?
-      return Result.failure('Please pass the captcha')
+      return Result.failure('Please pass the captcha.')
     end
 
     http_response = send_verify_request(captcha_response, remote_ip)
 
     if !http_response.success?
-      return Result.failure('Could not verify captcha. Please try again later')
+      return Result.failure('Could not verify captcha. Please try again later.')
     end
 
     if !http_response.body['success']
-      return Result.failure('Captcha verification failed')
+      return Result.failure('Captcha verification failed.')
     end
 
     Result.success
