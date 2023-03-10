@@ -1,5 +1,5 @@
-:concurrency: 10
-:timeout: 25
+:concurrency: <%= ENV.fetch("SIDEKIQ_CONCURRENCY") { 10 } %>
+:timeout: <%= ENV.fetch("SIDEKIQ_TIMEOUT") { 25 } %>
 :queues:
   - [critical, 5]
   - [default, 2]
