@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 
 class PhoneNumberNormalizer
+  def self.call(*args)
+    new(*args).call
+  end
+
   def initialize(phone_number)
     @phone_number = phone_number.to_s
   end
