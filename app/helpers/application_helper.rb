@@ -4,6 +4,6 @@ module ApplicationHelper
   include Pagy::Frontend
 
   def default_title
-    'Web App'
+    WebApp::Site::TITLE
   end
 end
