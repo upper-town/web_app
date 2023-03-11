@@ -1,16 +1,24 @@
+<% content_for(:head) do %>
+  <%= @captcha.script_tag %>
+<% end %>
+
 <h2>Resend unlock instructions</h2>
 
-<%= form_with(model: resource, url: unlock_path(resource_name), html: { method: :post }) do |f| %>
-  <%= render "admin_users/shared/error_messages", resource: resource %>
+<%= render("admin_users/shared/error_messages", resource: resource) %>
 
-  <div class="field">
-    <%= f.label :email %><br />
-    <%= f.email_field :email, autofocus: true, autocomplete: "email" %>
+<%= form_with(model: resource, url: unlock_path(resource_name), html: { method: :post }) do |form| %>
+  <div class="mb-2">
+    <%= form.label(:email) %><br />
+    <%= form.email_field(:email, autofocus: true, autocomplete: "email") %>
   </div>
 
-  <div class="actions">
-    <%= f.submit "Resend unlock instructions" %>
+  <div class="my-2">
+    <%= @captcha.widget_tag %>
+  </div>
+
+  <div class="mb-2">
+    <%= form.submit("Resend unlock instructions", { class: 'btn btn-primary' }) %>
   </div>
 <% end %>
 
-<%= render "admin_users/shared/links" %>
+<%= render("admin_users/shared/links") %>

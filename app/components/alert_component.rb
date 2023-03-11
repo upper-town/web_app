@@ -4,16 +4,20 @@ class AlertComponent < ApplicationComponent
   DEFAULT_SCHEME = :info
 
   ALERT_CLASS = {
-    danger:  'text-red-700    bg-red-100    border-red-500',
     info:    'text-gray-700   bg-gray-100   border-gray-500',
+    danger:  'text-red-700    bg-red-100    border-red-500',
+    alert:   'text-red-700    bg-red-100    border-red-500',
     success: 'text-green-700  bg-green-100  border-green-500',
+    notice:  'text-green-700  bg-green-100  border-green-500',
     warning: 'text-orange-700 bg-orange-100 border-orange-500',
   }.freeze
 
   BUTTON_DISMISS_CLASS = {
-    danger:  'text-red-500    bg-red-100    hover:bg-red-200    focus:ring-red-400',
     info:    'text-gray-500   bg-gray-100   hover:bg-gray-200   focus:ring-gray-400',
+    danger:  'text-red-500    bg-red-100    hover:bg-red-200    focus:ring-red-400',
+    alert:   'text-red-500    bg-red-100    hover:bg-red-200    focus:ring-red-400',
     success: 'text-green-500  bg-green-100  hover:bg-green-200  focus:ring-green-400',
+    notice:  'text-green-500  bg-green-100  hover:bg-green-200  focus:ring-green-400',
     warning: 'text-orange-500 bg-orange-100 hover:bg-orange-200 focus:ring-orange-400',
   }.freeze
 
@@ -40,7 +44,7 @@ class AlertComponent < ApplicationComponent
 
   def build_default_options
     {
-      data: { controller: 'alert-component' },
+      data: { controller: 'alert-component', turbo_cache: 'false' },
       role: 'alert',
       class: token_list(
         ALERT_CLASS.fetch(@scheme, ALERT_CLASS[DEFAULT_SCHEME]),

@@ -1,16 +1,31 @@
+<% content_for(:head) do %>
+  <%= @captcha.script_tag %>
+<% end %>
+
 <h2>Resend confirmation instructions</h2>
 
-<%= form_with(model: resource, url: confirmation_path(resource_name), html: { method: :post }) do |f| %>
-  <%= render "admin_users/shared/error_messages", resource: resource %>
+<%= render("admin_users/shared/error_messages", resource: resource) %>
 
-  <div class="field">
-    <%= f.label :email %><br />
-    <%= f.email_field :email, autofocus: true, autocomplete: "email", value: (resource.pending_reconfirmation? ? resource.unconfirmed_email : resource.email) %>
+<%= form_with(model: resource, url: confirmation_path(resource_name), html: { method: :post }) do |form| %>
+  <div class="mb-2">
+    <%= form.label(:email) %><br />
+    <%=
+      form.email_field(
+        :email,
+        autofocus: true,
+        autocomplete: "email",
+        value: (resource.pending_reconfirmation? ? resource.unconfirmed_email : resource.email)
+      )
+    %>
   </div>
 
-  <div class="actions">
-    <%= f.submit "Resend confirmation instructions" %>
+  <div class="my-2">
+    <%= @captcha.widget_tag %>
+  </div>
+
+  <div class="mb-2">
+    <%= form.submit("Resend confirmation instructions", { class: 'btn btn-primary' }) %>
   </div>
 <% end %>
 
-<%= render "admin_users/shared/links" %>
+<%= render("admin_users/shared/links") %>

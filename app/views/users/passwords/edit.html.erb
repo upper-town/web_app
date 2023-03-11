@@ -1,25 +1,26 @@
 <h2>Change your password</h2>
 
-<%= form_with(model: resource, url: password_path(resource_name), html: { method: :put }) do |f| %>
-  <%= render "users/shared/error_messages", resource: resource %>
-  <%= f.hidden_field :reset_password_token %>
+<%= render("users/shared/error_messages", resource: resource) %>
 
-  <div class="field">
-    <%= f.label :password, "New password" %><br />
+<%= form_with(model: resource, url: password_path(resource_name), html: { method: :put }) do |form| %>
+  <%= form.hidden_field(:reset_password_token) %>
+
+  <div class="mb-2">
+    <%= form.label(:password, "New password") %><br />
     <% if @minimum_password_length %>
       <em>(<%= @minimum_password_length %> characters minimum)</em><br />
     <% end %>
-    <%= f.password_field :password, autofocus: true, autocomplete: "new-password" %>
+    <%= form.password_field(:password, autofocus: true, autocomplete: "new-password") %>
   </div>
 
-  <div class="field">
-    <%= f.label :password_confirmation, "Confirm new password" %><br />
-    <%= f.password_field :password_confirmation, autocomplete: "new-password" %>
+  <div class="mb-2">
+    <%= form.label(:password_confirmation, "Confirm new password") %><br />
+    <%= form.password_field(:password_confirmation, autocomplete: "new-password") %>
   </div>
 
-  <div class="actions">
-    <%= f.submit "Change my password" %>
+  <div class="mb-2">
+    <%= form.submit("Change my password", { class: 'btn btn-primary' }) %>
   </div>
 <% end %>
 
-<%= render "users/shared/links" %>
+<%= render("users/shared/links") %>

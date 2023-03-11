@@ -1,26 +1,36 @@
-<h2>Log in</h2>
+<% content_for(:head) do %>
+  <%= @captcha.script_tag %>
+<% end %>
 
-<%= form_with(model: resource, url: session_path(resource_name)) do |f| %>
-  <div class="field">
-    <%= f.label :email %><br />
-    <%= f.email_field :email, autofocus: true, autocomplete: "email" %>
+<h2>Sign in</h2>
+
+<%= render("users/shared/error_messages", resource: resource) %>
+
+<%= form_with(model: resource, url: session_path(resource_name)) do |form| %>
+  <div class="mb-2">
+    <%= form.label(:email) %><br />
+    <%= form.email_field(:email, autofocus: true, autocomplete: "email") %>
   </div>
 
-  <div class="field">
-    <%= f.label :password %><br />
-    <%= f.password_field :password, autocomplete: "current-password" %>
+  <div class="mb-2">
+    <%= form.label(:password) %><br />
+    <%= form.password_field(:password, autocomplete: "current-password") %>
   </div>
 
   <% if devise_mapping.rememberable? %>
-    <div class="field">
-      <%= f.check_box :remember_me %>
-      <%= f.label :remember_me %>
+    <div class="mb-2">
+      <%= form.check_box(:remember_me) %>
+      <%= form.label(:remember_me) %>
     </div>
   <% end %>
 
-  <div class="actions">
-    <%= f.submit "Log in" %>
+  <div class="my-2">
+    <%= @captcha.widget_tag %>
+  </div>
+
+  <div class="mb-2">
+    <%= form.submit("Sign in", { class: 'btn btn-primary' }) %>
   </div>
 <% end %>
 
-<%= render "users/shared/links" %>
+<%= render("users/shared/links") %>
