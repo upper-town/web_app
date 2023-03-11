@@ -20,11 +20,73 @@
 <body class="bg-slate-600">
   <%= render(FlashComponent.new(flash: flash)) %>
 
-  <main class="container mx-auto px-3">
-    <%= yield %>
+  <header class="container bg-slate-300 mx-auto p-3">
+    <h1 class="text-center">
+      <%= link_to("Upper Town", root_path)  %>
+    </h1>
+    <%= yield(:header) %>
+  </header>
+
+  <nav class="container bg-slate-100 mx-auto p-3 flex">
+    <ul class="flex items-center justify-end mx-auto">
+      <li class="p-2 border-r-2 border-slate-200">
+        <%= link_to("Top Servers", servers_path)  %>
+      </li>
+      <% if user_signed_in? %>
+        <li class="p-2 border-r-2 border-slate-200">
+          <%= link_to("Dashboard", dashboard_path)  %>
+        </li>
+        <li class="p-2">
+          <%= link_to("Sign out", destroy_user_session_path, data: { turbo_method: :delete })  %>
+        </li>
+      <% else %>
+        <li class="p-2">
+          <%= link_to("Sign in", new_user_session_path)  %>
+        </li>
+      <% end %>
+    </ul>
+
+    <%= yield(:nav) %>
+  </nav>
+
+  <main class="container bg-slate-100 mx-auto p-3 flex">
+    <div class="mx-auto">
+      <%= yield %>
+    </div>
   </main>
 
-  <footer>
+  <footer class="container bg-slate-300 mx-auto py-4 px-3">
+    <ul class="flex items-center justify-center mb-3">
+      <li class="mr-5">
+        <a
+          href="https://twitter.com/upper_town_hq"
+          target="_blank"
+          rel="noopener noreferrer"
+          title="Twitter @upper_town_hq"
+          class="flex flex-col items-center justify-center"
+        >
+          <%= image_tag("twitter.svg", size: "32", alt: "Twitter logo") %>
+          <span class="text-xs">Twitter</span>
+        </a>
+      </li>
+      <li>
+        <a
+          href="https://www.reddit.com/user/upper_town_hq"
+          target="_blank"
+          rel="noopener noreferrer"
+          title="Reddit @upper_town_hq"
+          class="flex flex-col items-center justify-center"
+        >
+          <%= image_tag("reddit.svg", size: "32", alt: "Reddit logo") %>
+          <span class="text-xs">Reddit</span>
+        </a>
+      </li>
+    </ul>
+
+    <div class="text-center">
+      © Upper Town
+    </div>
+
     <%= yield(:footer) %>
   </footer>
 </body>

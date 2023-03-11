@@ -4,6 +4,10 @@
 
 <h2>Vote for you server!</h2>
 
+<p>
+  <%= @server.name %>
+</p>
+
 <%= form_with(model: @new_form, url: @new_form.url(@server), method: @new_form.method) do |f| %>
   <%= @captcha.widget_tag %>
 

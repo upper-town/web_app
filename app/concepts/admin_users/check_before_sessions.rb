@@ -10,8 +10,8 @@ module AdminUsers
     end
 
     def call
-      result = @captcha.call(@request)
-      return result if result.failure?
+      # result = @captcha.call(@request)
+      # return result if result.failure?
 
       # result = @rate_limiter.call
       # return result if result.failure?

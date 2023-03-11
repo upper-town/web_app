@@ -106,7 +106,9 @@ Rails.application.routes.draw do
     resources :servers, only: [:index, :show, :new, :create, :edit, :update, :destroy]
   end
 
-  resources :servers, only: [:index, :show], param: :suuid do
+  resource :dashboard, only: [:show]
+
+  resources :servers, only: [:index, :show, :new, :create], param: :suuid do
     resources :server_votes, as: 'votes', path: 'votes', only: [:index, :new, :create]
   end
   resources :server_votes, only: [:show], param: :suuid
