@@ -4,7 +4,7 @@ require 'rails_helper'
 
 RSpec.describe EmailValidator do
   it 'initializes with errors not empty before calling #valid?' do
-    validator = described_class.new('user@example.com')
+    validator = described_class.new('user@upper.town')
 
     expect(validator.errors).not_to be_empty
     expect(validator.errors).to include('not validated yet')
@@ -159,7 +159,7 @@ RSpec.describe EmailValidator do
       expect(described_class.new('').email).to  eq('')
 
       expect(described_class.new('xxx').email).to eq('xxx')
-      expect(described_class.new('user@example.com').email).to eq('user@example.com')
+      expect(described_class.new('user@upper.town').email).to eq('user@upper.town')
     end
   end
 end

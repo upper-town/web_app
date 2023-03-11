@@ -47,14 +47,14 @@ class SeedsDevelopment
   def create_admin_users
     admin_user_hashes = 1.upto(10).map do |n|
       {
-        email: "admin.user.#{n}@example.com",
+        email: "admin.user.#{n}@upper.town",
         encrypted_password: Devise::Encryptor.digest(User, 'testpass'),
         confirmed_at: Time.current
       }
     end
     admin_user_hashes.append(
       {
-        email: 'super.admin.user@example.com',
+        email: 'super.admin.user@upper.town',
         encrypted_password: Devise::Encryptor.digest(User, 'testpass'),
         confirmed_at: Time.current
       }
@@ -68,7 +68,7 @@ class SeedsDevelopment
     user_hashes = 1.upto(10).map do |n|
       {
         uuid: SecureRandom.uuid,
-        email: "user.#{n}@example.com",
+        email: "user.#{n}@upper.town",
         encrypted_password: Devise::Encryptor.digest(User, 'testpass'),
         confirmed_at: Time.current,
       }
