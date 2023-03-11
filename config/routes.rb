@@ -89,6 +89,8 @@ Rails.application.routes.draw do
     unlocks:            'admin_users/unlocks',
   }
 
+  get '/demo', to: 'demo#index'
+
   root to: 'home#index'
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
