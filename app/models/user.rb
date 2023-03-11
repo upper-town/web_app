@@ -50,5 +50,8 @@ class User < ApplicationRecord
     :trackable
   )
 
+  normalizes :email, with: EmailNormalizer
+  validate { |user| EmailRecordValidator.new(user).validate }
+
   has_one :account, class_name: 'UserAccount', dependent: :destroy
 end
