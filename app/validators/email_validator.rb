@@ -64,7 +64,7 @@ class EmailValidator
 
   def validate_email_domain
     if match_reserved_domain? || match_disposable_email_domains?
-      @errors << 'invalid domain'
+      @errors << 'domain is not valid'
     end
   end
 

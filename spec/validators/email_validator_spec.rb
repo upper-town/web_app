@@ -85,7 +85,7 @@ RSpec.describe EmailValidator do
 
             expect(validator.valid?).to be(false)
             expect(validator.errors).not_to be_empty
-            expect(validator.errors).to include('invalid domain')
+            expect(validator.errors).to include('domain is not valid')
           end
         end
 
@@ -124,7 +124,7 @@ RSpec.describe EmailValidator do
 
           expect(validator.valid?).to be(false)
           expect(validator.errors).not_to be_empty
-          expect(validator.errors).to include('invalid domain')
+          expect(validator.errors).to include('domain is not valid')
         end
       end
     end
