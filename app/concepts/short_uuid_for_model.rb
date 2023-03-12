@@ -22,12 +22,33 @@ module ShortUuidForModel
       find_by!(uuid: ShortUuid.to_uuid(short_uuid))
     end
 
+    def where_by_short_uuid(short_uuid)
+      short_uuids = Array(short_uuid)
+      uuids = short_uuids.map { |suuid| ShortUuid.to_uuid(suuid) }
+
+      where(uuid: uuids)
+    end
+
+    def exists_by_short_uuid?(short_uuid)
+      exists?(uuid: ShortUuid.to_uuid(short_uuid))
+    end
+
+    # Aliases
+
     def find_by_suuid(*args)
       find_by_short_uuid(*args)
     end
 
     def find_by_suuid!(*args)
       find_by_short_uuid!(*args)
+    end
+
+    def where_by_suuid(*args)
+      where_by_short_uuid(*args)
+    end
+
+    def exists_by_suuid?(*args)
+      exists_by_short_uuid?(*args)
     end
   end
 end
