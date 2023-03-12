@@ -60,6 +60,8 @@ gem 'view_component', '~> 2.62'
 
 gem 'faraday', '~> 2.4'
 
+gem 'dry-validation', '~> 1.10'
+
 gem 'sidekiq', '~> 7.0'
 gem 'sidekiq-cron', '~> 1.9'
 gem 'sidekiq-unique-jobs', '~> 8.0'
