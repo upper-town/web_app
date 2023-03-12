@@ -21,3 +21,9 @@ servers_consolidate_rankings_scheduler_job_all:
   class: Servers::ConsolidateRankingsSchedulerJob
   args: ["all"]
   queue: default
+
+servers_verify_scheduler_job:
+  cron: "0 3 * * *"
+  class: Servers::VerifySchedulerJob
+  args: []
+  queue: default

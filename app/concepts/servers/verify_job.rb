@@ -1,0 +1,13 @@
+# frozen_string_literal: true
+
+module Servers
+  class VerifyJob
+    include Sidekiq::Job
+
+    def perform(server_id)
+      server = Server.find(server_id)
+
+      Verify.new(server).call
+    end
+  end
+end
