@@ -4,17 +4,20 @@
 #
 # Table name: servers
 #
-#  id               :bigint           not null, primary key
-#  banner_image_url :string           default(""), not null
-#  country_code     :string           not null
-#  description      :string           default(""), not null
-#  info             :text             default(""), not null
-#  name             :string           not null
-#  site_url         :string           default(""), not null
-#  uuid             :uuid             not null
-#  created_at       :datetime         not null
-#  updated_at       :datetime         not null
-#  app_id           :bigint           not null
+#  id                :bigint           not null, primary key
+#  banner_image_url  :string           default(""), not null
+#  country_code      :string           not null
+#  description       :string           default(""), not null
+#  info              :text             default(""), not null
+#  name              :string           not null
+#  site_url          :string           default(""), not null
+#  uuid              :uuid             not null
+#  verify_notice     :text             default(""), not null
+#  verify_status     :string           not null
+#  verify_updated_at :datetime
+#  created_at        :datetime         not null
+#  updated_at        :datetime         not null
+#  app_id            :bigint           not null
 #
 # Indexes
 #
@@ -35,5 +38,6 @@ FactoryBot.define do
     country_code { 'US' }
     sequence(:name) { |n| "Server #{n}" }
     sequence(:site_url) { |n| "https://server-#{n}.example.com/" }
+    verify_status { Server::PENDING }
   end
 end

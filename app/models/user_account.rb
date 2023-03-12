@@ -23,4 +23,15 @@ class UserAccount < ApplicationRecord
   include ShortUuidForModel
 
   belongs_to :user
+
+  has_many :server_votes, dependent: :nullify
+  has_many :server_user_accounts, dependent: :destroy
+  has_many :servers, through: :server_user_accounts
+
+  def verified_servers
+    Server
+      .joins(:server_user_accounts)
+      .where(server_user_accounts: { user_account_id: id })
+      .where.not(server_user_accounts: { verified_at: nil })
+  end
 end

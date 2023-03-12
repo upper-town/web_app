@@ -4,17 +4,20 @@
 #
 # Table name: servers
 #
-#  id               :bigint           not null, primary key
-#  banner_image_url :string           default(""), not null
-#  country_code     :string           not null
-#  description      :string           default(""), not null
-#  info             :text             default(""), not null
-#  name             :string           not null
-#  site_url         :string           default(""), not null
-#  uuid             :uuid             not null
-#  created_at       :datetime         not null
-#  updated_at       :datetime         not null
-#  app_id           :bigint           not null
+#  id                :bigint           not null, primary key
+#  banner_image_url  :string           default(""), not null
+#  country_code      :string           not null
+#  description       :string           default(""), not null
+#  info              :text             default(""), not null
+#  name              :string           not null
+#  site_url          :string           default(""), not null
+#  uuid              :uuid             not null
+#  verify_notice     :text             default(""), not null
+#  verify_status     :string           not null
+#  verify_updated_at :datetime
+#  created_at        :datetime         not null
+#  updated_at        :datetime         not null
+#  app_id            :bigint           not null
 #
 # Indexes
 #
@@ -30,12 +33,31 @@
 class Server < ApplicationRecord
   include ShortUuidForModel
 
+  PENDING = 'pending'
+  VERIFIED = 'verified'
+  VERIFY_STATUSES = [PENDING, VERIFIED].freeze
+
   COUNTRY_CODES = ISO3166::Country.codes
 
   validates :country_code, inclusion: { in: COUNTRY_CODES }
+  validates :verify_status, inclusion: { in: VERIFY_STATUSES }
 
   belongs_to :app
 
   has_many :votes, class_name: 'ServerVote', dependent: :destroy
   has_many :stats, class_name: 'ServerStat', dependent: :destroy
+
+  has_many :server_user_accounts, dependent: :destroy
+  has_many :user_accounts, through: :server_user_accounts
+
+  def verified_user_accounts
+    UserAccount
+      .joins(:server_user_accounts)
+      .where(server_user_accounts: { server_id: id })
+      .where.not(server_user_accounts: { verified_at: nil })
+  end
+
+  def verified?
+    verify_status == VERIFIED
+  end
 end

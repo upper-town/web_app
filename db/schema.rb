@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2023_01_20_102025) do
+ActiveRecord::Schema[7.1].define(version: 2023_03_11_211045) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -107,6 +107,16 @@ ActiveRecord::Schema[7.1].define(version: 2023_01_20_102025) do
     t.index ["server_id"], name: "index_server_stats_on_server_id"
   end
 
+  create_table "server_user_accounts", force: :cascade do |t|
+    t.bigint "server_id", null: false
+    t.bigint "user_account_id", null: false
+    t.datetime "verified_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["server_id"], name: "index_server_user_accounts_on_server_id"
+    t.index ["user_account_id", "server_id"], name: "index_server_user_accounts_on_user_account_id_and_server_id", unique: true
+  end
+
   create_table "server_votes", force: :cascade do |t|
     t.uuid "uuid", null: false
     t.jsonb "metadata", default: {}, null: false
@@ -133,6 +143,9 @@ ActiveRecord::Schema[7.1].define(version: 2023_01_20_102025) do
     t.string "banner_image_url", default: "", null: false
     t.string "description", default: "", null: false
     t.text "info", default: "", null: false
+    t.string "verify_status", null: false
+    t.text "verify_notice", default: "", null: false
+    t.datetime "verify_updated_at"
     t.bigint "app_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -185,6 +198,8 @@ ActiveRecord::Schema[7.1].define(version: 2023_01_20_102025) do
   add_foreign_key "admin_user_roles", "admin_users"
   add_foreign_key "server_stats", "apps"
   add_foreign_key "server_stats", "servers"
+  add_foreign_key "server_user_accounts", "servers"
+  add_foreign_key "server_user_accounts", "user_accounts"
   add_foreign_key "server_votes", "apps"
   add_foreign_key "server_votes", "servers"
   add_foreign_key "server_votes", "user_accounts"
