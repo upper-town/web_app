@@ -22,7 +22,7 @@
 
   <header class="container bg-slate-300 mx-auto p-3">
     <h1 class="text-center">
-      <%= link_to("Upper Town", root_path)  %>
+      <%= link_to("upper.town", root_path)  %>
     </h1>
     <%= yield(:header) %>
   </header>
@@ -32,9 +32,12 @@
       <li class="p-2 border-r-2 border-slate-200">
         <%= link_to("Top Servers", servers_path)  %>
       </li>
+      <li class="p-2 border-r-2 border-slate-200">
+        <%= link_to("Add server", new_inside_server_path)  %>
+      </li>
       <% if user_signed_in? %>
         <li class="p-2 border-r-2 border-slate-200">
-          <%= link_to("Dashboard", dashboard_path)  %>
+          <%= link_to("Dashboard", inside_dashboard_path)  %>
         </li>
         <li class="p-2">
           <%= link_to("Sign out", destroy_user_session_path, data: { turbo_method: :delete })  %>
@@ -84,7 +87,7 @@
     </ul>
 
     <div class="text-center">
-      © Upper Town
+      © upper.town
     </div>
 
     <%= yield(:footer) %>

@@ -2,6 +2,6 @@
 
 module WebApp
   class Site
-    TITLE = 'Upper Town'
+    TITLE = 'upper.town'
   end
 end

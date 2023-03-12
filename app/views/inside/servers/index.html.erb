@@ -1,0 +1,6 @@
+<% @servers.map do |server| %>
+  <pre>
+    <%= JSON.pretty_generate(server.attributes) %>
+  </pre>
+  <br />
+<% end %>
