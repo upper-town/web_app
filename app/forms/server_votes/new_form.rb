@@ -2,9 +2,9 @@
 
 module ServerVotes
   class NewForm < ApplicationForm
-    attribute :reference_id, :string, default: ''
+    attribute :reference, :string, default: ''
 
-    validates :reference_id, length: { maximum: 255 }
+    validates :reference, length: { maximum: 255 }
 
     def method
       :post

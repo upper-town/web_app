@@ -3,10 +3,10 @@
 class CreateServerVotes < ActiveRecord::Migration[7.1]
   def change
     create_table :server_votes do |t|
-      t.uuid   :uuid,         null: false
-      t.jsonb  :metadata,     null: false, default: {}
-      t.string :reference_id, null: false, default: ''
-      t.string :remote_ip,    null: false, default: ''
+      t.uuid   :uuid,      null: false
+      t.jsonb  :metadata,  null: false, default: {}
+      t.string :reference, null: false, default: ''
+      t.string :remote_ip, null: false, default: ''
 
       t.references :user_account, null: true,  foreign_key: true, index: false
 

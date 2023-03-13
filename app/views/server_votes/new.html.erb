@@ -11,11 +11,11 @@
 <%= form_with(model: @new_form, url: @new_form.url(@server), method: @new_form.method) do |f| %>
   <%= @captcha.widget_tag %>
 
-  <%= f.hidden_field(:reference_id, value: @reference_id) %>
+  <%= f.hidden_field(:reference, value: @reference) %>
 
-  <% if @new_form.errors.include?(:reference_id) %>
+  <% if @new_form.errors.include?(:reference) %>
     <div class="">
-      <code>reference_id</code> <%= @new_form.errors[:reference_id].to_sentence %>
+      <code>reference</code> <%= @new_form.errors[:reference].to_sentence %>
     </div>
   <% end %>
 

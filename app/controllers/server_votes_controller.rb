@@ -9,14 +9,14 @@ class ServerVotesController < ApplicationController
 
   def new
     @server = server_from_params
-    @reference_id = reference_id_from_params
+    @reference = reference_from_params
     @captcha = Captcha.new
     @new_form = ServerVotes::NewForm.new
   end
 
   def create
     @server = server_from_params
-    @reference_id = server_votes_new_form_params['reference_id']
+    @reference = server_votes_new_form_params['reference']
     @captcha = Captcha.new
     @new_form = ServerVotes::NewForm.new(server_votes_new_form_params)
 
@@ -46,11 +46,11 @@ class ServerVotesController < ApplicationController
     ServerVote.find_by_suuid!(params['suuid'])
   end
 
-  def reference_id_from_params
-    params['reference_id'].presence
+  def reference_from_params
+    params['reference'].presence
   end
 
   def server_votes_new_form_params
-    params.require('server_votes_new_form').permit('reference_id')
+    params.require('server_votes_new_form').permit('reference')
   end
 end
