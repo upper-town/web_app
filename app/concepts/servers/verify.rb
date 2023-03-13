@@ -22,9 +22,9 @@ module Servers
 
     def update_as_verified(current_time)
       @server.update!(
-        verify_status: Server::VERIFIED,
-        verify_notice: '',
-        verify_updated_at: current_time,
+        verified_status: Server::VERIFIED,
+        verified_notice: '',
+        verified_updated_at: current_time,
       )
     end
 
@@ -32,9 +32,9 @@ module Servers
       notice = result.errors.full_messages.join('; ')
 
       @server.update!(
-        verify_status: Server::PENDING,
-        verify_notice: notice,
-        verify_updated_at: current_time,
+        verified_status: Server::PENDING,
+        verified_notice: notice,
+        verified_updated_at: current_time,
       )
     end
   end

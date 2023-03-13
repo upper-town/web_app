@@ -154,7 +154,7 @@ class SeedsDevelopment
       Faker::Lorem.paragraphs(number: 15).join(' '),
       Faker::Lorem.paragraphs(number: 10).join(' '),
     ].join("\n\n")
-    verify_status = Server::PENDING
+    verified_status = Server::PENDING
 
     {
       app_id: app_id,
@@ -165,7 +165,7 @@ class SeedsDevelopment
       banner_image_url: banner_image_url,
       description: description,
       info: info,
-      verify_status: verify_status,
+      verified_status: verified_status,
     }
   end
 

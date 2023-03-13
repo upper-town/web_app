@@ -143,9 +143,9 @@ ActiveRecord::Schema[7.1].define(version: 2023_03_11_211045) do
     t.string "banner_image_url", default: "", null: false
     t.string "description", default: "", null: false
     t.text "info", default: "", null: false
-    t.string "verify_status", null: false
-    t.text "verify_notice", default: "", null: false
-    t.datetime "verify_updated_at"
+    t.string "verified_status", null: false
+    t.text "verified_notice", default: "", null: false
+    t.datetime "verified_updated_at"
     t.bigint "app_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

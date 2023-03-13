@@ -4,20 +4,20 @@
 #
 # Table name: servers
 #
-#  id                :bigint           not null, primary key
-#  banner_image_url  :string           default(""), not null
-#  country_code      :string           not null
-#  description       :string           default(""), not null
-#  info              :text             default(""), not null
-#  name              :string           not null
-#  site_url          :string           default(""), not null
-#  uuid              :uuid             not null
-#  verify_notice     :text             default(""), not null
-#  verify_status     :string           not null
-#  verify_updated_at :datetime
-#  created_at        :datetime         not null
-#  updated_at        :datetime         not null
-#  app_id            :bigint           not null
+#  id                  :bigint           not null, primary key
+#  banner_image_url    :string           default(""), not null
+#  country_code        :string           not null
+#  description         :string           default(""), not null
+#  info                :text             default(""), not null
+#  name                :string           not null
+#  site_url            :string           default(""), not null
+#  uuid                :uuid             not null
+#  verified_notice     :text             default(""), not null
+#  verified_status     :string           not null
+#  verified_updated_at :datetime
+#  created_at          :datetime         not null
+#  updated_at          :datetime         not null
+#  app_id              :bigint           not null
 #
 # Indexes
 #
@@ -35,12 +35,12 @@ class Server < ApplicationRecord
 
   PENDING = 'pending'
   VERIFIED = 'verified'
-  VERIFY_STATUSES = [PENDING, VERIFIED].freeze
+  VERIFIED_STATUSES = [PENDING, VERIFIED].freeze
 
   COUNTRY_CODES = ISO3166::Country.codes
 
   validates :country_code, inclusion: { in: COUNTRY_CODES }
-  validates :verify_status, inclusion: { in: VERIFY_STATUSES }
+  validates :verified_status, inclusion: { in: VERIFIED_STATUSES }
 
   belongs_to :app
 
@@ -58,6 +58,6 @@ class Server < ApplicationRecord
   end
 
   def verified?
-    verify_status == VERIFIED
+    verified_status == VERIFIED
   end
 end
