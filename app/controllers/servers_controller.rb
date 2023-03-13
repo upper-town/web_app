@@ -84,11 +84,11 @@ class ServersController < ApplicationController
 
   def build_app_options
     Rails.cache.fetch(APP_OPTIONS_CACHE_KEY, expires_in: 5.minutes) do
-      app_options_by_kind = App::KIND_OPTIONS.each_with_object({}) do |(kind_name, kind), hash|
-        hash[kind_name] = apps_query(kind)
+      app_options_by_type = App::TYPE_OPTIONS.each_with_object({}) do |(type_name, type), hash|
+        hash[type_name] = apps_query(type)
       end
 
-      app_options_by_kind.compact_blank
+      app_options_by_type.compact_blank
     end
   end
 
@@ -115,9 +115,9 @@ class ServersController < ApplicationController
     ["#{country.emoji_flag} #{country.common_name}", country_code]
   end
 
-  def apps_query(kind)
+  def apps_query(type)
     App
-      .where(kind: kind)
+      .where(type: type)
       .select(:name, :uuid)
       .sort_by(&:name)
       .map { |app| [app.name, app.suuid] }

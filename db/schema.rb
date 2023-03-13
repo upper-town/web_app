@@ -79,15 +79,15 @@ ActiveRecord::Schema[7.1].define(version: 2023_03_11_211045) do
     t.uuid "uuid", null: false
     t.string "slug", null: false
     t.string "name", null: false
-    t.string "kind", null: false
+    t.string "type", null: false
     t.string "site_url", default: "", null: false
     t.string "description", default: "", null: false
     t.text "info", default: "", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["kind"], name: "index_apps_on_kind"
     t.index ["name"], name: "index_apps_on_name", unique: true
     t.index ["slug"], name: "index_apps_on_slug", unique: true
+    t.index ["type"], name: "index_apps_on_type"
     t.index ["uuid"], name: "index_apps_on_uuid", unique: true
   end
 
