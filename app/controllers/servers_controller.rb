@@ -3,29 +3,29 @@
 class ServersController < ApplicationController
   include Pagy::Backend
 
-  DEFAULT_APP_OPTION = ['All', nil].freeze
+  DEFAULT_APP_ID_OPTION = ['All', nil].freeze
   DEFAULT_COUNTRY_CODE_OPTION = ["#{ServerStat::GLOBAL_EMOJI_FLAG} Global", ServerStat::GLOBAL].freeze
 
-  APP_OPTIONS_CACHE_KEY = 'servers#index:app_options'
-  COUNTRY_CODE_OPTIONS_CACHE_KEY = 'servers#index:country_code_options'
+  APP_ID_OPTIONS_CACHE_KEY = 'servers_index:app_id_options'
+  COUNTRY_CODE_OPTIONS_CACHE_KEY = 'servers_index:country_code_options'
 
   def index
     current_time = Time.current
 
-    @app_options = build_app_options
+    @app_id_options = build_app_id_options
     @period_options = build_period_options
     @country_code_options = build_country_code_options
 
-    @default_app_option = DEFAULT_APP_OPTION
+    @default_app_id_option = DEFAULT_APP_ID_OPTION
     @default_country_code_option = DEFAULT_COUNTRY_CODE_OPTION
 
     @app = app_from_params
     @period = period_from_params
     @country_code = country_code_from_params
 
-    @selected_value_for_app = @app.nil? ? DEFAULT_APP_OPTION[1] : @app.suuid
+    @selected_value_for_app_id = @app.nil? ? DEFAULT_APP_ID_OPTION[1] : @app.suuid
     @selected_value_for_period = @period
-    @selected_value_for_country = @country_code
+    @selected_value_for_country_code = @country_code
 
     @pagy, @servers = pagy(
       Servers::IndexQuery.new(@app, @period, @country_code, current_time).call,
@@ -49,9 +49,9 @@ class ServersController < ApplicationController
   private
 
   def app_from_params
-    if params['app'].blank? || !ShortUuid.valid?(params['app'])
+    if params['app_id'].blank? || !ShortUuid.valid?(params['app_id'])
       nil
-    elsif (app = App.find_by_suuid(params['app']))
+    elsif (app = App.find_by_suuid(params['app_id']))
       app
     else
       raise InvalidQueryParamError
@@ -69,10 +69,10 @@ class ServersController < ApplicationController
   end
 
   def country_code_from_params
-    if params['country'].blank?
+    if params['country_code'].blank?
       ServerStat::GLOBAL
-    elsif ServerStat::COUNTRY_CODES.include?(params['country'])
-      params['country']
+    elsif ServerStat::COUNTRY_CODES.include?(params['country_code'])
+      params['country_code']
     else
       raise InvalidQueryParamError
     end
@@ -82,13 +82,13 @@ class ServersController < ApplicationController
     Server.find_by_suuid!(params['suuid'])
   end
 
-  def build_app_options
-    Rails.cache.fetch(APP_OPTIONS_CACHE_KEY, expires_in: 5.minutes) do
-      app_options_by_type = App::TYPE_OPTIONS.each_with_object({}) do |(type_name, type), hash|
+  def build_app_id_options
+    Rails.cache.fetch(APP_ID_OPTIONS_CACHE_KEY, expires_in: 5.minutes) do
+      app_id_options_by_type = App::TYPE_OPTIONS.each_with_object({}) do |(type_name, type), hash|
         hash[type_name] = apps_query(type)
       end
 
-      app_options_by_type.compact_blank
+      app_id_options_by_type.compact_blank
     end
   end
 
