@@ -15,8 +15,7 @@ class SeedsDevelopment
   private
 
   def delete_all
-    # TODO: Add entries for ServerUserAccount
-
+    ServerUserAccount.delete_all
     ServerStat.delete_all
     ServerVote.delete_all
     Server.delete_all
@@ -39,6 +38,8 @@ class SeedsDevelopment
 
     app_ids = create_apps
     server_ids = create_servers(app_ids)
+
+    create_server_user_accounts(server_ids, user_account_ids)
 
     create_server_votes(app_ids, server_ids, user_account_ids)
 
@@ -129,6 +130,23 @@ class SeedsDevelopment
     end
 
     server_ids
+  end
+
+  def create_server_user_accounts(server_ids, user_account_ids)
+    current_time = Time.current
+    server_to_take = server_ids.size / 4
+
+    server_user_account_hashes = server_ids.sample(server_to_take).map do |server_id|
+      {
+        server_id: server_id,
+        user_account_id: user_account_ids.sample,
+        verified_at: rand(1..4) == 1 ? nil : current_time
+      }
+    end
+
+    result = ServerUserAccount.insert_all(server_user_account_hashes)
+
+    result.rows.flatten # server_user_account_ids
   end
 
   def generate_country_code(reject_values = [])
