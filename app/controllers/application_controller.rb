@@ -3,6 +3,8 @@
 class ApplicationController < ActionController::Base
   class InvalidQueryParamError < StandardError; end
 
+  helper_method :current_user_account
+
   # Override Devise's after_sign_in_path_for
   def after_sign_in_path_for(resource)
     case resource
