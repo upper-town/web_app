@@ -4,7 +4,6 @@ class CreateServerVotes < ActiveRecord::Migration[7.1]
   def change
     create_table :server_votes do |t|
       t.uuid   :uuid,      null: false
-      t.jsonb  :metadata,  null: false, default: {}
       t.string :reference, null: false, default: ''
       t.string :remote_ip, null: false, default: ''
 
