@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2023_03_11_211045) do
+ActiveRecord::Schema[7.1].define(version: 2023_03_14_000615) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -134,6 +134,48 @@ ActiveRecord::Schema[7.1].define(version: 2023_03_11_211045) do
     t.index ["uuid"], name: "index_server_votes_on_uuid", unique: true
   end
 
+  create_table "server_webhook_configs", force: :cascade do |t|
+    t.bigint "server_id", null: false
+    t.uuid "uuid", null: false
+    t.string "event_type", null: false
+    t.string "url", default: "", null: false
+    t.string "status", null: false
+    t.string "notice", null: false
+    t.datetime "disabled_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["server_id", "event_type"], name: "index_server_webhook_configs_on_server_id_and_event_type", unique: true
+    t.index ["uuid"], name: "index_server_webhook_configs_on_uuid", unique: true
+  end
+
+  create_table "server_webhook_events", force: :cascade do |t|
+    t.bigint "server_id", null: false
+    t.uuid "uuid", null: false
+    t.string "type", null: false
+    t.jsonb "payload", default: {}, null: false
+    t.string "status", null: false
+    t.string "notice", default: "", null: false
+    t.integer "failed_attempts", default: 0, null: false
+    t.datetime "last_sent_at"
+    t.datetime "delivered_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["server_id"], name: "index_server_webhook_events_on_server_id"
+    t.index ["type"], name: "index_server_webhook_events_on_type"
+    t.index ["uuid"], name: "index_server_webhook_events_on_uuid", unique: true
+  end
+
+  create_table "server_webhook_secrets", force: :cascade do |t|
+    t.bigint "server_id", null: false
+    t.uuid "uuid", null: false
+    t.string "value", null: false
+    t.datetime "archived_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["server_id"], name: "index_server_webhook_secrets_on_server_id"
+    t.index ["uuid"], name: "index_server_webhook_secrets_on_uuid", unique: true
+  end
+
   create_table "servers", force: :cascade do |t|
     t.uuid "uuid", null: false
     t.string "name", null: false
@@ -202,6 +244,9 @@ ActiveRecord::Schema[7.1].define(version: 2023_03_11_211045) do
   add_foreign_key "server_votes", "apps"
   add_foreign_key "server_votes", "servers"
   add_foreign_key "server_votes", "user_accounts"
+  add_foreign_key "server_webhook_configs", "servers"
+  add_foreign_key "server_webhook_events", "servers"
+  add_foreign_key "server_webhook_secrets", "servers"
   add_foreign_key "servers", "apps"
   add_foreign_key "user_accounts", "users"
 end

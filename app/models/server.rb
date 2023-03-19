@@ -37,6 +37,9 @@ class Server < ApplicationRecord
   VERIFIED = 'verified'
   VERIFIED_STATUSES = [PENDING, VERIFIED].freeze
 
+  INTEGRATED = 'integrated'
+  INTEGRATED_STATUSES = [PENDING, INTEGRATED].freeze
+
   COUNTRY_CODES = ISO3166::Country.codes
 
   validates :country_code, inclusion: { in: COUNTRY_CODES }
@@ -50,6 +53,10 @@ class Server < ApplicationRecord
   has_many :server_user_accounts, dependent: :destroy
   has_many :user_accounts, through: :server_user_accounts
 
+  has_many :webhook_configs, class_name: 'ServerWebhookConfig', dependent: :destroy
+  has_many :webhook_secrets, class_name: 'ServerWebhookSecret', dependent: :destroy
+  has_many :webhook_events,  class_name: 'ServerWebhookEvent',  dependent: :destroy
+
   def verified_user_accounts
     UserAccount
       .joins(:server_user_accounts)
@@ -59,5 +66,17 @@ class Server < ApplicationRecord
 
   def verified?
     verified_status == VERIFIED
+  end
+
+  def integrated?
+    integrated_status == INTEGRATED
+  end
+
+  def integrated_webhook_event?(event_type)
+    webhook_configs.enabled.exists?(event_type: event_type)
+  end
+
+  def webhook_config_for(event_type)
+    webhook_configs.enabled.find_by(event_type: event_type)
   end
 end

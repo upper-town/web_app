@@ -6,13 +6,12 @@
 #
 #  id              :bigint           not null, primary key
 #  country_code    :string           not null
-#  metadata        :jsonb            not null
+#  reference       :string           default(""), not null
 #  remote_ip       :string           default(""), not null
 #  uuid            :uuid             not null
 #  created_at      :datetime         not null
 #  updated_at      :datetime         not null
 #  app_id          :bigint           not null
-#  reference       :string           default(""), not null
 #  server_id       :bigint           not null
 #  user_account_id :bigint
 #
