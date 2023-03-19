@@ -2,6 +2,8 @@
 
 module Servers
   class VerifyLinkedUserAccounts
+    TIMEOUT = 60
+
     JSON_FILE_PATH = '/upper_town.json'
     JSON_FILE_CONTENT_TYPE_PATTERN = %r{\bapplication/json\b}i
     JSON_FILE_MAX_SIZE = 512
@@ -29,17 +31,20 @@ module Servers
     private
 
     def check_json_file_metadata
-      http_response = Faraday.new(@server.site_url).head(JSON_FILE_PATH)
+      connection = Faraday.new(@server.site_url) do |conn|
+        conn.options.timeout = TIMEOUT
+      end
+      response = connection.head(JSON_FILE_PATH)
 
-      if !http_response.success?
-        return Result.failure("Unsuccessful HEAD request: HTTP status #{http_response.status}")
+      if !response.success?
+        return Result.failure("Unsuccessful HEAD request: HTTP status #{response.status}")
       end
 
-      if http_response.headers['content-length'].to_i > JSON_FILE_MAX_SIZE
+      if response.headers['content-length'].to_i > JSON_FILE_MAX_SIZE
         return Result.failure('JSON file size must not be greater than 512 bytes')
       end
 
-      if !http_response.headers['content-type'].match?(JSON_FILE_CONTENT_TYPE_PATTERN)
+      if !response.headers['content-type'].match?(JSON_FILE_CONTENT_TYPE_PATTERN)
         return Result.failure('JSON file content-type must be application/json')
       end
 
@@ -51,26 +56,26 @@ module Servers
 
     def download_and_parse_json_file
       connection = Faraday.new(@server.site_url) do |conn|
+        conn.options.timeout = TIMEOUT
         conn.response(:json)
       end
+      response = connection.get(JSON_FILE_PATH)
 
-      http_response = connection.get(JSON_FILE_PATH)
-
-      if !http_response.success?
-        return Result.failure("Unsuccessful GET request: HTTP status #{http_response.status}")
+      if !response.success?
+        return Result.failure("Unsuccessful GET request: HTTP status #{response.status}")
       end
 
-      validation_result = JsonFileValidatonContract.new.call(http_response.body)
+      validation_result = JsonFileValidatonContract.new.call(response.body)
 
       if validation_result.failure?
         return Result.failure("Invalid JSON schema: #{validation_result.errors.to_hash}.")
       end
 
-      Result.success(parsed_body: http_response.body)
+      Result.success(parsed_body: response.body)
 
     rescue Faraday::ConnectionFailed => e
       Result.failure("Connection Error: #{e}")
-    rescue Faraday::ParsingError, JSON::ParserError => e
+    rescue Faraday::ParsingError, JSON::ParserError, TypeError => e
       Result.failure("Parsing Error: Invalid JSON file: #{e}")
     end
 
