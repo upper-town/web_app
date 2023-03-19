@@ -53,7 +53,19 @@ module Servers
     end
 
     def schedule_jobs(server_vote)
+      schedule_consolidate_vote_counts(server_vote)
+      schedule_server_webhooks_create_event(server_vote)
+    end
+
+    def schedule_consolidate_vote_counts(server_vote)
       ConsolidateVoteCountsJob.set(queue: 'critical').perform_async(server_vote.server_id, 'current', true)
+    end
+
+    def schedule_server_webhooks_create_event(server_vote)
+      event_type = ServerWebhookEvent::SERVER_VOTES_CREATE
+      return unless @server.integrated_webhook_event?(event_type)
+
+      ServerWebhooks::CreateEventJob.perform_async(server_vote.server_id, event_type, server_vote.id)
     end
   end
 end
