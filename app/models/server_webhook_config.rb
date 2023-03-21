@@ -8,7 +8,6 @@
 #  disabled_at :datetime
 #  event_type  :string           not null
 #  notice      :string           not null
-#  status      :string           not null
 #  url         :string           default(""), not null
 #  uuid        :uuid             not null
 #  created_at  :datetime         not null
@@ -29,7 +28,21 @@ class ServerWebhookConfig < ApplicationRecord
 
   belongs_to :server
 
+  has_many :events, class_name: 'ServerWebhookEvent', dependent: :nullify
+
   def self.enabled
     where(disabled_at: nil)
+  end
+
+  def self.disabled
+    where.not(disabled_at: nil)
+  end
+
+  def enabled?
+    disabled_at.nil?
+  end
+
+  def disabled?
+    !enabled?
   end
 end

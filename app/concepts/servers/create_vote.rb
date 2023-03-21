@@ -63,7 +63,7 @@ module Servers
 
     def schedule_server_webhooks_create_event(server_vote)
       event_type = ServerWebhookEvent::SERVER_VOTES_CREATE
-      return unless @server.integrated_webhook_event?(event_type)
+      return unless @server.webhook_config?(event_type)
 
       ServerWebhooks::CreateEventJob.perform_async(server_vote.server_id, event_type, server_vote.id)
     end

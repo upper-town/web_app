@@ -72,11 +72,11 @@ class Server < ApplicationRecord
     integrated_status == INTEGRATED
   end
 
-  def integrated_webhook_event?(event_type)
-    webhook_configs.enabled.exists?(event_type: event_type)
+  def webhook_config(event_type)
+    webhook_configs.enabled.find_by(event_type: event_type)
   end
 
-  def webhook_config_for(event_type)
-    webhook_configs.enabled.find_by(event_type: event_type)
+  def webhook_config?(event_type)
+    webhook_configs.enabled.exists?(event_type: event_type)
   end
 end
