@@ -81,9 +81,9 @@ module Users
 
     # Based on Devise::RegistrationsController#create
     def devise_registrations_create
-      ActiveRecord::Base.transaction do
+      ApplicationRecord.transaction do
         resource.uuid = SecureRandom.uuid
-        resource.save
+        resource.save!
 
         if resource.persisted?
           Users::InitializeAccount.new(resource).call
