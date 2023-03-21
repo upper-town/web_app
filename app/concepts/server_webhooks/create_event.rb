@@ -17,9 +17,9 @@ module ServerWebhooks
     def build_payload
       case @event_type
       when ServerWebhookEvent::SERVER_VOTES_CREATE
-        build_payload_server_votes_create(record_id)
+        build_payload_server_votes_create(@record_id)
       else
-        raise 'Unknown event_type for ServerWebhooks::CreateEventJob'
+        raise 'Unknown event_type for ServerWebhooks::CreateEvent'
       end
     end
 
@@ -33,8 +33,8 @@ module ServerWebhooks
         uuid:    SecureRandom.uuid,
         server:  @server,
         type:    @event_type,
-        payload: payload,
         status:  ServerWebhookEvent::PENDING,
+        payload: payload,
       )
     end
   end

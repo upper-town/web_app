@@ -54,7 +54,7 @@ class ServerWebhookEvent < ApplicationRecord
   ].freeze
 
   belongs_to :server
-  belongs_to :config, class_name: 'ServerWebhookConfig'
+  belongs_to :config, class_name: 'ServerWebhookConfig', optional: true
 
   def pending?
     status == PENDING

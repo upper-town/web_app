@@ -13,6 +13,8 @@ Layout/ArrayAlignment:
   Enabled: false
 Layout/EmptyLinesAroundExceptionHandlingKeywords:
   Enabled: false
+Layout/FirstHashElementIndentation:
+  Enabled: false
 Layout/HashAlignment:
   Enabled: false
 Layout/LineEndStringConcatenationIndentation:

@@ -16,10 +16,18 @@ module ServerWebhooks
             'server_id'       => @server_vote.server.suuid,
             'app_id'          => @server_vote.app.suuid,
             'country_code'    => @server_vote.country_code,
-            'user_account_id' => @server.user_account.nil? ? nil : @server.user_account.suuid,
+            'user_account_id' => user_account_id,
             'created_at'      => @server_vote.created_at,
           }
         }
+      end
+
+      private
+
+      def user_account_id
+        return if @server_vote.user_account.nil?
+
+        @server_vote.user_account.suuid
       end
     end
   end
