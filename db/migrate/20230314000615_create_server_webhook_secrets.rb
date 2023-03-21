@@ -10,7 +10,7 @@ class CreateServerWebhookSecrets < ActiveRecord::Migration[7.1]
       t.timestamps
     end
 
-    add_index :server_webhook_secrets, :uuid,      unique: true
+    add_index :server_webhook_secrets, :uuid, unique: true
     add_index :server_webhook_secrets, :server_id
   end
 end

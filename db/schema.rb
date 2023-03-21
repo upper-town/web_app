@@ -139,7 +139,6 @@ ActiveRecord::Schema[7.1].define(version: 2023_03_14_000615) do
     t.uuid "uuid", null: false
     t.string "event_type", null: false
     t.string "url", default: "", null: false
-    t.string "status", null: false
     t.string "notice", null: false
     t.datetime "disabled_at"
     t.datetime "created_at", null: false
@@ -156,11 +155,13 @@ ActiveRecord::Schema[7.1].define(version: 2023_03_14_000615) do
     t.string "status", null: false
     t.string "notice", default: "", null: false
     t.integer "failed_attempts", default: 0, null: false
-    t.datetime "last_sent_at"
+    t.datetime "last_published_at"
     t.datetime "delivered_at"
+    t.bigint "server_webhook_config_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["server_id"], name: "index_server_webhook_events_on_server_id"
+    t.index ["server_webhook_config_id"], name: "index_server_webhook_events_on_server_webhook_config_id"
     t.index ["type"], name: "index_server_webhook_events_on_type"
     t.index ["uuid"], name: "index_server_webhook_events_on_uuid", unique: true
   end
@@ -245,6 +246,7 @@ ActiveRecord::Schema[7.1].define(version: 2023_03_14_000615) do
   add_foreign_key "server_votes", "servers"
   add_foreign_key "server_votes", "user_accounts"
   add_foreign_key "server_webhook_configs", "servers"
+  add_foreign_key "server_webhook_events", "server_webhook_configs"
   add_foreign_key "server_webhook_events", "servers"
   add_foreign_key "server_webhook_secrets", "servers"
   add_foreign_key "servers", "apps"
