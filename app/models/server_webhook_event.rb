@@ -45,13 +45,13 @@ class ServerWebhookEvent < ApplicationRecord
     RETRY,
     DELIVERED,
     FAILED
-  ]
+  ].freeze
 
   SERVER_VOTES_CREATE = 'server_votes.create'
 
   TYPES = [
     SERVER_VOTES_CREATE,
-  ]
+  ].freeze
 
   belongs_to :server
   belongs_to :config, class_name: 'ServerWebhookConfig'
@@ -79,6 +79,6 @@ class ServerWebhookEvent < ApplicationRecord
   def retry_in
     return unless retry?
 
-    (failed_attempts ** 4) + 60 + (rand(10) * failed_attempts)
+    (failed_attempts**4) + 60 + (rand(10) * failed_attempts)
   end
 end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CreateServerWebhookEvents < ActiveRecord::Migration[7.1]
   def change
     create_table :server_webhook_events do |t|

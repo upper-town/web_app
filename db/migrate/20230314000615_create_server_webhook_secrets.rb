@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CreateServerWebhookSecrets < ActiveRecord::Migration[7.1]
   def change
     create_table :server_webhook_secrets do |t|
