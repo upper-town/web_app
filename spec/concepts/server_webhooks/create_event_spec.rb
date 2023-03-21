@@ -7,7 +7,7 @@ RSpec.describe ServerWebhooks::CreateEvent do
     context 'when event_type is unknown' do
       it 'raises an error' do
         expect do
-          described_class.new(any_args, 'an_unknown.event_type', nil).call
+          described_class.new(any_args, 'unknown.event_type', nil).call
         end.to raise_error('Unknown event_type for ServerWebhooks::CreateEvent')
       end
     end

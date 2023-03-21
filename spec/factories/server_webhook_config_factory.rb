@@ -23,26 +23,11 @@
 #
 #  fk_rails_...  (server_id => servers.id)
 #
-class ServerWebhookConfig < ApplicationRecord
-  include ShortUuidForModel
+FactoryBot.define do
+  factory :server_webhook_config do
+    server
 
-  belongs_to :server
-
-  has_many :events, class_name: 'ServerWebhookEvent', dependent: :nullify
-
-  def self.enabled
-    where(disabled_at: nil)
-  end
-
-  def self.disabled
-    where.not(disabled_at: nil)
-  end
-
-  def enabled?
-    disabled_at.nil?
-  end
-
-  def disabled?
-    !enabled?
+    uuid { SecureRandom.uuid }
+    event_type { 'test.event_type' }
   end
 end

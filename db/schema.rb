@@ -139,7 +139,7 @@ ActiveRecord::Schema[7.1].define(version: 2023_03_14_000615) do
     t.uuid "uuid", null: false
     t.string "event_type", null: false
     t.string "url", default: "", null: false
-    t.string "notice", null: false
+    t.string "notice", default: "", null: false
     t.datetime "disabled_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

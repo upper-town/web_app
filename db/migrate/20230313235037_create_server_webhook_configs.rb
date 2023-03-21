@@ -8,7 +8,7 @@ class CreateServerWebhookConfigs < ActiveRecord::Migration[7.1]
       t.uuid     :uuid,            null: false
       t.string   :event_type,      null: false
       t.string   :url,             null: false, default: ''
-      t.string   :notice,          null: false
+      t.string   :notice,          null: false, default: ''
       t.datetime :disabled_at,     null: true
 
       t.timestamps
