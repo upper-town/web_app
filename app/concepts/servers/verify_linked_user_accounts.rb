@@ -50,8 +50,8 @@ module Servers
 
       Result.success
 
-    rescue Faraday::ConnectionFailed => e
-      Result.failure("Connection Error: #{e}")
+    rescue Faraday::ConnectionFailed, Faraday::TimeoutError => e
+      Result.failure("Connection Failed or Timeout Error: #{e}")
     end
 
     def download_and_parse_json_file
@@ -73,8 +73,8 @@ module Servers
 
       Result.success(parsed_body: response.body)
 
-    rescue Faraday::ConnectionFailed => e
-      Result.failure("Connection Error: #{e}")
+    rescue Faraday::ConnectionFailed, Faraday::TimeoutError => e
+      Result.failure("Connection Failed or Timeout Error: #{e}")
     rescue Faraday::ParsingError, JSON::ParserError, TypeError => e
       Result.failure("Parsing Error: Invalid JSON file: #{e}")
     end
@@ -103,7 +103,7 @@ module Servers
         return Result.failure("Empty \"user_accounts\" array in #{JSON_FILE_PATH}")
       end
 
-      ActiveRecord::Base.transaction do
+      ApplicationRecord.transaction do
         ServerUserAccount
           .where(server: @server)
           .where.not(user_account_id: user_account_ids)

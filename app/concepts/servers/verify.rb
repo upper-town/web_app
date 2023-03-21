@@ -7,14 +7,12 @@ module Servers
     end
 
     def call(current_time = Time.current)
-      ActiveRecord::Base.transaction do
-        result = VerifyLinkedUserAccounts.new(@server).call(current_time)
+      result = VerifyLinkedUserAccounts.new(@server).call(current_time)
 
-        if result.success?
-          update_as_verified(current_time)
-        else
-          update_as_pending(current_time, result)
-        end
+      if result.success?
+        update_as_verified(current_time)
+      else
+        update_as_pending(current_time, result)
       end
     end
 
