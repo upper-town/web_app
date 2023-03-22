@@ -6,9 +6,6 @@ module ServerWebhooks
 
     def initialize(server_webhook_event)
       @server_webhook_event = server_webhook_event
-
-      @server_webhook_secrets_active   = ServerWebhookSecret.active.where(server_id: @server_webhook_event.server_id)
-      @server_webhook_secrets_archived = ServerWebhookSecret.archived.where(server_id: @server_webhook_event.server_id)
     end
 
     def call
@@ -34,12 +31,12 @@ module ServerWebhooks
     end
 
     def build_request_signatures(request_body)
-      active_signatures = @server_webhook_secrets_active.map do |server_webhook_secret|
-        generate_signature(server_webhook_secret.value, request_body)
+      active_signatures = active_server_webhook_secrets_query.map do |value|
+        generate_signature(value, request_body)
       end
 
-      archived_signatures = @server_webhook_secrets_archived.map do |server_webhook_secret|
-        generate_signature(server_webhook_secret.value, request_body)
+      archived_signatures = archived_server_webhook_secrets_query.map do |value|
+        generate_signature(value, request_body)
       end
 
       active_signatures + archived_signatures
@@ -54,6 +51,20 @@ module ServerWebhooks
 
     def generate_signature(secret, request_body)
       OpenSSL::HMAC.hexdigest('sha256', secret, request_body)
+    end
+
+    def active_server_webhook_secrets_query
+      ServerWebhookSecret
+        .active
+        .where(server_id: @server_webhook_event.server_id)
+        .pluck(:value)
+    end
+
+    def archived_server_webhook_secrets_query
+      ServerWebhookSecret
+        .archived
+        .where(server_id: @server_webhook_event.server_id)
+        .pluck(:value)
     end
   end
 end
