@@ -27,3 +27,9 @@ servers_verify_scheduler_job:
   class: Servers::VerifySchedulerJob
   args: []
   queue: default
+
+server_webhooks_delete_old_events_job:
+  cron: "0 4 * * *"
+  class: ServerWebhooks::DeleteOldEventsJob
+  args: []
+  queue: default
