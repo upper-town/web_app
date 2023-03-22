@@ -2,15 +2,17 @@
 
 module ServerWebhooks
   class BuildEventRequestHeadersAndBody
+    SIGNATURE_HEADER = 'X-Upper-Town-Server-Webhook-Signature'
+
     def initialize(server_webhook_event)
       @server_webhook_event = server_webhook_event
 
-      @server_webhook_secrets_active   = @server_webhook_event.server.webhook_secrets.active
-      @server_webhook_secrets_archived = @server_webhook_event.server.webhook_secrets.archived
+      @server_webhook_secrets_active   = ServerWebhookSecret.active.where(server_id: @server_webhook_event.server_id)
+      @server_webhook_secrets_archived = ServerWebhookSecret.archived.where(server_id: @server_webhook_event.server_id)
     end
 
     def call
-      request_body = build_request_body!
+      request_body = build_request_body
       request_signatures = build_request_signatures(request_body)
       request_headers = build_request_headers(request_signatures)
 
@@ -19,7 +21,7 @@ module ServerWebhooks
 
     private
 
-    def build_request_body!
+    def build_request_body
       {
         'event' => {
           'id'                => @server_webhook_event.suuid,

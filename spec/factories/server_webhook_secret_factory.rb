@@ -21,16 +21,11 @@
 #
 #  fk_rails_...  (server_id => servers.id)
 #
-class ServerWebhookSecret < ApplicationRecord
-  include ShortUuidForModel
+FactoryBot.define do
+  factory :server_webhook_secret do
+    server
 
-  belongs_to :server
-
-  def self.active
-    where(archived_at: nil)
-  end
-
-  def self.archived
-    where.not(archived_at: nil)
+    uuid { SecureRandom.uuid }
+    value { 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa' }
   end
 end

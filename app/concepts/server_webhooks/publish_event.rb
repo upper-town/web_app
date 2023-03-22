@@ -3,7 +3,6 @@
 module ServerWebhooks
   class PublishEvent
     TIMEOUT = 60
-    SIGNATURE_HEADER = 'X-Upper-Town-Server-Webhook-Signature'
 
     def initialize(server_webhook_event)
       @server_webhook_event = server_webhook_event
