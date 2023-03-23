@@ -51,8 +51,7 @@ module ServerWebhooks
           retry_in: retry_in
         )
       else
-        @server_webhook_event.config = server_webhook_config
-        @server_webhook_event.save!
+        @server_webhook_event.update!(config: server_webhook_config)
 
         Result.success
       end
@@ -76,7 +75,7 @@ module ServerWebhooks
         Result.failure(
           "May retry event: #{notice}",
           retry_in: retry_in,
-          server_webhook_config_id: @server_webhook_event.config.id
+          check_up_enabled_config_id: @server_webhook_event.config.id
         )
       end
     rescue Faraday::ConnectionFailed, Faraday::TimeoutError => e
@@ -86,7 +85,7 @@ module ServerWebhooks
       Result.failure(
         "May retry event: #{notice}",
         retry_in: retry_in,
-        server_webhook_config_id: @server_webhook_event.config.id
+        check_up_enabled_config_id: @server_webhook_event.config.id
       )
     end
 

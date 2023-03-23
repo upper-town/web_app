@@ -22,6 +22,9 @@ module Servers
     private
 
     def process(past_time, current_time)
+      # TODO: Consider acquiring a lock on @app just to we don't run more than
+      # one instance of this service simultaneously for the same app
+
       ServerStat::PERIODS.each do |period|
         ServerStat.loop_through(period, past_time, current_time) do |reference_date, _|
           upsert_server_stats(period, reference_date)

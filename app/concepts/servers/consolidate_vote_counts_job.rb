@@ -4,11 +4,7 @@ module Servers
   class ConsolidateVoteCountsJob
     include Sidekiq::Job
 
-    sidekiq_options(lock: :while_executing, lock_args_method: :lock_args)
-
-    def self.lock_args(args)
-      [args[0], args[1]]
-    end
+    sidekiq_options(lock: :while_executing)
 
     def perform(server_id, method, schedule_consolidate_rankings_job = false)
       server = Server.find(server_id)

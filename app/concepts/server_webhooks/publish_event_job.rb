@@ -14,8 +14,8 @@ module ServerWebhooks
       if result.failure?
         Rails.logger.info "[ServerWebhooks::PublishEventJob] #{result.errors.to_hash}"
 
-        if result.data[:server_webhook_config_id].present?
-          CheckUpEnabledConfigJob.perform_async(result.data[:server_webhook_config_id])
+        if result.data[:check_up_enabled_config_id].present?
+          CheckUpEnabledConfigJob.perform_async(result.data[:check_up_enabled_config_id])
         end
 
         if result.data[:retry_in].present?

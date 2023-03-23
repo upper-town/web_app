@@ -37,7 +37,7 @@ RSpec.describe ServerWebhooks::PublishEventJob do
     end
 
     context 'when PublishEvent result is a failure' do
-      context 'when result does not have a server_webhook_config_id' do
+      context 'when result does not have a check_up_enabled_config_id' do
         it 'does not schedule job to perform a check up' do
           publish_event = instance_double(ServerWebhooks::PublishEvent)
           result = Result.failure
@@ -75,10 +75,10 @@ RSpec.describe ServerWebhooks::PublishEventJob do
         end
       end
 
-      context 'when result has a server_webhook_config_id' do
+      context 'when result has a check_up_enabled_config_id' do
         it 'schedules job to perform a check up on that ServerWebhookConfig' do
           publish_event = instance_double(ServerWebhooks::PublishEvent)
-          result = Result.failure(nil, server_webhook_config_id: 123456)
+          result = Result.failure(nil, check_up_enabled_config_id: 123456)
           allow(ServerWebhooks::PublishEvent).to receive(:new).and_return(publish_event)
           allow(publish_event).to receive(:call).and_return(result)
 

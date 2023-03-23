@@ -6,7 +6,7 @@ module ServerWebhooks
 
     sidekiq_options(lock: :while_executing)
 
-    def perform(server_id, event_type, record_id = nil)
+    def perform(server_id, event_type, record_id)
       server = Server.find(server_id)
       return unless server.webhook_config?(event_type)
 
