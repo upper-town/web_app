@@ -3,7 +3,7 @@
 class CreateServerStats < ActiveRecord::Migration[7.1]
   def change
     create_table :server_stats do |t|
-      t.string     :period,         null: false # "year", "month", "week"
+      t.string     :period,         null: false
       t.date       :reference_date, null: false
       t.references :app,            null: false, foreign_key: true, index: false
       t.string     :country_code,   null: false

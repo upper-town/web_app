@@ -23,5 +23,6 @@ class CreateServerWebhookEvents < ActiveRecord::Migration[7.1]
     add_index :server_webhook_events, :type
     add_index :server_webhook_events, :server_id
     add_index :server_webhook_events, :server_webhook_config_id
+    add_index :server_webhook_events, :updated_at
   end
 end
