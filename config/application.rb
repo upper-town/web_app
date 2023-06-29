@@ -46,5 +46,9 @@ module WebApp
       ENV.fetch('ACTIVE_RECORD_ENCRYPTION_DETERMINISTIC_KEY').split(',')
     config.active_record.encryption.key_derivation_salt =
       ENV.fetch('ACTIVE_RECORD_ENCRYPTION_KEY_DERIVATION_SALT')
+
+    ActiveSupport.on_load(:active_record_postgresqladapter) do
+      self.datetime_type = :timestamptz
+    end
   end
 end
