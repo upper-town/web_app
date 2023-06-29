@@ -163,6 +163,7 @@ ActiveRecord::Schema[7.1].define(version: 2023_03_14_000615) do
     t.index ["server_id"], name: "index_server_webhook_events_on_server_id"
     t.index ["server_webhook_config_id"], name: "index_server_webhook_events_on_server_webhook_config_id"
     t.index ["type"], name: "index_server_webhook_events_on_type"
+    t.index ["updated_at"], name: "index_server_webhook_events_on_updated_at"
     t.index ["uuid"], name: "index_server_webhook_events_on_uuid", unique: true
   end
 
@@ -185,7 +186,7 @@ ActiveRecord::Schema[7.1].define(version: 2023_03_14_000615) do
     t.string "banner_image_url", default: "", null: false
     t.string "description", default: "", null: false
     t.text "info", default: "", null: false
-    t.string "verified_status", null: false
+    t.string "verified_status", default: "pending", null: false
     t.text "verified_notice", default: "", null: false
     t.datetime "verified_updated_at"
     t.bigint "app_id", null: false

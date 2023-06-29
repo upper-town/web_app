@@ -23,6 +23,7 @@
 #  index_server_webhook_events_on_server_id                 (server_id)
 #  index_server_webhook_events_on_server_webhook_config_id  (server_webhook_config_id)
 #  index_server_webhook_events_on_type                      (type)
+#  index_server_webhook_events_on_updated_at                (updated_at)
 #  index_server_webhook_events_on_uuid                      (uuid) UNIQUE
 #
 # Foreign Keys

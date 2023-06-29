@@ -13,7 +13,7 @@
 #  site_url            :string           default(""), not null
 #  uuid                :uuid             not null
 #  verified_notice     :text             default(""), not null
-#  verified_status     :string           not null
+#  verified_status     :string           default("pending"), not null
 #  verified_updated_at :datetime
 #  created_at          :datetime         not null
 #  updated_at          :datetime         not null
