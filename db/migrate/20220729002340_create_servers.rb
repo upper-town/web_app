@@ -11,7 +11,7 @@ class CreateServers < ActiveRecord::Migration[7.1]
       t.string :description,      null: false, default: ''
       t.text   :info,             null: false, default: ''
 
-      t.string   :verified_status,     null: false
+      t.string   :verified_status,     null: false, default: 'pending'
       t.text     :verified_notice,     null: false, default: ''
       t.datetime :verified_updated_at, null: true
 
