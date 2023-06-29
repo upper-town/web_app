@@ -2,6 +2,7 @@
 
 require 'spec_helper'
 
+ENV['APP_ENV'] ||= 'test'
 ENV['RAILS_ENV'] ||= 'test'
 
 require_relative '../config/environment'

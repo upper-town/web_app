@@ -2,7 +2,27 @@
 
 Repository for a web app with features for the game community.
 
+| Environment | Domain/site                | `APP_ENV`     | `RAILS_ENV `  |
+| ----------- | -------------------------- | ------------- | ------------- |
+| production  | https://upper.town         | `production`  | `production`  |
+| staging     | https://uppertown.xyz      | `staging`     | `production`  |
+| development | http://uppertown.dev:3000  | `development` | `development` |
+| test        | http://uppertown.test:3000 | `test`        | `test`        |
+
+**Status page**: https://uppertown.link
+
 ## Development setup
+
+### Hosts
+
+Edit you `/etc/hosts` and add the following:
+
+```
+127.0.0.1    uppertown.dev
+127.0.0.1    uppertown.test
+```
+
+Those are the domains used locally for `development` and `test` environments.
 
 ### Ruby
 
@@ -27,8 +47,8 @@ To override env vars values, create files named `.env.development.local` and
 `.env.test.local` on your local repository and set any variables you'd like to
 override.
 
-In production, env vars should be properly set in the app settings in the cloud
-hosting service, and not from env files using `dotenv-rails`.
+In production and staging, env vars should be properly set in the app settings
+in the cloud hosting service, and not from env files using `dotenv-rails`.
 
 ### FactoryBot
 
@@ -79,7 +99,7 @@ Move business logic to services, jobs, or concepts.
 
 ### State machines
 
-State machines can be implemented using plain Ruby/Rails methods and, in some
+State machines can be implemented with plain Ruby/Rails code and, in some
 cases, defining a state machine is not necessary.
 
 ### Services
