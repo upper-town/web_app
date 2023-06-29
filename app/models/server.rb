@@ -35,10 +35,8 @@ class Server < ApplicationRecord
 
   PENDING = 'pending'
   VERIFIED = 'verified'
-  VERIFIED_STATUSES = [PENDING, VERIFIED].freeze
 
-  INTEGRATED = 'integrated'
-  INTEGRATED_STATUSES = [PENDING, INTEGRATED].freeze
+  VERIFIED_STATUSES = [PENDING, VERIFIED].freeze
 
   COUNTRY_CODES = ISO3166::Country.codes
 
@@ -69,7 +67,7 @@ class Server < ApplicationRecord
   end
 
   def integrated?
-    integrated_status == INTEGRATED
+    webhook_config?(ServerWebhookEvent::SERVER_VOTES_CREATE)
   end
 
   def webhook_config(event_type)
