@@ -9,7 +9,8 @@ Repository for a web app with features for the game community.
 | development | http://uppertown.dev:3000  | `development` | `development` |
 | test        | http://uppertown.test:3000 | `test`        | `test`        |
 
-**Status page**: https://uppertown.link
+- **Status Page**: https://uppertown.link
+- **Observability**: https://uppertown.observer
 
 ## Development setup
 
