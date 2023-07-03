@@ -67,4 +67,10 @@ Rails.application.configure do
   config.action_mailer.default_url_options = default_url_options
 
   config.action_mailer.perform_caching = false
+
+  # Suppress logger output for asset requests.
+  config.assets.quiet = true
+
+  config.assets.debug = true
+  config.assets.prefix = '/assets-test'
 end
