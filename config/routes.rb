@@ -131,7 +131,7 @@ Rails.application.routes.draw do
   namespace :admin do
     resource :demo, only: [:show]
     resource :dashboard, only: [:show]
-    resources :users, only: [:index, :show]
+    resources :users, only: [:index, :show, :edit]
     resources :admin_users
     resources :servers, only: [:index, :show, :new, :create, :edit, :update, :destroy]
   end
