@@ -2,15 +2,15 @@
 
 Repository for a web app with features for the game community.
 
-| Environment | Domain/site                | `APP_ENV`     | `RAILS_ENV `  |
-| ----------- | -------------------------- | ------------- | ------------- |
-| production  | https://upper.town         | `production`  | `production`  |
-| staging     | https://uppertown.xyz      | `staging`     | `production`  |
-| development | http://uppertown.dev:3000  | `development` | `development` |
-| test        | http://uppertown.test:3000 | `test`        | `test`        |
+| Environment | Domain/site                 | `APP_ENV`     | `RAILS_ENV `  |
+| ----------- | --------------------------- | ------------- | ------------- |
+| production  | https://upper.town          | `production`  | `production`  |
+| staging     | https://sandbox.upper.town  | `staging`     | `production`  |
+| development | http://dev.upper.town:3000  | `development` | `development` |
+| test        | http://test.upper.town:3000 | `test`        | `test`        |
 
-- **Status Page**: https://uppertown.link
-- **Observability**: https://uppertown.observer
+- **Observability**: https://observe.upper.town
+- **Status Page**: https://upperstatus.town
 
 ## Development setup
 
@@ -19,8 +19,8 @@ Repository for a web app with features for the game community.
 Edit you `/etc/hosts` and add the following:
 
 ```
-127.0.0.1    uppertown.dev
-127.0.0.1    uppertown.test
+127.0.0.1    dev.upper.town
+127.0.0.1    test.upper.town
 ```
 
 Those are the domains used locally for `development` and `test` environments.
