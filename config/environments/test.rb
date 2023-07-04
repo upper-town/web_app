@@ -73,4 +73,5 @@ Rails.application.configure do
 
   config.assets.debug = true
   config.assets.prefix = '/assets-test'
+  config.assets.compile = true
 end
