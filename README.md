@@ -2,12 +2,12 @@
 
 Repository for a web app with features for the game community.
 
-| Environment | Domain/site                 | `APP_ENV`     | `RAILS_ENV `  |
-| ----------- | --------------------------- | ------------- | ------------- |
-| production  | https://upper.town          | `production`  | `production`  |
-| staging     | https://sandbox.upper.town  | `staging`     | `production`  |
-| development | http://dev.upper.town:3000  | `development` | `development` |
-| test        | http://test.upper.town:3000 | `test`        | `test`        |
+| Environment | Domain/site                 | `APP_ENV`     | `RAILS_ENV `                 |
+| ----------- | --------------------------- | ------------- | ---------------------------- |
+| production  | https://upper.town          | `production`  | `production`                 |
+| sandbox     | https://sandbox.upper.town  | `sandbox`     | `production` / `development` |
+| development | http://dev.upper.town:3000  | `development` | `development`                |
+| test        | http://test.upper.town:3000 | `test`        | `test`                       |
 
 - **Observability**: https://observe.upper.town
 - **Status Page**: https://upperstatus.town
