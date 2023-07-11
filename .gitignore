@@ -39,3 +39,6 @@ coverage/
 
 NOTE.md
 upper_town.json
+
+/node_modules
+/public/assets*

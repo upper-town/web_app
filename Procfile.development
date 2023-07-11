@@ -1,4 +1,7 @@
 web: bin/rails server -p ${PORT}
-
 worker: bundle exec sidekiq
+
+js: yarn build-dev --watch
+css: yarn build-dev:css --watch
+
 mailcatcher: gem install mailcatcher --pre && mailcatcher --foreground --verbose
