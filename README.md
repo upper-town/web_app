@@ -53,10 +53,11 @@ Read more about how to install and use it.
 
 [`asdf`]: https://asdf-vm.com/guide/getting-started.html
 
-### Postgres and Redis
+### Postgres, Redis, and Node.js
 
 The app relies on Postgres as database and Redis as cache and job queue.
-For development and test, you can install and run them manually on your computer.
+Node.js is used to bundle JS and CSS files. For development and test, you can
+install and run them manually on your computer the way it works best for you.
 
 ### Environment variables
 
