@@ -10,8 +10,8 @@ Current domains in use by this app:
 | ----------- | ---------------------------------- | ------------- | ---------------------------- |
 | production  | https://upper.town                 | `production`  | `production`                 |
 | sandbox     | https://sandbox.upper.town         | `sandbox`     | `production` / `development` |
-| development | http://development.upper.town:3000 | `development` | `development`                |
-| test        | http://test.upper.town:3000        | `test`        | `test`                       |
+| development | http://development.upper.town:5000 | `development` | `development`                |
+| test        | http://test.upper.town:5000        | `test`        | `test`                       |
 
 Also,
 
