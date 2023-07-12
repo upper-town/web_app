@@ -73,6 +73,19 @@ override.
 In production and staging, env vars should be properly set in the app settings
 in the cloud hosting service, and not from env files using `dotenv-rails`.
 
+### Running the app in development
+
+`Procfile.development` has the list of processes needed for development. You can
+use [`foreman`] or [`overmind`] to run them all at once. Overmind is suggested
+in the [`bin/dev`] script.
+
+[`foreman`]: https://rubygems.org/gems/foreman
+[`overmind`]: https://github.com/DarthSim/overmind/
+[`bin/dev`]: bin/dev
+
+Make sure to `source .env.development` and `source .env.development.local`
+before running the apps.
+
 ### FactoryBot
 
 FactoryBot factories are defined in `spec/factories/`
