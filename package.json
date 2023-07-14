@@ -17,9 +17,9 @@
     "tailwindcss": "^3.3.2"
   },
   "scripts": {
-    "build": "NODE_ENV=production esbuild app/javascript/*.* --bundle --minify --outdir=app/assets/builds --public-path=/assets",
+    "build": "NODE_ENV=production esbuild app/javascript/*.* --bundle --minify --sourcemap --outdir=app/assets/builds --public-path=/assets",
     "build-dev": "NODE_ENV=development esbuild app/javascript/*.* --bundle --sourcemap --outdir=app/assets/builds --public-path=/assets-development",
-    "build:css": "NODE_ENV=production postcss ./app/assets/stylesheets/application.postcss.css -o ./app/assets/builds/application.css --no-map",
+    "build:css": "NODE_ENV=production postcss ./app/assets/stylesheets/application.postcss.css -o ./app/assets/builds/application.css --map",
     "build-dev:css": "NODE_ENV=development postcss ./app/assets/stylesheets/application.postcss.css -o ./app/assets/builds/application.css --map"
   }
 }
