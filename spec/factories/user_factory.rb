@@ -37,7 +37,7 @@
 FactoryBot.define do
   factory :user do
     uuid { SecureRandom.uuid }
-    sequence(:email) { |n| "user.#{n}@upper.town" }
+    sequence(:email) { |n| "user.#{n}@test.upper.town" }
     password { 'testpass' }
   end
 end
