@@ -21,10 +21,10 @@
 #
 # Indexes
 #
-#  index_servers_on_app_id           (app_id)
-#  index_servers_on_country_code     (country_code)
-#  index_servers_on_name_and_app_id  (name,app_id) UNIQUE
-#  index_servers_on_uuid             (uuid) UNIQUE
+#  index_servers_on_app_id        (app_id)
+#  index_servers_on_country_code  (country_code)
+#  index_servers_on_name          (name)
+#  index_servers_on_uuid          (uuid) UNIQUE
 #
 # Foreign Keys
 #
@@ -40,8 +40,12 @@ class Server < ApplicationRecord
 
   COUNTRY_CODES = ISO3166::Country.codes
 
-  validates :country_code, inclusion: { in: COUNTRY_CODES }
+  validate :verified_server_with_same_name_exist?
+
+  validates :country_code,    inclusion: { in: COUNTRY_CODES }
   validates :verified_status, inclusion: { in: VERIFIED_STATUSES }
+  validates :name,     length: { minimum: 3, maximum: 255 }
+  validates :site_url, length: { minimum: 3, maximum: 255 }
 
   belongs_to :app
 
@@ -76,5 +80,14 @@ class Server < ApplicationRecord
 
   def webhook_config?(event_type)
     webhook_configs.enabled.exists?(event_type: event_type)
+  end
+
+  def verified_server_with_same_name_exist?
+    if Server.exists?(verified_status: VERIFIED, name: name, app_id: app_id)
+      errors.add(
+        :name,
+        "There is already a verified server with same name for this app. You can try to rename yours."
+      )
+    end
   end
 end

@@ -1,1 +1,39 @@
-Page for i/servers/new
+<div>
+  <%= form_with(model: @new_form, url: @new_form.url, method: @new_form.method) do |form| %>
+    <div class="mb-2">
+      <%= form.label(:app_id, 'App') %><br>
+      <%=
+        form.select(
+          :app_id,
+          grouped_options_for_select(@app_id_options, @new_form.app_id),
+          { include_blank: true },
+          { class: 'block w-full' }
+        )
+      %>
+    </div>
+
+    <div class="mb-2">
+    <%= form.label(:country_code, 'Country') %><br>
+      <%=
+        form.select(
+          :country_code,
+          @country_code_options,
+          { include_blank: true },
+          { class: 'block w-full' }
+        )
+      %>
+    </div>
+
+    <div class="mb-2">
+      <%= form.label(:name, 'Name') %><br>
+      <%= form.text_field(:name) %>
+    </div>
+
+    <div class="mb-2">
+      <%= form.label(:site_url, 'Site URL') %><br>
+      <%= form.text_field(:site_url) %>
+    </div>
+
+    <%= form.submit('Add server', class: 'btn btn-primary') %>
+  <% end %>
+</div>
