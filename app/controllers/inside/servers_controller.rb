@@ -2,6 +2,10 @@
 
 module Inside
   class ServersController < BaseController
+    MAX_PENDING_SERVER_COUNT = 1
+
+    before_action :max_pending_server_per_user_account, only: [:new, :create]
+
     def index
       @servers = current_user_account.servers
     end
@@ -16,7 +20,6 @@ module Inside
       set_form_options
 
       @new_form = Servers::NewForm.new(servers_new_form_params)
-      @new_form.user_account = current_user_account
 
       if @new_form.valid?
         result = Servers::Create.new(@new_form.attributes, current_user_account).call
@@ -45,6 +48,17 @@ module Inside
       )
     end
 
+    def max_pending_server_per_user_account
+      count = current_user_account.servers.where(verified_status: Server::PENDING).count
+
+      if count >= MAX_PENDING_SERVER_COUNT
+        flash[:alert] = "You have many servers pending verification.
+          Please verify them first before adding more servers."
+
+        redirect_to(inside_servers_path)
+      end
+    end
+
     def set_form_options
       form_options_query = FormOptionsQuery.new(
         cache_enabled: true,
@@ -55,6 +69,8 @@ module Inside
       )
       @app_id_options = form_options_query.build_app_id_options
       @country_code_options = form_options_query.build_country_code_options
+
+      nil
     end
   end
 end
