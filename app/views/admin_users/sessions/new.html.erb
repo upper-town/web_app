@@ -29,7 +29,13 @@
   </div>
 
   <div class="mb-2">
-    <%= form.submit("Sign in", { class: 'btn btn-primary' }) %>
+    <%=
+      form.submit(
+        "Sign in",
+        class: 'btn btn-primary',
+        data: { 'turbo-submits-with' => 'Loading...' }
+      )
+    %>
   </div>
 <% end %>
 

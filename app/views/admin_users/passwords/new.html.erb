@@ -17,7 +17,13 @@
   </div>
 
   <div class="mb-2">
-    <%= form.submit("Send me reset password instructions", { class: 'btn btn-primary' }) %>
+    <%=
+      form.submit(
+        "Send me reset password instructions",
+        class: 'btn btn-primary',
+        data: { 'turbo-submits-with' => 'Loading...' }
+      )
+    %>
   </div>
 <% end %>
 

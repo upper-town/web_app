@@ -34,6 +34,12 @@
       <%= form.text_field(:site_url) %>
     </div>
 
-    <%= form.submit('Add server', class: 'btn btn-primary') %>
+    <%=
+      form.submit(
+        'Add server',
+        class: 'btn btn-primary',
+        data: { 'turbo-submits-with' => 'Saving...' }
+      )
+    %>
   <% end %>
 </div>

@@ -13,5 +13,11 @@
 
   <%= form.hidden_field(:reference, value: @reference) %>
 
-  <%= form.submit('Click to vote!', class: 'btn btn-primary') %>
+  <%=
+    form.submit(
+      'Click to vote!',
+      class: 'btn btn-primary',
+      data: { 'turbo-submits-with' => 'Loading...' }
+    )
+  %>
 <% end %>
