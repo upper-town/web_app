@@ -6,7 +6,7 @@ class CreateServers < ActiveRecord::Migration[7.1]
       t.uuid   :uuid,             null: false
       t.string :name,             null: false
       t.string :country_code,     null: false
-      t.string :site_url,         null: false, default: ''
+      t.string :site_url,         null: false
       t.string :banner_image_url, null: false, default: ''
       t.string :description,      null: false, default: ''
       t.text   :info,             null: false, default: ''

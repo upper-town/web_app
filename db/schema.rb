@@ -182,7 +182,7 @@ ActiveRecord::Schema[7.1].define(version: 2023_03_14_000615) do
     t.uuid "uuid", null: false
     t.string "name", null: false
     t.string "country_code", null: false
-    t.string "site_url", default: "", null: false
+    t.string "site_url", null: false
     t.string "banner_image_url", default: "", null: false
     t.string "description", default: "", null: false
     t.text "info", default: "", null: false

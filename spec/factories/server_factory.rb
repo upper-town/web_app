@@ -10,7 +10,7 @@
 #  description         :string           default(""), not null
 #  info                :text             default(""), not null
 #  name                :string           not null
-#  site_url            :string           default(""), not null
+#  site_url            :string           not null
 #  uuid                :uuid             not null
 #  verified_notice     :text             default(""), not null
 #  verified_status     :string           default("pending"), not null

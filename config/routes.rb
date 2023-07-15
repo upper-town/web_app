@@ -56,6 +56,7 @@
 #                        admin_demo GET    /admin/demo(.:format)                      admin/demos#show
 #                   admin_dashboard GET    /admin/dashboard(.:format)                 admin/dashboards#show
 #                       admin_users GET    /admin/users(.:format)                     admin/users#index
+#                   edit_admin_user GET    /admin/users/:id/edit(.:format)            admin/users#edit
 #                        admin_user GET    /admin/users/:id(.:format)                 admin/users#show
 #                 admin_admin_users GET    /admin/admin_users(.:format)               admin/admin_users#index
 #                                   POST   /admin/admin_users(.:format)               admin/admin_users#create
