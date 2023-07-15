@@ -194,7 +194,7 @@ ActiveRecord::Schema[7.1].define(version: 2023_03_14_000615) do
     t.datetime "updated_at", null: false
     t.index ["app_id"], name: "index_servers_on_app_id"
     t.index ["country_code"], name: "index_servers_on_country_code"
-    t.index ["name", "app_id"], name: "index_servers_on_name_and_app_id", unique: true
+    t.index ["name"], name: "index_servers_on_name"
     t.index ["uuid"], name: "index_servers_on_uuid", unique: true
   end
 

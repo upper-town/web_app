@@ -21,10 +21,10 @@
 #
 # Indexes
 #
-#  index_servers_on_app_id           (app_id)
-#  index_servers_on_country_code     (country_code)
-#  index_servers_on_name_and_app_id  (name,app_id) UNIQUE
-#  index_servers_on_uuid             (uuid) UNIQUE
+#  index_servers_on_app_id        (app_id)
+#  index_servers_on_country_code  (country_code)
+#  index_servers_on_name          (name)
+#  index_servers_on_uuid          (uuid) UNIQUE
 #
 # Foreign Keys
 #

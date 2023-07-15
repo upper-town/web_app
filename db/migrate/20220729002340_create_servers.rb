@@ -21,8 +21,8 @@ class CreateServers < ActiveRecord::Migration[7.1]
     end
 
     add_index :servers, :uuid,            unique: true
-    add_index :servers, [:name, :app_id], unique: true
 
+    add_index :servers, :name
     add_index :servers, :app_id
     add_index :servers, :country_code
   end
