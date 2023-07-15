@@ -3,27 +3,28 @@
 class ServersController < ApplicationController
   include Pagy::Backend
 
-  DEFAULT_APP_ID_OPTION = ['All', nil].freeze
-  DEFAULT_COUNTRY_CODE_OPTION = ["#{ServerStat::GLOBAL_EMOJI_FLAG} Global", ServerStat::GLOBAL].freeze
-
-  APP_ID_OPTIONS_CACHE_KEY = 'servers_index:app_id_options'
-  COUNTRY_CODE_OPTIONS_CACHE_KEY = 'servers_index:country_code_options'
-
   def index
     current_time = Time.current
+    form_options_query = FormOptionsQuery.new(
+      cache_enabled: true,
+      cache_options: {
+        key_prefix: 'servers_index',
+        expires_in: 5.minutes
+      }
+    )
 
-    @app_id_options = build_app_id_options
-    @period_options = build_period_options
-    @country_code_options = build_country_code_options
+    @app_id_options = form_options_query.build_app_id_options
+    @period_options = form_options_query.build_period_options
+    @country_code_options = form_options_query.build_country_code_options
 
-    @default_app_id_option = DEFAULT_APP_ID_OPTION
-    @default_country_code_option = DEFAULT_COUNTRY_CODE_OPTION
+    @default_app_id_option = FormOptionsQuery::DEFAULT_APP_ID_OPTION
+    @default_country_code_option = FormOptionsQuery::DEFAULT_COUNTRY_CODE_OPTION
 
     @app = app_from_params
     @period = period_from_params
     @country_code = country_code_from_params
 
-    @selected_value_for_app_id = @app.nil? ? DEFAULT_APP_ID_OPTION[1] : @app.suuid
+    @selected_value_for_app_id = @app ? @app.suuid : nil
     @selected_value_for_period = @period
     @selected_value_for_country_code = @country_code
 
@@ -80,61 +81,5 @@ class ServersController < ApplicationController
 
   def server_from_params
     Server.find_by_suuid!(params['suuid'])
-  end
-
-  def build_app_id_options
-    Rails.cache.fetch(APP_ID_OPTIONS_CACHE_KEY, expires_in: 5.minutes) do
-      app_id_options_by_type = App::TYPE_OPTIONS.each_with_object({}) do |(type_name, type), hash|
-        hash[type_name] = apps_query(type)
-      end
-
-      app_id_options_by_type.compact_blank
-    end
-  end
-
-  def build_period_options
-    { 'Period' => ServerStat::PERIOD_OPTIONS }
-  end
-
-  def build_country_code_options
-    Rails.cache.fetch(COUNTRY_CODE_OPTIONS_CACHE_KEY, expires_in: 5.minutes) do
-      most_common_country_codes, rest_country_codes = most_common_country_codes_query(3)
-
-      most_common_options = most_common_country_codes.map { |cc| build_country_code_option(cc) }
-      more_options = rest_country_codes.sort.map { |cc| build_country_code_option(cc) }
-
-      {
-        'Country' => most_common_options + more_options,
-      }.compact_blank
-    end
-  end
-
-  def build_country_code_option(country_code)
-    country = ISO3166::Country.new(country_code)
-
-    ["#{country.emoji_flag} #{country.common_name}", country_code]
-  end
-
-  def apps_query(type)
-    App
-      .where(type: type)
-      .select(:name, :uuid)
-      .sort_by(&:name)
-      .map { |app| [app.name, app.suuid] }
-  end
-
-  def most_common_country_codes_query(n)
-    sorted_country_codes =
-      Server
-      .group(:country_code)
-      .count
-      .sort_by { |_country_code, count| count }
-      .reverse
-      .map { |country_code, _count| country_code }
-
-    most_common_country_codes = sorted_country_codes.shift(n)
-    rest_country_codes = sorted_country_codes
-
-    [most_common_country_codes, rest_country_codes]
   end
 end
