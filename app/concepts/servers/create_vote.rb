@@ -20,7 +20,6 @@ module Servers
       return result if result.failure?
 
       server_vote = build_server_vote
-      server_vote.assign_attributes(@form_attributes)
 
       if server_vote.invalid?
         @rate_limiter.uncall
@@ -49,6 +48,7 @@ module Servers
         country_code: @server.country_code,
         remote_ip:    @request.remote_ip,
         user_account: @user_account,
+        reference:    @form_attributes['reference']
       )
     end
 

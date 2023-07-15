@@ -13,11 +13,5 @@
 
   <%= form.hidden_field(:reference, value: @reference) %>
 
-  <% if @new_form.errors.include?(:reference) %>
-    <div class="">
-      <code>reference</code> <%= @new_form.errors[:reference].to_sentence %>
-    </div>
-  <% end %>
-
   <%= form.submit('Click to vote!', class: 'btn btn-primary') %>
 <% end %>

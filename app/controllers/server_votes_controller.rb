@@ -31,7 +31,7 @@ class ServerVotesController < ApplicationController
         render(:new, status: :unprocessable_entity)
       end
     else
-      flash.now[:alert] = 'Form contains errors'
+      flash.now[:alert] = @new_form.errors.full_messages
       render(:new, status: :unprocessable_entity)
     end
   end
