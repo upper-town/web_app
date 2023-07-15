@@ -17,8 +17,8 @@ class ServersController < ApplicationController
     @period_options = form_options_query.build_period_options
     @country_code_options = form_options_query.build_country_code_options
 
-    @default_app_id_option = FormOptionsQuery::DEFAULT_APP_ID_OPTION
-    @default_country_code_option = FormOptionsQuery::DEFAULT_COUNTRY_CODE_OPTION
+    @default_app_id_option = FormOptionsQuery::OPTION_APP_ID_ALL
+    @default_country_code_option = FormOptionsQuery::OPTION_COUNTRY_CODE_ALL
 
     @app = app_from_params
     @period = period_from_params
@@ -71,7 +71,7 @@ class ServersController < ApplicationController
 
   def country_code_from_params
     if params['country_code'].blank?
-      ServerStat::GLOBAL
+      ServerStat::ALL
     elsif ServerStat::COUNTRY_CODES.include?(params['country_code'])
       params['country_code']
     else

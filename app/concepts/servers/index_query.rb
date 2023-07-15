@@ -5,7 +5,7 @@ module Servers
     def initialize(app = nil, period = nil, country_code = nil, current_time = nil)
       @app = app
       @period = period || ServerStat::MONTH
-      @country_code = country_code || ServerStat::GLOBAL
+      @country_code = country_code || ServerStat::ALL
       @current_time = current_time || Time.current
     end
 
@@ -40,7 +40,7 @@ module Servers
     def sql_on_country_code
       <<-SQL.squish
         "server_stats"."country_code" = #{
-          @country_code == ServerStat::GLOBAL ? quote_for_sql(ServerStat::GLOBAL) : '"servers"."country_code"'
+          @country_code == ServerStat::ALL ? quote_for_sql(ServerStat::ALL) : '"servers"."country_code"'
         }
       SQL
     end

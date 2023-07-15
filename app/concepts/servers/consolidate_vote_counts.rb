@@ -28,7 +28,7 @@ module Servers
       ServerStat::PERIODS.each do |period|
         ServerStat.loop_through(period, past_time, current_time) do |reference_date, reference_range|
           upsert_country_server_stats(period, reference_date, reference_range)
-          upsert_global_server_stats(period, reference_date, reference_range)
+          upsert_all_server_stats(period, reference_date, reference_range)
         end
       end
     end
@@ -52,18 +52,18 @@ module Servers
       server_stat_upsert_all(server_stat_hashes) if server_stat_hashes.any?
     end
 
-    def upsert_global_server_stats(period, reference_date, reference_range)
-      global_app_vote_counts = query_global_server_vote_counts(reference_range)
+    def upsert_all_server_stats(period, reference_date, reference_range)
+      all_app_vote_counts = query_all_server_vote_counts(reference_range)
       consolidated_at = Time.current
 
-      server_stat_hashes = global_app_vote_counts.map do |app_id, global_vote_count|
+      server_stat_hashes = all_app_vote_counts.map do |app_id, all_vote_count|
         {
           period: period,
           reference_date: reference_date,
           app_id: app_id,
-          country_code: ServerStat::GLOBAL,
+          country_code: ServerStat::ALL,
           server_id: @server.id,
-          vote_count: global_vote_count,
+          vote_count: all_vote_count,
           vote_count_consolidated_at: consolidated_at,
         }
       end
@@ -94,7 +94,7 @@ module Servers
         .count
     end
 
-    def query_global_server_vote_counts(reference_range)
+    def query_all_server_vote_counts(reference_range)
       ServerVote
         .where(server: @server)
         .where(created_at: reference_range)

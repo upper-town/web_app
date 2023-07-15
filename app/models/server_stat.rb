@@ -40,9 +40,9 @@ class ServerStat < ApplicationRecord
     ['Week',  WEEK]
   ].freeze
 
-  GLOBAL = 'global'
-  GLOBAL_EMOJI_FLAG = '🌐'
-  COUNTRY_CODES = [GLOBAL, *Server::COUNTRY_CODES].freeze
+  ALL = 'all'
+  ALL_EMOJI_FLAG = '🌐'
+  COUNTRY_CODES = [ALL, *Server::COUNTRY_CODES].freeze
 
   validates :period, inclusion: { in: PERIODS }
   validates :country_code, inclusion: { in: COUNTRY_CODES }

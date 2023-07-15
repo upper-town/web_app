@@ -8,13 +8,11 @@ module Servers
       @period = period
       @country_code = country_code
 
-      @server_country_code_emoji_flag = ISO3166::Country.new(@server.country_code).emoji_flag
-      @ranking_country_code_emoji_flag =
-        if @country_code == 'global'
-          ServerStat::GLOBAL_EMOJI_FLAG
-        else
-          ISO3166::Country.new(@country_code).emoji_flag
-        end
+      @server_country_code_common_name, @server_country_code_emoji_flag =
+        common_name_and_emoji_flag(@server.country_code)
+
+      @ranking_country_code_common_name, @ranking_country_code_emoji_flag =
+        common_name_and_emoji_flag(@country_code)
     end
 
     def render?
@@ -44,6 +42,16 @@ module Servers
           precision: 4,
           units: { thousand: 'k', million: 'M', billion: 'G', trillion: 'T' }
         )
+      end
+    end
+
+    def common_name_and_emoji_flag(country_code)
+      if country_code == ServerStat::ALL
+        ['All', ServerStat::ALL_EMOJI_FLAG]
+      else
+        iso_country = ISO3166::Country.new(country_code)
+
+        [iso_country.common_name, iso_country.emoji_flag]
       end
     end
   end

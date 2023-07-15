@@ -18,7 +18,12 @@
     </div>
 
     <div class="text-left font-semibold p-2">
-      <%= @server.app.name %> (<%= @server_country_code_emoji_flag %> <%= @server.country_code %>)
+      <%= @server.app.name %>
+      (
+        <span title="<%= @server_country_code_common_name %>">
+          <%= @server_country_code_emoji_flag %> <%= @server.country_code %>
+        </span>
+      )
     </div>
 
     <% if @server.description.present? %>
@@ -28,8 +33,14 @@
     <% end %>
 
     <div class="text-center bg-slate-200 mb-2">
-      <div class="uppercase font-medium bg-slate-300 p-2">
-        Rankings <span class="text-xs">(<%= @ranking_country_code_emoji_flag  %> <%= @country_code %>)</span>
+      <div class="font-medium bg-slate-300 p-2">
+        Rankings
+        <span class="text-xs" title="<%= @ranking_country_code_common_name %>">
+          (
+            <%= @ranking_country_code_emoji_flag  %>
+            <%= @country_code %>
+          )
+        </span>
       </div>
       <div class="flex divide-x divide-slate-50 p-2">
         <div class="text-center flex-auto">

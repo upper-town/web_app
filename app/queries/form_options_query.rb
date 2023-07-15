@@ -6,8 +6,8 @@ class FormOptionsQuery
     expires_in: 1.minute
   }.freeze
 
-  DEFAULT_APP_ID_OPTION = ['All', nil].freeze
-  DEFAULT_COUNTRY_CODE_OPTION = ["#{ServerStat::GLOBAL_EMOJI_FLAG} Global", ServerStat::GLOBAL].freeze
+  OPTION_APP_ID_ALL = ['All', nil].freeze
+  OPTION_COUNTRY_CODE_ALL = ['All', ServerStat::ALL].freeze
 
   def initialize(cache_enabled: false, cache_options: {})
     @cache_enabled = cache_enabled
@@ -25,7 +25,7 @@ class FormOptionsQuery
   end
 
   def build_period_options
-    { 'Period' => ServerStat::PERIOD_OPTIONS }
+    ServerStat::PERIOD_OPTIONS
   end
 
   def build_country_code_options
@@ -35,9 +35,7 @@ class FormOptionsQuery
       most_common_options = most_common_country_codes.map { |cc| build_country_code_option(cc) }
       more_options = rest_country_codes.sort.map { |cc| build_country_code_option(cc) }
 
-      {
-        'Country' => most_common_options + more_options,
-      }.compact_blank
+      (most_common_options + more_options).compact_blank
     end
   end
 
