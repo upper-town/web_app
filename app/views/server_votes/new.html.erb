@@ -8,10 +8,10 @@
   <%= @server.name %>
 </p>
 
-<%= form_with(model: @new_form, url: @new_form.url(@server), method: @new_form.method) do |f| %>
+<%= form_with(model: @new_form, url: @new_form.url(@server), method: @new_form.method) do |form| %>
   <%= @captcha.widget_tag %>
 
-  <%= f.hidden_field(:reference, value: @reference) %>
+  <%= form.hidden_field(:reference, value: @reference) %>
 
   <% if @new_form.errors.include?(:reference) %>
     <div class="">
@@ -19,5 +19,5 @@
     </div>
   <% end %>
 
-  <%= f.submit('Click to vote!', class: 'btn btn-primary') %>
+  <%= form.submit('Click to vote!', class: 'btn btn-primary') %>
 <% end %>
