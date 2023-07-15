@@ -1,22 +1,61 @@
 <% if @servers.any? %>
+  [Link to article about how to validate your server]
   <ul>
     <% @servers.map do |server| %>
-
-      <% if server.archived_at %>
-        [Archived]
+      <% if server.marked_for_deletion? %>
+        [This server is marked for deletion and will be deleted soon in xxx hours]
+      <% elsif server.archived? %>
+        [This server is archived]
       <% end %>
 
       <li class="relative overflow-x-auto shadow-md sm:rounded-lg">
-        <%= link_to('View', server_path(suuid: server.suuid)) %>
-        <%= link_to('Edit', edit_inside_server_path(suuid: server.suuid)) %>
-        <% if server.archived_at %>
+        <%=
+          link_to(
+            'Edit',
+            edit_inside_server_path(suuid: server.suuid),
+            class: 'btn btn-secondary',
+          )
+        %>
+        <%=
+          link_to(
+            'View Page',
+            server_path(suuid: server.suuid),
+            class: 'btn btn-secondary',
+          )
+        %>
+
+        <% if server.marked_for_deletion? %>
+          <%=
+            link_to(
+              'Unmark for deletion',
+              unmark_for_deletion_inside_server_path(suuid: server.suuid),
+              class: 'btn btn-danger',
+              data: {
+                'turbo-method' => :post,
+                'turbo-confirm' => "This will prevent this server from being deleted. Confirm?"
+              }
+            )
+          %>
+        <% elsif server.archived? %>
           <%=
             link_to(
               'Unarchive',
               unarchive_inside_server_path(suuid: server.suuid),
+              class: 'btn btn-secondary',
               data: {
                 'turbo-method' => :post,
                 'turbo-confirm' => 'By unarchiving this server, users will be able to vote on it again. Confirm?'
+              }
+            )
+          %>
+          <%=
+            link_to(
+              'Mark for deletion',
+              mark_for_deletion_inside_server_path(suuid: server.suuid),
+              class: 'btn btn-danger',
+              data: {
+                'turbo-method' => :post,
+                'turbo-confirm' => "This will delete your server and everything associated with it. Confirm?"
               }
             )
           %>
@@ -25,6 +64,7 @@
             link_to(
               'Archive',
               archive_inside_server_path(suuid: server.suuid),
+              class: 'btn btn-secondary',
               data: {
                 'turbo-method' => :post,
                 'turbo-confirm' => "By archiving this server, users won't be able to vote on it. Confirm?"

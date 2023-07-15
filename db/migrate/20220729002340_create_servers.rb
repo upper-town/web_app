@@ -17,12 +17,13 @@ class CreateServers < ActiveRecord::Migration[7.1]
 
       t.references :app, null: false, foreign_key: true, index: false
 
-      t.datetime :archived_at, null: true
+      t.datetime :archived_at,            null: true
+      t.datetime :marked_for_deletion_at, null: true
 
       t.timestamps
     end
 
-    add_index :servers, :uuid,            unique: true
+    add_index :servers, :uuid, unique: true
 
     add_index :servers, :name
     add_index :servers, :app_id

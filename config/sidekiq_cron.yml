@@ -28,9 +28,15 @@ servers_verify_scheduler_job:
   args: []
   queue: default
 
-servers_delete_archived_job:
+servers_delete_archived_without_votes_job:
   cron: "0 5 * * *"
-  class: Servers::DeleteArchivedJob
+  class: Servers::DeleteArchivedWithoutVotesJob
+  args: []
+  queue: default
+
+servers_delete_marked_for_deletion_job:
+  cron: "0 6 * * *"
+  class: Servers::DeleteMarkedForDeletionJob
   args: []
   queue: default
 

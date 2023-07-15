@@ -2,9 +2,14 @@
 
 module Inside
   class ServersController < BaseController
-    MAX_PENDING_SERVER_COUNT = 1
+    MAX_VERIFIED_SERVERS_PER_USER_ACCOUNT = 10
+    MAX_SERVERS_PENDING_VERIFICATION_PER_USER_ACCOUNT = 2
 
-    before_action :max_pending_server_per_user_account, only: [:new, :create]
+    before_action(
+      :max_verified_servers_per_user_account,
+      :max_servers_pending_verification_per_user_account,
+      only: [:new, :create]
+    )
 
     def index
       @servers = current_user_account.servers
@@ -44,9 +49,9 @@ module Inside
     end
 
     def archive
-      @server = server_from_params
+      server = server_from_params
 
-      Servers::Archive.new(@server).call
+      Servers::Archive.new(server).call
 
       flash[:success] = 'Server has been archived. Servers that are archived and without votes will be deleted soon.'
 
@@ -54,11 +59,31 @@ module Inside
     end
 
     def unarchive
-      @server = server_from_params
+      server = server_from_params
 
-      Servers::Unarchive.new(@server).call
+      Servers::Unarchive.new(server).call
 
       flash[:success] = 'Server has been unarchived.'
+
+      redirect_to(inside_servers_path)
+    end
+
+    def mark_for_deletion
+      server = server_from_params
+
+      Servers::MarkForDeletion.new(server).call
+
+      flash[:success] = 'Server has been marked to be deleted.'
+
+      redirect_to(inside_servers_path)
+    end
+
+    def unmark_for_deletion
+      server = server_from_params
+
+      Servers::UnmarkForDeletion.new(server).call
+
+      flash[:success] = 'Server has been unmarked for deletion.'
 
       redirect_to(inside_servers_path)
     end
@@ -78,11 +103,21 @@ module Inside
       )
     end
 
-    def max_pending_server_per_user_account
+    def max_verified_servers_per_user_account
+      count = current_user_account.servers.where(verified_status: Server::VERIFIED).count
+
+      if count >= MAX_VERIFIED_SERVERS_PER_USER_ACCOUNT
+        flash[:warning] = "You already have too many verified servers associated with your user account."
+
+        redirect_to(inside_servers_path)
+      end
+    end
+
+    def max_servers_pending_verification_per_user_account
       count = current_user_account.servers.where(verified_status: Server::PENDING).count
 
-      if count >= MAX_PENDING_SERVER_COUNT
-        flash[:alert] = "You have many servers pending verification.
+      if count >= MAX_SERVERS_PENDING_VERIFICATION_PER_USER_ACCOUNT
+        flash[:warning] = "You have many servers pending verification.
           Please verify them first before adding more servers."
 
         redirect_to(inside_servers_path)

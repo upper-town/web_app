@@ -4,21 +4,22 @@
 #
 # Table name: servers
 #
-#  id                  :bigint           not null, primary key
-#  archived_at         :datetime
-#  banner_image_url    :string           default(""), not null
-#  country_code        :string           not null
-#  description         :string           default(""), not null
-#  info                :text             default(""), not null
-#  name                :string           not null
-#  site_url            :string           not null
-#  uuid                :uuid             not null
-#  verified_notice     :text             default(""), not null
-#  verified_status     :string           default("pending"), not null
-#  verified_updated_at :datetime
-#  created_at          :datetime         not null
-#  updated_at          :datetime         not null
-#  app_id              :bigint           not null
+#  id                     :bigint           not null, primary key
+#  archived_at            :datetime
+#  banner_image_url       :string           default(""), not null
+#  country_code           :string           not null
+#  description            :string           default(""), not null
+#  info                   :text             default(""), not null
+#  marked_for_deletion_at :datetime
+#  name                   :string           not null
+#  site_url               :string           not null
+#  uuid                   :uuid             not null
+#  verified_notice        :text             default(""), not null
+#  verified_status        :string           default("pending"), not null
+#  verified_updated_at    :datetime
+#  created_at             :datetime         not null
+#  updated_at             :datetime         not null
+#  app_id                 :bigint           not null
 #
 # Indexes
 #
@@ -66,6 +67,30 @@ class Server < ApplicationRecord
 
   def self.not_archived
     where(archived_at: nil)
+  end
+
+  def self.marked_for_deletion
+    where.not(marked_for_deletion_at: nil)
+  end
+
+  def self.not_marked_for_deletion
+    where(marked_for_deletion_at: nil)
+  end
+
+  def archived?
+    archived_at
+  end
+
+  def not_archived?
+    !archived?
+  end
+
+  def marked_for_deletion?
+    marked_for_deletion_at
+  end
+
+  def not_marked_for_deletion?
+    !marked_for_deletion?
   end
 
   def verified_user_accounts

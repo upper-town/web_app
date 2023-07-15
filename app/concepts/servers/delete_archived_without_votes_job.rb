@@ -1,18 +1,15 @@
 # frozen_string_literal: true
 
 module Servers
-  class DeleteArchivedJob
+  class DeleteArchivedWithoutVotesJob
     include Sidekiq::Job
 
     sidekiq_options(lock: :while_executing)
 
     def perform
-      server_ids = archived_server_ids_without_votes
-
-      ServerStat.where(server_id: server_ids).delete_all
-      ServerUserAccount.where(server_id: server_ids).delete_all
-
-      Server.where(server_id: server_ids).destroy_all
+      archived_server_ids_without_votes.each do |server_id|
+        DestroyJob.perform_async(server_id)
+      end
     end
 
     def archived_server_ids_without_votes
