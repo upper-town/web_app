@@ -17,6 +17,8 @@ class CreateServers < ActiveRecord::Migration[7.1]
 
       t.references :app, null: false, foreign_key: true, index: false
 
+      t.datetime :archived_at, null: true
+
       t.timestamps
     end
 

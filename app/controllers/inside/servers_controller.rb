@@ -37,7 +37,37 @@ module Inside
       end
     end
 
+    def edit
+    end
+
+    def update
+    end
+
+    def archive
+      @server = server_from_params
+
+      Servers::Archive.new(@server).call
+
+      flash[:success] = 'Server has been archived. Servers that are archived and without votes will be deleted soon.'
+
+      redirect_to(inside_servers_path)
+    end
+
+    def unarchive
+      @server = server_from_params
+
+      Servers::Unarchive.new(@server).call
+
+      flash[:success] = 'Server has been unarchived.'
+
+      redirect_to(inside_servers_path)
+    end
+
     private
+
+    def server_from_params
+      Server.find_by_suuid!(params['suuid'])
+    end
 
     def servers_new_form_params
       params.require('servers_new_form').permit(

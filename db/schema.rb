@@ -190,6 +190,7 @@ ActiveRecord::Schema[7.1].define(version: 2023_03_14_000615) do
     t.text "verified_notice", default: "", null: false
     t.datetime "verified_updated_at"
     t.bigint "app_id", null: false
+    t.datetime "archived_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["app_id"], name: "index_servers_on_app_id"

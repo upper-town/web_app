@@ -28,6 +28,12 @@ servers_verify_scheduler_job:
   args: []
   queue: default
 
+servers_delete_archived_job:
+  cron: "0 5 * * *"
+  class: Servers::DeleteArchivedJob
+  args: []
+  queue: default
+
 server_webhooks_delete_old_events_job:
   cron: "0 4 * * *"
   class: ServerWebhooks::DeleteOldEventsJob

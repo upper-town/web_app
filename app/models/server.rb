@@ -5,6 +5,7 @@
 # Table name: servers
 #
 #  id                  :bigint           not null, primary key
+#  archived_at         :datetime
 #  banner_image_url    :string           default(""), not null
 #  country_code        :string           not null
 #  description         :string           default(""), not null
@@ -58,6 +59,14 @@ class Server < ApplicationRecord
   has_many :webhook_configs, class_name: 'ServerWebhookConfig', dependent: :destroy
   has_many :webhook_secrets, class_name: 'ServerWebhookSecret', dependent: :destroy
   has_many :webhook_events,  class_name: 'ServerWebhookEvent',  dependent: :destroy
+
+  def self.archived
+    where.not(archived_at: nil)
+  end
+
+  def self.not_archived
+    where(archived_at: nil)
+  end
 
   def verified_user_accounts
     UserAccount

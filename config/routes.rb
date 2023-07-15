@@ -51,6 +51,10 @@
 #                    inside_servers GET    /i/servers(.:format)                       inside/servers#index
 #                                   POST   /i/servers(.:format)                       inside/servers#create
 #                 new_inside_server GET    /i/servers/new(.:format)                   inside/servers#new
+#                edit_inside_server GET    /i/servers/:suuid/edit(.:format)           inside/servers#edit
+#                     inside_server PATCH  /i/servers/:suuid(.:format)                inside/servers#update
+#                                   PUT    /i/servers/:suuid(.:format)                inside/servers#update
+#                                   DELETE /i/servers/:suuid(.:format)                inside/servers#destroy
 #               inside_server_votes GET    /i/server_votes(.:format)                  inside/server_votes#index
 #                             admin GET    /admin(.:format)                           redirect(301, /admin/dashboard)
 #                        admin_demo GET    /admin/demo(.:format)                      admin/demos#show
@@ -121,7 +125,12 @@ Rails.application.routes.draw do
   namespace :inside, path: 'i' do
     resource :dashboard, only: [:show]
     resource :user_account, only: [:show]
-    resources :servers, only: [:index, :new, :create]
+    resources :servers, only: [:index, :new, :create, :edit, :update], param: :suuid do
+      member do
+        post :archive
+        post :unarchive
+      end
+    end
     resources :server_votes, only: [:index]
   end
 
@@ -134,7 +143,7 @@ Rails.application.routes.draw do
     resource :dashboard, only: [:show]
     resources :users, only: [:index, :show, :edit]
     resources :admin_users
-    resources :servers, only: [:index, :show, :new, :create, :edit, :update, :destroy]
+    resources :servers, only: [:index, :show, :new, :create, :edit, :update]
   end
 
   authenticate(

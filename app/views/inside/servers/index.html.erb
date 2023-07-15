@@ -1,6 +1,74 @@
-<% @servers.map do |server| %>
-  <pre>
-    <%= JSON.pretty_generate(server.attributes) %>
-  </pre>
-  <br />
+<% if @servers.any? %>
+  <ul>
+    <% @servers.map do |server| %>
+
+      <% if server.archived_at %>
+        [Archived]
+      <% end %>
+
+      <li class="relative overflow-x-auto shadow-md sm:rounded-lg">
+        <%= link_to('View', server_path(suuid: server.suuid)) %>
+        <%= link_to('Edit', edit_inside_server_path(suuid: server.suuid)) %>
+        <% if server.archived_at %>
+          <%=
+            link_to(
+              'Unarchive',
+              unarchive_inside_server_path(suuid: server.suuid),
+              data: {
+                'turbo-method' => :post,
+                'turbo-confirm' => 'By unarchiving this server, users will be able to vote on it again. Confirm?'
+              }
+            )
+          %>
+        <% else %>
+          <%=
+            link_to(
+              'Archive',
+              archive_inside_server_path(suuid: server.suuid),
+              data: {
+                'turbo-method' => :post,
+                'turbo-confirm' => "By archiving this server, users won't be able to vote on it. Confirm?"
+              }
+            )
+          %>
+        <% end %>
+
+        <table>
+          <tr>
+            <th colspan="2" class="uppercase text-center">Info</th>
+          </tr>
+          <tr>
+            <th>ID</th>
+            <td><%= server.suuid %></td>
+          </tr>
+          <tr>
+            <th>Name</th>
+            <td><%= server.name %></td>
+          </tr>
+          <tr>
+            <th>Site URL</th>
+            <td><%= server.site_url %></td>
+          </tr>
+
+          <tr>
+            <th colspan="2" class="uppercase text-center">Verified</th>
+          </tr>
+          <tr>
+            <th>Status</th>
+            <td><%= server.verified_status %></td>
+          </tr>
+          <tr>
+            <th>Notice</th>
+            <td><%= server.verified_notice %></td>
+          </tr>
+          <tr>
+            <th>Updated At</th>
+            <td><%= server.verified_updated_at %></td>
+          </tr>
+        </table>
+      </li>
+    <% end %>
+  </ul>
+<% else %>
+You haven't added any servers yet.
 <% end %>
