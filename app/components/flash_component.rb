@@ -10,8 +10,8 @@ class FlashComponent < ApplicationComponent
   end
 
   def build_alert_kwargs(flash_item)
-    key, value = flash_item
-    key = rails_flash_keys_map(key.to_sym)
+    key = parse_key(flash_item)
+    value = parse_value(flash_item)
 
     case value
     when Hash
@@ -29,7 +29,7 @@ class FlashComponent < ApplicationComponent
   end
 
   def get_alert_content(flash_item)
-    _key, value = flash_item
+    value = parse_value(flash_item)
 
     case value
     when Hash
@@ -40,7 +40,7 @@ class FlashComponent < ApplicationComponent
   end
 
   def build_alert_link_to_args(flash_item)
-    _key, value = flash_item
+    value = parse_value(flash_item)
 
     case value
     when Hash
@@ -52,11 +52,25 @@ class FlashComponent < ApplicationComponent
 
   private
 
-  def rails_flash_keys_map(key)
+  def parse_key(flash_item)
+    key, _value = flash_item
+    key = key.to_sym
+
     case key
     when :alert  then :danger
     when :notice then :success
     else key
+    end
+  end
+
+  def parse_value(flash_item)
+    _key, value = flash_item
+
+    case value
+    when Hash
+      value.with_indifferent_access
+    else
+      value
     end
   end
 end
