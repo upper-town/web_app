@@ -14,19 +14,21 @@
 #  name                   :string           not null
 #  site_url               :string           not null
 #  uuid                   :uuid             not null
+#  verified_at            :datetime
 #  verified_notice        :text             default(""), not null
-#  verified_status        :string           default("pending"), not null
-#  verified_updated_at    :datetime
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
 #  app_id                 :bigint           not null
 #
 # Indexes
 #
-#  index_servers_on_app_id        (app_id)
-#  index_servers_on_country_code  (country_code)
-#  index_servers_on_name          (name)
-#  index_servers_on_uuid          (uuid) UNIQUE
+#  index_servers_on_app_id                  (app_id)
+#  index_servers_on_archived_at             (archived_at)
+#  index_servers_on_country_code            (country_code)
+#  index_servers_on_marked_for_deletion_at  (marked_for_deletion_at)
+#  index_servers_on_name                    (name)
+#  index_servers_on_uuid                    (uuid) UNIQUE
+#  index_servers_on_verified_at             (verified_at)
 #
 # Foreign Keys
 #
@@ -35,17 +37,11 @@
 class Server < ApplicationRecord
   include ShortUuidForModel
 
-  PENDING = 'pending'
-  VERIFIED = 'verified'
-
-  VERIFIED_STATUSES = [PENDING, VERIFIED].freeze
-
   COUNTRY_CODES = ISO3166::Country.codes
 
   validate :verified_server_with_same_name_exist?
 
   validates :country_code,    inclusion: { in: COUNTRY_CODES }
-  validates :verified_status, inclusion: { in: VERIFIED_STATUSES }
   validates :name,     length: { minimum: 3, maximum: 255 }
   validates :site_url, length: { minimum: 3, maximum: 255 }
 
@@ -77,6 +73,14 @@ class Server < ApplicationRecord
     where(marked_for_deletion_at: nil)
   end
 
+  def self.verified
+    where.not(verified_at: nil)
+  end
+
+  def self.not_verified
+    where(verified_at: nil)
+  end
+
   def archived?
     archived_at
   end
@@ -93,15 +97,19 @@ class Server < ApplicationRecord
     !marked_for_deletion?
   end
 
+  def verified?
+    verified_at
+  end
+
+  def not_verified?
+    !verified?
+  end
+
   def verified_user_accounts
     UserAccount
       .joins(:server_user_accounts)
       .where(server_user_accounts: { server_id: id })
       .where.not(server_user_accounts: { verified_at: nil })
-  end
-
-  def verified?
-    verified_status == VERIFIED
   end
 
   def integrated?
@@ -117,7 +125,7 @@ class Server < ApplicationRecord
   end
 
   def verified_server_with_same_name_exist?
-    if Server.exists?(verified_status: VERIFIED, name: name, app_id: app_id)
+    if Server.verified.exists?(name: name, app_id: app_id)
       errors.add(
         :name,
         "There is already a verified server with same name for this app. You can try to rename yours."

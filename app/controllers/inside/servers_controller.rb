@@ -3,11 +3,11 @@
 module Inside
   class ServersController < BaseController
     MAX_VERIFIED_SERVERS_PER_USER_ACCOUNT = 10
-    MAX_SERVERS_PENDING_VERIFICATION_PER_USER_ACCOUNT = 2
+    MAX_NOT_VERIFIED_SERVERS_PER_USER_ACCOUNT = 2
 
     before_action(
       :max_verified_servers_per_user_account,
-      :max_servers_pending_verification_per_user_account,
+      :max_not_verified_servers_per_user_account,
       only: [:new, :create]
     )
 
@@ -50,40 +50,52 @@ module Inside
 
     def archive
       server = server_from_params
+      result = Servers::Archive.new(server).call
 
-      Servers::Archive.new(server).call
-
-      flash[:success] = 'Server has been archived. Servers that are archived and without votes will be deleted soon.'
+      if result.success?
+        flash[:success] = 'Server has been archived. Servers that are archived and without votes will be deleted soon.'
+      else
+        flash[:alert] = result.errors.full_messages
+      end
 
       redirect_to(inside_servers_path)
     end
 
     def unarchive
       server = server_from_params
+      result = Servers::Unarchive.new(server).call
 
-      Servers::Unarchive.new(server).call
-
-      flash[:success] = 'Server has been unarchived.'
+      if result.success?
+        flash[:success] = 'Server has been unarchived.'
+      else
+        flash[:alert] = result.errors.full_messages
+      end
 
       redirect_to(inside_servers_path)
     end
 
     def mark_for_deletion
       server = server_from_params
+      result = Servers::MarkForDeletion.new(server).call
 
-      Servers::MarkForDeletion.new(server).call
-
-      flash[:success] = 'Server has been marked to be deleted.'
+      if result.success?
+        flash[:success] = 'Server has been marked to be deleted.'
+      else
+        flash[:alert] = result.errors.full_messages
+      end
 
       redirect_to(inside_servers_path)
     end
 
     def unmark_for_deletion
       server = server_from_params
+      result = Servers::UnmarkForDeletion.new(server).call
 
-      Servers::UnmarkForDeletion.new(server).call
-
-      flash[:success] = 'Server has been unmarked for deletion.'
+      if result.success?
+        flash[:success] = 'Server has been unmarked for deletion.'
+      else
+        flash[:alert] = result.errors.full_messages
+      end
 
       redirect_to(inside_servers_path)
     end
@@ -104,7 +116,7 @@ module Inside
     end
 
     def max_verified_servers_per_user_account
-      count = current_user_account.servers.where(verified_status: Server::VERIFIED).count
+      count = current_user_account.servers.verified.count
 
       if count >= MAX_VERIFIED_SERVERS_PER_USER_ACCOUNT
         flash[:warning] = "You already have too many verified servers associated with your user account."
@@ -113,10 +125,10 @@ module Inside
       end
     end
 
-    def max_servers_pending_verification_per_user_account
-      count = current_user_account.servers.where(verified_status: Server::PENDING).count
+    def max_not_verified_servers_per_user_account
+      count = current_user_account.servers.not_verified.count
 
-      if count >= MAX_SERVERS_PENDING_VERIFICATION_PER_USER_ACCOUNT
+      if count >= MAX_NOT_VERIFIED_SERVERS_PER_USER_ACCOUNT
         flash[:warning] = "You have many servers pending verification.
           Please verify them first before adding more servers."
 

@@ -41,7 +41,6 @@ module Seeds
           Faker::Lorem.paragraphs(number: 15).join(' '),
           Faker::Lorem.paragraphs(number: 10).join(' '),
         ].join("\n\n")
-        verified_status = Server::PENDING
 
         {
           app_id:           app_id,
@@ -52,7 +51,6 @@ module Seeds
           banner_image_url: banner_image_url,
           description:      description,
           info:             info,
-          verified_status:  verified_status,
         }
       end
     end

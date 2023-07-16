@@ -11,12 +11,10 @@ class CreateServers < ActiveRecord::Migration[7.1]
       t.string :description,      null: false, default: ''
       t.text   :info,             null: false, default: ''
 
-      t.string   :verified_status,     null: false, default: 'pending'
-      t.text     :verified_notice,     null: false, default: ''
-      t.datetime :verified_updated_at, null: true
-
       t.references :app, null: false, foreign_key: true, index: false
 
+      t.datetime :verified_at,            null: true
+      t.text     :verified_notice,        null: false, default: ''
       t.datetime :archived_at,            null: true
       t.datetime :marked_for_deletion_at, null: true
 
@@ -28,5 +26,8 @@ class CreateServers < ActiveRecord::Migration[7.1]
     add_index :servers, :name
     add_index :servers, :app_id
     add_index :servers, :country_code
+    add_index :servers, :verified_at
+    add_index :servers, :archived_at
+    add_index :servers, :marked_for_deletion_at
   end
 end

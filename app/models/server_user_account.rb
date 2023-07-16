@@ -28,4 +28,16 @@ class ServerUserAccount < ApplicationRecord
   def self.verified
     where.not(verified_at: nil)
   end
+
+  def self.not_verified
+    where(verified_at: nil)
+  end
+
+  def verified?
+    verified_at
+  end
+
+  def not_verified?
+    !verified?
+  end
 end

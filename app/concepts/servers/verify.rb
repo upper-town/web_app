@@ -12,7 +12,7 @@ module Servers
       if result.success?
         update_as_verified(current_time)
       else
-        update_as_pending(current_time, result)
+        update_as_not_verified(current_time, result)
       end
     end
 
@@ -20,19 +20,17 @@ module Servers
 
     def update_as_verified(current_time)
       @server.update!(
-        verified_status: Server::VERIFIED,
+        verified_at: current_time,
         verified_notice: '',
-        verified_updated_at: current_time,
       )
     end
 
-    def update_as_pending(current_time, result)
+    def update_as_not_verified(current_time, result)
       notice = result.errors.full_messages.join('; ')
 
       @server.update!(
-        verified_status: Server::PENDING,
+        verified_at: nil,
         verified_notice: notice,
-        verified_updated_at: current_time,
       )
     end
   end

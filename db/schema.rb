@@ -186,18 +186,20 @@ ActiveRecord::Schema[7.1].define(version: 2023_03_14_000615) do
     t.string "banner_image_url", default: "", null: false
     t.string "description", default: "", null: false
     t.text "info", default: "", null: false
-    t.string "verified_status", default: "pending", null: false
-    t.text "verified_notice", default: "", null: false
-    t.datetime "verified_updated_at"
     t.bigint "app_id", null: false
+    t.datetime "verified_at"
+    t.text "verified_notice", default: "", null: false
     t.datetime "archived_at"
     t.datetime "marked_for_deletion_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["app_id"], name: "index_servers_on_app_id"
+    t.index ["archived_at"], name: "index_servers_on_archived_at"
     t.index ["country_code"], name: "index_servers_on_country_code"
+    t.index ["marked_for_deletion_at"], name: "index_servers_on_marked_for_deletion_at"
     t.index ["name"], name: "index_servers_on_name"
     t.index ["uuid"], name: "index_servers_on_uuid", unique: true
+    t.index ["verified_at"], name: "index_servers_on_verified_at"
   end
 
   create_table "user_accounts", force: :cascade do |t|
