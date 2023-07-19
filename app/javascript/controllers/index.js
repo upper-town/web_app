@@ -2,16 +2,22 @@
 // Run that command whenever you add a new controller or create them with
 // ./bin/rails generate stimulus controllerName
 
-import { application } from "./application"
+import { application } from './application'
 
-import AlertComponentController from "./alert_component_controller"
-application.register("alert-component", AlertComponentController)
+import AlertComponentController from './alert_component_controller'
+application.register('alert-component', AlertComponentController)
 
-import CaptchaController from "./captcha_controller"
-application.register("captcha", CaptchaController)
+import CaptchaController from './captcha_controller'
+application.register('captcha', CaptchaController)
 
-import HelloController from "./hello_controller"
-application.register("hello", HelloController)
+import FormFollowRedirectOnSuccessController from './form_follow_redirect_on_success_controller'
+application.register('form-follow-redirect-on-success', FormFollowRedirectOnSuccessController)
 
-import ServersController from "./servers_controller"
-application.register("servers", ServersController)
+import FormResetFieldsController from './form_reset_fields_controller'
+application.register('form-reset-fields', FormResetFieldsController)
+
+import HelloController from './hello_controller'
+application.register('hello', HelloController)
+
+import ServersController from './servers_controller'
+application.register('servers', ServersController)
