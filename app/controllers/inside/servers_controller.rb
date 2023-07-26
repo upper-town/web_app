@@ -53,7 +53,8 @@ module Inside
       result = Servers::Archive.new(server).call
 
       if result.success?
-        flash[:success] = 'Server has been archived. Servers that are archived and without votes will be deleted soon.'
+        flash[:success] = 'Server has been archived. ' \
+          'Servers that are archived and without votes will be deleted soon automatically.'
       else
         flash[:alert] = result.errors.full_messages
       end
