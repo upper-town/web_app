@@ -1,7 +1,6 @@
 import { Controller } from '@hotwired/stimulus'
 
 export default class extends Controller {
-  static targets = ['form']
   static values = { fields: Object }
 
   call() {
@@ -10,7 +9,7 @@ export default class extends Controller {
   }
 
   reset() {
-    this.formTarget.reset()
+    this.element.reset()
 
     if (this.hasFieldsValue) {
       for (const [fieldId, blankValue] of Object.entries(this.fieldsValue)) {
@@ -24,6 +23,6 @@ export default class extends Controller {
   }
 
   submit() {
-    this.formTarget.requestSubmit()
+    this.element.requestSubmit()
   }
 }

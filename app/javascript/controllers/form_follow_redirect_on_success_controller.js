@@ -2,10 +2,14 @@ import { Controller } from '@hotwired/stimulus'
 import '@hotwired/turbo-rails'
 
 export default class extends Controller {
-  static targets = ['form']
+  #eventName = 'turbo:submit-end'
 
   connect() {
-    this.formTarget.addEventListener('turbo:submit-end', this.#followRedirect)
+    this.element.addEventListener(this.#eventName, this.#followRedirect)
+  }
+
+  disconnect() {
+    this.element.removeEventListener(this.#eventName, this.#followRedirect)
   }
 
   #followRedirect(customEvent) {
