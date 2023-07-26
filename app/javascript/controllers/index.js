@@ -7,6 +7,9 @@ import { application } from './application'
 import AlertComponentController from './alert_component_controller'
 application.register('alert-component', AlertComponentController)
 
+import BrowserTimeZoneController from './browser_time_zone_controller'
+application.register('browser-time-zone', BrowserTimeZoneController)
+
 import CaptchaController from './captcha_controller'
 application.register('captcha', CaptchaController)
 

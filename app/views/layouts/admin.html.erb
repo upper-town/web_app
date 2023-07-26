@@ -10,7 +10,7 @@
     <%= javascript_include_tag "application", "data-turbo-track": "reload", defer: true %>
   </head>
 
-  <body>
+  <body data-controller="browser-time-zone">
     <main class="container mx-auto mt-28 px-5">
       <%= render(partial: 'admin/shared/top_nav') %>
       <%= render(partial: 'admin/shared/side_nav') %>
