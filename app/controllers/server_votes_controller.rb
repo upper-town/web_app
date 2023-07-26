@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 class ServerVotesController < ApplicationController
-  include Pagy::Backend
-
   def show
     @server_vote = server_vote_from_params
   end

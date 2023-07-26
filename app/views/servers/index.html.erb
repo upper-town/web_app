@@ -41,8 +41,8 @@
       </div>
   <% end %>
 
-  <% if @servers.any? && @pagy.pages > 1 %>
-    <%= render(PagyComponent.new(pagy: @pagy, pagy_link_proc: pagy_link_proc(@pagy), hidden_gap: true)) %>
+  <% if @servers.any? && (@pagination.prev_page? || @pagination.next_page?) %>
+    <%= render(PaginationComponent.new(pagination: @pagination)) %>
   <% end %>
 </div>
 

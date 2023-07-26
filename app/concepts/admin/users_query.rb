@@ -3,7 +3,7 @@
 module Admin
   class UsersQuery
     def call
-      User.all
+      User.all.order(id: :desc)
     end
   end
 end

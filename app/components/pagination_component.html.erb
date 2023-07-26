@@ -1,0 +1,71 @@
+<div class="flex items-center justify-center">
+  <nav role="navigation" aria-label="Pagination" class="my-2">
+    <ul class="inline-flex">
+      <% if @options[:show_prev_page] %>
+        <li>
+          <% if @pagination.prev_page? %>
+            <%= link_to('< Prev', @pagination.prev_page_url, class: @prev_enabled_classes) %>
+          <% else %>
+            <div class="<%= @prev_disabled_classes %>">
+              &lt; Prev
+            </div>
+          <% end %>
+        </li>
+      <% end %>
+
+      <% if @options[:show_first_page] %>
+        <li>
+          <% if @pagination.first_page? %>
+            <div class="<%= @current_classes %>">
+              <%= @pagination.first_page %>
+            </div>
+          <% else %>
+            <%= link_to(@pagination.first_page, @pagination.first_page_url, class: @classes) %>
+          <% end %>
+        </li>
+      <% end %>
+
+      <% if @options[:show_page_series] %>
+        <% generate_page_series.each do |page| %>
+          <li>
+            <% if page.nil? %>
+              <span class="<%= @gap_classes %>">
+                ...
+              </span>
+            <% elsif page == @pagination.page %>
+              <span class="<%= @current_classes %>">
+                <%= page %>
+              </span>
+            <% else %>
+              <%= link_to(page, @pagination.page_url(page), class: @classes) %>
+            <% end %>
+          </li>
+        <% end %>
+      <% end %>
+
+      <% if @options[:show_last_page] && (@pagination.first_page != @pagination.last_page) %>
+        <li>
+          <% if @pagination.last_page? %>
+            <div class="<%= @current_classes %>">
+              <%= @pagination.last_page %>
+            </div>
+          <% else %>
+            <%= link_to(@pagination.last_page, @pagination.last_page_url, class: @classes) %>
+          <% end %>
+        </li>
+      <% end %>
+
+      <% if @options[:show_next_page] %>
+        <li>
+          <% if @pagination.next_page? %>
+            <%= link_to('Next >', @pagination.next_page_url, class: @next_enabled_classes) %>
+          <% else %>
+            <div class="<%= @next_disabled_classes %>">
+              Next &gt;
+            </div>
+          <% end %>
+        </li>
+      <% end %>
+    </ul>
+  </nav>
+</div>

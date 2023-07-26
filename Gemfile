@@ -67,8 +67,6 @@ gem 'phonelib', '~> 0.7.0'
 
 gem 'base58_id', '~> 1.1.0'
 
-gem 'pagy', '~> 6.0.0'
-
 gem 'countries', '~> 5.3.0'
 
 group :development, :test do

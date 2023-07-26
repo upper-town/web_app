@@ -238,7 +238,6 @@ GEM
     nokogiri (1.14.1-x86_64-linux)
       racc (~> 1.4)
     orm_adapter (0.5.0)
-    pagy (6.0.1)
     parallel (1.22.1)
     parser (3.2.0.0)
       ast (~> 2.4.1)
@@ -421,7 +420,6 @@ DEPENDENCIES
   faraday (~> 2.4)
   jbuilder
   jsbundling-rails
-  pagy (~> 6.0.0)
   pg (~> 1.1)
   phonelib (~> 0.7.0)
   pry-byebug (~> 3.9)

@@ -2,14 +2,11 @@
 
 module Admin
   class ServersController < Admin::BaseController
-    include Pagy::Backend
-
     def index
-      @pagy, @servers = pagy(Admin::ServersQuery.new.call)
-    rescue Pagy::OverflowError
-      @servers = []
+      @pagination = Pagination.new(Admin::ServersQuery.new.call, request, options: { per_page: 50 })
+      @servers = @pagination.results
 
-      render(status: :not_found)
+      render(status: @servers.empty? ? :not_found : :ok)
     end
 
     def show

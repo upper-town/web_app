@@ -1,7 +1,8 @@
 <% if @users.empty? %>
   No results
 <% else %>
-  <%= render(PagyComponent.new(pagy: @pagy, pagy_link_proc: pagy_link_proc(@pagy))) %>
+  <%= render(PaginationComponent.new(pagination: @pagination)) %>
+
   <%=
     render(Admin::TableComponent.new(
       collection: @users,
@@ -14,5 +15,5 @@
     ))
   %>
 
-  <%= render(PagyComponent.new(pagy: @pagy, pagy_link_proc: pagy_link_proc(@pagy))) %>
+  <%= render(PaginationComponent.new(pagination: @pagination)) %>
 <% end %>

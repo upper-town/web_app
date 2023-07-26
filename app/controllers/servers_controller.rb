@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 class ServersController < ApplicationController
-  include Pagy::Backend
-
   def index
     current_time = Time.current
     form_options_query = FormOptionsQuery.new(
@@ -28,15 +26,17 @@ class ServersController < ApplicationController
     @selected_value_for_period = @period
     @selected_value_for_country_code = @country_code
 
-    @pagy, @servers = pagy(
+    @pagination = Pagination.new(
       Servers::IndexQuery.new(@app, @period, @country_code, current_time).call,
-      size: [0, 0, 0, 0],
-      items: 20
+      request
     )
-    @servers.load
-    @server_stats_hash = Servers::IndexStatsQuery.new(@servers.ids, @country_code, current_time).call
 
-  rescue Pagy::OverflowError, InvalidQueryParamError
+    @servers = @pagination.results
+    @server_stats_hash = Servers::IndexStatsQuery.new(@servers.pluck(:id), @country_code, current_time).call
+
+    render(status: @servers.empty? ? :not_found : :ok)
+
+  rescue InvalidQueryParamError
     @servers = []
     @server_stats_hash = {}
 
