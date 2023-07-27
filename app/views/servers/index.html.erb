@@ -41,9 +41,7 @@
       </div>
   <% end %>
 
-  <% if @servers.any? && (@pagination.prev_page? || @pagination.next_page?) %>
-    <%= render(PaginationComponent.new(pagination: @pagination)) %>
-  <% end %>
+  <%= render(PaginationComponent.new(pagination: @pagination)) %>
 </div>
 
 <% if @servers.any? %>

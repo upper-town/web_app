@@ -4,7 +4,7 @@ class Pagination
   attr_reader(:page, :per_page, :offset)
 
   HARD_MIN = 1
-  HARD_MAX = 1_000
+  HARD_MAX = 500
 
   DEFAULT_OPTIONS = {
     page:              1,

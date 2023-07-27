@@ -63,16 +63,35 @@ class PaginationComponent < ApplicationComponent
     start_at = @pagination.page - 2
     end_at   = @pagination.page + 2
 
+    if (1..3).include?(@pagination.page)
+      start_at = 2
+
+      end_at = if @options[:show_last_page]
+        start_at + 4
+      else
+        start_at + 2
+      end
+    end
+
+    if @options[:show_last_page]
+      if ((@pagination.last_page - 2)..@pagination.last_page).include?(@pagination.page)
+        end_at   = @pagination.last_page - 1
+        start_at = end_at - 4
+      end
+    end
+
     if start_at <= @pagination.first_page
       start_at = @pagination.first_page + 1
     end
 
-    if @options[:show_last_page] && end_at >= @pagination.last_page
-      end_at = @pagination.last_page - 1
-    end
-
-    if !@options[:show_last_page] && !@pagination.next_page?
-      end_at = @pagination.page
+    if @options[:show_last_page]
+      if end_at >= @pagination.last_page
+        end_at = @pagination.last_page - 1
+      end
+    else
+      if !@pagination.next_page?
+        end_at = @pagination.page
+      end
     end
 
     page_series = (start_at..end_at).to_a
@@ -81,11 +100,11 @@ class PaginationComponent < ApplicationComponent
       page_series.unshift(nil)
     end
 
-    if @options[:show_last_page] && end_at < @pagination.last_page - 1
-      page_series.push(nil)
-    end
-
-    if !@options[:show_last_page]
+    if @options[:show_last_page]
+      if end_at < @pagination.last_page - 1
+        page_series.push(nil)
+      end
+    else
       page_series.push(nil)
     end
 

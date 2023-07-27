@@ -1,8 +1,8 @@
+<%= render(PaginationComponent.new(pagination: @pagination)) %>
+
 <% if @users.empty? %>
   No results
 <% else %>
-  <%= render(PaginationComponent.new(pagination: @pagination)) %>
-
   <%=
     render(Admin::TableComponent.new(
       collection: @users,
@@ -14,6 +14,6 @@
       ],
     ))
   %>
-
-  <%= render(PaginationComponent.new(pagination: @pagination)) %>
 <% end %>
+
+<%= render(PaginationComponent.new(pagination: @pagination)) %>

@@ -1,8 +1,8 @@
+<%= render(PaginationComponent.new(pagination: @pagination)) %>
+
 <% if @servers.empty? %>
   No results
 <% else %>
-  <%= render(PaginationComponent.new(pagination: @pagination)) %>
-
   <%=
     render(Admin::TableComponent.new(
       collection: @servers,
@@ -13,6 +13,6 @@
       ],
     ))
   %>
-
-  <%= render(PaginationComponent.new(pagination: @pagination)) %>
 <% end %>
+
+<%= render(PaginationComponent.new(pagination: @pagination)) %>
