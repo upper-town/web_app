@@ -11,7 +11,6 @@ class PaginationCursor
 
     per_page:              20,
     per_page_from_request: false,
-    per_page_min:          5,
     per_page_max:          100,
 
     cursor:              nil,
@@ -152,7 +151,7 @@ class PaginationCursor
     else
       @options[:per_page]
     end.clamp(
-      [@options[:per_page_min], HARD_MIN].max,
+      HARD_MIN,
       [@options[:per_page_max], HARD_MAX].min
     )
   end
