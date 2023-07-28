@@ -1,6 +1,10 @@
+<%= render(PaginationCursorComponent.new(pagination_cursor: @pagination_cursor)) %>
+
 <% @server_votes.map do |server_vote| %>
   <pre>
     <%= JSON.pretty_generate(server_vote.attributes) %>
   </pre>
   <br />
 <% end %>
+
+<%= render(PaginationCursorComponent.new(pagination_cursor: @pagination_cursor)) %>

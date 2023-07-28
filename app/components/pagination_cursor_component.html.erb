@@ -1,0 +1,37 @@
+<div class="flex items-center justify-center">
+  <nav role="navigation" aria-label="Pagination" class="my-2">
+    <ul class="inline-flex">
+      <% if @options[:show_restart_cursor] %>
+        <li>
+          <% if @pagination_cursor.start_cursor? %>
+            <div class="<%= @current_classes %>">
+              Restart
+            </div>
+          <% else %>
+            <%= link_to('Restart', @pagination_cursor.start_cursor_url, class: @classes) %>
+          <% end %>
+        </li>
+      <% end %>
+
+      <li>
+        <% if @pagination_cursor.before_cursor? %>
+          <%= link_to('< Prev', @pagination_cursor.before_cursor_url, class: @prev_enabled_classes) %>
+        <% else %>
+          <div class="<%= @prev_disabled_classes %>">
+            &lt; Prev
+          </div>
+        <% end %>
+      </li>
+
+      <li>
+        <% if @pagination_cursor.after_cursor? %>
+          <%= link_to('Next >', @pagination_cursor.after_cursor_url, class: @next_enabled_classes) %>
+        <% else %>
+          <div class="<%= @next_disabled_classes %>">
+            Next &gt;
+          </div>
+        <% end %>
+      </li>
+    </ul>
+  </nav>
+</div>
