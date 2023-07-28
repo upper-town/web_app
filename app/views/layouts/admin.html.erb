@@ -11,6 +11,10 @@
   </head>
 
   <body data-controller="browser-time-zone">
+    <noscript>
+      <%= WebApp::Page::NOSCRIPT %>
+    </noscript>
+
     <main class="container mx-auto mt-28 px-5">
       <%= render(partial: 'admin/shared/top_nav') %>
       <%= render(partial: 'admin/shared/side_nav') %>
