@@ -39,7 +39,7 @@ class PaginationCursor
   def cursor_id
     @cursor_id ||=
       if @options[:cursor_column] == :suuid
-        model.where_by_suuid(cursor).pick(:id)
+        model.where_suuid(cursor).pick(:id)
       else
         model.where(@options[:cursor_column] => cursor).pick(:id)
       end

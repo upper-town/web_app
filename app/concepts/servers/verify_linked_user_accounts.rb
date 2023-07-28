@@ -83,7 +83,7 @@ module Servers
       result = Result.new
 
       user_account_suuids.each do |suuid|
-        if !UserAccount.exists_by_suuid?(suuid)
+        if !UserAccount.exists_suuid?(suuid)
           result.add_errors("User Account ID #{suuid} does not exist")
         end
       end
@@ -93,7 +93,7 @@ module Servers
 
     # rubocop:disable Rails/SkipsModelValidations
     def upsert_server_user_accounts(user_account_suuids, current_time)
-      user_account_ids = UserAccount.where_by_suuid(user_account_suuids).pluck(:id)
+      user_account_ids = UserAccount.where_suuid(user_account_suuids).pluck(:id)
 
       if user_account_ids.empty?
         ServerUserAccount
