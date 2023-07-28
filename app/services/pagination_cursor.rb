@@ -34,6 +34,8 @@ class PaginationCursor
     @per_page  = choose_per_page
 
     @model = @original_relation.klass
+
+    @request_helper = RequestHelper.new(@request)
   end
 
   def cursor_id
@@ -67,9 +69,9 @@ class PaginationCursor
 
   def start_cursor_url
     if @options[:per_page_from_request]
-      build_request_url({ 'per_page' => per_page }, ['before', 'after'])
+      @request_helper.url_with_query_params({ 'per_page' => per_page }, ['before', 'after'])
     else
-      build_request_url({}, ['before', 'after'])
+      @request_helper.url_with_query_params({}, ['before', 'after'])
     end
   end
 
@@ -101,17 +103,17 @@ class PaginationCursor
 
   def before_cursor_url
     if @options[:per_page_from_request]
-      build_request_url({ 'before' => before_cursor, 'per_page' => per_page }, ['after'])
+      @request_helper.url_with_query_params({ 'before' => before_cursor, 'per_page' => per_page }, ['after'])
     else
-      build_request_url({ 'before' => before_cursor }, ['after'])
+      @request_helper.url_with_query_params({ 'before' => before_cursor }, ['after'])
     end
   end
 
   def after_cursor_url
     if @options[:per_page_from_request]
-      build_request_url({ 'after' => after_cursor, 'per_page' => per_page }, ['before'])
+      @request_helper.url_with_query_params({ 'after' => after_cursor, 'per_page' => per_page }, ['before'])
     else
-      build_request_url({ 'after' => after_cursor }, ['before'])
+      @request_helper.url_with_query_params({ 'after' => after_cursor }, ['before'])
     end
   end
 
@@ -184,19 +186,5 @@ class PaginationCursor
     when :before
       @options[:order] == :asc ? 'id DESC' : 'id ASC'
     end
-  end
-
-  def build_request_url(params_merge = {}, params_remove = [])
-    params_merge.stringify_keys!
-    params_remove.map!(&:to_s)
-
-    parsed_uri = URI.parse(@request.original_url)
-
-    decoded_query = URI.decode_www_form(parsed_uri.query || '').to_h
-    decoded_query.merge!(params_merge)
-    decoded_query.except!(*params_remove)
-
-    parsed_uri.query = URI.encode_www_form(decoded_query)
-    parsed_uri.to_s
   end
 end

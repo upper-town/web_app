@@ -27,6 +27,8 @@ class Pagination
     @page     = choose_page
     @per_page = choose_per_page
     @offset   = calc_offset
+
+    @request_helper = RequestHelper.new(@request)
   end
 
   def results
@@ -92,9 +94,9 @@ class Pagination
 
   def page_url(value)
     if @options[:per_page_from_request]
-      build_request_url({ 'page' => value, 'per_page' => per_page })
+      @request_helper.url_with_query_params({ 'page' => value, 'per_page' => per_page })
     else
-      build_request_url({ 'page' => value })
+      @request_helper.url_with_query_params({ 'page' => value })
     end
   end
 
@@ -144,19 +146,5 @@ class Pagination
       rel.load
       rel
     end
-  end
-
-  def build_request_url(params_merge = {}, params_remove = [])
-    params_merge.stringify_keys!
-    params_remove.map!(&:to_s)
-
-    parsed_uri = URI.parse(@request.original_url)
-
-    decoded_query = URI.decode_www_form(parsed_uri.query || '').to_h
-    decoded_query.merge!(params_merge)
-    decoded_query.except!(*params_remove)
-
-    parsed_uri.query = URI.encode_www_form(decoded_query)
-    parsed_uri.to_s
   end
 end
