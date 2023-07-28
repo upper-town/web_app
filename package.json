@@ -4,22 +4,31 @@
   "dependencies": {
     "@hotwired/stimulus": "^3.2.1",
     "@hotwired/turbo-rails": "^7.3.0",
-    "@tailwindcss/aspect-ratio": "^0.4.2",
-    "@tailwindcss/forms": "^0.5.3",
-    "@tailwindcss/typography": "^0.5.9",
+    "@popperjs/core": "^2.11.8",
     "autoprefixer": "^10.4.14",
+    "bootstrap": "^5.3.1",
+    "bootstrap-icons": "^1.10.5",
     "cssnano": "^6.0.1",
     "esbuild": "^0.18.11",
+    "nodemon": "^3.0.1",
     "postcss": "^8.4.25",
     "postcss-cli": "^10.1.0",
     "postcss-import": "^15.1.0",
     "postcss-nesting": "^12.0.0",
-    "tailwindcss": "^3.3.2"
+    "sass": "^1.64.1"
   },
   "scripts": {
     "build": "NODE_ENV=production esbuild app/javascript/*.* --bundle --minify --sourcemap --outdir=app/assets/builds --public-path=/assets",
-    "build-dev": "NODE_ENV=development esbuild app/javascript/*.* --bundle --sourcemap --outdir=app/assets/builds --public-path=/assets-development",
-    "build:css": "NODE_ENV=production postcss ./app/assets/stylesheets/application.postcss.css -o ./app/assets/builds/application.css --map",
-    "build-dev:css": "NODE_ENV=development postcss ./app/assets/stylesheets/application.postcss.css -o ./app/assets/builds/application.css --map"
-  }
+    "build:css": "NODE_ENV=production yarn run build:css:sass && yarn run build:css:postcss",
+    "build:css:sass": "NODE_ENV=production sass ./app/assets/stylesheets/application.bootstrap.scss:./app/assets/builds/application.css --no-source-map --style=expanded --load-path=node_modules",
+    "build:css:postcss": "NODE_ENV=production postcss ./app/assets/builds/application.css -o ./app/assets/builds/application.css --map",
+    "build-dev": "NODE_ENV=development esbuild app/javascript/*.* --bundle --sourcemap --outdir=app/assets/builds --public-path=/assets",
+    "build-dev:css": "NODE_ENV=development yarn run build-dev:css:sass && yarn run build-dev:css:postcss",
+    "build-dev:css:sass": "NODE_ENV=development sass ./app/assets/stylesheets/application.bootstrap.scss:./app/assets/builds/application.css --no-source-map --style=expanded --load-path=node_modules",
+    "build-dev:css:postcss": "NODE_ENV=development postcss ./app/assets/builds/application.css -o ./app/assets/builds/application.css --map",
+    "watch-dev:css": "NODE_ENV=development nodemon --watch ./app/assets/stylesheets/ --ext scss --exec \"yarn run build-dev:css\""
+  },
+  "browserslist": [
+    "defaults"
+  ]
 }

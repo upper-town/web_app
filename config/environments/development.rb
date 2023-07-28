@@ -54,7 +54,6 @@ Rails.application.configure do
   config.assets.quiet = true
 
   config.assets.debug = true
-  config.assets.prefix = '/assets-development'
   config.assets.compile = true
 
   # Raises error for missing translations.
