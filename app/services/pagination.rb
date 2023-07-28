@@ -42,11 +42,12 @@ class Pagination
   end
 
   def next_page
-    @next_page ||= if page_size < per_page || relation_plus_one.size <= per_page
-      page
-    else
-      [page + 1, @options[:page_max], HARD_MAX].min
-    end
+    @next_page ||=
+      if page_size < per_page || relation_plus_one.size <= per_page
+        page
+      else
+        [page + 1, @options[:page_max], HARD_MAX].min
+      end
   end
 
   def prev_page?
@@ -70,7 +71,7 @@ class Pagination
   end
 
   def last_page
-    total_pages
+    total_pages.clamp(HARD_MIN, HARD_MAX)
   end
 
   def first_page?
@@ -98,11 +99,7 @@ class Pagination
   end
 
   def total_count
-    @total_count ||= if @options[:total_count]
-      @options[:total_count]
-    else
-      @original_relation.count
-    end
+    @total_count ||= @options[:total_count] || @original_relation.count
   end
 
   def total_pages

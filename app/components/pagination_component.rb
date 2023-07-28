@@ -5,10 +5,10 @@ class PaginationComponent < ApplicationComponent
     show_prev_page:   true,
     show_next_page:   true,
     show_first_page:  true,
-    show_last_page:   true,
+    show_last_page:   true, # This calls pagination's total_count
     show_page_series: true,
-    show_total_pages: true, # TODO
-    show_goto_page:   true, # TODO
+    show_total_pages: true, # TODO: This calls pagination's total_count
+    show_goto_page:   true, # TODO: implement
   }
 
   def render?
