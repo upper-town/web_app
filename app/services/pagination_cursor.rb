@@ -16,7 +16,7 @@ class PaginationCursor
 
     cursor:              nil,
     cursor_from_request: true,
-    cursor_column:       :uuid,
+    cursor_column:       :suuid,
 
     indicator:              :after,
     indicator_from_request: true,
@@ -37,7 +37,12 @@ class PaginationCursor
   end
 
   def cursor_id
-    @cursor_id ||= model.where(@options[:cursor_column] => cursor).pick(:id)
+    @cursor_id ||=
+      if @options[:cursor_column] == :suuid
+        model.where_by_suuid(cursor).pick(:id)
+      else
+        model.where(@options[:cursor_column] => cursor).pick(:id)
+      end
   end
 
   def results
