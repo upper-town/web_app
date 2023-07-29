@@ -13,20 +13,12 @@
     "nodemon": "^3.0.1",
     "postcss": "^8.4.25",
     "postcss-cli": "^10.1.0",
-    "postcss-import": "^15.1.0",
-    "postcss-nesting": "^12.0.0",
     "sass": "^1.64.1"
   },
   "scripts": {
-    "build": "NODE_ENV=production esbuild app/javascript/*.* --bundle --minify --sourcemap --outdir=app/assets/builds --public-path=/assets",
-    "build:css": "NODE_ENV=production yarn run build:css:sass && yarn run build:css:postcss",
-    "build:css:sass": "NODE_ENV=production sass ./app/assets/stylesheets/application.bootstrap.scss:./app/assets/builds/application.css --no-source-map --style=expanded --load-path=node_modules",
-    "build:css:postcss": "NODE_ENV=production postcss ./app/assets/builds/application.css -o ./app/assets/builds/application.css --map",
-    "build-dev": "NODE_ENV=development esbuild app/javascript/*.* --bundle --sourcemap --outdir=app/assets/builds --public-path=/assets",
-    "build-dev:css": "NODE_ENV=development yarn run build-dev:css:sass && yarn run build-dev:css:postcss",
-    "build-dev:css:sass": "NODE_ENV=development sass ./app/assets/stylesheets/application.bootstrap.scss:./app/assets/builds/application.css --no-source-map --style=expanded --load-path=node_modules",
-    "build-dev:css:postcss": "NODE_ENV=development postcss ./app/assets/builds/application.css -o ./app/assets/builds/application.css --map",
-    "watch-dev:css": "NODE_ENV=development nodemon --watch ./app/assets/stylesheets/ --ext scss --exec \"yarn run build-dev:css\""
+    "build": "node esbuild.config.mjs",
+    "build:css": "node sass.config.mjs && node postcss.config.mjs",
+    "watch:css": "nodemon --watch ./app/assets/stylesheets/ --ext scss --exec \"yarn run build:css\""
   },
   "browserslist": [
     "defaults"
