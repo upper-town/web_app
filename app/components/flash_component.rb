@@ -16,15 +16,11 @@ class FlashComponent < ApplicationComponent
     case value
     when Hash
       {
-        scheme: key,
-        subject: value[:subject],
-        dismissible: value[:dismissible],
-        **(value[:options] || {})
-      }.compact
-    else
-      {
-        scheme: key
+        variant: key,
+        dismissible: value[:dismissible]
       }
+    else
+      { variant: key, }
     end
   end
 
@@ -36,17 +32,6 @@ class FlashComponent < ApplicationComponent
       value[:content]
     else
       value
-    end
-  end
-
-  def build_alert_link_to_args(flash_item)
-    value = parse_value(flash_item)
-
-    case value
-    when Hash
-      value[:link_to] || []
-    else
-      []
     end
   end
 

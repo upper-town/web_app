@@ -3,12 +3,9 @@
     <%
       alert_kwargs = build_alert_kwargs(flash_item)
       alert_content = get_alert_content(flash_item)
-      alert_link_to_args = build_alert_link_to_args(flash_item)
     %>
 
-    <%= render(AlertComponent.new(**alert_kwargs)) do |c| %>
-      <% c.button_link_to(*alert_link_to_args) if alert_link_to_args.present? %>
-
+    <%= render(AlertComponent.new(**alert_kwargs)) do %>
       <% if alert_content.is_a?(Array) %>
         <ul>
           <% alert_content.each do |content_item| %>

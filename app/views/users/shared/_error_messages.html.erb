@@ -1,5 +1,5 @@
 <% if resource.errors.any? %>
-  <%= render(AlertComponent.new(scheme: :alert)) do %>
+  <%= render(AlertComponent.new(variant: :danger)) do %>
     <ul>
       <% resource.errors.full_messages.each do |error_message| %>
         <li><%= error_message %></li>
