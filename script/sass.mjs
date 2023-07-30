@@ -12,6 +12,10 @@ const entryPoints = [
     inputFilePath: './app/assets/stylesheets/application.scss',
     outputFilePath: './app/assets/builds/application.css',
   },
+  {
+    inputFilePath: './app/assets/stylesheets/admin.scss',
+    outputFilePath: './app/assets/builds/admin.css',
+  },
 ]
 
 for (const entryPoint of entryPoints) {

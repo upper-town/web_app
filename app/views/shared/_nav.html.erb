@@ -1,0 +1,50 @@
+<nav class="navbar navbar-expand-lg bg-body-tertiary" data-bs-theme="dark">
+  <div class="container-fluid">
+    <%= link_to('Upper Town', root_path, class: 'navbar-brand') %>
+
+    <button
+      type="button"
+      class="navbar-toggler"
+      data-bs-toggle="collapse"
+      data-bs-target="#navbar-supported-content"
+      aria-controls="navbar-supported-content"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbar-supported-content">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <%= link_to("Top Servers", servers_path, class: 'nav-link') %>
+        </li>
+        <li class="nav-item">
+          <%= link_to("Add server", new_inside_server_path, class: 'nav-link') %>
+        </li>
+
+        <% if user_signed_in? %>
+          <li class="nav-item">
+            <%= link_to("Dashboard", inside_dashboard_path, class: 'nav-link') %>
+          </li>
+          <li class="nav-item">
+            <%=
+              link_to(
+                "Sign out",
+                destroy_user_session_path,
+                data: { 'turbo-method' => :delete },
+                class: 'nav-link'
+              )
+            %>
+          </li>
+        <% else %>
+          <li class="nav-item">
+            <%= link_to("Sign in", new_user_session_path, class: 'nav-link') %>
+          </li>
+        <% end %>
+      </ul>
+
+      <%= yield(:nav) %>
+    </div>
+  </div>
+</nav>

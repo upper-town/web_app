@@ -1,25 +1,24 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>WebApp | Admin</title>
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <%= csrf_meta_tags %>
-    <%= csp_meta_tag %>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
-    <%= javascript_include_tag "application", "data-turbo-track": "reload", defer: true %>
-  </head>
+  <title>WebApp | Admin</title>
 
-  <body data-controller="browser-time-zone">
-    <noscript>
-      <%= WebApp::Page::NOSCRIPT %>
-    </noscript>
+  <%= csrf_meta_tags %>
+  <%= csp_meta_tag %>
 
-    <main class="container mx-auto mt-28 px-5">
-      <%= render(partial: 'admin/shared/top_nav') %>
-      <%= render(partial: 'admin/shared/side_nav') %>
+  <%= stylesheet_link_tag "admin", "data-turbo-track": "reload" %>
+  <%= javascript_include_tag "admin", "data-turbo-track": "reload", defer: true %>
 
-      <%= yield %>
-    </main>
-  </body>
+  <%= yield(:head) %>
+</head>
+<body data-controller="browser-time-zone">
+  <%= render('shared/noscript') %>
+  <%= render('shared/admin/header') %>
+  <%= render('shared/admin/nav') %>
+  <%= render('shared/admin/main') %>
+  <%= render('shared/admin/footer') %>
+</body>
 </html>
