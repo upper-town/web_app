@@ -16,8 +16,8 @@
     "sass": "^1.64.1"
   },
   "scripts": {
-    "build": "node esbuild.config.mjs",
-    "build:css": "node sass.config.mjs && node postcss.config.mjs",
+    "build": "node ./script/esbuild.mjs",
+    "build:css": "node ./script/sass.mjs && node ./script/postcss.mjs",
     "watch:css": "nodemon --watch ./app/assets/stylesheets/ --ext scss --exec \"yarn run build:css\""
   },
   "browserslist": [
