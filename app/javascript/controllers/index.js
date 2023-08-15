@@ -19,5 +19,8 @@ application.register('form-reset-fields', FormResetFieldsController)
 import HelloController from './hello_controller'
 application.register('hello', HelloController)
 
+import NavigateController from './navigate_controller'
+application.register('navigate', NavigateController)
+
 import ServersController from './servers_controller'
 application.register('servers', ServersController)
