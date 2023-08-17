@@ -10,6 +10,9 @@ application.register('browser-time-zone', BrowserTimeZoneController)
 import CaptchaController from './captcha_controller'
 application.register('captcha', CaptchaController)
 
+import DispatchEventController from './dispatch_event_controller'
+application.register('dispatch-event', DispatchEventController)
+
 import FormFollowRedirectOnSuccessController from './form_follow_redirect_on_success_controller'
 application.register('form-follow-redirect-on-success', FormFollowRedirectOnSuccessController)
 
