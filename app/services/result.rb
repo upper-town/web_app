@@ -7,6 +7,7 @@ class Result
 
   attr_reader :errors
   attr_reader :data
+
   alias attributes data
 
   def self.success(data = {})

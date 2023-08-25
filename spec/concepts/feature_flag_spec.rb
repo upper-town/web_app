@@ -28,12 +28,16 @@ RSpec.describe FeatureFlag do
         ['FF_SOMETHING', 'false', :something, nil,       false],
         ['FF_SOMETHING', 'false', :something, 'User111', false],
 
-        ['FF_SOMETHING', 'true:User111,User222,Other999', :something, nil,        false],
-        ['FF_SOMETHING', 'true:User111,User222,Other999', :something, 'User111',  true ],
-        ['FF_SOMETHING', 'true:User111,User222,Other999', :something, 'User222',  true ],
-        ['FF_SOMETHING', 'true:User111,User222,Other999', :something, 'User333',  false],
-        ['FF_SOMETHING', 'true:User111,User222,Other999', :something, 'Other999', true ],
-        ['FF_SOMETHING', 'true:User111,User222,Other999', :something, 'Other000', false],
+        ['FF_SOMETHING', 'true:User111,User222,Other999', :something, nil,               false],
+        ['FF_SOMETHING', 'true:User111,User222,Other999', :something, User.new,          false],
+        ['FF_SOMETHING', 'true:User111,User222,Other999', :something, 'User111',         true ],
+        ['FF_SOMETHING', 'true:User111,User222,Other999', :something, User.new(id: 111), true ],
+        ['FF_SOMETHING', 'true:User111,User222,Other999', :something, 'User222',         true ],
+        ['FF_SOMETHING', 'true:User111,User222,Other999', :something, User.new(id: 222), true ],
+        ['FF_SOMETHING', 'true:User111,User222,Other999', :something, 'User333',         false],
+        ['FF_SOMETHING', 'true:User111,User222,Other999', :something, User.new(id: 333), false],
+        ['FF_SOMETHING', 'true:User111,User222,Other999', :something, 'Other999',        true ],
+        ['FF_SOMETHING', 'true:User111,User222,Other999', :something, 'Other000',        false],
 
       ].each do |env_var_name, env_var_value, name, ffid, enabled|
         it "returns #{enabled} for #{env_var_name}=#{env_var_value} and name=#{name.inspect}, ffid=#{ffid.inspect}" do
