@@ -36,6 +36,7 @@
 #
 class User < ApplicationRecord
   include ShortUuidForModel
+  include FeatureFlagIdForModel
 
   # Include default devise modules. Others available are: :omniauthable
   devise(

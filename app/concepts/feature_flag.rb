@@ -1,26 +1,25 @@
 # frozen_string_literal: true
 
+# This is a simple feature flag implementation that reads from an env var.
+# If you need complex logic for your feature flag, consider implementing a
+# Policy object instead.
 module FeatureFlag
-  ENV_VAR_PREFIX = 'FF_'
-
-  TRUE_STR = 'true'
+  ENV_VAR_PREFIX  = 'FF_'
+  TRUE_STR        = 'true'
   VALUE_SEPARATOR = ':'
-  IDENTIFIERS_SEPARATOR = ','
+  FFID_SEPARATOR  = ','
 
   # e.g.:
   #   FF_SOMETHING=true
-  #   FF_SOMETHING=true:users
-  #   FF_SOMETHING=true:users:111,222
-  def self.enabled?(name, group_name = nil, identifier = nil)
-    true_str, group_name_str, identifiers_str = fetch_env_var_values(name)
+  #   FF_SOMETHING=true:User111,User222,Other999
+  def self.enabled?(name, ffid = nil)
+    true_str, ffids_str = fetch_env_var_values(name)
 
-    match_true?(true_str) &&
-      match_group_name?(group_name_str, group_name) &&
-      match_identifier?(identifiers_str, identifier)
+    match_true?(true_str) && match_ffid?(ffids_str, ffid)
   end
 
-  def self.disabled?(name, group_name = nil, identifier = nil)
-    !enabled?(name, group_name, identifier)
+  def self.disabled?(name, ffid = nil)
+    !enabled?(name, ffid)
   end
 
   # private
@@ -35,22 +34,15 @@ module FeatureFlag
     true_str == TRUE_STR
   end
 
-  def self.match_group_name?(group_name_str, group_name)
-    return true if group_name_str.blank?
+  def self.match_ffid?(ffids_str, ffid)
+    return true if ffids_str.blank?
 
-    group_name_str == group_name.to_s
-  end
-
-  def self.match_identifier?(identifiers_str, identifier)
-    return true if identifiers_str.blank?
-
-    identifiers_str.split(IDENTIFIERS_SEPARATOR).include?(identifier.to_s)
+    ffids_str.split(FFID_SEPARATOR).include?(ffid.to_s)
   end
 
   private_class_method(
     :fetch_env_var_values,
     :match_true?,
-    :match_group_name?,
-    :match_identifier?
+    :match_ffid?
   )
 end
