@@ -24,7 +24,7 @@ class Captcha
       <div
         class="h-captcha"
         data-sitekey="#{SITE_KEY}"
-        data-theme="light"
+        data-theme="dark"
         data-turbo-cache="false"
         data-controller="captcha"
         data-action="custom-captcha-onload@window->captcha#onload"
