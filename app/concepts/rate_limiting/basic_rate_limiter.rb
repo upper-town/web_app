@@ -2,8 +2,8 @@
 
 module RateLimiting
   class BasicRateLimiter
-    def initialize(request, key_prefix, max_count, expires_in, error_message = '')
-      @key = "#{key_prefix}:#{request.remote_ip}"
+    def initialize(key, max_count, expires_in, error_message = '')
+      @key = key
       @max_count = max_count
       @expires_in = expires_in
       @error_message = error_message

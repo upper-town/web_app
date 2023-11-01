@@ -4,8 +4,7 @@ module Users
   module RegistrationsRateLimiter
     def self.build(request)
       RateLimiting::BasicRateLimiter.new(
-        request,
-        'users_registrations',
+        "users_registrations:#{request.remote_ip}",
         20,
         30.minutes.to_i,
         'You have tried to create an account too many times.'
