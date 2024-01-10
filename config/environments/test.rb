@@ -50,9 +50,9 @@ Rails.application.configure do
   # Annotate rendered view with file names.
   # config.action_view.annotate_rendered_view_with_filenames = true
 
-  config.hosts << ENV.fetch('HOST')
+  config.hosts << ENV.fetch('APP_HOST')
 
-  default_url_options = { host: ENV.fetch('HOST'), port: ENV.fetch('PORT') }
+  default_url_options = { host: ENV.fetch('APP_HOST'), port: ENV.fetch('APP_PORT') }
 
   # Raise error when a before_action's only/except options reference missing actions
   config.action_controller.raise_on_missing_callback_actions = true

@@ -20,7 +20,7 @@ module Seeds
         1.upto(10).map do |n|
           {
             uuid: SecureRandom.uuid,
-            email: "user.#{n}@#{ENV.fetch('HOST')}",
+            email: "user.#{n}@#{ENV.fetch('APP_HOST')}",
             encrypted_password: Devise::Encryptor.digest(User, PASSWORD),
             confirmed_at: Time.current,
           }

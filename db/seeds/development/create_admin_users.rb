@@ -20,7 +20,7 @@ module Seeds
       def normal_admin_user_hashes
         1.upto(10).map do |n|
           {
-            email: "admin.user.#{n}@#{ENV.fetch('HOST')}",
+            email: "admin.user.#{n}@#{ENV.fetch('APP_HOST')}",
             encrypted_password: Devise::Encryptor.digest(User, PASSWORD),
             confirmed_at: Time.current
           }
@@ -29,7 +29,7 @@ module Seeds
 
       def super_admin_user_hash
         {
-          email: "super.admin.user@#{ENV.fetch('HOST')}",
+          email: "super.admin.user@#{ENV.fetch('APP_HOST')}",
           encrypted_password: Devise::Encryptor.digest(User, PASSWORD),
           confirmed_at: Time.current
         }

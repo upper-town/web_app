@@ -1,5 +1,5 @@
-web: bin/rails server -p ${PORT}
-worker: bundle exec sidekiq
+web: bin/rails server --port ${APP_PORT}
+worker: bundle exec sidekiq --environment ${RAILS_ENV}
 
 js: yarn run build --watch
 css: yarn run watch:css
