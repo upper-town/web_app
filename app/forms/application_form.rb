@@ -5,4 +5,12 @@ class ApplicationForm
   include ActiveModel::Attributes
 
   include Rails.application.routes.url_helpers
+
+  def ==(other)
+    super || (
+      other.instance_of?(self.class) &&
+        other.attributes['id'].present? && attributes['id'].present? &&
+        other.id == id
+    )
+  end
 end
