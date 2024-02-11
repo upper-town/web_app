@@ -2,9 +2,10 @@
 
 class ScopedShortUuid
   MAP = {
-    Server     => 'server',
-    ServerVote => 'server_vote',
-    User       => 'user',
+    App         => 'app',
+    Server      => 'server',
+    ServerVote  => 'server_vote',
+    UserAccount => 'user_account',
   }.freeze
 
   INVERTED_MAP = MAP.invert

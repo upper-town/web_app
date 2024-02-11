@@ -22,8 +22,6 @@
 #  fk_rails_...  (server_id => servers.id)
 #
 class ServerWebhookSecret < ApplicationRecord
-  include ShortUuidForModel
-
   belongs_to :server
 
   def self.active

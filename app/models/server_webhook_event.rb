@@ -32,8 +32,6 @@
 #  fk_rails_...  (server_webhook_config_id => server_webhook_configs.id)
 #
 class ServerWebhookEvent < ApplicationRecord
-  include ShortUuidForModel
-
   MAX_FAILED_ATTEMPTS = 25
 
   PENDING   = 'pending'

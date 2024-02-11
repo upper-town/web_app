@@ -24,8 +24,6 @@
 #  fk_rails_...  (server_id => servers.id)
 #
 class ServerWebhookConfig < ApplicationRecord
-  include ShortUuidForModel
-
   belongs_to :server
 
   has_many :events, class_name: 'ServerWebhookEvent', dependent: :nullify

@@ -35,7 +35,6 @@
 #  index_users_on_uuid                  (uuid) UNIQUE
 #
 class User < ApplicationRecord
-  include ShortUuidForModel
   include FeatureFlagIdForModel
 
   # Include default devise modules. Others available are: :omniauthable
