@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'support/helpers/env_var_helper'
-
 class RailsEnvHelper
   extend RSpec::Mocks::ExampleMethods
 

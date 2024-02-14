@@ -24,7 +24,10 @@ rescue ActiveRecord::PendingMigrationError => e
   exit 1
 end
 
-require 'support/config/rspec_rails_config'
-require 'support/config/devise_config'
-require 'support/config/factory_bot_config'
-require 'support/config/shoulda_matchers_config'
+Dir[Rails.root.join('spec', 'support', 'config_rails', '**', '*.rb')].each do |file|
+  require file
+end
+
+Dir[Rails.root.join('spec', 'support', 'helpers_rails', '**', '*.rb')].each do |file|
+  require file
+end

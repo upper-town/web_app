@@ -8,8 +8,18 @@ require 'vcr'
 require 'capybara/rspec'
 require 'sidekiq/testing'
 
-require 'support/config/rspec_config'
-require 'support/config/vcr_config'
-require 'support/config/webmock_config'
-require 'support/config/sidekiq_config'
-require 'support/config/capybara_config'
+class StringToBoolean
+  TRUE_STR = ['true', 't', '1', 'on', 'enabled'].freeze
+
+  def self.call(value)
+    TRUE_STR.include?(value.to_s.downcase.gsub(/[[:space:]]/, ''))
+  end
+end
+
+Dir[Pathname.getwd.join('spec', 'support', 'config', '**', '*.rb')].each do |file|
+  require file
+end
+
+Dir[Pathname.getwd.join('spec', 'support', 'helpers', '**', '*.rb')].each do |file|
+  require file
+end

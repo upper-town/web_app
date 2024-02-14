@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'rails_helper'
-require 'support/helpers/env_var_helper'
 
 RSpec.describe FeatureFlag do
   describe '.enabled? and disabled?' do
