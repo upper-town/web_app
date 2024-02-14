@@ -7,6 +7,10 @@ require 'active_support/core_ext/integer/time'
 # your test database is "scratch space" for the test suite and is wiped
 # and recreated between test runs. Don't rely on the data there!
 
+ActiveSupport.on_load(:active_record_postgresqladapter) do
+  self.create_unlogged_tables = true
+end
+
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
