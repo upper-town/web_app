@@ -10,7 +10,7 @@ module ServerWebhooks
       def call
         {
           'server_vote' => {
-            'id'              => @server_vote.suuid,
+            'uuid'            => @server_vote.uuid,
             'reference'       => @server_vote.reference,
             'remote_ip'       => @server_vote.remote_ip,
             'server_id'       => @server_vote.server.suuid,

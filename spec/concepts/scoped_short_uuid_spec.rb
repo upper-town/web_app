@@ -4,6 +4,15 @@ require 'rails_helper'
 
 RSpec.describe ScopedShortUuid do
   describe '.generate' do
+    it 'generates a ssuuid for a App record' do
+      app = create(:app)
+      short_uuid = ShortUuid.from_uuid(app.uuid)
+
+      ssuuid = described_class.generate(app)
+
+      expect(ssuuid).to eq("app_#{short_uuid}")
+    end
+
     it 'generates a ssuuid for a Server record' do
       server = create(:server)
       short_uuid = ShortUuid.from_uuid(server.uuid)
@@ -22,17 +31,29 @@ RSpec.describe ScopedShortUuid do
       expect(ssuuid).to eq("server_vote_#{short_uuid}")
     end
 
-    it 'generates a ssuuid for a User record' do
-      user = create(:user)
-      short_uuid = ShortUuid.from_uuid(user.uuid)
+    it 'generates a ssuuid for a UserAccount record' do
+      user_account = create(:user_account)
+      short_uuid = ShortUuid.from_uuid(user_account.uuid)
 
-      ssuuid = described_class.generate(user)
+      ssuuid = described_class.generate(user_account)
 
-      expect(ssuuid).to eq("user_#{short_uuid}")
+      expect(ssuuid).to eq("user_account_#{short_uuid}")
     end
   end
 
   describe '.parse' do
+    it 'parses from a App ssuuid' do
+      scope = 'app'
+      uuid = SecureRandom.uuid
+      short_uuid = ShortUuid.from_uuid(uuid)
+      ssuuid = "#{scope}_#{short_uuid}"
+
+      parsed_record_class, parsed_uuid = described_class.parse(ssuuid)
+
+      expect(parsed_record_class).to eq(App)
+      expect(parsed_uuid).to eq(uuid)
+    end
+
     it 'parses from a Server ssuuid' do
       scope = 'server'
       uuid = SecureRandom.uuid
@@ -57,15 +78,15 @@ RSpec.describe ScopedShortUuid do
       expect(parsed_uuid).to eq(uuid)
     end
 
-    it 'parses from a User ssuuid' do
-      scope = 'user'
+    it 'parses from a UserAccount ssuuid' do
+      scope = 'user_account'
       uuid = SecureRandom.uuid
       short_uuid = ShortUuid.from_uuid(uuid)
       ssuuid = "#{scope}_#{short_uuid}"
 
       parsed_record_class, parsed_uuid = described_class.parse(ssuuid)
 
-      expect(parsed_record_class).to eq(User)
+      expect(parsed_record_class).to eq(UserAccount)
       expect(parsed_uuid).to eq(uuid)
     end
   end
@@ -73,22 +94,22 @@ RSpec.describe ScopedShortUuid do
   describe '.find_record' do
     context 'when record is not found' do
       it 'returns nil' do
-        ssuuid = "user_#{ShortUuid.from_uuid('00000000-0000-0000-0000-000000000000')}"
+        ssuuid = "user_account_#{ShortUuid.from_uuid('00000000-0000-0000-0000-000000000000')}"
 
-        user_found = described_class.find_record(ssuuid)
+        user_account_found = described_class.find_record(ssuuid)
 
-        expect(user_found).to be_nil
+        expect(user_account_found).to be_nil
       end
     end
 
     context 'when record is found' do
       it 'returns the record' do
-        user = create(:user)
-        ssuuid = described_class.generate(user)
+        user_account = create(:user_account)
+        ssuuid = described_class.generate(user_account)
 
-        user_found = described_class.find_record(ssuuid)
+        user_account_found = described_class.find_record(ssuuid)
 
-        expect(user_found).to eq(user)
+        expect(user_account_found).to eq(user_account)
       end
     end
   end
@@ -96,22 +117,22 @@ RSpec.describe ScopedShortUuid do
   describe '.record_exists?' do
     context 'when record is not found' do
       it 'returns false' do
-        ssuuid = "user_#{ShortUuid.from_uuid('00000000-0000-0000-0000-000000000000')}"
+        ssuuid = "user_account_#{ShortUuid.from_uuid('00000000-0000-0000-0000-000000000000')}"
 
-        result = described_class.record_exists?(ssuuid)
+        returned = described_class.record_exists?(ssuuid)
 
-        expect(result).to be(false)
+        expect(returned).to be(false)
       end
     end
 
     context 'when record is found' do
       it 'returns true' do
-        user = create(:user)
-        ssuuid = described_class.generate(user)
+        user_account = create(:user_account)
+        ssuuid = described_class.generate(user_account)
 
-        result = described_class.record_exists?(ssuuid)
+        returned = described_class.record_exists?(ssuuid)
 
-        expect(result).to be(true)
+        expect(returned).to be(true)
       end
     end
   end

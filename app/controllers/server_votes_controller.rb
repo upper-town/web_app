@@ -23,7 +23,7 @@ class ServerVotesController < ApplicationController
 
       if result.success?
         flash[:success] = 'Your vote has been saved!'
-        redirect_to(server_vote_path(result.data[:server_vote].suuid))
+        redirect_to(server_vote_path(result.data[:server_vote].uuid))
       else
         flash.now[:alert] = result.errors.full_messages
         render(:new, status: :unprocessable_entity)
@@ -41,7 +41,7 @@ class ServerVotesController < ApplicationController
   end
 
   def server_vote_from_params
-    ServerVote.find_by_suuid!(params['suuid'])
+    ServerVote.find_by!(uuid: params['uuid'])
   end
 
   def reference_from_params

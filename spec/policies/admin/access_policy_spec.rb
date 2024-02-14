@@ -6,7 +6,7 @@ RSpec.describe Admin::AccessPolicy do
   describe '#allowed?' do
     describe 'when admin_user is super_admin' do
       it 'always returns true' do
-        admin_user = create(:admin_user, email: 'some.admin.user@.test.upper.town')
+        admin_user = create(:admin_user, email: 'some.admin.user@test.upper.town')
 
         EnvVarHelper.with_values('SUPER_ADMIN_USER_EMAILS' => 'some.admin.user@test.upper.town') do
           access_policy = described_class.new(admin_user, 'some_admin_permission_key')

@@ -10,12 +10,12 @@ RSpec.describe ServerWebhooks::BuildEventRequestHeadersAndBody do
         server = create(:server)
         server_webhook_event = create(
           :server_webhook_event,
-          uuid:              'e6596f8d-40cd-4394-9aaa-b0edab715f9c', # suuid: "ebwXV57LhFYHK5MabRC8eE"
+          uuid:              'e6596f8d-40cd-4394-9aaa-b0edab715f9c',
           server:            server,
           type:              'test.event_type',
           last_published_at: '2023-03-20T12:50:01Z',
           failed_attempts:    1,
-          payload:            { 'server_vote' => { 'id' => 'BpwRYQ8h7opNbCR9NtoA1T' } }
+          payload:            { 'server_vote' => { 'uuid' => 'a0ba7837-502e-4346-931b-054a218fc53f' } }
         )
 
         request_headers, request_body = described_class.new(server_webhook_event).call
@@ -25,11 +25,11 @@ RSpec.describe ServerWebhooks::BuildEventRequestHeadersAndBody do
         })
         expect(request_body).to eq({
           'event' => {
-            'id'                => 'ebwXV57LhFYHK5MabRC8eE',
+            'uuid'              => 'e6596f8d-40cd-4394-9aaa-b0edab715f9c',
             'type'              => 'test.event_type',
             'last_published_at' => '2023-03-20T12:50:01.000Z',
             'failed_attempts'   => 1,
-            'payload'           => { 'server_vote' => { 'id' => 'BpwRYQ8h7opNbCR9NtoA1T' } },
+            'payload'           => { 'server_vote' => { 'uuid' => 'a0ba7837-502e-4346-931b-054a218fc53f' } },
           }
         }.to_json)
       end
@@ -52,12 +52,12 @@ RSpec.describe ServerWebhooks::BuildEventRequestHeadersAndBody do
         )
         server_webhook_event = create(
           :server_webhook_event,
-          uuid:              'e6596f8d-40cd-4394-9aaa-b0edab715f9c', # suuid: "ebwXV57LhFYHK5MabRC8eE"
+          uuid:              'e6596f8d-40cd-4394-9aaa-b0edab715f9c',
           server:            server,
           type:              'test.event_type',
           last_published_at: '2023-03-20T12:50:01Z',
           failed_attempts:    1,
-          payload:            { 'server_vote' => { 'id' => 'BpwRYQ8h7opNbCR9NtoA1T' } }
+          payload:            { 'server_vote' => { 'uuid' => 'a0ba7837-502e-4346-931b-054a218fc53f' } }
         )
 
         request_headers, request_body = described_class.new(server_webhook_event).call
@@ -68,11 +68,11 @@ RSpec.describe ServerWebhooks::BuildEventRequestHeadersAndBody do
         })
         expect(request_body).to eq({
           'event' => {
-            'id'                => 'ebwXV57LhFYHK5MabRC8eE',
+            'uuid'              => 'e6596f8d-40cd-4394-9aaa-b0edab715f9c',
             'type'              => 'test.event_type',
             'last_published_at' => '2023-03-20T12:50:01.000Z',
             'failed_attempts'   => 1,
-            'payload'           => { 'server_vote' => { 'id' => 'BpwRYQ8h7opNbCR9NtoA1T' } },
+            'payload'           => { 'server_vote' => { 'uuid' => 'a0ba7837-502e-4346-931b-054a218fc53f' } },
           }
         }.to_json)
       end

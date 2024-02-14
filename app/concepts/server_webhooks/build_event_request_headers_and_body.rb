@@ -21,7 +21,7 @@ module ServerWebhooks
     def build_request_body
       {
         'event' => {
-          'id'                => @server_webhook_event.suuid,
+          'uuid'              => @server_webhook_event.uuid,
           'type'              => @server_webhook_event.type,
           'last_published_at' => @server_webhook_event.last_published_at,
           'failed_attempts'   => @server_webhook_event.failed_attempts,

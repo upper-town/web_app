@@ -15,7 +15,7 @@ class PaginationCursor
 
     cursor:              nil,
     cursor_from_request: true,
-    cursor_column:       :suuid,
+    cursor_column:       :uuid,
 
     indicator:              :after,
     indicator_from_request: true,

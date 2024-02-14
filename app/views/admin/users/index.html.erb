@@ -9,7 +9,7 @@
       columns: [
         ['ID',      :id],
         ['email',   :email],
-        ['SUUID',   proc { |user| user.suuid }],
+        ['UUID',   proc { |user| user.uuid }],
         ['Actions', proc { |user| render(partial: 'edit_actions_index', locals: { user: user }) }],
       ],
     ))

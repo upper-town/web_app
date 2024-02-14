@@ -44,7 +44,7 @@ RSpec.describe ServerWebhooks::CreateEvent do
           expect(server_webhook_event.status).to eq(ServerWebhookEvent::PENDING)
           expect(server_webhook_event.payload).to eq({
             'server_vote' => {
-              'id'              => server_vote.suuid,
+              'uuid'            => server_vote.uuid,
               'reference'       => 'user_123456',
               'remote_ip'       => '8.8.8.8',
               'server_id'       => server.suuid,
@@ -81,7 +81,7 @@ RSpec.describe ServerWebhooks::CreateEvent do
           expect(server_webhook_event.status).to eq(ServerWebhookEvent::PENDING)
           expect(server_webhook_event.payload).to eq({
             'server_vote' => {
-              'id'              => server_vote.suuid,
+              'uuid'            => server_vote.uuid,
               'reference'       => 'user_123456',
               'remote_ip'       => '8.8.8.8',
               'server_id'       => server.suuid,
