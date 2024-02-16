@@ -1,37 +1,35 @@
 <% content_for(:head) do %>
-  <%= @captcha.script_tag %>
+  <%= captcha_script_tag %>
 <% end %>
 
-<h2>Resend confirmation instructions (Admin)</h2>
+<h2>
+  Sign Up: Email confirmation link
+</h2>
 
-<%= render("admin_users/shared/error_messages", resource: resource) %>
-
-<%= form_with(model: resource, url: confirmation_path(resource_name), html: { method: :post }) do |form| %>
-  <div class="mb-2">
-    <%= form.label(:email) %><br />
-    <%=
-      form.email_field(
-        :email,
-        autofocus: true,
-        autocomplete: "email",
-        value: (resource.pending_reconfirmation? ? resource.unconfirmed_email : resource.email)
-      )
-    %>
+<%= form_with(model: @new_form, url: @new_form.url, html: { method: @new_form.method }) do |form| %>
+  <div class="mb-3">
+    <%= form.label(:email, 'Email address', class: 'form-label') %>
+    <%= form.email_field(
+      :email,
+      autofocus: true,
+      autocomplete: "email",
+      class: 'form-control',
+      aria: { describedby: "email-help" }
+    ) %>
+    <div id="email-help" class="form-text">
+      We'll send you a message with the link to confirm your email address.
+    </div>
   </div>
 
-  <div class="my-2">
-    <%= @captcha.widget_tag %>
+  <div class="mb-3">
+    <%= captcha_widget_tag(theme: 'light') %>
   </div>
 
-  <div class="mb-2">
-    <%=
-      form.submit(
-        "Resend confirmation instructions",
-        class: 'btn btn-primary',
-        data: { 'turbo-submits-with' => 'Loading...' }
-      )
-    %>
+  <div class="mb-3">
+    <%= form.submit(
+      'Send confirmation link',
+      class: 'btn btn-primary',
+      data: { 'turbo-submits-with' => 'Loading...' }
+    ) %>
   </div>
 <% end %>
-
-<%= render("admin_users/shared/links") %>

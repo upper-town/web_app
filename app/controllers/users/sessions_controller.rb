@@ -1,55 +1,87 @@
 # frozen_string_literal: true
 
 module Users
-  class SessionsController < Devise::SessionsController
-    # before_action :configure_sign_in_params, only: [:create]
+  class SessionsController < ApplicationController
+    before_action :authenticate_user!, only: [:destroy, :destroy_all]
 
-    # GET /resource/sign_in
     def new
-      @captcha = Captcha.new
+      if signed_in?
+        redirect_to(
+          inside_dashboard_path,
+          notice: 'You are logged in already.'
+        )
+        return
+      end
 
-      super
+      @new_form = Users::Sessions::NewForm.new
     end
 
-    # POST /resource/sign_in
     def create
-      devise_sessions_build_resource
-      @captcha = Captcha.new
+      if signed_in?
+        redirect_to(
+          inside_dashboard_path,
+          notice: 'You are logged in already.'
+        )
+        return
+      end
 
-      result = Users::CheckBeforeSessions.new(@captcha, request).call
+      @new_form = Users::Sessions::NewForm.new(new_form_params)
+
+      result = captcha_check(if_success_skip_paths: [users_sign_in_path, users_sessions_path])
+
+      if result.failure?
+        flash.now[:alert] = result.errors.full_messages
+        render(:new, status: :unprocessable_entity)
+
+        return
+      end
+
+      if @new_form.invalid?
+        flash.now[:alert] = @new_form.errors.full_messages
+        render(:new, status: :unprocessable_entity)
+
+        return
+      end
+
+      result = Users::AuthenticateSession.new(@new_form.attributes, request).call
 
       if result.success?
-        devise_sessions_create
+        sign_in!(result.data[:user], @new_form.remember_me)
+        return_to = consume_return_to
+
+        redirect_to(
+          return_to || inside_dashboard_path,
+          success: 'You are logged in.'
+        )
       else
-        flash.now[:alert] = result.errors.full_messages
+        flash.now[:info] = result.errors.full_messages
         render(:new, status: :unprocessable_entity)
       end
     end
 
-    # DELETE /resource/sign_out
-    # def destroy
-    #   super
-    # end
+    def destroy
+      sign_out!
 
-    # protected
+      redirect_to(
+        root_path,
+        info: 'Your have been logged out.'
+      )
+    end
 
-    # If you have extra params to permit, append them to the sanitizer.
-    # def configure_sign_in_params
-    #   devise_parameter_sanitizer.permit(:sign_in, keys: [:attribute])
-    # end
+    def destroy_all
+      # TODO: implement
+    end
 
     private
 
-    def devise_sessions_build_resource
-      self.resource = resource_class.new(sign_in_params)
-    end
-
-    def devise_sessions_create
-      self.resource = warden.authenticate!(auth_options)
-      set_flash_message!(:notice, :signed_in)
-      sign_in(resource_name, resource)
-      yield resource if block_given?
-      respond_with resource, location: after_sign_in_path_for(resource)
+    def new_form_params
+      params
+        .require('users_sessions_new_form')
+        .permit(
+          'email',
+          'password',
+          'remember_me'
+        )
     end
   end
 end

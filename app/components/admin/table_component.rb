@@ -3,6 +3,8 @@
 module Admin
   class TableComponent < ApplicationComponent
     def initialize(collection: [], columns: [])
+      super()
+
       @collection = collection
       @columns = columns
     end

@@ -8,9 +8,8 @@ module Admin
     end
 
     def allowed?
-      if @admin_user.super_admin?
-        return true
-      end
+      return false unless @admin_user
+      return true if @admin_user.super_admin?
 
       @admin_user.permissions.exists?(key: @admin_permission_key)
     end

@@ -4,16 +4,16 @@ servers_consolidate_vote_counts_scheduler_job_current:
   args: ["current"]
   queue: default
 
-servers_consolidate_rankings_scheduler_job_current:
-  cron: "0 2 * * *"
-  class: Servers::ConsolidateRankingsSchedulerJob
-  args: ["current"]
-  queue: default
-
 servers_consolidate_vote_counts_scheduler_job_all:
   cron: "0 1 1 * *"
   class: Servers::ConsolidateVoteCountsSchedulerJob
   args: ["all"]
+  queue: default
+
+servers_consolidate_rankings_scheduler_job_current:
+  cron: "0 2 * * *"
+  class: Servers::ConsolidateRankingsSchedulerJob
+  args: ["current"]
   queue: default
 
 servers_consolidate_rankings_scheduler_job_all:
@@ -43,5 +43,11 @@ servers_delete_marked_for_deletion_job:
 server_webhooks_delete_old_events_job:
   cron: "0 4 * * *"
   class: ServerWebhooks::DeleteOldEventsJob
+  args: []
+  queue: default
+
+delete_expired_tokens_job:
+  cron: "0 5 * * *"
+  class: DeleteExpiredTokensJob
   args: []
   queue: default

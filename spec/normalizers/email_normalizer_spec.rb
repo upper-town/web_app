@@ -6,7 +6,7 @@ RSpec.describe EmailNormalizer do
   describe '#call' do
     it 'just removes white spaces and transforms to lower case' do
       [
-        [nil, ''],
+        [nil, nil],
         ['', ''],
         ['user@example.com',      'user@example.com'],
         ['  USER@example .COM  ', 'user@example.com'],

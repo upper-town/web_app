@@ -33,16 +33,16 @@ class ServerStat < ApplicationRecord
   YEAR  = 'year'
   MONTH = 'month'
   WEEK  = 'week'
-  PERIODS = [YEAR, MONTH, WEEK].freeze
+  PERIODS = [YEAR, MONTH, WEEK]
   PERIOD_OPTIONS = [
     ['Year',  YEAR],
     ['Month', MONTH],
     ['Week',  WEEK]
-  ].freeze
+  ]
 
   ALL = 'all'
   ALL_EMOJI_FLAG = '🌐'
-  COUNTRY_CODES = [ALL, *Server::COUNTRY_CODES].freeze
+  COUNTRY_CODES = [ALL, *Server::COUNTRY_CODES]
 
   validates :period, inclusion: { in: PERIODS }
   validates :country_code, inclusion: { in: COUNTRY_CODES }

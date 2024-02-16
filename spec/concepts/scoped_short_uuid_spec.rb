@@ -22,15 +22,6 @@ RSpec.describe ScopedShortUuid do
       expect(ssuuid).to eq("server_#{short_uuid}")
     end
 
-    it 'generates a ssuuid for a ServerVote record' do
-      server_vote = create(:server_vote)
-      short_uuid = ShortUuid.from_uuid(server_vote.uuid)
-
-      ssuuid = described_class.generate(server_vote)
-
-      expect(ssuuid).to eq("server_vote_#{short_uuid}")
-    end
-
     it 'generates a ssuuid for a UserAccount record' do
       user_account = create(:user_account)
       short_uuid = ShortUuid.from_uuid(user_account.uuid)
@@ -63,18 +54,6 @@ RSpec.describe ScopedShortUuid do
       parsed_record_class, parsed_uuid = described_class.parse(ssuuid)
 
       expect(parsed_record_class).to eq(Server)
-      expect(parsed_uuid).to eq(uuid)
-    end
-
-    it 'parses from a ServerVote ssuuid' do
-      scope = 'server_vote'
-      uuid = SecureRandom.uuid
-      short_uuid = ShortUuid.from_uuid(uuid)
-      ssuuid = "#{scope}_#{short_uuid}"
-
-      parsed_record_class, parsed_uuid = described_class.parse(ssuuid)
-
-      expect(parsed_record_class).to eq(ServerVote)
       expect(parsed_uuid).to eq(uuid)
     end
 

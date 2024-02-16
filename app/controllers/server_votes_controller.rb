@@ -8,28 +8,39 @@ class ServerVotesController < ApplicationController
   def new
     @server = server_from_params
     @reference = reference_from_params
-    @captcha = Captcha.new
     @new_form = ServerVotes::NewForm.new
   end
 
   def create
     @server = server_from_params
     @reference = server_votes_new_form_params['reference']
-    @captcha = Captcha.new
     @new_form = ServerVotes::NewForm.new(server_votes_new_form_params)
 
-    if @new_form.valid?
-      result = Servers::CreateVote.new(@server, @new_form.attributes, @captcha, request, current_user_account).call
+    result = captcha_check
 
-      if result.success?
-        flash[:success] = 'Your vote has been saved!'
-        redirect_to(server_vote_path(result.data[:server_vote].uuid))
-      else
-        flash.now[:alert] = result.errors.full_messages
-        render(:new, status: :unprocessable_entity)
-      end
-    else
+    if result.failure?
+      flash.now[:alert] = result.errors.full_messages
+      render(:new, status: :unprocessable_entity)
+
+      return
+    end
+
+    if @new_form.invalid?
       flash.now[:alert] = @new_form.errors.full_messages
+      render(:new, status: :unprocessable_entity)
+
+      return
+    end
+
+    result = Servers::CreateVote.new(@server, @new_form.attributes, request, current_user_account).call
+
+    if result.success?
+      redirect_to(
+        server_vote_path(result.data[:server_vote].uuid),
+        success: 'Your vote has been saved!'
+      )
+    else
+      flash.now[:alert] = result.errors.full_messages
       render(:new, status: :unprocessable_entity)
     end
   end

@@ -24,10 +24,10 @@ rescue ActiveRecord::PendingMigrationError => e
   exit 1
 end
 
-Dir[Rails.root.join('spec', 'support', 'config_rails', '**', '*.rb')].each do |file|
+Dir[Rails.root.join('spec/support/config_rails/**/*.rb')].each do |file|
   require file
 end
 
-Dir[Rails.root.join('spec', 'support', 'helpers_rails', '**', '*.rb')].each do |file|
+Dir[Rails.root.join('spec/support/helpers_rails/**/*.rb')].each do |file|
   require file
 end

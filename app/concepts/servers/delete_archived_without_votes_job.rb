@@ -16,8 +16,7 @@ module Servers
       Server
         .distinct
         .archived
-        .left_joins(:votes)
-        .where(votes: { id: nil })
+        .missing(:votes)
         .pluck(:id)
     end
   end

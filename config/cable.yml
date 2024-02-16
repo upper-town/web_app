@@ -6,5 +6,5 @@ test:
 
 production:
   adapter: redis
-  url: <%= ENV.fetch("REDIS_CABLE_URL") %>
+  url: <%= ENV.fetch("REDIS_ACTION_CABLE_URL") %>
   channel_prefix: web_app_production

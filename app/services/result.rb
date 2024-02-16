@@ -5,8 +5,7 @@ class Result
 
   GENERIC_ERROR = 'An error has occurred'
 
-  attr_reader :errors
-  attr_reader :data
+  attr_reader :errors, :data
 
   alias attributes data
 

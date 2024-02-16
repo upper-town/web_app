@@ -1,61 +1,109 @@
 # frozen_string_literal: true
 
 module AdminUsers
-  class ConfirmationsController < Devise::ConfirmationsController
-    # GET /resource/confirmation/new
-    def new
-      @captcha = Captcha.new
+  class ConfirmationsController < ApplicationAdminController
+    before_action :authenticate_admin_user!
 
-      super
+    def new
+      @new_form = AdminUsers::Confirmation::NewForm.new(email: email_from_params)
     end
 
-    # POST /resource/confirmation
     def create
-      devise_confirmations_build_resource
-      @captcha = Captcha.new
+      @new_form = AdminUsers::Confirmation::NewForm.new(new_form_params)
 
-      result = AdminUsers::CheckBeforeConfirmations.new(@captcha, request).call
+      result = captcha_check(if_success_skip_paths: [admin_users_sign_up_path, admin_users_confirmation_path])
+
+      if result.failure?
+        flash.now[:alert] = result.errors.full_messages
+        render(:new, status: :unprocessable_entity)
+
+        return
+      end
+
+      if @new_form.invalid?
+        flash.now[:alert] = @new_form.errors.full_messages
+        render(:new, status: :unprocessable_entity)
+
+        return
+      end
+
+      result = AdminUsers::Create.new(@new_form.attributes, request).call
 
       if result.success?
-        devise_confirmations_create
+        redirect_to(
+          root_path,
+          info: 'Confirmation link has been sent to your email.'
+        )
       else
-        flash.now[:alert] = result.errors.full_messages
+        flash.now[:info] = result.errors.full_messages
         render(:new, status: :unprocessable_entity)
       end
     end
 
-    # GET /resource/confirmation?confirmation_token=abcdef
-    # def show
-    #   super
-    # end
+    def edit
+      @edit_form = AdminUsers::Confirmation::EditForm.new(
+        token: token_from_params,
+        auto_click: auto_click_from_params
+      )
+    end
 
-    # protected
+    def update
+      @edit_form = AdminUsers::Confirmation::EditForm.new(edit_form_params)
 
-    # The path used after resending confirmation instructions.
-    # def after_resending_confirmation_instructions_path_for(resource_name)
-    #   super(resource_name)
-    # end
+      if @edit_form.invalid?
+        flash.now[:info] = @edit_form.errors.full_messages
+        render(:edit, status: :unprocessable_entity)
 
-    # The path used after confirmation.
-    # def after_confirmation_path_for(resource_name, resource)
-    #   super(resource_name, resource)
-    # end
+        return
+      end
+
+      result = AdminUsers::Confirmation::Update.new(@edit_form.attributes, request).call
+
+      if result.success?
+        admin_user = result.data[:admin_user]
+
+        if signed_in?
+          redirect_to(
+            admin_dashboard_path,
+            success: 'Email address has been confirmed.'
+          )
+        elsif admin_user.password_digest.present?
+          redirect_to(
+            admin_users_sign_in_path,
+            success: 'Email address has been confirmed.'
+          )
+        else
+          redirect_to(
+            new_admin_users_password_reset_path(email: admin_user.email),
+            success: 'Email address has been confirmed. Set a password for your account.'
+          )
+        end
+      else
+        flash.now[:alert] = result.errors.full_messages
+        render(:edit, status: :unprocessable_entity)
+      end
+    end
 
     private
 
-    def devise_confirmations_build_resource
-      self.resource = resource_class.new
+    def new_form_params
+      params.require('admin_users_confirmation_new_form').permit('email')
     end
 
-    # Based on Devise::ConfirmationsController#create
-    def devise_confirmations_create
-      self.resource = resource_class.send_confirmation_instructions(resource_params)
+    def edit_form_params
+      params.require('admin_users_confirmation_edit_form').permit('token')
+    end
 
-      if successfully_sent?(resource)
-        respond_with({}, location: after_resending_confirmation_instructions_path_for(resource_name))
-      else
-        respond_with(resource)
-      end
+    def email_from_params
+      @email_from_params ||= params['email'].presence
+    end
+
+    def token_from_params
+      @token_from_params ||= params['token'].presence
+    end
+
+    def auto_click_from_params
+      @auto_click_from_params ||= params['auto_click'].presence
     end
   end
 end

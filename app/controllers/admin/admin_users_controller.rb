@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Admin
-  class AdminUsersController < Admin::BaseController
+  class AdminUsersController < BaseController
     def index
     end
 

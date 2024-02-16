@@ -1,0 +1,35 @@
+<% content_for(:head) do %>
+  <%= captcha_script_tag %>
+<% end %>
+
+<h2>
+  Reset Password
+</h2>
+
+<%= form_with(model: @new_form, url: @new_form.url, html: { method: @new_form.method }) do |form| %>
+  <div class="mb-3">
+    <%= form.label(:email, 'Email address', class: 'form-label') %>
+    <%= form.email_field(
+      :email,
+      autofocus: true,
+      autocomplete: 'email',
+      class: 'form-control',
+      aria: { describedby: 'email-help' }
+    ) %>
+    <div id="email-help" class="form-text">
+      We'll send you a message with the link to reset your password.
+    </div>
+  </div>
+
+  <div class="mb-3">
+    <%= captcha_widget_tag(theme: 'light') %>
+  </div>
+
+  <div class="mb-3">
+    <%= form.submit(
+      "Send password reset link",
+      class: 'btn btn-primary',
+      data: { 'turbo-submits-with' => 'Loading...' }
+    ) %>
+  </div>
+<% end %>

@@ -6,9 +6,9 @@ module Seeds
       def call
         return unless Rails.env.development?
 
-        CleanUp.new.call
+        admin_user_ids = CreateAdminUsers.new.call
+        _admin_user_account_ids = CreateAdminUserAccounts.new(admin_user_ids).call
 
-        CreateAdminUsers.new.call
         user_ids = CreateUsers.new.call
         user_account_ids = CreateUserAccounts.new(user_ids).call
 

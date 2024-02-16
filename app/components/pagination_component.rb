@@ -16,6 +16,8 @@ class PaginationComponent < ApplicationComponent
   end
 
   def initialize(pagination:, options: {})
+    super()
+
     @pagination = pagination
     @options = DEFAULT_OPTIONS.merge(options)
 
@@ -63,18 +65,19 @@ class PaginationComponent < ApplicationComponent
     start_at = @pagination.page - 2
     end_at   = @pagination.page + 2
 
-    if (1..3).include?(@pagination.page)
+    if (1..3).cover?(@pagination.page)
       start_at = 2
 
-      end_at = if @options[:show_last_page]
-        start_at + 4
-      else
-        start_at + 2
-      end
+      end_at =
+        if @options[:show_last_page]
+          start_at + 4
+        else
+          start_at + 2
+        end
     end
 
     if @options[:show_last_page]
-      if ((@pagination.last_page - 2)..@pagination.last_page).include?(@pagination.page)
+      if ((@pagination.last_page - 2)..@pagination.last_page).cover?(@pagination.page)
         end_at   = @pagination.last_page - 1
         start_at = end_at - 4
       end

@@ -11,7 +11,7 @@ module Servers
         return Result.failure('Server is already archived')
       end
 
-      @server.update_column(:archived_at, Time.current)
+      @server.update!(:archived_at, Time.current)
 
       Result.success
     end

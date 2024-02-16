@@ -23,13 +23,13 @@
 #  index_apps_on_uuid  (uuid) UNIQUE
 #
 class App < ApplicationRecord
-  include ShortUuidForModel
+  include ShortUuidModel
 
   GAME = 'game'
-  TYPES = [GAME].freeze
+  TYPES = [GAME]
   TYPE_OPTIONS = [
     ['Game', GAME],
-  ].freeze
+  ]
 
   validates :type, inclusion: { in: TYPES }
 

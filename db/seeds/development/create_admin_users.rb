@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# rubocop:disable Rails/SkipsModelValidations
 module Seeds
   module Development
     class CreateAdminUsers
@@ -20,8 +19,9 @@ module Seeds
       def normal_admin_user_hashes
         1.upto(10).map do |n|
           {
+            uuid: SecureRandom.uuid,
             email: "admin.user.#{n}@#{ENV.fetch('APP_HOST')}",
-            encrypted_password: Devise::Encryptor.digest(User, PASSWORD),
+            password_digest: Seeds::Common.encrypt_password(PASSWORD),
             confirmed_at: Time.current
           }
         end
@@ -29,12 +29,12 @@ module Seeds
 
       def super_admin_user_hash
         {
+          uuid: SecureRandom.uuid,
           email: "super.admin.user@#{ENV.fetch('APP_HOST')}",
-          encrypted_password: Devise::Encryptor.digest(User, PASSWORD),
+          password_digest: Seeds::Common.encrypt_password(PASSWORD),
           confirmed_at: Time.current
         }
       end
     end
   end
 end
-# rubocop:enable Rails/SkipsModelValidations

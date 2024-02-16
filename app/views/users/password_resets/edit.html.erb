@@ -1,0 +1,27 @@
+<h2>
+  Set your password
+</h2>
+
+<%= form_with(model: @edit_form, url: @edit_form.url, html: { method: @edit_form.method }) do |form| %>
+  <%= form.hidden_field(:token) %>
+
+  <div class="mb-3">
+    <%= form.label(:password, "Enter your new password", class: 'form-label') %>
+    <%= form.password_field(
+      :password,
+      autocomplete: 'new-password',
+      class: 'form-control',
+      aria: { describedby: 'password-help' }
+    ) %>
+    <div id="password-help" class="form-text">
+      Minimum password length is 8 characters.
+    </div>
+  </div>
+
+  <div class="mb-3">
+    <%= form.submit(
+      "Set password",
+      { class: 'btn btn-primary' }
+    ) %>
+  </div>
+<% end %>

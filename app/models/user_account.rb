@@ -20,7 +20,7 @@
 #  fk_rails_...  (user_id => users.id)
 #
 class UserAccount < ApplicationRecord
-  include ShortUuidForModel
+  include ShortUuidModel
 
   belongs_to :user
 

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Admin
-  class UsersController < Admin::BaseController
+  class UsersController < BaseController
     def index
       @pagination = Pagination.new(Admin::UsersQuery.new.call, request, options: { per_page: 50 })
       @users = @pagination.results

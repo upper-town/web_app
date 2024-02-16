@@ -32,7 +32,6 @@ module Servers
       end
     end
 
-    # rubocop:disable Rails/SkipsModelValidations
     def upsert_server_stats(period, reference_date)
       ordered_grouped_server_stat_values = query_server_stat_values(period, reference_date)
       consolidated_at = Time.current
@@ -48,7 +47,6 @@ module Servers
         end
       end
     end
-    # rubocop:enable Rails/SkipsModelValidations
 
     def query_server_stat_values(period, reference_date)
       ServerStat

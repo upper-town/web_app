@@ -26,18 +26,22 @@ module Inside
 
       @new_form = Servers::NewForm.new(servers_new_form_params)
 
-      if @new_form.valid?
-        result = Servers::Create.new(@new_form.attributes, current_user_account).call
-
-        if result.success?
-          flash[:success] = 'Your server has been added!'
-          redirect_to(inside_servers_path)
-        else
-          flash.now[:alert] = result.errors.full_messages
-          render(:new, status: :unprocessable_entity)
-        end
-      else
+      if @new_form.invalid?
         flash.now[:alert] = @new_form.errors.full_messages
+        render(:new, status: :unprocessable_entity)
+
+        return
+      end
+
+      result = Servers::Create.new(@new_form.attributes, current_user_account).call
+
+      if result.success?
+        redirect_to(
+          inside_servers_path,
+          success: 'Your server has been added.'
+        )
+      else
+        flash.now[:alert] = result.errors.full_messages
         render(:new, status: :unprocessable_entity)
       end
     end
@@ -120,9 +124,10 @@ module Inside
       count = current_user_account.servers.verified.count
 
       if count >= MAX_VERIFIED_SERVERS_PER_USER_ACCOUNT
-        flash[:warning] = "You already have too many verified servers associated with your user account."
-
-        redirect_to(inside_servers_path)
+        redirect_to(
+          inside_servers_path,
+          warning: 'You already have too many verified servers associated with your user account.'
+        )
       end
     end
 
@@ -130,10 +135,10 @@ module Inside
       count = current_user_account.servers.not_verified.count
 
       if count >= MAX_NOT_VERIFIED_SERVERS_PER_USER_ACCOUNT
-        flash[:warning] = "You have many servers pending verification.
-          Please verify them first before adding more servers."
-
-        redirect_to(inside_servers_path)
+        redirect_to(
+          inside_servers_path,
+          warning: 'You have many servers pending verification. Please verify them first before adding more servers.'
+        )
       end
     end
 

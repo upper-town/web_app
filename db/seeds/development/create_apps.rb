@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# rubocop:disable Rails/SkipsModelValidations
 module Seeds
   module Development
     class CreateApps
@@ -39,4 +38,3 @@ module Seeds
     end
   end
 end
-# rubocop:enable Rails/SkipsModelValidations

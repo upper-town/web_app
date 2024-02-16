@@ -4,6 +4,9 @@
 
 import { application } from './application'
 
+import AutoClickController from './auto_click_controller'
+application.register('auto-click', AutoClickController)
+
 import BrowserTimeZoneController from './browser_time_zone_controller'
 application.register('browser-time-zone', BrowserTimeZoneController)
 

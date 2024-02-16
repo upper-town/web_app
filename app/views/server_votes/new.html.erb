@@ -1,5 +1,5 @@
 <% content_for(:head) do %>
-  <%= @captcha.script_tag %>
+  <%= captcha_script_tag %>
 <% end %>
 
 <h2>Vote for you server!</h2>
@@ -9,7 +9,7 @@
 </p>
 
 <%= form_with(model: @new_form, url: @new_form.url(@server), method: @new_form.method) do |form| %>
-  <%= @captcha.widget_tag %>
+  <%= captcha_widget_tag %>
 
   <%= form.hidden_field(:reference, value: @reference) %>
 

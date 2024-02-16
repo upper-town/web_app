@@ -1,0 +1,14 @@
+<p>
+  Welcome <%= @email %>!
+</p>
+
+<p>
+  You can confirm your email through the link below:
+</p>
+
+<p>
+  <%= link_to(
+    'Confirm my email address',
+    edit_admin_users_confirmation_url(token: @confirmation_token, auto_click: true)
+  ) %>
+</p>

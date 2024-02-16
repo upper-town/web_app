@@ -40,39 +40,67 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_16_163036) do
     t.index ["key"], name: "index_admin_roles_on_key", unique: true
   end
 
-  create_table "admin_user_roles", force: :cascade do |t|
-    t.bigint "admin_user_id", null: false
+  create_table "admin_user_account_roles", force: :cascade do |t|
+    t.bigint "admin_user_account_id", null: false
     t.bigint "admin_role_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["admin_role_id"], name: "index_admin_user_roles_on_admin_role_id"
-    t.index ["admin_user_id", "admin_role_id"], name: "index_admin_user_roles_on_admin_user_id_and_admin_role_id", unique: true
+    t.index ["admin_role_id"], name: "index_admin_user_account_roles_on_admin_role_id"
+    t.index ["admin_user_account_id", "admin_role_id"], name: "index_admin_user_account_roles_account_id_role_id", unique: true
+  end
+
+  create_table "admin_user_accounts", force: :cascade do |t|
+    t.uuid "uuid", null: false
+    t.bigint "admin_user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["admin_user_id"], name: "index_admin_user_accounts_on_admin_user_id", unique: true
+    t.index ["uuid"], name: "index_admin_user_accounts_on_uuid", unique: true
+  end
+
+  create_table "admin_user_active_sessions", force: :cascade do |t|
+    t.uuid "uuid", null: false
+    t.string "remote_ip", null: false
+    t.string "user_agent", default: "", null: false
+    t.datetime "expires_at", null: false
+    t.bigint "admin_user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["admin_user_id"], name: "index_admin_user_active_sessions_on_admin_user_id"
+    t.index ["uuid"], name: "index_admin_user_active_sessions_on_uuid", unique: true
+  end
+
+  create_table "admin_user_tokens", force: :cascade do |t|
+    t.string "value", null: false
+    t.string "purpose", null: false
+    t.datetime "expires_at", null: false
+    t.bigint "admin_user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["admin_user_id"], name: "index_admin_user_tokens_on_admin_user_id"
+    t.index ["expires_at"], name: "index_admin_user_tokens_on_expires_at"
+    t.index ["purpose"], name: "index_admin_user_tokens_on_purpose"
+    t.index ["value"], name: "index_admin_user_tokens_on_value", unique: true
   end
 
   create_table "admin_users", force: :cascade do |t|
-    t.string "email", default: "", null: false
-    t.string "encrypted_password", default: "", null: false
-    t.string "reset_password_token"
-    t.datetime "reset_password_sent_at"
-    t.datetime "remember_created_at"
+    t.uuid "uuid", null: false
+    t.string "email", null: false
+    t.string "password_digest"
+    t.datetime "password_reset_at"
+    t.datetime "password_reset_sent_at"
     t.integer "sign_in_count", default: 0, null: false
-    t.datetime "current_sign_in_at"
-    t.datetime "last_sign_in_at"
-    t.string "current_sign_in_ip"
-    t.string "last_sign_in_ip"
-    t.string "confirmation_token"
+    t.integer "failed_attempts", default: 0, null: false
     t.datetime "confirmed_at"
     t.datetime "confirmation_sent_at"
     t.string "unconfirmed_email"
-    t.integer "failed_attempts", default: 0, null: false
-    t.string "unlock_token"
     t.datetime "locked_at"
+    t.string "locked_reason"
+    t.text "locked_comment"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["confirmation_token"], name: "index_admin_users_on_confirmation_token", unique: true
     t.index ["email"], name: "index_admin_users_on_email", unique: true
-    t.index ["reset_password_token"], name: "index_admin_users_on_reset_password_token", unique: true
-    t.index ["unlock_token"], name: "index_admin_users_on_unlock_token", unique: true
+    t.index ["uuid"], name: "index_admin_users_on_uuid", unique: true
   end
 
   create_table "apps", force: :cascade do |t|
@@ -221,38 +249,58 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_16_163036) do
     t.index ["uuid"], name: "index_user_accounts_on_uuid", unique: true
   end
 
+  create_table "user_active_sessions", force: :cascade do |t|
+    t.uuid "uuid", null: false
+    t.string "remote_ip", null: false
+    t.string "user_agent", default: "", null: false
+    t.datetime "expires_at", null: false
+    t.bigint "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_user_active_sessions_on_user_id"
+    t.index ["uuid"], name: "index_user_active_sessions_on_uuid", unique: true
+  end
+
+  create_table "user_tokens", force: :cascade do |t|
+    t.string "value", null: false
+    t.string "purpose", null: false
+    t.datetime "expires_at", null: false
+    t.bigint "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["expires_at"], name: "index_user_tokens_on_expires_at"
+    t.index ["purpose"], name: "index_user_tokens_on_purpose"
+    t.index ["user_id"], name: "index_user_tokens_on_user_id"
+    t.index ["value"], name: "index_user_tokens_on_value", unique: true
+  end
+
   create_table "users", force: :cascade do |t|
     t.uuid "uuid", null: false
-    t.string "email", default: "", null: false
-    t.string "encrypted_password", default: "", null: false
-    t.string "reset_password_token"
-    t.datetime "reset_password_sent_at"
-    t.datetime "remember_created_at"
+    t.string "email", null: false
+    t.string "password_digest"
+    t.datetime "password_reset_at"
+    t.datetime "password_reset_sent_at"
     t.integer "sign_in_count", default: 0, null: false
-    t.datetime "current_sign_in_at"
-    t.datetime "last_sign_in_at"
-    t.string "current_sign_in_ip"
-    t.string "last_sign_in_ip"
-    t.string "confirmation_token"
+    t.integer "failed_attempts", default: 0, null: false
     t.datetime "confirmed_at"
     t.datetime "confirmation_sent_at"
     t.string "unconfirmed_email"
-    t.integer "failed_attempts", default: 0, null: false
-    t.string "unlock_token"
     t.datetime "locked_at"
+    t.string "locked_reason"
+    t.text "locked_comment"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["email"], name: "index_users_on_email", unique: true
-    t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
-    t.index ["unlock_token"], name: "index_users_on_unlock_token", unique: true
     t.index ["uuid"], name: "index_users_on_uuid", unique: true
   end
 
   add_foreign_key "admin_role_permissions", "admin_permissions"
   add_foreign_key "admin_role_permissions", "admin_roles"
-  add_foreign_key "admin_user_roles", "admin_roles"
-  add_foreign_key "admin_user_roles", "admin_users"
+  add_foreign_key "admin_user_account_roles", "admin_roles"
+  add_foreign_key "admin_user_account_roles", "admin_user_accounts"
+  add_foreign_key "admin_user_accounts", "admin_users"
+  add_foreign_key "admin_user_active_sessions", "admin_users"
+  add_foreign_key "admin_user_tokens", "admin_users"
   add_foreign_key "server_stats", "apps"
   add_foreign_key "server_stats", "servers"
   add_foreign_key "server_user_accounts", "servers"
@@ -266,4 +314,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_16_163036) do
   add_foreign_key "server_webhook_secrets", "servers"
   add_foreign_key "servers", "apps"
   add_foreign_key "user_accounts", "users"
+  add_foreign_key "user_active_sessions", "users"
+  add_foreign_key "user_tokens", "users"
 end

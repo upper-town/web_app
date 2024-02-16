@@ -10,11 +10,12 @@ module Inside
       )
       @server_votes = @pagination_cursor.results
 
-      status = if !@pagination_cursor.start_cursor? && @server_votes.empty?
-        :not_found
-      else
-        :ok
-      end
+      status =
+        if !@pagination_cursor.start_cursor? && @server_votes.empty?
+          :not_found
+        else
+          :ok
+        end
 
       render(status: status)
     end

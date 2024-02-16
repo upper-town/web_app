@@ -7,12 +7,10 @@ module RateLimiting
       @max_count = max_count
       @expires_in = expires_in
       @error_message = error_message
-
-      @redis_client = RateLimiting::Client.build_redis_client
     end
 
     def call
-      replies = @redis_client.multi do |transaction|
+      replies = RateLimiting.redis.multi do |transaction|
         transaction.incr(@key)
         transaction.expire(@key, @expires_in, nx: true)
         transaction.ttl(@key)
@@ -26,7 +24,7 @@ module RateLimiting
     end
 
     def uncall
-      @redis_client.multi do |transaction|
+      RateLimiting.redis.multi do |transaction|
         transaction.decr(@key)
         transaction.expire(@key, @expires_in, nx: true)
       end

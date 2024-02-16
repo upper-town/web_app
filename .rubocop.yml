@@ -13,6 +13,8 @@ Layout/ArrayAlignment:
   Enabled: false
 Layout/EmptyLinesAroundExceptionHandlingKeywords:
   Enabled: false
+Layout/EndAlignment:
+  Enabled: false
 Layout/FirstHashElementIndentation:
   Enabled: false
 Layout/HashAlignment:
@@ -21,12 +23,9 @@ Layout/LineEndStringConcatenationIndentation:
   Enabled: false
 Layout/LineLength:
   Exclude:
-    - config/initializers/devise.rb
+    - spec/**/*_spec.rb
+    - config/routes.rb
   Max: 160
-Layout/MultilineMethodCallBraceLayout:
-  Enabled: false
-Layout/MultilineMethodCallIndentation:
-  Enabled: false
 Layout/SpaceInsideArrayLiteralBrackets:
   Enabled: false
 Layout/SpaceInsideArrayPercentLiteral:
@@ -35,12 +34,6 @@ Layout/SpaceInsidePercentLiteralDelimiters:
   Enabled: false
 
 # https://docs.rubocop.org/rubocop/cops_lint.html
-Lint/DuplicateBranch:
-  Enabled: false
-Lint/EmptyClass:
-  Enabled: false
-Lint/MissingSuper:
-  Enabled: false
 Lint/MixedRegexpCaptureTypes:
   Enabled: false
 
@@ -48,7 +41,7 @@ Lint/MixedRegexpCaptureTypes:
 Metrics/AbcSize:
   Exclude:
     - db/migrate/*.rb
-  Max: 40
+  Max: 50
 Metrics/BlockLength:
   Exclude:
     - db/schema.rb
@@ -56,7 +49,7 @@ Metrics/BlockLength:
     - spec/**/*.rb
   Max: 60
 Metrics/BlockNesting:
-  Max: 5
+  Max: 6
 Metrics/ClassLength:
   Max: 200
 Metrics/CyclomaticComplexity:
@@ -64,7 +57,7 @@ Metrics/CyclomaticComplexity:
 Metrics/MethodLength:
   Exclude:
     - spec/**/*.rb
-  Max: 80
+  Max: 100
 Metrics/ParameterLists:
   Max: 6
   MaxOptionalParameters: 6
@@ -72,26 +65,31 @@ Metrics/PerceivedComplexity:
   Max: 30
 
 # https://docs.rubocop.org/rubocop/cops_naming.html
-Naming/AccessorMethodName:
-  Enabled: false
-Naming/BlockForwarding:
-  Enabled: false
-Naming/MemoizedInstanceVariableName:
-  Enabled: false
 Naming/MethodParameterName:
   MinNameLength: 1
 Naming/VariableNumber:
   Enabled: false
 
+# https://docs.rubocop.org/rubocop-rails/cops_rails.html
 Rails/ActionOrder:
+  ExpectedOrder:
+    - index
+    - show
+    - new
+    - create
+    - edit
+    - update
+    - destroy
+Rails/ApplicationController:
   Enabled: false
 Rails/DynamicFindBy:
   Enabled: false
 Rails/I18nLocaleTexts:
   Enabled: false
-Rails/FilePath:
+Rails/SkipsModelValidations:
   Enabled: false
 
+# https://docs.rubocop.org/rubocop-rspec/cops_rspec.html
 RSpec/BeEq:
   Enabled: false
 RSpec/ExampleLength:
@@ -106,35 +104,51 @@ RSpec/NestedGroups:
   Max: 6
 
 # https://docs.rubocop.org/rubocop/cops_style.html
-Style/AccessorGrouping:
-  Enabled: false
 Style/BlockComments:
   Enabled: false
+# Style/ClassVars:
+#   Enabled: false
 Style/Documentation:
   Enabled: false
 Style/EmptyMethod:
   Enabled: false
 Style/GuardClause:
   Enabled: false
+Style/HashEachMethods:
+  Enabled: false
 Style/HashSyntax:
   Enabled: false
 Style/HashTransformValues:
+  Enabled: false
+Style/IfInsideElse:
   Enabled: false
 Style/IfUnlessModifier:
   Enabled: false
 Style/Lambda:
   Enabled: false
+Style/ModuleFunction:
+  Enabled: false
 Style/MultilineBlockChain:
   Enabled: false
+Style/MutableConstant:
+  Enabled: false
 Style/NegatedIf:
+  Enabled: false
+Style/NegatedIfElseCondition:
   Enabled: false
 Style/NumericLiterals:
   Enabled: false
 Style/OptionalBooleanParameter:
   Enabled: false
+Style/ParenthesesAroundCondition:
+  Enabled: false
+Style/RedundantParentheses:
+  Enabled: false
 Style/RegexpLiteral:
   Enabled: false
 Style/SafeNavigation:
+  Enabled: false
+Style/SoleNestedConditional:
   Enabled: false
 Style/StringConcatenation:
   Enabled: false

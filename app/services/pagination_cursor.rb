@@ -21,7 +21,7 @@ class PaginationCursor
     indicator_from_request: true,
 
     total_count: nil,
-  }.freeze
+  }
 
   def initialize(relation, request, options: {})
     @original_relation = relation

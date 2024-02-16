@@ -71,7 +71,6 @@ module Servers
       server_stat_upsert_all(server_stat_hashes) if server_stat_hashes.any?
     end
 
-    # rubocop:disable Rails/SkipsModelValidations
     def server_stat_upsert_all(server_stat_hashes)
       ServerStat.upsert_all(
         server_stat_hashes,
@@ -84,7 +83,6 @@ module Servers
         ]
       )
     end
-    # rubocop:enable Rails/SkipsModelValidations
 
     def query_country_server_vote_counts(reference_range)
       ServerVote

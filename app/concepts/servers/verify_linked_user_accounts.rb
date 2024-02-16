@@ -91,7 +91,6 @@ module Servers
       result
     end
 
-    # rubocop:disable Rails/SkipsModelValidations
     def upsert_server_user_accounts(user_account_suuids, current_time)
       user_account_ids = UserAccount.where_suuid(user_account_suuids).pluck(:id)
 
@@ -123,7 +122,6 @@ module Servers
 
       Result.success
     end
-    # rubocop:enable Rails/SkipsModelValidations
 
     class JsonFileValidatonContract < ApplicationValidationContract
       json do

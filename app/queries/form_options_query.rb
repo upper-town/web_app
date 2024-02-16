@@ -4,10 +4,10 @@ class FormOptionsQuery
   DEFAULT_CACHE_OPTIONS = {
     key_prefix: 'form_options_query',
     expires_in: 1.minute
-  }.freeze
+  }
 
-  OPTION_APP_ID_ALL = ['All', nil].freeze
-  OPTION_COUNTRY_CODE_ALL = ['All', ServerStat::ALL].freeze
+  OPTION_APP_ID_ALL = ['All', nil]
+  OPTION_COUNTRY_CODE_ALL = ['All', ServerStat::ALL]
 
   def initialize(cache_enabled: false, cache_options: {})
     @cache_enabled = cache_enabled
@@ -41,14 +41,14 @@ class FormOptionsQuery
 
   private
 
-  def fetch_cache_if_enabled(key_suffix, &block)
+  def fetch_cache_if_enabled(key_suffix, &)
     if @cache_enabled
       key = "#{@cache_options[:key_prefix]}:#{key_suffix}"
       expires_in = @cache_options[:expires_in]
 
-      Rails.cache.fetch(key, expires_in: expires_in, &block)
+      Rails.cache.fetch(key, expires_in: expires_in, &)
     else
-      block.call
+      yield
     end
   end
 

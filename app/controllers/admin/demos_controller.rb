@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Admin
-  class DemosController < Admin::BaseController
+  class DemosController < BaseController
     def show
       # Rails expected Flash keys
 

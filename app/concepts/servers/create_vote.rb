@@ -2,20 +2,21 @@
 
 module Servers
   class CreateVote
-    def initialize(server, form_attributes, captcha, request, user_account = nil)
+    def initialize(server, attributes, request, user_account = nil)
       @server = server
-      @form_attributes = form_attributes
-      @captcha = captcha
+      @attributes = attributes
       @request = request
       @user_account = user_account
 
-      @rate_limiter = CreateVoteRateLimiter.build(@request, @server.app_id)
+      @rate_limiter = RateLimiting::BasicRateLimiter.new(
+        "servers_create_vote:#{@server.app_id}:#{@request.remote_ip}",
+        1,
+        6.hours.to_i,
+        'You have already voted for this game or app.'
+      )
     end
 
     def call
-      result = @captcha.call(@request)
-      return result if result.failure?
-
       result = @rate_limiter.call
       return result if result.failure?
 
@@ -48,7 +49,7 @@ module Servers
         country_code: @server.country_code,
         remote_ip:    @request.remote_ip,
         user_account: @user_account,
-        reference:    @form_attributes['reference']
+        reference:    @attributes['reference']
       )
     end
 

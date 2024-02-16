@@ -10,3 +10,5 @@ Capybara.default_driver = begin
     :selenium_headless
   end
 end
+
+Capybara.app_host = "http://#{ENV.fetch('APP_HOST')}"

@@ -34,10 +34,10 @@ gem 'redis', '~> 5.0'
 gem 'connection_pool', '~> 2.3'
 
 # Use Kredis to get higher-level data types in Redis [https://github.com/rails/kredis]
-# gem "kredis"
+gem 'kredis'
 
 # Use Active Model has_secure_password [https://guides.rubyonrails.org/active_model_basics.html#securepassword]
-# gem "bcrypt", "~> 3.1.7"
+gem 'bcrypt', '~> 3.1.7'
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data', platforms: %i[ mingw mswin x64_mingw jruby ]
@@ -46,12 +46,10 @@ gem 'tzinfo-data', platforms: %i[ mingw mswin x64_mingw jruby ]
 gem 'bootsnap', require: false
 
 # Bundle and transpile JavaScript [https://github.com/rails/jsbundling-rails]
-gem "jsbundling-rails"
+gem 'jsbundling-rails'
 
 # Bundle and process CSS [https://github.com/rails/cssbundling-rails]
-gem "cssbundling-rails"
-
-gem 'devise', '~> 4.9'
+gem 'cssbundling-rails'
 
 gem 'view_component', '~> 2.62'
 
@@ -80,9 +78,9 @@ group :development, :test do
   gem 'shoulda-matchers', '~> 5.1'
   gem 'simplecov', '~> 0.21', require: false
 
-  gem 'rubocop', '~> 1.32', require: false
+  gem 'rubocop', '~> 1.42', require: false
   gem 'rubocop-performance', '~> 1.14', require: false
-  gem 'rubocop-rails', '~> 2.15', require: false
+  gem 'rubocop-rails', '~> 2.19', require: false
   gem 'rubocop-rspec', '~> 2.12', require: false
   gem 'rubocop-thread_safety', '~> 0.4.4', require: false
 

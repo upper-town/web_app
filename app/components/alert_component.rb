@@ -14,6 +14,8 @@ class AlertComponent < ApplicationComponent
   ]
 
   def initialize(variant: DEFAULT_VARIANT, dismissible: true)
+    super()
+
     @variant = VARIANTS.include?(variant) ? variant : DEFAULT_VARIANT
     @dismissible = dismissible
   end

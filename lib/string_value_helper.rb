@@ -6,7 +6,7 @@ require 'active_support/core_ext/object/blank'
 require 'active_support/core_ext/string/filters'
 
 module StringValueHelper
-  TRUE_STRINGS = ['true', 't', '1', 'on', 'enabled'].freeze
+  TRUE_STRINGS = ['true', 't', '1', 'on', 'enabled']
 
   extend self
 

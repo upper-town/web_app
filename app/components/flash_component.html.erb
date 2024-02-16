@@ -2,18 +2,31 @@
   <% @flash.each do |flash_item| %>
     <%
       alert_kwargs = build_alert_kwargs(flash_item)
-      alert_content = get_alert_content(flash_item)
+      contents = parse_contents(flash_item)
+      html_safe = parse_html_safe(flash_item)
     %>
 
     <%= render(AlertComponent.new(**alert_kwargs)) do %>
-      <% if alert_content.is_a?(Array) %>
-        <ul>
-          <% alert_content.each do |content_item| %>
-            <li><%= content_item %></li>
+      <% if contents.size > 1 %>
+
+        <ul class="mb-0 ps-4">
+          <% contents.each do |content| %>
+            <li>
+              <% if html_safe %>
+                <%= content.html_safe %>
+              <% else %>
+                <%= content %>
+              <% end %>
+            </li>
           <% end %>
         </ul>
+
       <% else %>
-        <%= alert_content %>
+        <% if html_safe %>
+          <%= contents.first.html_safe %>
+        <% else %>
+          <%= contents.first %>
+        <% end %>
       <% end %>
 
     <% end %>

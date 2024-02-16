@@ -35,13 +35,13 @@
 #  fk_rails_...  (app_id => apps.id)
 #
 class Server < ApplicationRecord
-  include ShortUuidForModel
+  include ShortUuidModel
 
   COUNTRY_CODES = ISO3166::Country.codes
 
   validate :verified_server_with_same_name_exist?
 
-  validates :country_code,    inclusion: { in: COUNTRY_CODES }
+  validates :country_code, inclusion: { in: COUNTRY_CODES }
   validates :name,     length: { minimum: 3, maximum: 255 }
   validates :site_url, length: { minimum: 3, maximum: 255 }
 
@@ -128,7 +128,7 @@ class Server < ApplicationRecord
     if Server.verified.exists?(name: name, app_id: app_id)
       errors.add(
         :name,
-        "There is already a verified server with same name for this app. You can try to rename yours."
+        'There is already a verified server with same name for this app. You can try to rename yours.'
       )
     end
   end

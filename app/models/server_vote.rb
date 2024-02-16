@@ -30,8 +30,6 @@
 #  fk_rails_...  (user_account_id => user_accounts.id)
 #
 class ServerVote < ApplicationRecord
-  include ShortUuidForModel
-
   validates :country_code, inclusion: { in: Server::COUNTRY_CODES }
 
   belongs_to :server

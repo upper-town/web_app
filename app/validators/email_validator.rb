@@ -34,7 +34,7 @@ class EmailValidator
     onion
     private
     test
-  ].freeze
+  ]
 
   DISPOSABLE_EMAIL_DOMAINS_LIST = Rails.root.join(
     'vendor/disposable_email_domains/list.txt'

@@ -1,11 +1,15 @@
 # frozen_string_literal: true
 
-class Captcha
+require 'string_value_helper'
+
+module Captcha
   BASE_URL    = 'https://hcaptcha.com'
   VERIFY_PATH = '/siteverify'
 
   SITE_KEY   = ENV.fetch('H_CAPTCHA_SITE_KEY')
   SECRET_KEY = ENV.fetch('H_CAPTCHA_SECRET_KEY')
+
+  extend self
 
   # rubocop:disable Rails/OutputSafety
   def script_tag
@@ -19,12 +23,12 @@ class Captcha
     HTML
   end
 
-  def widget_tag
+  def widget_tag(theme: 'dark')
     <<~HTML.html_safe
       <div
         class="h-captcha"
         data-sitekey="#{SITE_KEY}"
-        data-theme="dark"
+        data-theme="#{theme}"
         data-turbo-cache="false"
         data-controller="captcha"
         data-action="custom-captcha-onload@window->captcha#onload"
@@ -34,6 +38,8 @@ class Captcha
   # rubocop:enable Rails/OutputSafety
 
   def call(request)
+    return Result.success if StringValueHelper.to_boolean(ENV.fetch('CAPTCHA_DISABLED', 'false'))
+
     captcha_response, remote_ip = extract_values(request)
 
     if captcha_response.blank?

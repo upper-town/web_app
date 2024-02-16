@@ -11,6 +11,8 @@ class PaginationCursorComponent < ApplicationComponent
   end
 
   def initialize(pagination_cursor:, options: {})
+    super()
+
     @pagination_cursor = pagination_cursor
     @options = DEFAULT_OPTIONS.merge(options)
 

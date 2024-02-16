@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Admin
-  class DashboardsController < Admin::BaseController
+  class DashboardsController < BaseController
     def show
     end
   end

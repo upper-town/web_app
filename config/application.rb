@@ -50,5 +50,7 @@ module WebApp
     ActiveSupport.on_load(:active_record_postgresqladapter) do
       self.datetime_type = :timestamptz
     end
+
+    config.session_store :cookie_store, key: 'session'
   end
 end

@@ -2,6 +2,8 @@
 
 class FlashComponent < ApplicationComponent
   def initialize(flash:)
+    super()
+
     @flash = flash
   end
 
@@ -20,18 +22,27 @@ class FlashComponent < ApplicationComponent
         dismissible: value[:dismissible]
       }
     else
-      { variant: key, }
+      { variant: key }
     end
   end
 
-  def get_alert_content(flash_item)
+  def parse_contents(flash_item)
+    value = parse_value(flash_item)
+
+    Array(
+      case value
+      when Hash then value[:content]
+      else value
+      end
+    ).compact_blank
+  end
+
+  def parse_html_safe(flash_item)
     value = parse_value(flash_item)
 
     case value
-    when Hash
-      value[:content]
-    else
-      value
+    when Hash then value[:html_safe]
+    else false
     end
   end
 
@@ -42,8 +53,8 @@ class FlashComponent < ApplicationComponent
     key = key.to_sym
 
     case key
-    when :alert  then :danger
-    when :notice then :success
+    when :alert  then :warning
+    when :notice then :info
     else key
     end
   end

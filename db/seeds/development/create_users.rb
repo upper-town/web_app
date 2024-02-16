@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# rubocop:disable Rails/SkipsModelValidations
 module Seeds
   module Development
     class CreateUsers
@@ -21,7 +20,7 @@ module Seeds
           {
             uuid: SecureRandom.uuid,
             email: "user.#{n}@#{ENV.fetch('APP_HOST')}",
-            encrypted_password: Devise::Encryptor.digest(User, PASSWORD),
+            password_digest: Seeds::Common.encrypt_password(PASSWORD),
             confirmed_at: Time.current,
           }
         end
@@ -29,4 +28,3 @@ module Seeds
     end
   end
 end
-# rubocop:enable Rails/SkipsModelValidations

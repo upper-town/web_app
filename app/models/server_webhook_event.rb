@@ -44,13 +44,13 @@ class ServerWebhookEvent < ApplicationRecord
     RETRY,
     DELIVERED,
     FAILED
-  ].freeze
+  ]
 
   SERVER_VOTES_CREATE = 'server_votes.create'
 
   TYPES = [
     SERVER_VOTES_CREATE,
-  ].freeze
+  ]
 
   belongs_to :server
   belongs_to :config, class_name: 'ServerWebhookConfig', optional: true

@@ -3,7 +3,7 @@
 module Admin
   class ServersQuery
     def call
-      Server.all.order(id: :desc)
+      Server.order(id: :desc)
     end
   end
 end

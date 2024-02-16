@@ -16,7 +16,7 @@ class Pagination
     per_page_max:          100,
 
     total_count: nil,
-  }.freeze
+  }
 
   def initialize(relation, request, options: {})
     @original_relation = relation

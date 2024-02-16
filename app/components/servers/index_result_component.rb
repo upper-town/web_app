@@ -3,6 +3,8 @@
 module Servers
   class IndexResultComponent < ApplicationComponent
     def initialize(server:, server_stats_hash:, period:, country_code:)
+      super()
+
       @server = server
       @server_stats_hash = server_stats_hash
       @period = period

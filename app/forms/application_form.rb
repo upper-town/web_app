@@ -3,6 +3,7 @@
 class ApplicationForm
   include ActiveModel::Model
   include ActiveModel::Attributes
+  include ActiveModel::Serializers::JSON
 
   include Rails.application.routes.url_helpers
 

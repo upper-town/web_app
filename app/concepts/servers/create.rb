@@ -2,8 +2,8 @@
 
 module Servers
   class Create
-    def initialize(form_attributes, user_account)
-      @form_attributes = form_attributes
+    def initialize(attributes, user_account)
+      @attributes = attributes
       @user_account = user_account
     end
 
@@ -24,10 +24,10 @@ module Servers
     def build_server
       Server.new(
         uuid:         SecureRandom.uuid,
-        app:          App.find_by_suuid(@form_attributes['app_id']),
-        country_code: @form_attributes['country_code'],
-        name:         @form_attributes['name'],
-        site_url:     @form_attributes['site_url'],
+        app:          App.find_by_suuid(@attributes['app_id']),
+        country_code: @attributes['country_code'],
+        name:         @attributes['name'],
+        site_url:     @attributes['site_url'],
       )
     end
   end

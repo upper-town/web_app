@@ -1,15 +1,17 @@
 # frozen_string_literal: true
 
 class EmailNormalizer
-  def self.call(*args)
-    new(*args).call
+  def self.call(...)
+    new(...).call
   end
 
   def initialize(email)
-    @email = email.to_s
+    @email = email
   end
 
   def call
+    return if @email.nil?
+
     @email.gsub(/[[:space:]]/, '').downcase
   end
 end

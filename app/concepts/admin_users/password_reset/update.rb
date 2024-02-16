@@ -1,0 +1,57 @@
+# frozen_string_literal: true
+
+module AdminUsers
+  module PasswordReset
+    class Update
+      def initialize(attributes, request)
+        @attributes = attributes
+        @request = request
+
+        @rate_limiter = RateLimiting::BasicRateLimiter.new(
+          "admin_users_password_reset:#{@request.remote_ip}",
+          2,
+          5.minutes.to_i,
+        )
+      end
+
+      def call
+        result = @rate_limiter.call
+        return result if result.failure?
+
+        admin_user = find_admin_user
+
+        if admin_user
+          reset_password(admin_user)
+        else
+          Result.failure('Invalid or expired token')
+        end
+      end
+
+      private
+
+      def find_admin_user
+        AdminUser.find_by_token(:password_reset, @attributes['token'])
+      end
+
+      def reset_password(admin_user)
+        if admin_user.invalid?
+          return Result.failure(admin_user.errors, admin_user: admin_user)
+        end
+
+        begin
+          ActiveRecord::Base.transaction do
+            admin_user.reset_password!(@attributes['password'])
+            admin_user.regenerate_token!(:password_reset)
+          end
+        rescue ActiveRecord::RecordInvalid => e
+          return Result.failure(e.record.errors, admin_user: admin_user)
+        rescue StandardError => e
+          @rate_limiter.uncall
+          raise e
+        end
+
+        Result.success(admin_user: admin_user)
+      end
+    end
+  end
+end

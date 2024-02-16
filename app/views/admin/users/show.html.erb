@@ -28,18 +28,13 @@
   <%= @user.unconfirmed_email %>
   <%= @user.confirmation_sent_at %>
 
-  <%= @user.current_sign_in_at %>
-  <%= @user.current_sign_in_ip %>
-
   <%= @user.failed_attempts %>
 
-  <%= @user.last_sign_in_at %>
-  <%= @user.last_sign_in_ip %>
-
   <%= @user.locked_at %>
-  <%= @user.remember_created_at %>
+  <%= @user.locked_reason %>
+  <%= @user.locked_comment %>
 
-  <%= @user.reset_password_sent_at %>
+  <%= @user.password_reset_sent_at %>
 
   <%= @user.sign_in_count %>
 
