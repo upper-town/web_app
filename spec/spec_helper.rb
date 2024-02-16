@@ -8,13 +8,7 @@ require 'vcr'
 require 'capybara/rspec'
 require 'sidekiq/testing'
 
-class StringToBoolean
-  TRUE_STR = ['true', 't', '1', 'on', 'enabled'].freeze
-
-  def self.call(value)
-    TRUE_STR.include?(value.to_s.downcase.gsub(/[[:space:]]/, ''))
-  end
-end
+require 'string_value_helper'
 
 Dir[Pathname.getwd.join('spec', 'support', 'config', '**', '*.rb')].each do |file|
   require file

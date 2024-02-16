@@ -1,0 +1,36 @@
+# frozen_string_literal: true
+
+require 'active_support'
+require 'active_support/core_ext/enumerable'
+require 'active_support/core_ext/object/blank'
+require 'active_support/core_ext/string/filters'
+
+module StringValueHelper
+  TRUE_STRINGS = ['true', 't', '1', 'on', 'enabled'].freeze
+
+  extend self
+
+  def to_boolean(value)
+    TRUE_STRINGS.include?(remove_whitespaces(value).downcase)
+  end
+
+  def remove_whitespaces(value)
+    value.to_s.gsub(/[[:space:]]/, '')
+  end
+
+  def normalize_whitespaces(value)
+    value.to_s.squish
+  end
+
+  def values_list_uniq(value, separator = ',', remove_whitespaces = true)
+    value.to_s.split(separator).map do |str|
+      if remove_whitespaces
+        self.remove_whitespaces(str)
+      else
+        normalize_whitespaces(str)
+      end
+    end
+      .compact_blank
+      .uniq
+  end
+end

@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 Capybara.default_driver = begin
-  headful  = StringToBoolean.call(ENV.fetch('HEADFUL', 'false'))
-  headless = StringToBoolean.call(ENV.fetch('HEADLESS', 'true'))
+  headful  = StringValueHelper.to_boolean(ENV.fetch('HEADFUL', 'false'))
+  headless = StringValueHelper.to_boolean(ENV.fetch('HEADLESS', 'true'))
 
   if headful || !headless
     :selenium
