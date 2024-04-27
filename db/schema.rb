@@ -74,6 +74,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_16_163036) do
     t.string "value", null: false
     t.string "purpose", null: false
     t.datetime "expires_at", null: false
+    t.jsonb "data", default: {}, null: false
     t.bigint "admin_user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -86,14 +87,18 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_16_163036) do
   create_table "admin_users", force: :cascade do |t|
     t.uuid "uuid", null: false
     t.string "email", null: false
+    t.datetime "email_confirmed_at"
+    t.datetime "email_confirmation_sent_at"
     t.string "password_digest"
     t.datetime "password_reset_at"
     t.datetime "password_reset_sent_at"
     t.integer "sign_in_count", default: 0, null: false
     t.integer "failed_attempts", default: 0, null: false
-    t.datetime "confirmed_at"
-    t.datetime "confirmation_sent_at"
-    t.string "unconfirmed_email"
+    t.string "change_email"
+    t.datetime "change_email_confirmed_at"
+    t.datetime "change_email_confirmation_sent_at"
+    t.datetime "change_email_reverted_at"
+    t.datetime "change_email_reversion_sent_at"
     t.datetime "locked_at"
     t.string "locked_reason"
     t.text "locked_comment"
@@ -265,6 +270,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_16_163036) do
     t.string "value", null: false
     t.string "purpose", null: false
     t.datetime "expires_at", null: false
+    t.jsonb "data", default: {}, null: false
     t.bigint "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -277,14 +283,18 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_16_163036) do
   create_table "users", force: :cascade do |t|
     t.uuid "uuid", null: false
     t.string "email", null: false
+    t.datetime "email_confirmed_at"
+    t.datetime "email_confirmation_sent_at"
     t.string "password_digest"
     t.datetime "password_reset_at"
     t.datetime "password_reset_sent_at"
     t.integer "sign_in_count", default: 0, null: false
     t.integer "failed_attempts", default: 0, null: false
-    t.datetime "confirmed_at"
-    t.datetime "confirmation_sent_at"
-    t.string "unconfirmed_email"
+    t.string "change_email"
+    t.datetime "change_email_confirmed_at"
+    t.datetime "change_email_confirmation_sent_at"
+    t.datetime "change_email_reverted_at"
+    t.datetime "change_email_reversion_sent_at"
     t.datetime "locked_at"
     t.string "locked_reason"
     t.text "locked_comment"

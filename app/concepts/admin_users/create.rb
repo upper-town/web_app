@@ -23,7 +23,7 @@ module AdminUsers
 
       admin_user = result.data[:admin_user]
 
-      schedule_confirmation_email_job(admin_user)
+      schedule_email_confirmation_job(admin_user)
 
       Result.success(admin_user: admin_user)
     end
@@ -35,8 +35,7 @@ module AdminUsers
       new_admin_user = AdminUser.new(
         uuid:  SecureRandom.uuid,
         email: @attributes['email'],
-        confirmed_at: nil,
-        unconfirmed_email: @attributes['email']
+        email_confirmed_at: nil
       )
 
       admin_user = existing_admin_user || new_admin_user
@@ -63,8 +62,8 @@ module AdminUsers
       end
     end
 
-    def schedule_confirmation_email_job(admin_user)
-      AdminUsers::Confirmation::EmailJob.set(queue: 'critical').perform_async(admin_user.id)
+    def schedule_email_confirmation_job(admin_user)
+      AdminUsers::EmailConfirmation::Job.set(queue: 'critical').perform_async(admin_user.id)
     end
   end
 end

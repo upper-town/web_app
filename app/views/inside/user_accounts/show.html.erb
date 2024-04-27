@@ -1,3 +1,10 @@
-<pre>
-  <%= JSON.pretty_generate(@user_account.attributes) %>
-</pre>
+Manage your account
+
+<ul>
+  <li>
+    <%= link_to("Reset password", new_users_password_reset_path) %>
+  </li>
+  <li>
+    <%= link_to("Change email address", new_inside_user_change_email_confirmation_path) %>
+  </li>
+</ul>

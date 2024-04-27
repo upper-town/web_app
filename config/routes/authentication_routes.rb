@@ -7,11 +7,13 @@ module ActionDispatch
         salted_name = path_salt ? "#{name}_#{path_salt}" : name
 
         scope(salted_name, module: name, as: name, path: name) do
-          get 'sign_up',  to: 'confirmations#new'
+          get 'sign_up',  to: 'email_confirmations#new'
           get 'sign_in',  to: 'sessions#new'
           get 'sign_out', to: 'sessions#destroy'
 
-          resource  :confirmation, only: [:create, :edit, :update]
+          resource  :email_confirmation, only: [:create, :edit, :update]
+          resource  :change_email_confirmation, only: [:edit, :update]
+          resource  :change_email_reversion, only: [:edit, :update]
           resource  :password_reset, only: [:new, :create, :edit, :update]
           resources :sessions, only: [:create] do
             member do

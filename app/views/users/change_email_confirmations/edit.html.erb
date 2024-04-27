@@ -1,0 +1,15 @@
+<h2>
+  Change Email: confirmation
+</h2>
+
+<%= form_with(model: @edit_form, url: @edit_form.url, html: { method: @edit_form.method }) do |form| %>
+  <%= form.hidden_field(:token) %>
+
+  <div class="my-3">
+    <%= form.submit(
+      'Confirm and change my email address',
+      class: 'btn btn-primary',
+      data: { 'turbo-submits-with' => 'Confirming...', controller: @edit_form.auto_click ? 'auto-click' : nil }.compact,
+    ) %>
+  </div>
+<% end %>

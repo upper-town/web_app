@@ -56,7 +56,7 @@ module Users
 
       if result.success?
         redirect_to(
-          users_sign_in_path,
+          signed_in? ? inside_dashboard_path : users_sign_in_path,
           success: 'Your password has been set.'
         )
       else

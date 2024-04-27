@@ -6,6 +6,7 @@ class CreateAdminUserTokens < ActiveRecord::Migration[7.1]
       t.string   :value,      null: false
       t.string   :purpose,    null: false
       t.datetime :expires_at, null: false
+      t.jsonb    :data,       null: false, default: {}
 
       t.references :admin_user, null: false, foreign_key: true, index: false
 

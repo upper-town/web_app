@@ -5,6 +5,7 @@
 # Table name: admin_user_tokens
 #
 #  id            :bigint           not null, primary key
+#  data          :jsonb            not null
 #  expires_at    :datetime         not null
 #  purpose       :string           not null
 #  value         :string           not null

@@ -2,8 +2,6 @@
 
 module Inside
   class ActiveSessionsController < BaseController
-    before_action :authenticate_user!
-
     def index
       # TODO: implement
     end

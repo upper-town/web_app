@@ -1,13 +1,35 @@
 # frozen_string_literal: true
 
 class UsersMailer < ApplicationMailer
-  def confirmation
+  def email_confirmation
     @email = params[:email]
-    @confirmation_token = params[:confirmation_token]
+    @email_confirmation_token = params[:email_confirmation_token]
 
     mail(
       to: @email,
       subject: 'Upper Town: Email confirmation link'
+    )
+  end
+
+  def change_email_reversion
+    @email = params[:email]
+    @change_email = params[:change_email]
+    @change_email_reversion_token = params[:change_email_reversion_token]
+
+    mail(
+      to: @email,
+      subject: 'Upper Town: Change email reversion link'
+    )
+  end
+
+  def change_email_confirmation
+    @email = params[:email]
+    @change_email = params[:change_email]
+    @change_email_confirmation_token = params[:change_email_confirmation_token]
+
+    mail(
+      to: @change_email,
+      subject: 'Upper Town: Change email confirmation link'
     )
   end
 

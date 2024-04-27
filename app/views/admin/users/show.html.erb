@@ -24,9 +24,9 @@
 </div>
 
 <div>
-  <%= @user.confirmed_at %>
-  <%= @user.unconfirmed_email %>
-  <%= @user.confirmation_sent_at %>
+  <%= @user.email_confirmed_at %>
+  <%= @user.change_email %>
+  <%= @user.email_confirmation_sent_at %>
 
   <%= @user.failed_attempts %>
 

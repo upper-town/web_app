@@ -11,10 +11,9 @@ module Auth
       has_secure_password validations: false
 
       normalizes :email, with: EmailNormalizer
-      normalizes :unconfirmed_email, with: EmailNormalizer
+      normalizes :change_email, with: EmailNormalizer
 
       validates :email, uniqueness: { case_sensitive: false }, presence: true
-      validates :unconfirmed_email, uniqueness: { case_sensitive: false }, allow_blank: true
       validates :password, length: { minimum: 8 }, allow_blank: true
 
       validate do |record|
@@ -35,13 +34,14 @@ module Auth
       end
     end
 
-    def regenerate_token!(purpose, expires_in = nil)
+    def regenerate_token!(purpose, expires_in = nil, data = {})
       expires_in ||= TOKEN_EXPIRATION
 
       token = tokens.create!(
         purpose: purpose,
         value: SecureRandom.base58(TOKEN_LENGTH),
         expires_at: expires_in.from_now,
+        data: data
       )
 
       token.value
@@ -54,26 +54,45 @@ module Auth
         .first&.value
     end
 
-    def confirmed?
-      confirmed_at.present?
+    def confirmed_email?
+      email_confirmed_at.present?
     end
 
-    def unconfirmed?
-      !confirmed?
+    def unconfirmed_email?
+      !confirmed_email?
     end
 
-    def confirm!
+    def confirm_email!
+      update!(email_confirmed_at: Time.current)
+    end
+
+    def unconfirm_email!
+      update!(email_confirmed_at: nil)
+    end
+
+    def confirmed_change_email?
+      change_email_confirmed_at.present?
+    end
+
+    def unconfirmed_change_email?
+      !confirmed_change_email?
+    end
+
+    def confirm_change_email!
+      update!(change_email_confirmed_at: Time.current)
+    end
+
+    def unconfirm_change_email!
+      update!(change_email_confirmed_at: nil)
+    end
+
+    def revert_change_email!(previous_email)
       update!(
-        email:             unconfirmed_email.presence || email.presence,
-        unconfirmed_email: nil,
-        confirmed_at:      Time.current,
-      )
-    end
-
-    def unconfirm!(unconfirmed_email = nil)
-      update!(
-        unconfirmed_email: unconfirmed_email.presence || email.presence,
-        confirmed_at:      nil,
+        email: previous_email,
+        email_confirmed_at: Time.current,
+        change_email: nil,
+        change_email_confirmed_at: nil,
+        change_email_reverted_at: Time.current
       )
     end
 

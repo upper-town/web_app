@@ -21,7 +21,7 @@ module Seeds
             uuid: SecureRandom.uuid,
             email: "user.#{n}@#{ENV.fetch('APP_HOST')}",
             password_digest: Seeds::Common.encrypt_password(PASSWORD),
-            confirmed_at: Time.current,
+            email_confirmed_at: Time.current,
           }
         end
       end

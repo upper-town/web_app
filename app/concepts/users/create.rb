@@ -23,7 +23,7 @@ module Users
 
       user = result.data[:user]
 
-      schedule_confirmation_email_job(user)
+      schedule_email_confirmation_job(user)
 
       Result.success(user: user)
     end
@@ -35,8 +35,7 @@ module Users
       new_user = User.new(
         uuid:  SecureRandom.uuid,
         email: @attributes['email'],
-        confirmed_at: nil,
-        unconfirmed_email: @attributes['email']
+        email_confirmed_at: nil
       )
 
       user = existing_user || new_user
@@ -63,8 +62,8 @@ module Users
       end
     end
 
-    def schedule_confirmation_email_job(user)
-      Users::Confirmation::EmailJob.set(queue: 'critical').perform_async(user.id)
+    def schedule_email_confirmation_job(user)
+      Users::EmailConfirmation::Job.set(queue: 'critical').perform_async(user.id)
     end
   end
 end

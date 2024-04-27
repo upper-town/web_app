@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 class AdminUsersMailer < ApplicationMailer
-  def confirmation
+  def email_confirmation
     @email = params[:email]
-    @confirmation_token = params[:confirmation_token]
+    @email_confirmation_token = params[:email_confirmation_token]
 
     mail(
       to: @email,

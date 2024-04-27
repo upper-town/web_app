@@ -4,7 +4,7 @@ module Auth
   module AuthenticationControl
     class NotAuthenticatedError < StandardError; end
     class ExpiredActiveSessionError < StandardError; end
-    class UnconfirmedError < StandardError; end
+    class UnconfirmedEmailError < StandardError; end
     class LockedError < StandardError; end
 
     # rubocop:disable Metrics/AbcSize
@@ -55,7 +55,7 @@ module Auth
 
           rescue_from(NotAuthenticatedError, with: :handle_not_authenticated)
           rescue_from(ExpiredActiveSessionError, with: :handle_expired_active_session)
-          rescue_from(UnconfirmedError, with: :handle_unconfirmed)
+          rescue_from(UnconfirmedEmailError, with: :handle_unconfirmed_email)
           rescue_from(LockedError, with: :handle_locked)
         end
 
@@ -74,8 +74,8 @@ module Auth
             raise ExpiredActiveSessionError
           end
 
-          if current_model.unconfirmed? && request.path != auth_sign_out_path
-            raise UnconfirmedError
+          if current_model.unconfirmed_email? && request.path != auth_sign_out_path
+            raise UnconfirmedEmailError
           end
 
           if current_model.locked? && request.path != auth_sign_out_path
@@ -101,7 +101,7 @@ module Auth
           )
         end
 
-        def handle_unconfirmed
+        def handle_unconfirmed_email
           redirect_to(
             auth_sign_up_path(email: current_model.email),
             info: 'You need to confirm your email address.'

@@ -1,0 +1,18 @@
+<p>
+  Hi <%= @change_email %>!
+</p>
+
+<p>
+  You requested to change your email address from <%= @email %> to <%= @change_email %>.
+</p>
+
+<p>
+  Click the new email confirmation link below:
+</p>
+
+<p>
+  <%= link_to(
+    'New email confirmation link',
+    edit_users_change_email_confirmation_url(token: @change_email_confirmation_token, auto_click: true)
+  ) %>
+</p>
