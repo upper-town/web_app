@@ -5,106 +5,59 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 ruby '3.2.2'
 
-gem 'dotenv-rails', '~> 2.8', groups: [:development, :test]
+gem 'dotenv-rails', '~> 3.1', groups: [:development, :test]
 
-# Use main development branch of Rails
-gem 'rails', github: 'rails/rails', branch: 'main'
-
-# The original asset pipeline for Rails [https://github.com/rails/sprockets-rails]
-gem 'sprockets-rails'
-
-# Use postgresql as the database for Active Record
-gem 'pg', '~> 1.1'
-
-# Use the Puma web server [https://github.com/puma/puma]
-gem 'puma', '~> 5.0'
-
-# Hotwire's SPA-like page accelerator [https://turbo.hotwired.dev]
-gem 'turbo-rails'
-
-# Hotwire's modest JavaScript framework [https://stimulus.hotwired.dev]
-gem 'stimulus-rails'
-
-# Build JSON APIs with ease [https://github.com/rails/jbuilder]
-gem 'jbuilder'
-
-# Use Redis adapter to run Action Cable in production
-gem 'redis', '~> 5.0'
-
-gem 'connection_pool', '~> 2.3'
-
-# Use Kredis to get higher-level data types in Redis [https://github.com/rails/kredis]
-gem 'kredis'
-
-# Use Active Model has_secure_password [https://guides.rubyonrails.org/active_model_basics.html#securepassword]
-gem 'bcrypt', '~> 3.1.7'
-
-# Windows does not include zoneinfo files, so bundle the tzinfo-data gem
-gem 'tzinfo-data', platforms: %i[ mingw mswin x64_mingw jruby ]
-
-# Reduces boot times through caching; required in config/boot.rb
-gem 'bootsnap', require: false
-
-# Bundle and transpile JavaScript [https://github.com/rails/jsbundling-rails]
-gem 'jsbundling-rails'
-
-# Bundle and process CSS [https://github.com/rails/cssbundling-rails]
-gem 'cssbundling-rails'
-
-gem 'view_component', '~> 2.62'
-
-gem 'faraday', '~> 2.4'
-
+gem 'base58_id', '~> 1.2'
+gem 'bcrypt', '~> 3.1'
+gem 'bootsnap', '~> 1.18', require: false
+gem 'connection_pool', '~> 2.4'
+gem 'countries', '~> 6.0'
 gem 'dry-validation', '~> 1.10'
-
-gem 'sidekiq', '~> 7.0'
-gem 'sidekiq-cron', '~> 1.9'
+gem 'faraday', '~> 2.9'
+gem 'jbuilder', '~> 2.11'
+gem 'kredis', '~> 1.7'
+gem 'pg', '~> 1.5'
+gem 'phonelib', '~> 0.8.8'
+gem 'puma', '~> 6.4'
+gem 'rails', '~> 7.1'
+gem 'redis', '~> 5.2'
+gem 'sidekiq-cron', '~> 1.12'
 gem 'sidekiq-unique-jobs', '~> 8.0'
-
-gem 'phonelib', '~> 0.7.0'
-
-gem 'base58_id', '~> 1.1.0'
-
-gem 'countries', '~> 5.3.0'
+gem 'sidekiq', '~> 7.2'
+gem 'sprockets-rails', '~> 3.4'
+gem 'stimulus-rails', '~> 1.3'
+gem 'turbo-rails', '~> 2.0'
+gem 'tzinfo-data', '~> 1.2024', platforms: %i[mingw mswin x64_mingw jruby]
+gem 'view_component', '~> 3.12'
 
 group :development, :test do
-  # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
-  gem 'debug', platforms: %i[ mri mingw x64_mingw ]
+  gem 'cssbundling-rails', '~> 1.4'
+  gem 'jsbundling-rails', '~> 1.3'
 
-  gem 'factory_bot', '~> 6.2'
-  gem 'factory_bot_rails', '~> 6.2'
-  gem 'rspec', '~> 3.11'
-  gem 'rspec-rails', '~> 5.1'
-  gem 'shoulda-matchers', '~> 5.1'
-  gem 'simplecov', '~> 0.21', require: false
-
-  gem 'rubocop', '~> 1.42', require: false
-  gem 'rubocop-performance', '~> 1.14', require: false
-  gem 'rubocop-rails', '~> 2.19', require: false
-  gem 'rubocop-rspec', '~> 2.12', require: false
-  gem 'rubocop-thread_safety', '~> 0.4.4', require: false
-
-  gem 'pry-byebug', '~> 3.9'
-
-  gem 'faker', '~> 3.1'
+  gem 'debug', '~> 1.9', platforms: %i[mri mingw x64_mingw]
+  gem 'factory_bot_rails', '~> 6.4'
+  gem 'factory_bot', '~> 6.4'
+  gem 'faker', '~> 3.3.1'
+  gem 'pry-byebug', '~> 3.10'
+  gem 'rubocop-performance', '~> 1.21', require: false
+  gem 'rubocop-rails', '~> 2.24', require: false
+  gem 'rubocop-rspec', '~> 2.29', require: false
+  gem 'rubocop-thread_safety', '~> 0.5.1', require: false
+  gem 'rubocop', '~> 1.63', require: false
+  gem 'simplecov', '~> 0.22.0', require: false
 end
 
 group :development do
   gem 'annotate', '~> 3.2.0'
-
-  # Use console on exceptions pages [https://github.com/rails/web-console]
-  gem 'web-console'
-
-  # Add speed badges [https://github.com/MiniProfiler/rack-mini-profiler]
-  # gem "rack-mini-profiler"
-
-  # Speed up commands on slow machines / big apps [https://github.com/rails/spring]
-  # gem "spring"
+  gem 'web-console', '~> 4.2'
 end
 
 group :test do
-  gem 'capybara', '~> 3.37'
-  gem 'selenium-webdriver', '~> 4.3'
-  gem 'vcr', '~> 6.1'
-  gem 'webmock', '~> 3.14'
+  gem 'capybara', '~> 3.40'
+  gem 'rspec-rails', '~> 6.1'
+  gem 'rspec', '~> 3.13'
+  gem 'selenium-webdriver', '~> 4.20'
+  gem 'shoulda-matchers', '~> 6.2'
+  gem 'vcr', '~> 6.2'
+  gem 'webmock', '~> 3.23'
 end

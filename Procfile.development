@@ -4,4 +4,4 @@ worker: bundle exec sidekiq --environment ${RAILS_ENV}
 js: yarn run build --watch
 css: yarn run watch:css
 
-mailcatcher: gem install mailcatcher --pre && mailcatcher --foreground --verbose
+mailcatcher: gem install mailcatcher && mailcatcher --foreground --verbose

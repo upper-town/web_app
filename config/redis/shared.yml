@@ -1,11 +1,13 @@
+# For kredis gem
+
 production:
-  url: <%= ENV.fetch('REDIS_CACHE_URL') %>
+  url: <%= "redis://#{ENV.fetch('REDIS_HOST')}:#{ENV.fetch('REDIS_PORT')}/#{ENV.fetch('REDIS_CACHE_DB')}" %>
   timeout: 1
 
 development:
-  url: <%= ENV.fetch('REDIS_CACHE_URL') %>
+  url: <%= "redis://#{ENV.fetch('REDIS_HOST')}:#{ENV.fetch('REDIS_PORT')}/#{ENV.fetch('REDIS_CACHE_DB')}" %>
   timeout: 1
 
 test:
-  url: <%= ENV.fetch('REDIS_CACHE_URL') %>
+  url: <%= "redis://#{ENV.fetch('REDIS_HOST')}:#{ENV.fetch('REDIS_PORT')}/#{ENV.fetch('REDIS_CACHE_DB')}" %>
   timeout: 1

@@ -1,10 +1,12 @@
 development:
-  adapter: async
+  adapter: redis
+  url: <%= "redis://#{ENV.fetch('REDIS_HOST')}:#{ENV.fetch('REDIS_PORT')}/#{ENV.fetch('REDIS_ACTION_CABLE_DB')}" %>
+  channel_prefix: web_app_development
 
 test:
   adapter: test
 
 production:
   adapter: redis
-  url: <%= ENV.fetch("REDIS_ACTION_CABLE_URL") %>
+  url: <%= "redis://#{ENV.fetch('REDIS_HOST')}:#{ENV.fetch('REDIS_PORT')}/#{ENV.fetch('REDIS_ACTION_CABLE_DB')}" %>
   channel_prefix: web_app_production

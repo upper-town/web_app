@@ -4,7 +4,9 @@ require 'sidekiq'
 require 'sidekiq-unique-jobs'
 
 Sidekiq.configure_server do |config|
-  config.redis = { url: ENV.fetch('REDIS_SIDEKIQ_URL') }
+  config.redis = {
+    url: "redis://#{ENV.fetch('REDIS_HOST')}:#{ENV.fetch('REDIS_PORT')}/#{ENV.fetch('REDIS_SIDEKIQ_DB')}"
+  }
 
   config.average_scheduled_poll_interval = 10
 
@@ -28,7 +30,9 @@ Sidekiq.configure_server do |config|
 end
 
 Sidekiq.configure_client do |config|
-  config.redis = { url: ENV.fetch('REDIS_SIDEKIQ_URL') }
+  config.redis = {
+    url: "redis://#{ENV.fetch('REDIS_HOST')}:#{ENV.fetch('REDIS_PORT')}/#{ENV.fetch('REDIS_SIDEKIQ_DB')}"
+  }
 
   config.client_middleware do |chain|
     chain.add SidekiqUniqueJobs::Middleware::Client
