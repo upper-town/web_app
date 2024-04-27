@@ -10,10 +10,12 @@ module Inside
       def create
         @new_form = ChangeEmailConfirmation::NewForm.new(change_email_params)
 
-        result = captcha_check(if_success_skip_paths: [
-          new_inside_user_change_email_confirmation_path,
-          inside_user_change_email_confirmation_path
-        ])
+        result = captcha_check(
+          if_success_skip_paths: [
+            new_inside_user_change_email_confirmation_path,
+            inside_user_change_email_confirmation_path
+          ]
+        )
 
         if result.failure?
           flash.now[:alert] = result.errors.full_messages
@@ -42,7 +44,7 @@ module Inside
         end
       end
 
-     private
+      private
 
       def change_email_params
         params

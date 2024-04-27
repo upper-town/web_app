@@ -8,6 +8,9 @@ AllCops:
   TargetRubyVersion: 3.2.0
   NewCops: enable
 
+Bundler/OrderedGems:
+  Enabled: false
+
 # https://docs.rubocop.org/rubocop/cops_layout.html
 Layout/ArrayAlignment:
   Enabled: false

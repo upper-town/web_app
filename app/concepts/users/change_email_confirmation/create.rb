@@ -29,7 +29,7 @@ module Users
 
       def authenticate_and_change_user_email
         if current_user_email != attributes['email']
-          return Result.failure("Incorrect current email address")
+          return Result.failure('Incorrect current email address')
         end
 
         user = User.authenticate_by(email: current_user_email, password: attributes['password'])
