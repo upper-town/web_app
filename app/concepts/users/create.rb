@@ -2,12 +2,14 @@
 
 module Users
   class Create
-    def initialize(attributes, request)
-      @attributes = attributes
+    attr_reader :email_confirmation, :request, :rate_limiter
+
+    def initialize(email_confirmation, request)
+      @email_confirmation = email_confirmation
       @request = request
 
       @rate_limiter = RateLimiting::BasicRateLimiter.new(
-        "users_create:#{@request.remote_ip}",
+        "users_create:#{request.remote_ip}",
         2,
         5.minutes.to_i,
         'Email confirmation has already been sent.'
@@ -15,7 +17,7 @@ module Users
     end
 
     def call
-      result = @rate_limiter.call
+      result = rate_limiter.call
       return result if result.failure?
 
       result = find_or_create_user
@@ -31,10 +33,9 @@ module Users
     private
 
     def find_or_create_user
-      existing_user = User.find_by(email: @attributes['email'])
+      existing_user = User.find_by(email: email_confirmation.email)
       new_user = User.new(
-        uuid:  SecureRandom.uuid,
-        email: @attributes['email'],
+        email: email_confirmation.email,
         email_confirmed_at: nil
       )
 
@@ -43,19 +44,19 @@ module Users
       if user.persisted?
         Result.success(user: user)
       elsif user.invalid?
-        @rate_limiter.uncall
+        rate_limiter.uncall
 
         Result.failure(user.errors, user: user)
       else
         begin
           ActiveRecord::Base.transaction do
             user.save!
-            user.create_account!(uuid: SecureRandom.uuid)
+            user.create_account!
           end
 
           Result.success(user: user)
         rescue StandardError => e
-          @rate_limiter.uncall
+          rate_limiter.uncall
 
           raise e
         end
@@ -63,7 +64,7 @@ module Users
     end
 
     def schedule_email_confirmation_job(user)
-      Users::EmailConfirmation::Job.set(queue: 'critical').perform_async(user.id)
+      Users::EmailConfirmations::Job.set(queue: 'critical').perform_async(user.id)
     end
   end
 end

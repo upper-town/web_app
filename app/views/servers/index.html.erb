@@ -3,41 +3,28 @@
     form_with(
       method: :get,
       data: {
-        controller: 'servers',
-        action: 'change->servers#filter'
+        'controller' => 'servers',
+        'action' => 'change->servers#filter'
       }
     ) do |form| %>
-      <%=
-        form.select(
-          :app_id,
-          (
-            options_for_select([@default_app_id_option], @selected_value_for_app_id) +
-            grouped_options_for_select(@app_id_options, @selected_value_for_app_id)
-          ),
-          {},
-          { class: 'block w-full' }
-        )
-      %>
+      <%= render(AppSelectComponent.new(
+        form,
+        only_in_use: true,
+        blank_name: 'All',
+        selected_value: @selected_value_app_id
+      )) %>
       <div class="flex">
-        <%=
-          form.select(
-            :period,
-            options_for_select(@period_options, @selected_value_for_period),
-            {},
-            { class: 'block grow-0 md:w-1/3' }
-          )
-        %>
-        <%=
-          form.select(
-            :country_code,
-            options_for_select(
-              [@default_country_code_option] + @country_code_options,
-              @selected_value_for_country_code
-            ),
-            {},
-            { class: 'block grow md:w-2/3' }
-          )
-        %>
+        <%= render(PeriodSelectComponent.new(
+          form,
+          selected_value: @selected_value_period
+        )) %>
+
+        <%= render(CountrySelectComponent.new(
+          form,
+          only_in_use: true,
+          blank_name: 'All',
+          selected_value: @selected_value_country_code
+        )) %>
       </div>
   <% end %>
 

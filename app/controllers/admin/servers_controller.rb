@@ -16,7 +16,7 @@ module Admin
     private
 
     def server_from_params
-      Server.find(params['id'])
+      Server.find(params[:id])
     end
   end
 end

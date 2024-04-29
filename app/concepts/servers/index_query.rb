@@ -2,6 +2,8 @@
 
 module Servers
   class IndexQuery
+    attr_reader(:app, :period, :country_code, :current_time)
+
     def initialize(app = nil, period = nil, country_code = nil, current_time = nil)
       @app = app
       @period = period || ServerStat::MONTH
@@ -11,8 +13,8 @@ module Servers
 
     def call
       scope = Server.includes(:app)
-      scope = scope.where(app: @app) if @app.present?
-      scope = scope.where(country_code: @country_code) if Server::COUNTRY_CODES.include?(@country_code)
+      scope = scope.where(app: app) if app.present?
+      scope = scope.where(country_code: country_code) if Server::COUNTRY_CODES.include?(country_code)
       scope = scope.joins(sql_left_join_server_stats)
 
       scope.order(sql_order)
@@ -32,15 +34,15 @@ module Servers
 
     def sql_on_period_and_reference_date
       <<-SQL.squish
-            "server_stats"."period"         = #{quote_for_sql(@period)}
-        AND "server_stats"."reference_date" = #{quote_for_sql(ServerStat.reference_date_for(@period, @current_time))}
+            "server_stats"."period"         = #{quote_for_sql(period)}
+        AND "server_stats"."reference_date" = #{quote_for_sql(ServerStat.reference_date_for(period, current_time))}
       SQL
     end
 
     def sql_on_country_code
       <<-SQL.squish
         "server_stats"."country_code" = #{
-          @country_code == ServerStat::ALL ? quote_for_sql(ServerStat::ALL) : '"servers"."country_code"'
+          country_code == ServerStat::ALL ? quote_for_sql(ServerStat::ALL) : '"servers"."country_code"'
         }
       SQL
     end

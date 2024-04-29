@@ -3,6 +3,8 @@
 module Seeds
   module Development
     class CreateAdminUserAccounts
+      attr_reader :admin_user_ids
+
       def initialize(admin_user_ids)
         @admin_user_ids = admin_user_ids
       end
@@ -18,9 +20,8 @@ module Seeds
       private
 
       def admin_user_account_hashes
-        @admin_user_ids.map do |admin_user_id|
+        admin_user_ids.map do |admin_user_id|
           {
-            uuid: SecureRandom.uuid,
             admin_user_id: admin_user_id
           }
         end

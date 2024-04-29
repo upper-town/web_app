@@ -2,12 +2,14 @@
 
 module Users
   class AuthenticateSession
-    def initialize(attributes, request)
-      @attributes = attributes
+    attr_reader :session, :request, :rate_limiter
+
+    def initialize(session, request)
+      @session = session
       @request = request
 
       @rate_limiter = RateLimiting::BasicRateLimiter.new(
-        "users_session_validate:#{@request.remote_ip}",
+        "users_authenticate_session:#{request.remote_ip}",
         3,
         2.minutes.to_i,
         'Too many attempts.'
@@ -15,7 +17,7 @@ module Users
     end
 
     def call
-      result = @rate_limiter.call
+      result = rate_limiter.call
       return result if result.failure?
 
       find_and_authenticate_user
@@ -24,7 +26,7 @@ module Users
     private
 
     def find_and_authenticate_user
-      user = User.authenticate_by(email: @attributes['email'], password: @attributes['password'])
+      user = User.authenticate_by(email: session.email, password: session.password)
 
       if user
         count_attempt(true)
@@ -38,7 +40,7 @@ module Users
     end
 
     def count_attempt(succeeded)
-      Users::CountSignInAttemptsJob.perform_async(@attributes['email'], succeeded)
+      Users::CountSignInAttemptsJob.perform_async(session.email, succeeded)
     end
   end
 end

@@ -16,7 +16,6 @@ module Seeds
       def app_hashes
         [
           {
-            uuid:        SecureRandom.uuid,
             slug:        'minecraft',
             name:        'Minecraft',
             type:        App::GAME,
@@ -25,7 +24,6 @@ module Seeds
             info:        '',
           },
           {
-            uuid:        SecureRandom.uuid,
             slug:        'perfect-world-international',
             name:        'Perfect World International (PWI)',
             type:        App::GAME,

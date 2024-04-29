@@ -4,6 +4,8 @@ module ServerWebhooks
   class BuildEventRequestHeadersAndBody
     SIGNATURE_HEADER = 'X-Upper-Town-Server-Webhook-Signature'
 
+    attr_reader :server_webhook_event
+
     def initialize(server_webhook_event)
       @server_webhook_event = server_webhook_event
     end
@@ -21,11 +23,10 @@ module ServerWebhooks
     def build_request_body
       {
         'event' => {
-          'uuid'              => @server_webhook_event.uuid,
-          'type'              => @server_webhook_event.type,
-          'last_published_at' => @server_webhook_event.last_published_at,
-          'failed_attempts'   => @server_webhook_event.failed_attempts,
-          'payload'           => @server_webhook_event.payload,
+          'type'              => server_webhook_event.type,
+          'last_published_at' => server_webhook_event.last_published_at,
+          'failed_attempts'   => server_webhook_event.failed_attempts,
+          'payload'           => server_webhook_event.payload,
         }
       }.to_json
     end
@@ -56,14 +57,14 @@ module ServerWebhooks
     def active_server_webhook_secrets_query
       ServerWebhookSecret
         .active
-        .where(server_id: @server_webhook_event.server_id)
+        .where(server_id: server_webhook_event.server_id)
         .pluck(:value)
     end
 
     def archived_server_webhook_secrets_query
       ServerWebhookSecret
         .archived
-        .where(server_id: @server_webhook_event.server_id)
+        .where(server_id: server_webhook_event.server_id)
         .pluck(:value)
     end
   end

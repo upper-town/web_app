@@ -3,7 +3,7 @@
 module Auth
   module AuthenticationModel
     TOKEN_EXPIRATION = 1.hour
-    TOKEN_LENGTH     = 48
+    TOKEN_LENGTH     = 24
 
     extend ActiveSupport::Concern
 

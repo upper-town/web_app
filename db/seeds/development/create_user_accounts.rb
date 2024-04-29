@@ -3,6 +3,8 @@
 module Seeds
   module Development
     class CreateUserAccounts
+      attr_reader :user_ids
+
       def initialize(user_ids)
         @user_ids = user_ids
       end
@@ -18,9 +20,8 @@ module Seeds
       private
 
       def user_account_hashes
-        @user_ids.map do |user_id|
+        user_ids.map do |user_id|
           {
-            uuid: SecureRandom.uuid,
             user_id: user_id
           }
         end

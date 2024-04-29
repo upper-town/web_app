@@ -4,11 +4,11 @@ module Inside
   module Users
     class ChangeEmailConfirmationsController < BaseController
       def new
-        @new_form = ChangeEmailConfirmation::NewForm.new
+        @change_email_confirmation = ::Users::ChangeEmailConfirmation.new
       end
 
       def create
-        @new_form = ChangeEmailConfirmation::NewForm.new(change_email_params)
+        @change_email_confirmation = ::Users::ChangeEmailConfirmation.new(change_email_confirmation_params)
 
         result = captcha_check(
           if_success_skip_paths: [
@@ -24,14 +24,13 @@ module Inside
           return
         end
 
-        if @new_form.invalid?
-          flash.now[:alert] = @new_form.errors.full_messages
+        if @change_email_confirmation.invalid?
           render(:new, status: :unprocessable_entity)
 
           return
         end
 
-        result = ::Users::ChangeEmailConfirmation::Create.new(@new_form.attributes, current_user.email, request).call
+        result = ::Users::ChangeEmailConfirmations::Create.new(@change_email_confirmation, current_user.email, request).call
 
         if result.success?
           redirect_to(
@@ -46,13 +45,13 @@ module Inside
 
       private
 
-      def change_email_params
+      def change_email_confirmation_params
         params
-          .require('inside_users_change_email_confirmation_new_form')
+          .require(:users_change_email_confirmation)
           .permit(
-            'email',
-            'change_email',
-            'password'
+            :email,
+            :change_email,
+            :password
           )
       end
     end

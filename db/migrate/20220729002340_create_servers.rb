@@ -3,7 +3,6 @@
 class CreateServers < ActiveRecord::Migration[7.1]
   def change
     create_table :servers do |t|
-      t.uuid   :uuid,             null: false
       t.string :name,             null: false
       t.string :country_code,     null: false
       t.string :site_url,         null: false
@@ -20,8 +19,6 @@ class CreateServers < ActiveRecord::Migration[7.1]
 
       t.timestamps
     end
-
-    add_index :servers, :uuid, unique: true
 
     add_index :servers, :name
     add_index :servers, :app_id

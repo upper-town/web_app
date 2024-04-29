@@ -50,16 +50,14 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_16_163036) do
   end
 
   create_table "admin_user_accounts", force: :cascade do |t|
-    t.uuid "uuid", null: false
     t.bigint "admin_user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["admin_user_id"], name: "index_admin_user_accounts_on_admin_user_id", unique: true
-    t.index ["uuid"], name: "index_admin_user_accounts_on_uuid", unique: true
   end
 
   create_table "admin_user_active_sessions", force: :cascade do |t|
-    t.uuid "uuid", null: false
+    t.string "token", null: false
     t.string "remote_ip", null: false
     t.string "user_agent", default: "", null: false
     t.datetime "expires_at", null: false
@@ -67,7 +65,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_16_163036) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["admin_user_id"], name: "index_admin_user_active_sessions_on_admin_user_id"
-    t.index ["uuid"], name: "index_admin_user_active_sessions_on_uuid", unique: true
+    t.index ["token"], name: "index_admin_user_active_sessions_on_token", unique: true
   end
 
   create_table "admin_user_tokens", force: :cascade do |t|
@@ -85,7 +83,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_16_163036) do
   end
 
   create_table "admin_users", force: :cascade do |t|
-    t.uuid "uuid", null: false
     t.string "email", null: false
     t.datetime "email_confirmed_at"
     t.datetime "email_confirmation_sent_at"
@@ -105,11 +102,9 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_16_163036) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["email"], name: "index_admin_users_on_email", unique: true
-    t.index ["uuid"], name: "index_admin_users_on_uuid", unique: true
   end
 
   create_table "apps", force: :cascade do |t|
-    t.uuid "uuid", null: false
     t.string "slug", null: false
     t.string "name", null: false
     t.string "type", null: false
@@ -121,7 +116,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_16_163036) do
     t.index ["name"], name: "index_apps_on_name", unique: true
     t.index ["slug"], name: "index_apps_on_slug", unique: true
     t.index ["type"], name: "index_apps_on_type"
-    t.index ["uuid"], name: "index_apps_on_uuid", unique: true
   end
 
   create_table "feature_flags", force: :cascade do |t|
@@ -161,7 +155,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_16_163036) do
   end
 
   create_table "server_votes", force: :cascade do |t|
-    t.uuid "uuid", null: false
     t.string "reference", default: "", null: false
     t.string "remote_ip", default: "", null: false
     t.bigint "user_account_id"
@@ -174,12 +167,10 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_16_163036) do
     t.index ["created_at"], name: "index_server_votes_on_created_at"
     t.index ["server_id"], name: "index_server_votes_on_server_id"
     t.index ["user_account_id"], name: "index_server_votes_on_user_account_id"
-    t.index ["uuid"], name: "index_server_votes_on_uuid", unique: true
   end
 
   create_table "server_webhook_configs", force: :cascade do |t|
     t.bigint "server_id", null: false
-    t.uuid "uuid", null: false
     t.string "event_type", null: false
     t.string "url", default: "", null: false
     t.string "notice", default: "", null: false
@@ -187,12 +178,10 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_16_163036) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["server_id", "event_type"], name: "index_server_webhook_configs_on_server_id_and_event_type", unique: true
-    t.index ["uuid"], name: "index_server_webhook_configs_on_uuid", unique: true
   end
 
   create_table "server_webhook_events", force: :cascade do |t|
     t.bigint "server_id", null: false
-    t.uuid "uuid", null: false
     t.string "type", null: false
     t.jsonb "payload", default: {}, null: false
     t.string "status", null: false
@@ -207,22 +196,18 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_16_163036) do
     t.index ["server_webhook_config_id"], name: "index_server_webhook_events_on_server_webhook_config_id"
     t.index ["type"], name: "index_server_webhook_events_on_type"
     t.index ["updated_at"], name: "index_server_webhook_events_on_updated_at"
-    t.index ["uuid"], name: "index_server_webhook_events_on_uuid", unique: true
   end
 
   create_table "server_webhook_secrets", force: :cascade do |t|
     t.bigint "server_id", null: false
-    t.uuid "uuid", null: false
     t.string "value", null: false
     t.datetime "archived_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["server_id"], name: "index_server_webhook_secrets_on_server_id"
-    t.index ["uuid"], name: "index_server_webhook_secrets_on_uuid", unique: true
   end
 
   create_table "servers", force: :cascade do |t|
-    t.uuid "uuid", null: false
     t.string "name", null: false
     t.string "country_code", null: false
     t.string "site_url", null: false
@@ -241,29 +226,26 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_16_163036) do
     t.index ["country_code"], name: "index_servers_on_country_code"
     t.index ["marked_for_deletion_at"], name: "index_servers_on_marked_for_deletion_at"
     t.index ["name"], name: "index_servers_on_name"
-    t.index ["uuid"], name: "index_servers_on_uuid", unique: true
     t.index ["verified_at"], name: "index_servers_on_verified_at"
   end
 
   create_table "user_accounts", force: :cascade do |t|
-    t.uuid "uuid", null: false
     t.bigint "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_user_accounts_on_user_id", unique: true
-    t.index ["uuid"], name: "index_user_accounts_on_uuid", unique: true
   end
 
   create_table "user_active_sessions", force: :cascade do |t|
-    t.uuid "uuid", null: false
+    t.string "token", null: false
     t.string "remote_ip", null: false
     t.string "user_agent", default: "", null: false
     t.datetime "expires_at", null: false
     t.bigint "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["token"], name: "index_user_active_sessions_on_token", unique: true
     t.index ["user_id"], name: "index_user_active_sessions_on_user_id"
-    t.index ["uuid"], name: "index_user_active_sessions_on_uuid", unique: true
   end
 
   create_table "user_tokens", force: :cascade do |t|
@@ -281,7 +263,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_16_163036) do
   end
 
   create_table "users", force: :cascade do |t|
-    t.uuid "uuid", null: false
     t.string "email", null: false
     t.datetime "email_confirmed_at"
     t.datetime "email_confirmation_sent_at"
@@ -301,7 +282,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_16_163036) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["email"], name: "index_users_on_email", unique: true
-    t.index ["uuid"], name: "index_users_on_uuid", unique: true
   end
 
   add_foreign_key "admin_role_permissions", "admin_permissions"

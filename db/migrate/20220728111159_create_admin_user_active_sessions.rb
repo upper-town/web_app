@@ -3,7 +3,7 @@
 class CreateAdminUserActiveSessions < ActiveRecord::Migration[7.1]
   def change
     create_table :admin_user_active_sessions do |t|
-      t.uuid     :uuid,       null: false
+      t.string   :token,      null: false
       t.string   :remote_ip,  null: false
       t.string   :user_agent, null: false, default: ''
       t.datetime :expires_at, null: false
@@ -13,7 +13,7 @@ class CreateAdminUserActiveSessions < ActiveRecord::Migration[7.1]
       t.timestamps
     end
 
-    add_index :admin_user_active_sessions, :uuid, unique: true
+    add_index :admin_user_active_sessions, :token, unique: true
 
     add_index :admin_user_active_sessions, :admin_user_id
   end

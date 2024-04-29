@@ -2,6 +2,8 @@
 
 module ServerWebhooks
   class CreateEvent
+    attr_reader :server, :event_type, :record_id
+
     def initialize(server, event_type, record_id = nil)
       @server = server
       @event_type = event_type
@@ -15,9 +17,9 @@ module ServerWebhooks
     private
 
     def build_payload
-      case @event_type
+      case event_type
       when ServerWebhookEvent::SERVER_VOTES_CREATE
-        build_payload_server_votes_create(@record_id)
+        build_payload_server_votes_create(record_id)
       else
         raise 'Unknown event_type for ServerWebhooks::CreateEvent'
       end
@@ -30,9 +32,8 @@ module ServerWebhooks
 
     def create_event(payload)
       ServerWebhookEvent.create!(
-        uuid:    SecureRandom.uuid,
-        server:  @server,
-        type:    @event_type,
+        server:  server,
+        type:    event_type,
         status:  ServerWebhookEvent::PENDING,
         payload: payload,
       )

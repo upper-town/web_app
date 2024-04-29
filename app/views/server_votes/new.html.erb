@@ -8,7 +8,12 @@
   <%= @server.name %>
 </p>
 
-<%= form_with(model: @new_form, url: @new_form.url(@server), method: @new_form.method) do |form| %>
+<%= form_with(
+  model: @server_vote,
+  method: :post,
+  url: server_votes_path(@server),
+  data: { 'controller' => 'form-error-messages-handler' }
+) do |form| %>
   <%= captcha_widget_tag %>
 
   <%= form.hidden_field(:reference, value: @reference) %>

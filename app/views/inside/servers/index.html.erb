@@ -12,14 +12,14 @@
         <%=
           link_to(
             'Edit',
-            edit_inside_server_path(suuid: server.suuid),
+            edit_inside_server_path(server),
             class: 'btn btn-secondary',
           )
         %>
         <%=
           link_to(
             'View Page',
-            server_path(suuid: server.suuid),
+            server_path(server),
             class: 'btn btn-secondary',
           )
         %>
@@ -28,7 +28,7 @@
           <%=
             link_to(
               'Unmark for deletion',
-              unmark_for_deletion_inside_server_path(suuid: server.suuid),
+              unmark_for_deletion_inside_server_path(server),
               class: 'btn btn-danger',
               data: {
                 'turbo-method' => :post,
@@ -40,7 +40,7 @@
           <%=
             link_to(
               'Unarchive',
-              unarchive_inside_server_path(suuid: server.suuid),
+              unarchive_inside_server_path(server),
               class: 'btn btn-secondary',
               data: {
                 'turbo-method' => :post,
@@ -51,7 +51,7 @@
           <%=
             link_to(
               'Mark for deletion',
-              mark_for_deletion_inside_server_path(suuid: server.suuid),
+              mark_for_deletion_inside_server_path(server),
               class: 'btn btn-danger',
               data: {
                 'turbo-method' => :post,
@@ -63,7 +63,7 @@
           <%=
             link_to(
               'Archive',
-              archive_inside_server_path(suuid: server.suuid),
+              archive_inside_server_path(server),
               class: 'btn btn-secondary',
               data: {
                 'turbo-method' => :post,
@@ -79,7 +79,7 @@
           </tr>
           <tr>
             <th>ID</th>
-            <td><%= server.suuid %></td>
+            <td><%= server.id %></td>
           </tr>
           <tr>
             <th>Name</th>

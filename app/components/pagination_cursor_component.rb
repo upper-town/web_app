@@ -16,34 +16,34 @@ class PaginationCursorComponent < ApplicationComponent
     @pagination_cursor = pagination_cursor
     @options = DEFAULT_OPTIONS.merge(options)
 
-    @classes = token_list('
+    @classes = class_names('
       mx-0.5
       btn
       btn btn-secondary
     ')
-    @current_classes = token_list('
+    @current_classes = class_names('
       mx-0.5
       btn
       btn-secondary--disabled
     ')
 
-    @prev_enabled_classes = token_list('
+    @prev_enabled_classes = class_names('
       mx-0.5
       btn
       btn-secondary
     ')
-    @prev_disabled_classes = token_list('
+    @prev_disabled_classes = class_names('
       mx-0.5
       btn
       btn-secondary--disabled
     ')
 
-    @next_enabled_classes = token_list('
+    @next_enabled_classes = class_names('
       mx-0.5
       btn
       btn-secondary
     ')
-    @next_disabled_classes = token_list('
+    @next_disabled_classes = class_names('
       mx-0.5
       btn
       btn-secondary--disabled

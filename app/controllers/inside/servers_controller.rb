@@ -16,24 +16,18 @@ module Inside
     end
 
     def new
-      set_form_options
-
-      @new_form = Servers::NewForm.new
+      @server = Server.new
     end
 
     def create
-      set_form_options
+      @server = Server.new(server_params)
 
-      @new_form = Servers::NewForm.new(servers_new_form_params)
-
-      if @new_form.invalid?
-        flash.now[:alert] = @new_form.errors.full_messages
+      if @server.invalid?
         render(:new, status: :unprocessable_entity)
-
         return
       end
 
-      result = Servers::Create.new(@new_form.attributes, current_user_account).call
+      result = Servers::Create.new(@server, current_user_account).call
 
       if result.success?
         redirect_to(
@@ -108,16 +102,20 @@ module Inside
     private
 
     def server_from_params
-      Server.find_by_suuid!(params['suuid'])
+      Server.find(params[:id])
     end
 
-    def servers_new_form_params
-      params.require('servers_new_form').permit(
-        'app_id',
-        'country_code',
-        'name',
-        'site_url'
-      )
+    def server_params
+      params
+        .require(:server)
+        .permit(
+          :app_id,
+          :country_code,
+          :name,
+          :site_url,
+          :description,
+          :info
+        )
     end
 
     def max_verified_servers_per_user_account
@@ -140,20 +138,6 @@ module Inside
           warning: 'You have many servers pending verification. Please verify them first before adding more servers.'
         )
       end
-    end
-
-    def set_form_options
-      form_options_query = FormOptionsQuery.new(
-        cache_enabled: true,
-        cache_options: {
-          key_prefix: 'inside:servers_new',
-          expires_in: 1.minute
-        }
-      )
-      @app_id_options = form_options_query.build_app_id_options
-      @country_code_options = form_options_query.build_country_code_options
-
-      nil
     end
   end
 end

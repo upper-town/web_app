@@ -66,13 +66,13 @@
 #                                            PUT    /admin/servers/:id(.:format)                           admin/servers#update
 #                          admin_sidekiq_web        /admin/sidekiq                                         Sidekiq::Web
 #                                       root GET    /                                                      home#index
-#                               server_votes GET    /servers/:server_suuid/votes(.:format)                 server_votes#index
-#                                            POST   /servers/:server_suuid/votes(.:format)                 server_votes#create
-#                            new_server_vote GET    /servers/:server_suuid/votes/new(.:format)             server_votes#new
+#                               server_votes GET    /servers/:server_id/votes(.:format)                    server_votes#index
+#                                            POST   /servers/:server_id/votes(.:format)                    server_votes#create
+#                            new_server_vote GET    /servers/:server_id/votes/new(.:format)                server_votes#new
 #                                    servers GET    /servers(.:format)                                     servers#index
-#                                     server GET    /servers/:suuid(.:format)                              servers#show
-#                                server_vote GET    /server_votes/:uuid(.:format)                          server_votes#show
-#                               user_account GET    /u/:suuid(.:format)                                    user_accounts#show
+#                                     server GET    /servers/:id(.:format)                                 servers#show
+#                                server_vote GET    /server_votes/:id(.:format)                            server_votes#show
+#                               user_account GET    /u/:id(.:format)                                       user_accounts#show
 #                                inside_root GET    /i(.:format)                                           inside/dashboards#show
 #                           inside_dashboard GET    /i/dashboard(.:format)                                 inside/dashboards#show
 #                        inside_user_account GET    /i/user_account(.:format)                              inside/user_accounts#show
@@ -85,16 +85,16 @@
 #                                            PUT    /i/user(.:format)                                      inside/users/users#update
 #                                            DELETE /i/user(.:format)                                      inside/users/users#destroy
 #                                            POST   /i/user(.:format)                                      inside/users/users#create
-#                      archive_inside_server POST   /i/servers/:suuid/archive(.:format)                    inside/servers#archive
-#                    unarchive_inside_server POST   /i/servers/:suuid/unarchive(.:format)                  inside/servers#unarchive
-#            mark_for_deletion_inside_server POST   /i/servers/:suuid/mark_for_deletion(.:format)          inside/servers#mark_for_deletion
-#          unmark_for_deletion_inside_server POST   /i/servers/:suuid/unmark_for_deletion(.:format)        inside/servers#unmark_for_deletion
+#                      archive_inside_server POST   /i/servers/:id/archive(.:format)                       inside/servers#archive
+#                    unarchive_inside_server POST   /i/servers/:id/unarchive(.:format)                     inside/servers#unarchive
+#            mark_for_deletion_inside_server POST   /i/servers/:id/mark_for_deletion(.:format)             inside/servers#mark_for_deletion
+#          unmark_for_deletion_inside_server POST   /i/servers/:id/unmark_for_deletion(.:format)           inside/servers#unmark_for_deletion
 #                             inside_servers GET    /i/servers(.:format)                                   inside/servers#index
 #                                            POST   /i/servers(.:format)                                   inside/servers#create
 #                          new_inside_server GET    /i/servers/new(.:format)                               inside/servers#new
-#                         edit_inside_server GET    /i/servers/:suuid/edit(.:format)                       inside/servers#edit
-#                              inside_server PATCH  /i/servers/:suuid(.:format)                            inside/servers#update
-#                                            PUT    /i/servers/:suuid(.:format)                            inside/servers#update
+#                         edit_inside_server GET    /i/servers/:id/edit(.:format)                          inside/servers#edit
+#                              inside_server PATCH  /i/servers/:id(.:format)                               inside/servers#update
+#                                            PUT    /i/servers/:id(.:format)                               inside/servers#update
 #                        inside_server_votes GET    /i/server_votes(.:format)                              inside/server_votes#index
 #           turbo_recede_historical_location GET    /recede_historical_location(.:format)                  turbo/native/navigation#recede
 #           turbo_resume_historical_location GET    /resume_historical_location(.:format)                  turbo/native/navigation#resume
@@ -117,14 +117,14 @@ Rails.application.routes.draw do
 
   root to: 'home#index'
 
-  resources :servers, only: [:index, :show], param: :suuid do
+  resources :servers, only: [:index, :show] do
     resources :server_votes, as: 'votes', path: 'votes', only: [:index, :new, :create]
   end
-  resources :server_votes, only: [:show], param: :uuid
+  resources :server_votes, only: [:show]
 
   # /u/
 
-  resources :user_accounts, path: 'u', only: [:show], param: :suuid
+  resources :user_accounts, path: 'u', only: [:show]
 
   # /i/
 
@@ -136,7 +136,7 @@ Rails.application.routes.draw do
     resource :user, module: :users do
       resource :change_email_confirmation, only: [:new, :create]
     end
-    resources :servers, only: [:index, :new, :create, :edit, :update], param: :suuid do
+    resources :servers, only: [:index, :new, :create, :edit, :update] do
       member do
         post :archive
         post :unarchive
@@ -144,6 +144,6 @@ Rails.application.routes.draw do
         post :unmark_for_deletion
       end
     end
-    resources :server_votes, only: [:index], param: :uuid
+    resources :server_votes, only: [:index]
   end
 end

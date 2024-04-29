@@ -2,6 +2,8 @@
 
 module Servers
   class ConsolidateRankings
+    attr_reader :app
+
     def initialize(app)
       @app = app
     end
@@ -22,7 +24,7 @@ module Servers
     private
 
     def process(past_time, current_time)
-      # TODO: Consider acquiring a lock on @app just to we don't run more than
+      # TODO: Consider acquiring a lock on app just to we don't run more than
       # one instance of this service simultaneously for the same app
 
       ServerStat::PERIODS.each do |period|
@@ -50,7 +52,7 @@ module Servers
 
     def query_server_stat_values(period, reference_date)
       ServerStat
-        .where(period: period, reference_date: reference_date, app: @app)
+        .where(period: period, reference_date: reference_date, app: app)
         .where.not(vote_count_consolidated_at: nil)
         .order(:country_code, vote_count: :desc)
         .pluck(:country_code, :id)

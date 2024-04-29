@@ -2,6 +2,8 @@
 
 module Servers
   class ConsolidateVoteCounts
+    attr_reader :server
+
     def initialize(server)
       @server = server
     end
@@ -22,7 +24,7 @@ module Servers
     private
 
     def process(past_time, current_time)
-      # TODO: Consider acquiring a lock on @server just to we don't run more than
+      # TODO: Consider acquiring a lock on server just to we don't run more than
       # one instance of this service simultaneously for the same server
 
       ServerStat::PERIODS.each do |period|
@@ -43,7 +45,7 @@ module Servers
           reference_date: reference_date,
           app_id: app_id,
           country_code: country_code,
-          server_id: @server.id,
+          server_id: server.id,
           vote_count: country_vote_count,
           vote_count_consolidated_at: consolidated_at,
         }
@@ -62,7 +64,7 @@ module Servers
           reference_date: reference_date,
           app_id: app_id,
           country_code: ServerStat::ALL,
-          server_id: @server.id,
+          server_id: server.id,
           vote_count: all_vote_count,
           vote_count_consolidated_at: consolidated_at,
         }
@@ -86,7 +88,7 @@ module Servers
 
     def query_country_server_vote_counts(reference_range)
       ServerVote
-        .where(server: @server)
+        .where(server: server)
         .where(created_at: reference_range)
         .group(:app_id, :country_code)
         .count
@@ -94,7 +96,7 @@ module Servers
 
     def query_all_server_vote_counts(reference_range)
       ServerVote
-        .where(server: @server)
+        .where(server: server)
         .where(created_at: reference_range)
         .group(:app_id)
         .count

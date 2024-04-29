@@ -3,13 +3,18 @@
 module Users
   class EmailConfirmationsController < ApplicationController
     def new
-      @new_form = Users::EmailConfirmation::NewForm.new(email: email_from_params)
+      @email_confirmation = Users::EmailConfirmation.new(email: email_from_params)
     end
 
     def create
-      @new_form = Users::EmailConfirmation::NewForm.new(new_form_params)
+      @email_confirmation = Users::EmailConfirmation.new(email_confirmation_params)
 
-      result = captcha_check(if_success_skip_paths: [users_sign_up_path, users_email_confirmation_path])
+      result = captcha_check(
+        if_success_skip_paths: [
+          users_sign_up_path,
+          users_email_confirmation_path
+        ]
+      )
 
       if result.failure?
         flash.now[:alert] = result.errors.full_messages
@@ -18,14 +23,14 @@ module Users
         return
       end
 
-      if @new_form.invalid?
-        flash.now[:alert] = @new_form.errors.full_messages
+      if @email_confirmation.invalid?
+        flash.now[:alert] = @email_confirmation.errors.full_messages
         render(:new, status: :unprocessable_entity)
 
         return
       end
 
-      result = Users::Create.new(@new_form.attributes, request).call
+      result = Users::Create.new(@email_confirmation, request).call
 
       if result.success?
         redirect_to(
@@ -39,23 +44,23 @@ module Users
     end
 
     def edit
-      @edit_form = Users::EmailConfirmation::EditForm.new(
+      @email_confirmation_edit = Users::EmailConfirmationEdit.new(
         token: token_from_params,
         auto_click: auto_click_from_params
       )
     end
 
     def update
-      @edit_form = Users::EmailConfirmation::EditForm.new(edit_form_params)
+      @email_confirmation_edit = Users::EmailConfirmationEdit.new(email_confirmation_edit_params)
 
-      if @edit_form.invalid?
-        flash.now[:alert] = @edit_form.errors.full_messages
+      if @email_confirmation_edit.invalid?
+        flash.now[:alert] = @email_confirmation_edit.errors.full_messages
         render(:edit, status: :unprocessable_entity)
 
         return
       end
 
-      result = Users::EmailConfirmation::Update.new(@edit_form.attributes, request).call
+      result = Users::EmailConfirmations::Update.new(@email_confirmation_edit, request).call
 
       if result.success?
         user = result.data[:user]
@@ -87,24 +92,24 @@ module Users
 
     private
 
-    def new_form_params
-      params.require('users_email_confirmation_new_form').permit('email')
+    def email_confirmation_params
+      params.require(:users_email_confirmation).permit(:email)
     end
 
-    def edit_form_params
-      params.require('users_email_confirmation_edit_form').permit('token')
+    def email_confirmation_edit_params
+      params.require(:users_email_confirmation_edit).permit(:token)
     end
 
     def email_from_params
-      @email_from_params ||= params['email'].presence
+      @email_from_params ||= params[:email].presence
     end
 
     def token_from_params
-      @token_from_params ||= params['token'].presence
+      @token_from_params ||= params[:token].presence
     end
 
     def auto_click_from_params
-      @auto_click_from_params ||= params['auto_click'].presence
+      @auto_click_from_params ||= params[:auto_click].presence
     end
   end
 end

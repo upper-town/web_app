@@ -2,12 +2,14 @@
 
 module Servers
   class Verify
+    attr_reader :server
+
     def initialize(server)
       @server = server
     end
 
     def call(current_time = Time.current)
-      result = VerifyLinkedUserAccounts.new(@server).call(current_time)
+      result = VerifyLinkedUserAccounts.new(server).call(current_time)
 
       if result.success?
         update_as_verified(current_time)
@@ -19,7 +21,7 @@ module Servers
     private
 
     def update_as_verified(current_time)
-      @server.update!(
+      server.update!(
         verified_at: current_time,
         verified_notice: '',
       )
@@ -28,7 +30,7 @@ module Servers
     def update_as_not_verified(current_time, result)
       notice = result.errors.full_messages.join('; ')
 
-      @server.update!(
+      server.update!(
         verified_at: nil,
         verified_notice: notice,
       )

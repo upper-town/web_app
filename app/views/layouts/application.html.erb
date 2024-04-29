@@ -17,6 +17,9 @@
   <%= yield(:head) %>
 </head>
 <body data-controller="browser-time-zone">
+  <% if Rails.env.development? && params.key?(:development_info) %>
+    <%= render('shared/development_info') %>
+  <% end %>
   <%= render('shared/noscript') %>
   <%= render('shared/header') %>
   <%= render('shared/nav') %>

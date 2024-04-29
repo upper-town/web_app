@@ -4,6 +4,8 @@ module ServerWebhooks
   class PublishEvent
     TIMEOUT = 60
 
+    attr_reader :server_webhook_event
+
     def initialize(server_webhook_event)
       @server_webhook_event = server_webhook_event
     end
@@ -24,7 +26,7 @@ module ServerWebhooks
     private
 
     def check_failed
-      if @server_webhook_event.failed?
+      if server_webhook_event.failed?
         Result.failure('Cannot retry event: it has been retried and failed multiple times')
       else
         Result.success
@@ -32,7 +34,7 @@ module ServerWebhooks
     end
 
     def check_delivered
-      if @server_webhook_event.delivered?
+      if server_webhook_event.delivered?
         Result.failure('Cannot retry event: it has been delivered already')
       else
         Result.success
@@ -40,7 +42,7 @@ module ServerWebhooks
     end
 
     def check_and_set_config!
-      server_webhook_config = @server_webhook_event.server.webhook_config
+      server_webhook_config = server_webhook_event.server.webhook_config
 
       if server_webhook_config.blank?
         notice = 'Could not find an enabled integration config for webhook event at the time of publishing it'
@@ -51,21 +53,21 @@ module ServerWebhooks
           retry_in: retry_in
         )
       else
-        @server_webhook_event.update!(config: server_webhook_config)
+        server_webhook_event.update!(config: server_webhook_config)
 
         Result.success
       end
     end
 
     def try_publish!
-      @server_webhook_event.update!(last_published_at: Time.current)
+      server_webhook_event.update!(last_published_at: Time.current)
 
-      request_headers, request_body = BuildEventRequestHeadersAndBody.new(@server_webhook_event).call
+      request_headers, request_body = BuildEventRequestHeadersAndBody.new(server_webhook_event).call
 
       response = build_connection(request_headers).post(nil, request_body)
 
       if response.success?
-        UpdateDeliveredEventJob.perform_async(@server_webhook_event.id)
+        UpdateDeliveredEventJob.perform_async(server_webhook_event.id)
 
         Result.success
       else
@@ -75,7 +77,7 @@ module ServerWebhooks
         Result.failure(
           "May retry event: #{notice}",
           retry_in: retry_in,
-          check_up_enabled_config_id: @server_webhook_event.config.id
+          check_up_enabled_config_id: server_webhook_event.config.id
         )
       end
     rescue Faraday::ConnectionFailed, Faraday::TimeoutError => e
@@ -85,21 +87,21 @@ module ServerWebhooks
       Result.failure(
         "May retry event: #{notice}",
         retry_in: retry_in,
-        check_up_enabled_config_id: @server_webhook_event.config.id
+        check_up_enabled_config_id: server_webhook_event.config.id
       )
     end
 
     def increment_failed_attempts!(notice)
-      @server_webhook_event.increment(:failed_attempts)
-      @server_webhook_event.notice = notice
-      @server_webhook_event.status = determine_status
-      @server_webhook_event.save!
+      server_webhook_event.increment(:failed_attempts)
+      server_webhook_event.notice = notice
+      server_webhook_event.status = determine_status
+      server_webhook_event.save!
 
-      @server_webhook_event.retry_in
+      server_webhook_event.retry_in
     end
 
     def determine_status
-      if @server_webhook_event.maxed_failed_attempts?
+      if server_webhook_event.maxed_failed_attempts?
         ServerWebhookEvent::FAILED
       else
         ServerWebhookEvent::RETRY
@@ -108,7 +110,7 @@ module ServerWebhooks
 
     def build_connection(headers)
       Faraday.new(
-        @server_webhook_event.config.url,
+        server_webhook_event.config.url,
         {
           headers: headers,
           request: { timeout: TIMEOUT }

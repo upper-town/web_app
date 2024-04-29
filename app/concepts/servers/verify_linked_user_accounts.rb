@@ -9,6 +9,8 @@ module Servers
     JSON_FILE_MAX_SIZE = 512
     JSON_FILE_MAX_USER_ACCOUNTS_SIZE = 10
 
+    attr_reader :server
+
     def initialize(server)
       @server = server
     end
@@ -31,7 +33,7 @@ module Servers
     private
 
     def check_json_file_metadata
-      connection = Faraday.new(@server.site_url) do |conn|
+      connection = Faraday.new(server.site_url) do |conn|
         conn.options.timeout = TIMEOUT
       end
       response = connection.head(JSON_FILE_PATH)
@@ -55,7 +57,7 @@ module Servers
     end
 
     def download_and_parse_json_file
-      connection = Faraday.new(@server.site_url) do |conn|
+      connection = Faraday.new(server.site_url) do |conn|
         conn.options.timeout = TIMEOUT
         conn.response(:json)
       end
@@ -79,24 +81,24 @@ module Servers
       Result.failure("Parsing Error: Invalid JSON file: #{e}")
     end
 
-    def check_user_accounts_exist(user_account_suuids)
+    def check_user_accounts_exist(user_account_ids)
       result = Result.new
 
-      user_account_suuids.each do |suuid|
-        if !UserAccount.exists_suuid?(suuid)
-          result.add_errors("User Account ID #{suuid} does not exist")
+      user_account_ids.each do |id|
+        if !UserAccount.exists?(id)
+          result.add_errors("User Account ID #{id} does not exist")
         end
       end
 
       result
     end
 
-    def upsert_server_user_accounts(user_account_suuids, current_time)
-      user_account_ids = UserAccount.where_suuid(user_account_suuids).pluck(:id)
+    def upsert_server_user_accounts(user_account_ids, current_time)
+      user_account_ids = UserAccount.where(id: user_account_ids).pluck(:id)
 
       if user_account_ids.empty?
         ServerUserAccount
-          .where(server: @server)
+          .where(server: server)
           .update_all(verified_at: nil)
 
         return Result.failure("Empty \"user_accounts\" array in #{JSON_FILE_PATH}")
@@ -104,7 +106,7 @@ module Servers
 
       ApplicationRecord.transaction do
         ServerUserAccount
-          .where(server: @server)
+          .where(server: server)
           .where.not(user_account_id: user_account_ids)
           .update_all(verified_at: nil)
 
@@ -112,7 +114,7 @@ module Servers
           user_account_ids.map do |user_account_id|
             {
               user_account_id: user_account_id,
-              server_id: @server.id,
+              server_id: server.id,
               verified_at: current_time
             }
           end,
@@ -125,14 +127,12 @@ module Servers
 
     class JsonFileValidatonContract < ApplicationValidationContract
       json do
-        required(:user_accounts).array(:string)
+        required(:user_accounts).array(:integer)
       end
 
       rule(:user_accounts) do
         if value.size > JSON_FILE_MAX_USER_ACCOUNTS_SIZE
           key.failure("must be an array with max size of #{JSON_FILE_MAX_USER_ACCOUNTS_SIZE}")
-        elsif value.any? { |elem| !ShortUuid.valid?(elem) }
-          key.failure('must be an array of valid User Account IDs')
         elsif value.size != value.uniq.size
           key.failure('must be an array with non-duplicated User Account IDs')
         end

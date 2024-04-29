@@ -3,6 +3,8 @@
 module Seeds
   module Development
     class CreateServerUserAccounts
+      attr_reader :server_ids, :user_account_ids
+
       def initialize(server_ids, user_account_ids)
         @server_ids = server_ids
         @user_account_ids = user_account_ids
@@ -20,12 +22,12 @@ module Seeds
 
       def server_user_account_hashes
         current_time = Time.current
-        server_to_take = @server_ids.size / 4
+        server_to_take = server_ids.size / 4
 
-        @server_ids.sample(server_to_take).map do |server_id|
+        server_ids.sample(server_to_take).map do |server_id|
           {
             server_id: server_id,
-            user_account_id: @user_account_ids.sample,
+            user_account_id: user_account_ids.sample,
             verified_at: rand(1..4) == 1 ? nil : current_time
           }
         end

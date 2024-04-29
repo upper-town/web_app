@@ -3,23 +3,23 @@
 module Users
   class ChangeEmailConfirmationsController < ApplicationController
     def edit
-      @edit_form = Users::ChangeEmailConfirmation::EditForm.new(
+      @change_email_confirmation_edit = Users::ChangeEmailConfirmationEdit.new(
         token: token_from_params,
         auto_click: auto_click_from_params
       )
     end
 
     def update
-      @edit_form = Users::ChangeEmailConfirmation::EditForm.new(edit_form_params)
+      @change_email_confirmation_edit = Users::ChangeEmailConfirmationEdit.new(change_email_confirmation_edit_params)
 
-      if @edit_form.invalid?
-        flash.now[:alert] = @edit_form.errors.full_messages
+      if @change_email_confirmation_edit.invalid?
+        flash.now[:alert] = @change_email_confirmation_edit.errors.full_messages
         render(:edit, status: :unprocessable_entity)
 
         return
       end
 
-      result = Users::ChangeEmailConfirmation::Update.new(@edit_form.attributes, request).call
+      result = Users::ChangeEmailConfirmations::Update.new(@change_email_confirmation_edit, request).call
 
       if result.success?
         redirect_to(
@@ -34,16 +34,16 @@ module Users
 
     private
 
-    def edit_form_params
-      params.require('users_change_email_confirmation_edit_form').permit('token')
+    def change_email_confirmation_edit_params
+      params.require(:users_change_email_confirmation_edit).permit(:token)
     end
 
     def token_from_params
-      @token_from_params ||= params['token'].presence
+      @token_from_params ||= params[:token].presence
     end
 
     def auto_click_from_params
-      @auto_click_from_params ||= params['auto_click'].presence
+      @auto_click_from_params ||= params[:auto_click].presence
     end
   end
 end

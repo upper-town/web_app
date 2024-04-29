@@ -14,7 +14,7 @@ module AdminUsers
         return
       end
 
-      @new_form = AdminUsers::Sessions::NewForm.new
+      @session = AdminUsers::Session.new
     end
 
     def create
@@ -26,9 +26,14 @@ module AdminUsers
         return
       end
 
-      @new_form = AdminUsers::Sessions::NewForm.new(new_form_params)
+      @session = AdminUsers::Session.new(session_params)
 
-      result = captcha_check(if_success_skip_paths: [admin_users_sign_in_path, admin_users_sessions_path])
+      result = captcha_check(
+        if_success_skip_paths: [
+          admin_users_sign_in_path,
+          admin_users_sessions_path
+        ]
+      )
 
       if result.failure?
         flash.now[:alert] = result.errors.full_messages
@@ -37,17 +42,17 @@ module AdminUsers
         return
       end
 
-      if @new_form.invalid?
-        flash.now[:alert] = @new_form.errors.full_messages
+      if @session.invalid?
+        flash.now[:alert] = @session.errors.full_messages
         render(:new, status: :unprocessable_entity)
 
         return
       end
 
-      result = AdminUsers::AuthenticateSession.new(@new_form.attributes, request).call
+      result = AdminUsers::AuthenticateSession.new(@session, request).call
 
       if result.success?
-        sign_in!(result.data[:admin_user], @new_form.remember_me)
+        sign_in!(result.data[:admin_user], @session.remember_me)
         return_to = consume_return_to
 
         redirect_to(
@@ -75,13 +80,13 @@ module AdminUsers
 
     private
 
-    def new_form_params
+    def session_params
       params
-        .require('admin_users_sessions_new_form')
+        .require(:admin_users_session)
         .permit(
-          'email',
-          'password',
-          'remember_me'
+          :email,
+          :password,
+          :remember_me
         )
     end
   end

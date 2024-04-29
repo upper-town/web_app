@@ -16,7 +16,7 @@ module Admin
     private
 
     def user_from_params
-      User.find(params['id'])
+      User.find(params[:id])
     end
   end
 end

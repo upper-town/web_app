@@ -18,7 +18,6 @@ module Seeds
       def user_hashes
         1.upto(10).map do |n|
           {
-            uuid: SecureRandom.uuid,
             email: "user.#{n}@#{ENV.fetch('APP_HOST')}",
             password_digest: Seeds::Common.encrypt_password(PASSWORD),
             email_confirmed_at: Time.current,

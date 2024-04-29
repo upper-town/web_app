@@ -9,16 +9,16 @@ class PhoneNumberValidator
   end
 
   def valid?
-    @errors.clear
+    errors.clear
 
     validate_possible
 
-    @errors.empty?
+    errors.empty?
   end
 
   def validate_possible
-    unless Phonelib.parse(@phone_number).possible?
-      @errors << 'not valid'
+    unless Phonelib.parse(phone_number).possible?
+      errors << 'not valid'
     end
   end
 end

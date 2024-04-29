@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 class EmailValidator
-  attr_reader :email, :errors
-
   PATTERN = %r{
     \A
       (?<user>
@@ -40,42 +38,44 @@ class EmailValidator
     'vendor/disposable_email_domains/list.txt'
   ).readlines(chomp: true)
 
+  attr_reader :email, :errors
+
   def initialize(email)
     @email = email.to_s
     @errors = ['not validated yet']
   end
 
   def valid?
-    @errors.clear
+    errors.clear
 
     validate_format
     validate_email_domain
 
-    @errors.empty?
+    errors.empty?
   end
 
   private
 
   def validate_format
-    unless @email.match?(PATTERN)
-      @errors << 'format is not valid'
+    unless email.match?(PATTERN)
+      errors << 'format is not valid'
     end
   end
 
   def validate_email_domain
     if match_reserved_domain? || match_disposable_email_domains?
-      @errors << 'domain is not valid'
+      errors << 'domain is not supported'
     end
   end
 
   def match_reserved_domain?
-    match_data = @email.match(PATTERN)
+    match_data = email.match(PATTERN)
 
     match_data.present? && host_has_reserved_name?(match_data[:host])
   end
 
   def match_disposable_email_domains?
-    match_data = @email.match(PATTERN)
+    match_data = email.match(PATTERN)
 
     match_data.present? && host_is_disposable_email_domain?(match_data[:host])
   end

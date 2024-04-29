@@ -7,8 +7,8 @@
 #  id            :bigint           not null, primary key
 #  expires_at    :datetime         not null
 #  remote_ip     :string           not null
+#  token         :string           not null
 #  user_agent    :string           default(""), not null
-#  uuid          :uuid             not null
 #  created_at    :datetime         not null
 #  updated_at    :datetime         not null
 #  admin_user_id :bigint           not null
@@ -16,7 +16,7 @@
 # Indexes
 #
 #  index_admin_user_active_sessions_on_admin_user_id  (admin_user_id)
-#  index_admin_user_active_sessions_on_uuid           (uuid) UNIQUE
+#  index_admin_user_active_sessions_on_token          (token) UNIQUE
 #
 # Foreign Keys
 #

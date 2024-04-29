@@ -8,7 +8,6 @@
       collection: @servers,
       columns: [
         ['ID',      :id],
-        ['SUUID',   proc { |server| server.suuid }],
         ['Actions', proc { |server| render(partial: 'edit_actions_index', locals: { server: server }) }],
       ],
     ))

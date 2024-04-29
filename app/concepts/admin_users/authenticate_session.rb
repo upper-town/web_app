@@ -2,12 +2,14 @@
 
 module AdminUsers
   class AuthenticateSession
-    def initialize(attributes, request)
-      @attributes = attributes
+    attr_reader :session, :request, :rate_limiter
+
+    def initialize(session, request)
+      @session = session
       @request = request
 
       @rate_limiter = RateLimiting::BasicRateLimiter.new(
-        "admin_users_session_validate:#{@request.remote_ip}",
+        "admin_users_authenticate_session:#{request.remote_ip}",
         3,
         2.minutes.to_i,
         'Too many attempts.'
@@ -15,7 +17,7 @@ module AdminUsers
     end
 
     def call
-      result = @rate_limiter.call
+      result = rate_limiter.call
       return result if result.failure?
 
       find_and_authenticate_admin_user
@@ -24,7 +26,7 @@ module AdminUsers
     private
 
     def find_and_authenticate_admin_user
-      admin_user = AdminUser.authenticate_by(email: @attributes['email'], password: @attributes['password'])
+      admin_user = AdminUser.authenticate_by(email: session.email, password: session.password)
 
       if admin_user
         count_attempt(true)
@@ -38,7 +40,7 @@ module AdminUsers
     end
 
     def count_attempt(succeeded)
-      AdminUsers::CountSignInAttemptsJob.perform_async(@attributes['email'], succeeded)
+      AdminUsers::CountSignInAttemptsJob.perform_async(session.email, succeeded)
     end
   end
 end

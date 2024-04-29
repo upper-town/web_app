@@ -2,6 +2,8 @@
 
 module RateLimiting
   class BasicRateLimiter
+    attr_reader :key, :max_count, :expires_in, :error_message
+
     def initialize(key, max_count, expires_in, error_message = '')
       @key = key
       @max_count = max_count
@@ -11,12 +13,12 @@ module RateLimiting
 
     def call
       replies = RateLimiting.redis.multi do |transaction|
-        transaction.incr(@key)
-        transaction.expire(@key, @expires_in, nx: true)
-        transaction.ttl(@key)
+        transaction.incr(key)
+        transaction.expire(key, expires_in, nx: true)
+        transaction.ttl(key)
       end
 
-      if replies[0] <= @max_count
+      if replies[0] <= max_count
         Result.success
       else
         Result.failure(build_error_message(replies[2]))
@@ -25,8 +27,8 @@ module RateLimiting
 
     def uncall
       RateLimiting.redis.multi do |transaction|
-        transaction.decr(@key)
-        transaction.expire(@key, @expires_in, nx: true)
+        transaction.decr(key)
+        transaction.expire(key, expires_in, nx: true)
       end
 
       Result.success
@@ -35,12 +37,12 @@ module RateLimiting
     private
 
     def build_error_message(ttl_seconds)
-      if @error_message.blank?
+      if error_message.blank?
         try_again_message(ttl_seconds)
       else
-        separator = @error_message.end_with?('.', '!', '?') ? ' ' : '. '
+        separator = error_message.end_with?('.', '!', '?') ? ' ' : '. '
 
-        "#{@error_message}#{separator}#{try_again_message(ttl_seconds)}"
+        "#{error_message}#{separator}#{try_again_message(ttl_seconds)}"
       end
     end
 

@@ -4,6 +4,9 @@
 
 import { application } from './application'
 
+import AppSelectComponentController from './app_select_component_controller'
+application.register('app-select-component', AppSelectComponentController)
+
 import AutoClickController from './auto_click_controller'
 application.register('auto-click', AutoClickController)
 
@@ -13,8 +16,14 @@ application.register('browser-time-zone', BrowserTimeZoneController)
 import CaptchaController from './captcha_controller'
 application.register('captcha', CaptchaController)
 
+import CountrySelectComponentController from './country_select_component_controller'
+application.register('country-select-component', CountrySelectComponentController)
+
 import DispatchEventController from './dispatch_event_controller'
 application.register('dispatch-event', DispatchEventController)
+
+import FormErrorMessagesHandlerController from './form_error_messages_handler_controller'
+application.register('form-error-messages-handler', FormErrorMessagesHandlerController)
 
 import FormFollowRedirectOnSuccessController from './form_follow_redirect_on_success_controller'
 application.register('form-follow-redirect-on-success', FormFollowRedirectOnSuccessController)
@@ -27,6 +36,9 @@ application.register('hello', HelloController)
 
 import NavigateController from './navigate_controller'
 application.register('navigate', NavigateController)
+
+import PeriodSelectComponentController from './period_select_component_controller'
+application.register('period-select-component', PeriodSelectComponentController)
 
 import ServersController from './servers_controller'
 application.register('servers', ServersController)

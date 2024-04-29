@@ -3,13 +3,18 @@
 module Users
   class PasswordResetsController < ApplicationController
     def new
-      @new_form = Users::PasswordReset::NewForm.new(email: email_from_params)
+      @password_reset = Users::PasswordReset.new(email: email_from_params)
     end
 
     def create
-      @new_form = Users::PasswordReset::NewForm.new(new_form_params)
+      @password_reset = Users::PasswordReset.new(password_reset_params)
 
-      result = captcha_check(if_success_skip_paths: [new_users_password_reset_path, users_password_reset_path])
+      result = captcha_check(
+        if_success_skip_paths: [
+          new_users_password_reset_path,
+          users_password_reset_path
+        ]
+      )
 
       if result.failure?
         flash.now[:alert] = result.errors.full_messages
@@ -18,14 +23,14 @@ module Users
         return
       end
 
-      if @new_form.invalid?
-        flash.now[:alert] = @new_form.errors.full_messages
+      if @password_reset.invalid?
+        flash.now[:alert] = @password_reset.errors.full_messages
         render(:new, status: :unprocessable_entity)
 
         return
       end
 
-      result = Users::PasswordReset::Create.new(@new_form.attributes, request).call
+      result = Users::PasswordResets::Create.new(@password_reset, request).call
 
       if result.success?
         redirect_to(
@@ -39,20 +44,20 @@ module Users
     end
 
     def edit
-      @edit_form = Users::PasswordReset::EditForm.new(token: token_from_params)
+      @password_reset_edit = Users::PasswordResetEdit.new(token: token_from_params)
     end
 
     def update
-      @edit_form = Users::PasswordReset::EditForm.new(edit_form_params)
+      @password_reset_edit = Users::PasswordResetEdit.new(password_reset_edit_params)
 
-      if @edit_form.invalid?
-        flash.now[:alert] = @edit_form.errors.full_messages
+      if @password_reset_edit.invalid?
+        flash.now[:alert] = @password_reset_edit.errors.full_messages
         render(:edit, status: :unprocessable_entity)
 
         return
       end
 
-      result = Users::PasswordReset::Update.new(@edit_form.attributes, request).call
+      result = Users::PasswordResets::Update.new(@password_reset_edit, request).call
 
       if result.success?
         redirect_to(
@@ -68,19 +73,19 @@ module Users
     private
 
     def token_from_params
-      @token_from_params ||= params['token'].presence
+      @token_from_params ||= params[:token].presence
     end
 
     def email_from_params
-      @email_from_params ||= params['email'].presence
+      @email_from_params ||= params[:email].presence
     end
 
-    def new_form_params
-      params.require('users_password_reset_new_form').permit('email')
+    def password_reset_params
+      params.require(:users_password_reset).permit(:email)
     end
 
-    def edit_form_params
-      params.require('users_password_reset_edit_form').permit('token', 'password')
+    def password_reset_edit_params
+      params.require(:users_password_reset_edit).permit(:token, :password)
     end
   end
 end

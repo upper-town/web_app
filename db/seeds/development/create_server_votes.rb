@@ -3,6 +3,8 @@
 module Seeds
   module Development
     class CreateServerVotes
+      attr_reader :app_ids, :server_ids, :user_account_ids
+
       def initialize(app_ids, server_ids, user_account_ids)
         @app_ids = app_ids
         @server_ids = server_ids
@@ -21,8 +23,7 @@ module Seeds
 
             SecureRandom.random_number(1..10).times do
               server_vote_hashes << {
-                uuid:            SecureRandom.uuid,
-                user_account_id: @user_account_ids.sample,
+                user_account_id: user_account_ids.sample,
                 server_id:       server_id,
                 country_code:    country_code,
                 app_id:          app_id,
@@ -40,7 +41,7 @@ module Seeds
 
       def server_values
         Server
-          .where(id: @server_ids)
+          .where(id: server_ids)
           .pluck(:id, :country_code, :app_id)
       end
 
@@ -60,7 +61,7 @@ module Seeds
       def sample_app_id(server_app_id)
         [
           *Array.new(4) { server_app_id },
-          (@app_ids - [server_app_id]).sample,
+          (app_ids - [server_app_id]).sample,
         ].sample
       end
     end

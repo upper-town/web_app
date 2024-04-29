@@ -3,8 +3,6 @@
 class CreateUsers < ActiveRecord::Migration[7.1]
   def change
     create_table :users do |t|
-      t.uuid :uuid, null: false
-
       t.string   :email, null: false
       t.datetime :email_confirmed_at
       t.datetime :email_confirmation_sent_at
@@ -29,7 +27,6 @@ class CreateUsers < ActiveRecord::Migration[7.1]
       t.timestamps
     end
 
-    add_index :users, :uuid,  unique: true
     add_index :users, :email, unique: true
   end
 end

@@ -2,6 +2,8 @@
 
 module Servers
   class IndexStatsQuery
+    attr_reader :server_ids, :country_code, :current_time
+
     def initialize(server_ids, country_code = nil, current_time = nil)
       @server_ids   = server_ids
       @country_code = country_code || ServerStat::ALL
@@ -9,7 +11,7 @@ module Servers
     end
 
     def call
-      scope = Server.where(id: @server_ids)
+      scope = Server.where(id: server_ids)
       scope = scope.joins(sql_left_join_server_stats)
       scope = scope.select(sql_select_fields)
 
@@ -56,7 +58,7 @@ module Servers
       conditions = ServerStat::PERIODS.map do |period|
         <<-SQL.squish
               "server_stats"."period"         = #{quote_for_sql(period)}
-          AND "server_stats"."reference_date" = #{quote_for_sql(ServerStat.reference_date_for(period, @current_time))}
+          AND "server_stats"."reference_date" = #{quote_for_sql(ServerStat.reference_date_for(period, current_time))}
         SQL
       end
 
@@ -66,7 +68,7 @@ module Servers
     def sql_on_country_code
       <<-SQL.squish
         "server_stats"."country_code" = #{
-          @country_code == ServerStat::ALL ? quote_for_sql(ServerStat::ALL) : '"servers"."country_code"'
+          country_code == ServerStat::ALL ? quote_for_sql(ServerStat::ALL) : '"servers"."country_code"'
         }
       SQL
     end

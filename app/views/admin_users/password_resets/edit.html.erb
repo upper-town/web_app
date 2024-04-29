@@ -2,7 +2,12 @@
   Set your password
 </h2>
 
-<%= form_with(model: @edit_form, url: @edit_form.url, html: { method: @edit_form.method }) do |form| %>
+<%= form_with(
+  model: @password_reset_edit,
+  method: :put,
+  url: admin_users_password_reset_path,
+  data: { 'controller' => 'form-error-messages-handler' }
+) do |form| %>
   <%= form.hidden_field(:token) %>
 
   <div class="mb-3">

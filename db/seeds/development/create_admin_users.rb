@@ -19,7 +19,6 @@ module Seeds
       def normal_admin_user_hashes
         1.upto(10).map do |n|
           {
-            uuid: SecureRandom.uuid,
             email: "admin.user.#{n}@#{ENV.fetch('APP_HOST')}",
             password_digest: Seeds::Common.encrypt_password(PASSWORD),
             email_confirmed_at: Time.current
@@ -29,7 +28,6 @@ module Seeds
 
       def super_admin_user_hash
         {
-          uuid: SecureRandom.uuid,
           email: "super.admin.user@#{ENV.fetch('APP_HOST')}",
           password_digest: Seeds::Common.encrypt_password(PASSWORD),
           email_confirmed_at: Time.current

@@ -8,7 +8,6 @@
 #  country_code    :string           not null
 #  reference       :string           default(""), not null
 #  remote_ip       :string           default(""), not null
-#  uuid            :uuid             not null
 #  created_at      :datetime         not null
 #  updated_at      :datetime         not null
 #  app_id          :bigint           not null
@@ -21,7 +20,6 @@
 #  index_server_votes_on_created_at               (created_at)
 #  index_server_votes_on_server_id                (server_id)
 #  index_server_votes_on_user_account_id          (user_account_id)
-#  index_server_votes_on_uuid                     (uuid) UNIQUE
 #
 # Foreign Keys
 #

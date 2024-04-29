@@ -13,7 +13,6 @@
 #  marked_for_deletion_at :datetime
 #  name                   :string           not null
 #  site_url               :string           not null
-#  uuid                   :uuid             not null
 #  verified_at            :datetime
 #  verified_notice        :text             default(""), not null
 #  created_at             :datetime         not null
@@ -27,7 +26,6 @@
 #  index_servers_on_country_code            (country_code)
 #  index_servers_on_marked_for_deletion_at  (marked_for_deletion_at)
 #  index_servers_on_name                    (name)
-#  index_servers_on_uuid                    (uuid) UNIQUE
 #  index_servers_on_verified_at             (verified_at)
 #
 # Foreign Keys
@@ -35,15 +33,26 @@
 #  fk_rails_...  (app_id => apps.id)
 #
 class Server < ApplicationRecord
-  include ShortUuidModel
-
   COUNTRY_CODES = ISO3166::Country.codes
+
+  normalizes :name, with: ->(str) { str.squish }
+  normalizes :description, with: ->(str) { str.squish }
+  normalizes :info, with: ->(str) { str.squish }
 
   validate :verified_server_with_same_name_exist?
 
+  validates(
+    :app_id,
+    :name,
+    :country_code,
+    :site_url,
+    presence: true
+  )
   validates :country_code, inclusion: { in: COUNTRY_CODES }
-  validates :name,     length: { minimum: 3, maximum: 255 }
+  validates :name, length: { minimum: 3, maximum: 255 }
   validates :site_url, length: { minimum: 3, maximum: 255 }
+  validates :description, length: { maximum: 1_000 }
+  validates :info, length: { maximum: 1_000 }
 
   belongs_to :app
 

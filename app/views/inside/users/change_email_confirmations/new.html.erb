@@ -6,7 +6,12 @@
   Change Email
 </h2>
 
-<%= form_with(model: @new_form, url: @new_form.url, html: { method: @new_form.method }) do |form| %>
+<%= form_with(
+  model: @change_email_confirmation,
+  method: :post,
+  url: inside_user_change_email_confirmation_path,
+  data: { 'controller' => 'form-error-messages-handler' }
+) do |form| %>
   <div class="mb-3">
     <%= form.label(:email, 'Current Email Address', class: 'form-label') %>
     <%= form.email_field(

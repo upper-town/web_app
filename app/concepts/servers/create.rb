@@ -2,33 +2,24 @@
 
 module Servers
   class Create
-    def initialize(attributes, user_account)
-      @attributes = attributes
+    attr_reader :server, :user_account
+
+    def initialize(server, user_account)
+      @server = server
       @user_account = user_account
     end
 
     def call
-      server = build_server
-      return Result.failure(server.errors) if server.invalid?
+      if server.valid?
+        ApplicationRecord.transaction do
+          server.save!
+          ServerUserAccount.create!(server: server, user_account: user_account)
+        end
 
-      ApplicationRecord.transaction do
-        server.save!
-        ServerUserAccount.create!(server: server, user_account: @user_account)
+        Result.success(server: server)
+      else
+        Result.failure(server.errors, server: server)
       end
-
-      Result.success(server: server)
-    end
-
-    private
-
-    def build_server
-      Server.new(
-        uuid:         SecureRandom.uuid,
-        app:          App.find_by_suuid(@attributes['app_id']),
-        country_code: @attributes['country_code'],
-        name:         @attributes['name'],
-        site_url:     @attributes['site_url'],
-      )
     end
   end
 end

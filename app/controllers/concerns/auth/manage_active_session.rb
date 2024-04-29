@@ -40,7 +40,7 @@ module Auth
 
         def sign_in!(record, remember_me = false)
           active_session = create_active_session(record, remember_me)
-          store_cookie(active_session.uuid, remember_me)
+          store_cookie(active_session.token, remember_me)
         end
 
         def sign_out!
@@ -54,9 +54,9 @@ module Auth
           @cookie_name ||= auth_active_session_model.name.underscore
         end
 
-        def store_cookie(active_session_uuid, remember_me)
+        def store_cookie(active_session_token, remember_me)
           request.cookie_jar.encrypted[cookie_name] = {
-            value: active_session_uuid,
+            value: active_session_token,
             expires: remember_me ? REMEMBER_ME_DURATION : nil,
             httponly: true,
             secure: Rails.env.production?
@@ -73,17 +73,17 @@ module Auth
 
         def create_active_session(record, remember_me)
           record.active_sessions.create!(
-            uuid:       SecureRandom.uuid,
+            token:      SecureRandom.base58(24),
             remote_ip:  request.remote_ip,
             user_agent: request.user_agent,
             expires_at: remember_me ? REMEMBER_ME_DURATION.from_now : 1.day.from_now
           )
         end
 
-        def find_active_session(uuid)
-          return if uuid.blank?
+        def find_active_session(token)
+          return if token.blank?
 
-          auth_active_session_model.find_by(uuid: uuid)
+          auth_active_session_model.find_by(token: token)
         end
       end
     end

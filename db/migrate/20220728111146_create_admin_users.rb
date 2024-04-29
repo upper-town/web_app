@@ -3,8 +3,6 @@
 class CreateAdminUsers < ActiveRecord::Migration[7.1]
   def change
     create_table :admin_users do |t|
-      t.uuid :uuid, null: false
-
       t.string   :email, null: false
       t.datetime :email_confirmed_at
       t.datetime :email_confirmation_sent_at
@@ -29,7 +27,6 @@ class CreateAdminUsers < ActiveRecord::Migration[7.1]
       t.timestamps
     end
 
-    add_index :admin_users, :uuid,  unique: true
     add_index :admin_users, :email, unique: true
   end
 end

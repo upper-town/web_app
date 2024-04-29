@@ -13,7 +13,7 @@ module Users
         return
       end
 
-      @new_form = Users::Sessions::NewForm.new
+      @session = Users::Session.new
     end
 
     def create
@@ -25,7 +25,7 @@ module Users
         return
       end
 
-      @new_form = Users::Sessions::NewForm.new(new_form_params)
+      @session = Users::Session.new(session_params)
 
       result = captcha_check(if_success_skip_paths: [users_sign_in_path, users_sessions_path])
 
@@ -36,17 +36,16 @@ module Users
         return
       end
 
-      if @new_form.invalid?
-        flash.now[:alert] = @new_form.errors.full_messages
+      if @session.invalid?
         render(:new, status: :unprocessable_entity)
 
         return
       end
 
-      result = Users::AuthenticateSession.new(@new_form.attributes, request).call
+      result = Users::AuthenticateSession.new(@session, request).call
 
       if result.success?
-        sign_in!(result.data[:user], @new_form.remember_me)
+        sign_in!(result.data[:user], @session.remember_me)
         return_to = consume_return_to
 
         redirect_to(
@@ -74,13 +73,13 @@ module Users
 
     private
 
-    def new_form_params
+    def session_params
       params
-        .require('users_sessions_new_form')
+        .require(:users_session)
         .permit(
-          'email',
-          'password',
-          'remember_me'
+          :email,
+          :password,
+          :remember_me
         )
     end
   end

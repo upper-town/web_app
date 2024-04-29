@@ -8,10 +8,12 @@ module ServerWebhooks
 
     sidekiq_options(lock: :while_executing)
 
+    attr_reader :server_webhook_config
+
     def perform(server_webhook_config_id)
       @server_webhook_config = ServerWebhookConfig.find_by(id: server_webhook_config_id)
-      return unless @server_webhook_config
-      return unless @server_webhook_config.enabled?
+      return unless server_webhook_config
+      return unless server_webhook_config.enabled?
 
       check_up
     end
@@ -35,7 +37,7 @@ module ServerWebhooks
     end
 
     def recent_event_statuses
-      @server_webhook_config
+      server_webhook_config
         .events
         .where.not(status: ServerWebhookEvent::PENDING)
         .order(updated_at: :desc)
@@ -44,7 +46,7 @@ module ServerWebhooks
     end
 
     def disable!
-      @server_webhook_config.update!(
+      server_webhook_config.update!(
         disabled_at: Time.current,
         notice: 'Too many recent events in "retry" or "failed" status ' \
           'due to Connection Failed or Timeout Error'
@@ -52,7 +54,7 @@ module ServerWebhooks
     end
 
     def schedule_notification
-      NotifyDisabledConfigJob.perform_async(@server_webhook_config.id)
+      NotifyDisabledConfigJob.perform_async(server_webhook_config.id)
     end
   end
 end

@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 class Pagination
-  attr_reader(:page, :per_page, :offset)
-
   HARD_MIN = 1
   HARD_MAX = 500
 
@@ -18,6 +16,16 @@ class Pagination
     total_count: nil,
   }
 
+  attr_reader(
+    :original_relation,
+    :request,
+    :options,
+    :page,
+    :per_page,
+    :offset,
+    :request_helper
+  )
+
   def initialize(relation, request, options: {})
     @original_relation = relation
     @request = request
@@ -27,7 +35,7 @@ class Pagination
     @per_page = choose_per_page
     @offset   = calc_offset
 
-    @request_helper = RequestHelper.new(@request)
+    @request_helper = RequestHelper.new(request)
   end
 
   def results
@@ -47,7 +55,7 @@ class Pagination
       if page_size < per_page || relation_plus_one.size <= per_page
         page
       else
-        [page + 1, @options[:page_max], HARD_MAX].min
+        [page + 1, options[:page_max], HARD_MAX].min
       end
   end
 
@@ -92,21 +100,21 @@ class Pagination
   end
 
   def page_url(value)
-    if @options[:per_page_from_request]
-      @request_helper.url_with_query_params({ 'page' => value, 'per_page' => per_page })
+    if options[:per_page_from_request]
+      request_helper.url_with_query_params({ 'page' => value, 'per_page' => per_page })
     else
-      @request_helper.url_with_query_params({ 'page' => value })
+      request_helper.url_with_query_params({ 'page' => value })
     end
   end
 
   def total_count
-    @total_count ||= @options[:total_count] || @original_relation.count
+    @total_count ||= options[:total_count] || original_relation.count
   end
 
   def total_pages
     @total_pages ||= [
       (total_count.to_f / per_page).ceil,
-      @options[:page_max],
+      options[:page_max],
       HARD_MAX
     ].min
   end
@@ -114,24 +122,24 @@ class Pagination
   private
 
   def choose_page
-    if @options[:page_from_request]
-      (@request.params['page'].presence || @options[:page]).to_i
+    if options[:page_from_request]
+      (request.params[:page].presence || options[:page]).to_i
     else
-      @options[:page]
+      options[:page]
     end.clamp(
       HARD_MIN,
-      [@options[:page_max], HARD_MAX].min
+      [options[:page_max], HARD_MAX].min
     )
   end
 
   def choose_per_page
-    if @options[:per_page_from_request]
-      (@request.params['per_page'].presence || @options[:per_page]).to_i
+    if options[:per_page_from_request]
+      (request.params[:per_page].presence || options[:per_page]).to_i
     else
-      @options[:per_page]
+      options[:per_page]
     end.clamp(
       HARD_MIN,
-      [@options[:per_page_max], HARD_MAX].min
+      [options[:per_page_max], HARD_MAX].min
     )
   end
 
@@ -141,7 +149,7 @@ class Pagination
 
   def relation_plus_one
     @relation_plus_one ||= begin
-      rel = @original_relation.offset(offset).limit(per_page + 1)
+      rel = original_relation.offset(offset).limit(per_page + 1)
       rel.load
       rel
     end

@@ -6,7 +6,12 @@
   Sign In
 </h2>
 
-<%= form_with(model: @new_form, url: @new_form.url, html: { method: @new_form.method }) do |form| %>
+<%= form_with(
+  model: @session,
+  method: :post,
+  url: admin_users_sessions_path,
+  data: { 'controller' => 'form-error-messages-handler' }
+) do |form| %>
   <div class="mb-3">
     <%= form.label(:email, 'Email address', class: 'form-label') %>
     <%= form.email_field(

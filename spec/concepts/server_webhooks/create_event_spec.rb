@@ -38,17 +38,16 @@ RSpec.describe ServerWebhooks::CreateEvent do
           described_class.new(server, event_type, server_vote.id).call
 
           server_webhook_event = ServerWebhookEvent.last
-          expect(server_webhook_event.uuid).to be_present
           expect(server_webhook_event.server).to eq(server)
           expect(server_webhook_event.type).to eq(event_type)
           expect(server_webhook_event.status).to eq(ServerWebhookEvent::PENDING)
           expect(server_webhook_event.payload).to eq({
             'server_vote' => {
-              'uuid'            => server_vote.uuid,
+              'id'              => server_vote.id,
               'reference'       => 'user_123456',
               'remote_ip'       => '8.8.8.8',
-              'server_id'       => server.suuid,
-              'app_id'          => server.app.suuid,
+              'server_id'       => server.id,
+              'app_id'          => server.app.id,
               'country_code'    => 'US',
               'user_account_id' => nil,
               'created_at'      => server_vote.created_at.as_json,
@@ -58,7 +57,7 @@ RSpec.describe ServerWebhooks::CreateEvent do
       end
 
       describe 'ServerVote with UserAccount' do
-        it 'creates a ServerWebhookEvent with ServerVote payload that includes UserAccount suuid' do
+        it 'creates a ServerWebhookEvent with ServerVote payload that includes UserAccount id' do
           server = create(:server)
           event_type = 'server_votes.create'
           user_account = create(:user_account)
@@ -75,19 +74,18 @@ RSpec.describe ServerWebhooks::CreateEvent do
           described_class.new(server, event_type, server_vote.id).call
 
           server_webhook_event = ServerWebhookEvent.last
-          expect(server_webhook_event.uuid).to be_present
           expect(server_webhook_event.server).to eq(server)
           expect(server_webhook_event.type).to eq(event_type)
           expect(server_webhook_event.status).to eq(ServerWebhookEvent::PENDING)
           expect(server_webhook_event.payload).to eq({
             'server_vote' => {
-              'uuid'            => server_vote.uuid,
+              'id'              => server_vote.id,
               'reference'       => 'user_123456',
               'remote_ip'       => '8.8.8.8',
-              'server_id'       => server.suuid,
-              'app_id'          => server.app.suuid,
+              'server_id'       => server.id,
+              'app_id'          => server.app.id,
               'country_code'    => 'US',
-              'user_account_id' => user_account.suuid,
+              'user_account_id' => user_account.id,
               'created_at'      => server_vote.created_at.as_json,
             }
           })

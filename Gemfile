@@ -7,7 +7,6 @@ ruby '3.2.2'
 
 gem 'dotenv-rails', '~> 3.1', groups: [:development, :test]
 
-gem 'base58_id', '~> 1.2'
 gem 'bcrypt', '~> 3.1'
 gem 'bootsnap', '~> 1.18', require: false
 gem 'connection_pool', '~> 2.4'

@@ -13,7 +13,6 @@
 #  marked_for_deletion_at :datetime
 #  name                   :string           not null
 #  site_url               :string           not null
-#  uuid                   :uuid             not null
 #  verified_at            :datetime
 #  verified_notice        :text             default(""), not null
 #  created_at             :datetime         not null
@@ -27,7 +26,6 @@
 #  index_servers_on_country_code            (country_code)
 #  index_servers_on_marked_for_deletion_at  (marked_for_deletion_at)
 #  index_servers_on_name                    (name)
-#  index_servers_on_uuid                    (uuid) UNIQUE
 #  index_servers_on_verified_at             (verified_at)
 #
 # Foreign Keys
@@ -38,7 +36,6 @@ FactoryBot.define do
   factory :server do
     app
 
-    uuid { SecureRandom.uuid }
     country_code { 'US' }
     sequence(:name) { |n| "Server #{n}" }
     sequence(:site_url) { |n| "https://server-#{n}.example.com/" }
