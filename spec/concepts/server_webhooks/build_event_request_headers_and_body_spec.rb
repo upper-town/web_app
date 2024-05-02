@@ -39,13 +39,13 @@ RSpec.describe ServerWebhooks::BuildEventRequestHeadersAndBody do
         create(
           :server_webhook_secret,
           server:      server,
-          value:      'bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb',
+          secret:      'bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb',
           archived_at: Time.current
         )
         create(
           :server_webhook_secret,
           server:      server,
-          value:       'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+          secret:      'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
           archived_at: nil
         )
         server_webhook_event = create(

@@ -16,10 +16,6 @@ module Seeds
         server_ids = CreateServers.new(app_ids).call
 
         CreateServerUserAccounts.new(server_ids, user_account_ids).call
-        CreateServerVotes.new(app_ids, server_ids, user_account_ids).call
-
-        ConsolidateServerVoteCounts.new(server_ids).call
-        ConsolidateServerRankingNumbers.new(app_ids).call
       end
     end
   end

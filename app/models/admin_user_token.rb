@@ -8,7 +8,7 @@
 #  data          :jsonb            not null
 #  expires_at    :datetime         not null
 #  purpose       :string           not null
-#  value         :string           not null
+#  token         :string           not null
 #  created_at    :datetime         not null
 #  updated_at    :datetime         not null
 #  admin_user_id :bigint           not null
@@ -18,7 +18,7 @@
 #  index_admin_user_tokens_on_admin_user_id  (admin_user_id)
 #  index_admin_user_tokens_on_expires_at     (expires_at)
 #  index_admin_user_tokens_on_purpose        (purpose)
-#  index_admin_user_tokens_on_value          (value) UNIQUE
+#  index_admin_user_tokens_on_token          (token) UNIQUE
 #
 # Foreign Keys
 #

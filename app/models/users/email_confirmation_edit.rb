@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Users
-  class EmailConfirmationEdit < ApplicationForm
+  class EmailConfirmationEdit < ApplicationModel
     attribute :token, :string
     attribute :auto_click, :boolean
 

@@ -5,7 +5,7 @@ class CreateServerWebhookSecrets < ActiveRecord::Migration[7.1]
     create_table :server_webhook_secrets do |t|
       t.references :server, null: false, foreign_key: true, index: false
 
-      t.string   :value,       null: false
+      t.string   :secret,      null: false
       t.datetime :archived_at, null: true
 
       t.timestamps

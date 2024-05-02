@@ -54,6 +54,10 @@ class EmailValidator
     errors.empty?
   end
 
+  def invalid?
+    !valid?
+  end
+
   private
 
   def validate_format

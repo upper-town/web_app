@@ -37,7 +37,7 @@ module Users
       def find_user_and_token
         [
           User.find_by_token(:change_email_confirmation, change_email_confirmation_edit.token),
-          UserToken.find_by(value: change_email_confirmation_edit.token)
+          UserToken.find_by(token: change_email_confirmation_edit.token)
         ]
       end
 

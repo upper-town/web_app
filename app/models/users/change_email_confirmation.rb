@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Users
-  class ChangeEmailConfirmation < ApplicationForm
+  class ChangeEmailConfirmation < ApplicationModel
     attribute :email, :string
     attribute :change_email, :string
     attribute :password, :string

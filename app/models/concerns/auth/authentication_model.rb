@@ -22,12 +22,12 @@ module Auth
     end
 
     class_methods do
-      def find_by_token(purpose, value)
-        return if purpose.blank? || value.blank?
+      def find_by_token(purpose, token)
+        return if purpose.blank? || token.blank?
 
         # TODO: test this
         joins(:tokens)
-          .where(tokens: { purpose: purpose, value: value })
+          .where(tokens: { purpose: purpose, token: token })
           .where('tokens.expires_at > ?', Time.current)
           .order(created_at: :desc)
           .first
@@ -39,19 +39,19 @@ module Auth
 
       token = tokens.create!(
         purpose: purpose,
-        value: SecureRandom.base58(TOKEN_LENGTH),
+        token: SecureRandom.base58(TOKEN_LENGTH),
         expires_at: expires_in.from_now,
         data: data
       )
 
-      token.value
+      token.token
     end
 
     def current_token(purpose)
       tokens
         .where(purpose: purpose)
         .order(created_at: :desc)
-        .first&.value
+        .first&.token
     end
 
     def confirmed_email?

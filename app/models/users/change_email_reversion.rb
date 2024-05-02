@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Users
-  class ChangeEmailReversion < ApplicationForm
+  class ChangeEmailReversion < ApplicationModel
     attribute :token, :string
     attribute :auto_click, :boolean
 

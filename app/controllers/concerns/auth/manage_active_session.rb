@@ -54,9 +54,9 @@ module Auth
           @cookie_name ||= auth_active_session_model.name.underscore
         end
 
-        def store_cookie(active_session_token, remember_me)
-          request.cookie_jar.encrypted[cookie_name] = {
-            value: active_session_token,
+        def store_cookie(token, remember_me)
+          request.cookie_jar[cookie_name] = {
+            value: token,
             expires: remember_me ? REMEMBER_ME_DURATION : nil,
             httponly: true,
             secure: Rails.env.production?
@@ -64,7 +64,7 @@ module Auth
         end
 
         def read_cookie
-          request.cookie_jar.encrypted[cookie_name]
+          request.cookie_jar[cookie_name]
         end
 
         def delete_cookie

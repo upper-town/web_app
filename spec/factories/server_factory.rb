@@ -6,7 +6,6 @@
 #
 #  id                     :bigint           not null, primary key
 #  archived_at            :datetime
-#  banner_image_url       :string           default(""), not null
 #  country_code           :string           not null
 #  description            :string           default(""), not null
 #  info                   :text             default(""), not null

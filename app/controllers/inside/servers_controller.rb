@@ -21,19 +21,31 @@ module Inside
 
     def create
       @server = Server.new(server_params)
+      server_banner_image_uploaded_file = ServerBannerImageUploadedFile.new(
+        uploaded_file: params.require(:server)[:banner_image]
+      )
 
       if @server.invalid?
         render(:new, status: :unprocessable_entity)
+
         return
       end
 
-      result = Servers::Create.new(@server, current_user_account).call
+      if server_banner_image_uploaded_file.invalid?
+        @server.errors.merge(server_banner_image_uploaded_file.errors)
+        render(:new, status: :unprocessable_entity)
+
+        return
+      end
+
+      result = Servers::Create.new(
+        @server,
+        server_banner_image_uploaded_file,
+        current_user_account
+      ).call
 
       if result.success?
-        redirect_to(
-          inside_servers_path,
-          success: 'Your server has been added.'
-        )
+        redirect_to(inside_servers_path, success: 'Your server has been added.')
       else
         flash.now[:alert] = result.errors.full_messages
         render(:new, status: :unprocessable_entity)

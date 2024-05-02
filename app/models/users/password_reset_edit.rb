@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Users
-  class PasswordResetEdit < ApplicationForm
+  class PasswordResetEdit < ApplicationModel
     attribute :password, :string
     attribute :token,    :string
 

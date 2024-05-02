@@ -1,10 +1,11 @@
 # frozen_string_literal: true
 
-class ApplicationForm
+class ApplicationModel
   include ActiveModel::Model
   include ActiveModel::Attributes
   include ActiveModel::Serializers::JSON
 
+  include ActiveSupport::NumberHelper
   include Rails.application.routes.url_helpers
 
   def ==(other)

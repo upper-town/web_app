@@ -6,7 +6,6 @@
 #
 #  id                     :bigint           not null, primary key
 #  archived_at            :datetime
-#  banner_image_url       :string           default(""), not null
 #  country_code           :string           not null
 #  description            :string           default(""), not null
 #  info                   :text             default(""), not null
@@ -55,6 +54,8 @@ class Server < ApplicationRecord
   validates :info, length: { maximum: 1_000 }
 
   belongs_to :app
+
+  has_one :banner_image, class_name: 'ServerBannerImage', dependent: :destroy
 
   has_many :votes, class_name: 'ServerVote', dependent: :destroy
   has_many :stats, class_name: 'ServerStat', dependent: :destroy

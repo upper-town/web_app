@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_02_16_163036) do
+ActiveRecord::Schema[7.1].define(version: 2024_05_02_195758) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -69,7 +69,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_16_163036) do
   end
 
   create_table "admin_user_tokens", force: :cascade do |t|
-    t.string "value", null: false
+    t.string "token", null: false
     t.string "purpose", null: false
     t.datetime "expires_at", null: false
     t.jsonb "data", default: {}, null: false
@@ -79,7 +79,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_16_163036) do
     t.index ["admin_user_id"], name: "index_admin_user_tokens_on_admin_user_id"
     t.index ["expires_at"], name: "index_admin_user_tokens_on_expires_at"
     t.index ["purpose"], name: "index_admin_user_tokens_on_purpose"
-    t.index ["value"], name: "index_admin_user_tokens_on_value", unique: true
+    t.index ["token"], name: "index_admin_user_tokens_on_token", unique: true
   end
 
   create_table "admin_users", force: :cascade do |t|
@@ -126,6 +126,19 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_16_163036) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["name"], name: "index_feature_flags_on_name", unique: true
+  end
+
+  create_table "server_banner_images", force: :cascade do |t|
+    t.bigint "server_id", null: false
+    t.string "content_type", null: false
+    t.binary "blob", null: false
+    t.jsonb "metadata", default: {}, null: false
+    t.bigint "byte_size", null: false
+    t.string "checksum", null: false
+    t.datetime "approved_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["server_id"], name: "index_server_banner_images_on_server_id"
   end
 
   create_table "server_stats", force: :cascade do |t|
@@ -200,7 +213,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_16_163036) do
 
   create_table "server_webhook_secrets", force: :cascade do |t|
     t.bigint "server_id", null: false
-    t.string "value", null: false
+    t.string "secret", null: false
     t.datetime "archived_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -211,7 +224,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_16_163036) do
     t.string "name", null: false
     t.string "country_code", null: false
     t.string "site_url", null: false
-    t.string "banner_image_url", default: "", null: false
     t.string "description", default: "", null: false
     t.text "info", default: "", null: false
     t.bigint "app_id", null: false
@@ -249,7 +261,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_16_163036) do
   end
 
   create_table "user_tokens", force: :cascade do |t|
-    t.string "value", null: false
+    t.string "token", null: false
     t.string "purpose", null: false
     t.datetime "expires_at", null: false
     t.jsonb "data", default: {}, null: false
@@ -258,8 +270,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_16_163036) do
     t.datetime "updated_at", null: false
     t.index ["expires_at"], name: "index_user_tokens_on_expires_at"
     t.index ["purpose"], name: "index_user_tokens_on_purpose"
+    t.index ["token"], name: "index_user_tokens_on_token", unique: true
     t.index ["user_id"], name: "index_user_tokens_on_user_id"
-    t.index ["value"], name: "index_user_tokens_on_value", unique: true
   end
 
   create_table "users", force: :cascade do |t|
@@ -291,6 +303,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_16_163036) do
   add_foreign_key "admin_user_accounts", "admin_users"
   add_foreign_key "admin_user_active_sessions", "admin_users"
   add_foreign_key "admin_user_tokens", "admin_users"
+  add_foreign_key "server_banner_images", "servers"
   add_foreign_key "server_stats", "apps"
   add_foreign_key "server_stats", "servers"
   add_foreign_key "server_user_accounts", "servers"

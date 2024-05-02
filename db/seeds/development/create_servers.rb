@@ -30,10 +30,10 @@ module Seeds
         name = "#{Faker::Lorem.words(number: 3).join(' ').titleize}-#{n}"
         country_code = Seeds::Common.generate_country_code
         site_url = "https://nice-server-#{n}.example.com/"
-        banner_image_url = Faker::Avatar.image(
-          size: '750x150',
-          bgset: ['bg1', 'bg2'].sample
-        )
+        # banner_image_url = Faker::Avatar.image(
+        #   size: '750x150',
+        #   bgset: ['bg1', 'bg2'].sample
+        # )
         description = Faker::Lorem.sentence(word_count: 30)
         info = [
           Faker::Lorem.paragraphs(number: 10).join(' '),
@@ -46,7 +46,7 @@ module Seeds
           name:             name,
           country_code:     country_code,
           site_url:         site_url,
-          banner_image_url: banner_image_url,
+          # banner_image_url: banner_image_url,
           description:      description,
           info:             info,
         }

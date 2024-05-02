@@ -74,7 +74,7 @@ module ManageCaptcha
     request.cookie_jar.delete(CAPTCHA_SKIP) if count <= 0
   end
 
-  class CaptchaSkip < ApplicationForm
+  class CaptchaSkip < ApplicationModel
     attribute :key, :string, default: 'captcha_skip'
     attribute :paths, array: true, default: []
 

@@ -6,7 +6,7 @@
 #
 #  id          :bigint           not null, primary key
 #  archived_at :datetime
-#  value       :string           not null
+#  secret      :string           not null
 #  created_at  :datetime         not null
 #  updated_at  :datetime         not null
 #  server_id   :bigint           not null

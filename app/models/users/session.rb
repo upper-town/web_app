@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Users
-  class Session < ApplicationForm
+  class Session < ApplicationModel
     attribute :email, :string
     attribute :password, :string
     attribute :remember_me, :boolean

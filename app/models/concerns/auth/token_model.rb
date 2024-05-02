@@ -13,8 +13,8 @@ module Auth
         where('expires_at > ?', Time.current)
       end
 
-      def expire(values)
-        where(value: values).update_all(expires_at: 1.day.ago)
+      def expire(tokens)
+        where(token: tokens).update_all(expires_at: 1.day.ago)
       end
     end
 

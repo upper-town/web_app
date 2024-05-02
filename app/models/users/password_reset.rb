@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Users
-  class PasswordReset < ApplicationForm
+  class PasswordReset < ApplicationModel
     attribute :email, :string
 
     validates :email, presence: true

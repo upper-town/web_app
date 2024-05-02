@@ -27,7 +27,7 @@ module Auth
       return_to.url unless return_to.expired?
     end
 
-    class ReturnTo < ApplicationForm
+    class ReturnTo < ApplicationModel
       attribute :url, :string
       attribute :expires_at, :datetime, default: nil
 
