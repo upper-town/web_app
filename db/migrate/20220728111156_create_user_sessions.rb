@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-class CreateUserActiveSessions < ActiveRecord::Migration[7.1]
+class CreateUserSessions < ActiveRecord::Migration[7.1]
   def change
-    create_table :user_active_sessions do |t|
+    create_table :user_sessions do |t|
       t.string   :token,      null: false
       t.string   :remote_ip,  null: false
       t.string   :user_agent, null: false, default: ''
@@ -13,8 +13,7 @@ class CreateUserActiveSessions < ActiveRecord::Migration[7.1]
       t.timestamps
     end
 
-    add_index :user_active_sessions, :token, unique: true
-
-    add_index :user_active_sessions, :user_id
+    add_index :user_sessions, :token, unique: true
+    add_index :user_sessions, :user_id
   end
 end

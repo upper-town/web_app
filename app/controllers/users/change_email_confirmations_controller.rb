@@ -23,7 +23,7 @@ module Users
 
       if result.success?
         redirect_to(
-          signed_in? ? inside_dashboard_path : root_path,
+          signed_in_user? ? inside_dashboard_path : root_path,
           success: 'Email address has been changed.'
         )
       else

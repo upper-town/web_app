@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Inside
-  class ActiveSessionsController < BaseController
+  class UserSessionsController < BaseController
     def index
       # TODO: implement
     end

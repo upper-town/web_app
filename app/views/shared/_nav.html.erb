@@ -23,7 +23,7 @@
           <%= link_to("Add server", new_inside_server_path, class: 'nav-link') %>
         </li>
 
-        <% if signed_in? %>
+        <% if signed_in_user? %>
           <li class="nav-item">
             <%= link_to("Dashboard", inside_dashboard_path, class: 'nav-link') %>
           </li>

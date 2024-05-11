@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
 module Auth
-  module ApiAuthenticationControl
+  module AdminUserApiAuthorizationControl
   end
 end

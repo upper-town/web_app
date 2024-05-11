@@ -1,21 +1,24 @@
 # frozen_string_literal: true
 
 class ServerBannerImagePolicy
-  attr_reader :server_banner_image
+  include Auth::AdminUserManageSession
+  include Auth::UserManageSession
 
-  def initialize(server_banner_image)
+  attr_reader :server_banner_image, :request
+
+  def initialize(server_banner_image, request)
     @server_banner_image = server_banner_image
+    @request = request
   end
 
   def allowed?
-    case Current.auth_model
-    when User
+    if current_admin_user
+      true
+    elsif current_user
       ServerUserAccount.exists?(
         server_id: server_banner_image.server_id,
-        user_account_id: Current.auth_model_account.id
+        user_account_id: current_user_account.id
       )
-    when AdminUser
-      true
     else
       false
     end

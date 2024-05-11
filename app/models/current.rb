@@ -1,7 +1,11 @@
 # frozen_string_literal: true
 
 class Current < ActiveSupport::CurrentAttributes
-  attribute :auth_model_active_session
-  attribute :auth_model
-  attribute :auth_model_account
+  attribute :user_session
+  attribute :user
+  attribute :user_account
+
+  attribute :admin_user_session
+  attribute :admin_user
+  attribute :admin_user_account
 end

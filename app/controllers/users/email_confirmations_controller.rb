@@ -65,7 +65,7 @@ module Users
       if result.success?
         user = result.data[:user]
 
-        if signed_in?
+        if signed_in_user?
           redirect_to(
             inside_dashboard_path,
             success: 'Email address has been confirmed.'

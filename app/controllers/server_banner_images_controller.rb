@@ -16,7 +16,7 @@ class ServerBannerImagesController < ApplicationController
   private
 
   def allowed?
-    ServerBannerImagePolicy.new(@server_banner_image).allowed?
+    ServerBannerImagePolicy.new(@server_banner_image, request).allowed?
   end
 
   def render_image(cache_public)

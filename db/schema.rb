@@ -56,7 +56,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_02_195758) do
     t.index ["admin_user_id"], name: "index_admin_user_accounts_on_admin_user_id", unique: true
   end
 
-  create_table "admin_user_active_sessions", force: :cascade do |t|
+  create_table "admin_user_sessions", force: :cascade do |t|
     t.string "token", null: false
     t.string "remote_ip", null: false
     t.string "user_agent", default: "", null: false
@@ -64,8 +64,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_02_195758) do
     t.bigint "admin_user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["admin_user_id"], name: "index_admin_user_active_sessions_on_admin_user_id"
-    t.index ["token"], name: "index_admin_user_active_sessions_on_token", unique: true
+    t.index ["admin_user_id"], name: "index_admin_user_sessions_on_admin_user_id"
+    t.index ["token"], name: "index_admin_user_sessions_on_token", unique: true
   end
 
   create_table "admin_user_tokens", force: :cascade do |t|
@@ -248,7 +248,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_02_195758) do
     t.index ["user_id"], name: "index_user_accounts_on_user_id", unique: true
   end
 
-  create_table "user_active_sessions", force: :cascade do |t|
+  create_table "user_sessions", force: :cascade do |t|
     t.string "token", null: false
     t.string "remote_ip", null: false
     t.string "user_agent", default: "", null: false
@@ -256,8 +256,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_02_195758) do
     t.bigint "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["token"], name: "index_user_active_sessions_on_token", unique: true
-    t.index ["user_id"], name: "index_user_active_sessions_on_user_id"
+    t.index ["token"], name: "index_user_sessions_on_token", unique: true
+    t.index ["user_id"], name: "index_user_sessions_on_user_id"
   end
 
   create_table "user_tokens", force: :cascade do |t|
@@ -301,7 +301,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_02_195758) do
   add_foreign_key "admin_user_account_roles", "admin_roles"
   add_foreign_key "admin_user_account_roles", "admin_user_accounts"
   add_foreign_key "admin_user_accounts", "admin_users"
-  add_foreign_key "admin_user_active_sessions", "admin_users"
+  add_foreign_key "admin_user_sessions", "admin_users"
   add_foreign_key "admin_user_tokens", "admin_users"
   add_foreign_key "server_banner_images", "servers"
   add_foreign_key "server_stats", "apps"
@@ -317,6 +317,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_02_195758) do
   add_foreign_key "server_webhook_secrets", "servers"
   add_foreign_key "servers", "apps"
   add_foreign_key "user_accounts", "users"
-  add_foreign_key "user_active_sessions", "users"
+  add_foreign_key "user_sessions", "users"
   add_foreign_key "user_tokens", "users"
 end

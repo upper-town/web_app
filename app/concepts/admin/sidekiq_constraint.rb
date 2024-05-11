@@ -2,14 +2,14 @@
 
 module Admin
   class SidekiqConstraint
-    include Auth::ManageActiveSession[AdminUser]
+    include Auth::AdminUserManageSession
 
     attr_accessor :request
 
     def matches?(request)
       @request = request
 
-      Admin::AccessPolicy.new(current_model, 'access_sidekiq').allowed?
+      Admin::AccessPolicy.new(current_admin_user, 'access_sidekiq').allowed?
     end
   end
 end

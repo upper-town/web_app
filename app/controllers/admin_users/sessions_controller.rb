@@ -5,7 +5,7 @@ module AdminUsers
     before_action :authenticate_admin_user!, only: [:destroy, :destroy_all]
 
     def new
-      if signed_in?
+      if signed_in_admin_user?
         redirect_to(
           admin_dashboard_path,
           notice: 'You are logged in already.'
@@ -18,7 +18,7 @@ module AdminUsers
     end
 
     def create
-      if signed_in?
+      if signed_in_admin_user?
         redirect_to(
           admin_dashboard_path,
           notice: 'You are logged in already.'
@@ -52,7 +52,7 @@ module AdminUsers
       result = AdminUsers::AuthenticateSession.new(@session, request).call
 
       if result.success?
-        sign_in!(result.data[:admin_user], @session.remember_me)
+        sign_in_admin_user!(result.data[:admin_user], @session.remember_me)
         return_to = consume_return_to
 
         redirect_to(
@@ -66,7 +66,7 @@ module AdminUsers
     end
 
     def destroy
-      sign_out!
+      sign_out_admin_user!
 
       redirect_to(
         admin_users_sign_in_path,

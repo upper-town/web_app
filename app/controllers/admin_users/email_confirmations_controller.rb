@@ -67,7 +67,7 @@ module AdminUsers
       if result.success?
         admin_user = result.data[:admin_user]
 
-        if signed_in?
+        if signed_in_admin_user?
           redirect_to(
             admin_dashboard_path,
             success: 'Email address has been confirmed.'

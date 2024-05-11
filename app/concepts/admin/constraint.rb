@@ -2,14 +2,14 @@
 
 module Admin
   class Constraint
-    include Auth::ManageActiveSession[AdminUser]
+    include Auth::AdminUserManageSession
 
     attr_accessor :request
 
     def matches?(request)
       @request = request
 
-      signed_in?
+      signed_in_admin_user?
     end
   end
 end

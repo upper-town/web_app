@@ -5,7 +5,7 @@ module Users
     before_action :authenticate_user!, only: [:destroy, :destroy_all]
 
     def new
-      if signed_in?
+      if signed_in_user?
         redirect_to(
           inside_dashboard_path,
           notice: 'You are logged in already.'
@@ -17,7 +17,7 @@ module Users
     end
 
     def create
-      if signed_in?
+      if signed_in_user?
         redirect_to(
           inside_dashboard_path,
           notice: 'You are logged in already.'
@@ -45,7 +45,7 @@ module Users
       result = Users::AuthenticateSession.new(@session, request).call
 
       if result.success?
-        sign_in!(result.data[:user], @session.remember_me)
+        sign_in_user!(result.data[:user], @session.remember_me)
         return_to = consume_return_to
 
         redirect_to(
@@ -59,7 +59,7 @@ module Users
     end
 
     def destroy
-      sign_out!
+      sign_out_user!
 
       redirect_to(
         root_path,

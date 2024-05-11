@@ -2,7 +2,7 @@
 
 # == Schema Information
 #
-# Table name: user_active_sessions
+# Table name: user_sessions
 #
 #  id         :bigint           not null, primary key
 #  expires_at :datetime         not null
@@ -15,17 +15,15 @@
 #
 # Indexes
 #
-#  index_user_active_sessions_on_token    (token) UNIQUE
-#  index_user_active_sessions_on_user_id  (user_id)
+#  index_user_sessions_on_token    (token) UNIQUE
+#  index_user_sessions_on_user_id  (user_id)
 #
 # Foreign Keys
 #
 #  fk_rails_...  (user_id => users.id)
 #
-class UserActiveSession < ApplicationRecord
+class UserSession < ApplicationRecord
   belongs_to :user
-
-  alias_attribute :model, :user
 
   def expired?
     expires_at <= Time.current
