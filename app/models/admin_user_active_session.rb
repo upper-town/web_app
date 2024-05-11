@@ -23,9 +23,11 @@
 #  fk_rails_...  (admin_user_id => admin_users.id)
 #
 class AdminUserActiveSession < ApplicationRecord
-  include Auth::ActiveSessionModel
-
   belongs_to :admin_user
 
   alias_attribute :model, :admin_user
+
+  def expired?
+    expires_at <= Time.current
+  end
 end
