@@ -24,6 +24,8 @@
 #  fk_rails_...  (server_id => servers.id)
 #
 class ServerBannerImage < ApplicationRecord
+  CACHE_EXPIRES_IN = 10.minutes
+
   belongs_to :server, inverse_of: :banner_image
 
   def self.not_approved
@@ -32,6 +34,10 @@ class ServerBannerImage < ApplicationRecord
 
   def self.approved
     where.not(approved_at: nil)
+  end
+
+  def self.build_cache_store
+    ActiveSupport::Cache::FileStore.new('/tmp/cache/server_banner_images')
   end
 
   def approved?
@@ -47,28 +53,26 @@ class ServerBannerImage < ApplicationRecord
   end
 
   def not_approve!
-    disk_cache.delete
+    cache_store.delete(id)
     update!(approved_at: nil)
   end
 
-  def disk_cache
-    @disk_cache ||= ServerBannerImageDiskCache.new(id)
+  def cache_store
+    @cache_store ||= ServerBannerImage.build_cache_store
   end
 
-  def read_from_disk_cache
-    if disk_cache.exists?
-      self.blob = disk_cache.read
-      self.content_type = Marcel::MimeType.for(blob)
-      self.byte_size = blob.bytesize
-      self.checksum = Digest::SHA256.hexdigest(blob)
+  def read_from_cache
+    read_attributes = cache_store.read(id)
 
+    if read_attributes
+      assign_attributes(read_attributes)
       true
     else
       false
     end
   end
 
-  def write_to_disk_cache
-    disk_cache.write(blob)
+  def write_to_cache
+    cache_store.write(id, attributes, expires_in: CACHE_EXPIRES_IN)
   end
 end

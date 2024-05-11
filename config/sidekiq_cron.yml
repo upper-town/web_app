@@ -51,3 +51,9 @@ delete_expired_tokens_job:
   class: DeleteExpiredTokensJob
   args: []
   queue: default
+
+server_banner_image_cache_store_clean_up_job:
+  cron: "*/30 * * * *"
+  class: ServerBannerImageCacheStoreCleanUpJob
+  args: []
+  queue: default
