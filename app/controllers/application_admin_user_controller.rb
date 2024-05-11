@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class ApplicationAdminController < ActionController::Base
+class ApplicationAdminUserController < ActionController::Base
   include Auth::AdminUserAuthenticationControl
   include Auth::AdminUserAuthorizationControl
 

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module AdminUsers
-  class EmailConfirmationsController < ApplicationAdminController
+  class EmailConfirmationsController < ApplicationAdminUserController
     before_action :authenticate_admin_user!
 
     def new

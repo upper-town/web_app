@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module AdminUsers
-  class SessionsController < ApplicationAdminController
+  class SessionsController < ApplicationAdminUserController
     before_action :authenticate_admin_user!, only: [:destroy, :destroy_all]
 
     def new

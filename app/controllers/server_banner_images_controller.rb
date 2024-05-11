@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class ServerBannerImagesController < ApplicationImageController
+class ServerBannerImagesController < ActionController::API
   def show
     server_banner_image = ServerBannerImage.new(id: id_from_params)
 
