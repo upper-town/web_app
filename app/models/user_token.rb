@@ -25,7 +25,25 @@
 #  fk_rails_...  (user_id => users.id)
 #
 class UserToken < ApplicationRecord
-  include Auth::TokenModel
-
   belongs_to :user
+
+  def self.expired
+    where('expires_at <= ?', Time.current)
+  end
+
+  def self.not_expired
+    where('expires_at > ?', Time.current)
+  end
+
+  def self.expire(tokens)
+    where(token: tokens).update_all(expires_at: 1.day.ago)
+  end
+
+  def expired?
+    expires_at <= Time.current
+  end
+
+  def expire!
+    update!(expires_at: 1.day.ago)
+  end
 end
