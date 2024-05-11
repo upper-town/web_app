@@ -32,8 +32,6 @@ class AdminUser < ApplicationRecord
   TOKEN_EXPIRATION = 1.hour
   TOKEN_LENGTH     = 24
 
-  require 'string_value_helper'
-
   include FeatureFlagIdModel
 
   has_many :active_sessions, class_name: 'AdminUserActiveSession', dependent: :destroy

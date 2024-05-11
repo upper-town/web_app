@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'string_value_helper'
-
 module Captcha
   BASE_URL    = 'https://hcaptcha.com'
   VERIFY_PATH = '/siteverify'

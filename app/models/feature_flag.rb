@@ -17,8 +17,6 @@
 #  index_feature_flags_on_name  (name) UNIQUE
 #
 class FeatureFlag < ApplicationRecord
-  require 'string_value_helper'
-
   # This is a simple feature flag implementation that reads from the database
   # or from env vars. An env var feature flag takes precedence over a database
   # feature flag of the same name.
