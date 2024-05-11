@@ -1,34 +1,48 @@
 # frozen_string_literal: true
 
-class ServerBannerImagesController < ApplicationController
+class ServerBannerImagesController < ApplicationImageController
   def show
-    @server_banner_image = ServerBannerImage.find_by(id: params.require(:id))
+    server_banner_image = ServerBannerImage.new(id: id_from_params)
 
-    if @server_banner_image.nil?
-      head(:not_found)
-    elsif @server_banner_image.approved?
-      render_image(true)
+    if server_banner_image.read_from_disk_cache
+      render_image(server_banner_image, true)
     else
-      allowed? ? render_image(false) : head(:not_found)
+      server_banner_image.reload
+
+      if server_banner_image.approved?
+        server_banner_image.write_to_disk_cache
+        render_image(server_banner_image, true)
+      elsif allowed?(server_banner_image)
+        render_image(server_banner_image, false)
+      else
+        head(:not_found)
+      end
     end
+  rescue ActiveRecord::RecordNotFound
+    head(:not_found)
   end
 
   private
 
-  def allowed?
-    ServerBannerImagePolicy.new(@server_banner_image, request).allowed?
+  def id_from_params
+    @id_from_params ||= params.require(:id)
   end
 
-  def render_image(cache_public)
-    if cache_public
-      response.set_header('Cache-Control', 'max-age=31536000, public, immutable')
+  def allowed?(server_banner_image)
+    ServerBannerImagePolicy.new(server_banner_image, request).allowed?
+  end
+
+  def render_image(server_banner_image, max_age)
+    if max_age
+      response.set_header('Cache-Control', 'max-age=31536000, private')
     else
-      response.set_header('Cache-Control', 'max-age=600, private, immutable')
+      response.set_header('Cache-Control', 'max-age=600, private')
     end
 
-    response.set_header('Content-Type', @server_banner_image.content_type)
-    response.set_header('ETag', "\"#{@server_banner_image.checksum}\"")
+    response.set_header('ETag', "\"#{server_banner_image.checksum}\"")
+    response.set_header('Content-Type', server_banner_image.content_type)
+    response.set_header('Content-Disposition', 'inline')
 
-    render(body: @server_banner_image.blob)
+    render(body: server_banner_image.blob)
   end
 end

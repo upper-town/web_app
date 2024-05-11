@@ -41,4 +41,34 @@ class ServerBannerImage < ApplicationRecord
   def not_approved?
     !approved?
   end
+
+  def approve!
+    update!(approved_at: Time.current)
+  end
+
+  def not_approve!
+    disk_cache.delete
+    update!(approved_at: nil)
+  end
+
+  def disk_cache
+    @disk_cache ||= ServerBannerImageDiskCache.new(id)
+  end
+
+  def read_from_disk_cache
+    if disk_cache.exists?
+      self.blob = disk_cache.read
+      self.content_type = Marcel::MimeType.for(blob)
+      self.byte_size = blob.bytesize
+      self.checksum = Digest::SHA256.hexdigest(blob)
+
+      true
+    else
+      false
+    end
+  end
+
+  def write_to_disk_cache
+    disk_cache.write(blob)
+  end
 end
