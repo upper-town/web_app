@@ -7,6 +7,14 @@ class RequestHelper
     @request = request
   end
 
+  def app_host_referer?
+    return false if request.referer.blank?
+
+    parsed_uri = URI.parse(request.referer)
+
+    ['http', 'https'].include?(parsed_uri.scheme) && parsed_uri.host == ENV.fetch('APP_HOST')
+  end
+
   def url_with_query_params(params_merge = {}, params_remove = [])
     params_merge.stringify_keys!
     params_remove.map!(&:to_s)

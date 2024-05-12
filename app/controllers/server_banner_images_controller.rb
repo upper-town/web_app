@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class ServerBannerImagesController < ActionController::API
+  before_action :ensure_app_host_referer
+
   def show
     server_banner_image = ServerBannerImage.new(id: id_from_params)
 
@@ -39,5 +41,11 @@ class ServerBannerImagesController < ActionController::API
     response.set_header('Content-Disposition', 'inline')
 
     render(body: server_banner_image.blob)
+  end
+
+  def ensure_app_host_referer
+    unless RequestHelper.new(request).app_host_referer?
+      head(:not_found)
+    end
   end
 end
