@@ -10,9 +10,9 @@ module Captcha
   extend self
 
   # rubocop:disable Rails/OutputSafety
-  def script_tag
+  def script_tag(request)
     <<~HTML.html_safe
-      <script type="text/javascript">
+      <script type="text/javascript" nonce="#{request.session.id}">
         function captchaOnload() {
           window.dispatchEvent(new CustomEvent("custom-captcha-onload"));
         }

@@ -33,7 +33,7 @@ module ManageCaptcha
   def captcha_script_tag
     return if can_skip_captcha?
 
-    Captcha.script_tag
+    Captcha.script_tag(request)
   end
 
   def captcha_widget_tag(...)
