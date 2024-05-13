@@ -3,7 +3,8 @@
 module Auth
   module AdminUserManageSession
     ADMIN_USER_SESSION_COOKIE_NAME = 'admin_user_session'
-    ADMIN_USER_REMEMBER_ME_DURATION = 4.months
+    ADMIN_USER_SESSION_REMEMBER_ME_DURATION = 4.months
+    ADMIN_USER_SESSION_TOKEN_LENGTH = 44
 
     extend ActiveSupport::Concern
 
@@ -42,7 +43,7 @@ module Auth
     def store_admin_user_session_cookie(token, remember_me)
       request.cookie_jar[ADMIN_USER_SESSION_COOKIE_NAME] = {
         value: token,
-        expires: remember_me ? ADMIN_USER_REMEMBER_ME_DURATION : nil,
+        expires: remember_me ? ADMIN_USER_SESSION_REMEMBER_ME_DURATION : nil,
         httponly: true,
         secure: Rails.env.production?
       }
@@ -58,10 +59,10 @@ module Auth
 
     def create_admin_user_session(admin_user, remember_me)
       admin_user.sessions.create!(
-        token:      SecureRandom.base58(24),
+        token:      SecureRandom.base58(ADMIN_USER_SESSION_TOKEN_LENGTH),
         remote_ip:  request.remote_ip,
         user_agent: request.user_agent,
-        expires_at: remember_me ? ADMIN_USER_REMEMBER_ME_DURATION.from_now : 1.day.from_now
+        expires_at: remember_me ? ADMIN_USER_SESSION_REMEMBER_ME_DURATION.from_now : 1.day.from_now
       )
     end
 

@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 module ManageCaptcha
+  MANAGE_CAPTCHA_TOKEN_LENGTH = 24
+
   extend ActiveSupport::Concern
 
   include CookieJsonValue
@@ -55,7 +57,7 @@ module ManageCaptcha
   private
 
   def create_captcha_skip(paths, limit)
-    key = "captcha_skip:#{SecureRandom.base58(24)}"
+    key = "captcha_skip:#{SecureRandom.base58(MANAGE_CAPTCHA_TOKEN_LENGTH)}"
     Caching.redis.set(key, limit, ex: 1.hour)
 
     captcha_skip = CaptchaSkip.new(key: key, paths: paths)

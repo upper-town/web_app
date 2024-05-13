@@ -30,7 +30,7 @@
 #
 class AdminUser < ApplicationRecord
   TOKEN_EXPIRATION = 1.hour
-  TOKEN_LENGTH     = 24
+  TOKEN_LENGTH     = 44
 
   include FeatureFlagIdModel
 
