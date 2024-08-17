@@ -7,8 +7,8 @@ module Servers
     sidekiq_options(lock: :while_executing)
 
     def perform(method = 'current')
-      App.ids.each do |app_id|
-        ConsolidateRankingsJob.perform_async(app_id, method)
+      game.ids.each do |game_id|
+        ConsolidateRankingsJob.perform_async(game_id, method)
       end
     end
   end

@@ -16,11 +16,11 @@
 #  verified_notice        :text             default(""), not null
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
-#  app_id                 :bigint           not null
+#  game_id                :bigint           not null
 #
 # Indexes
 #
-#  index_servers_on_app_id                  (app_id)
+#  index_servers_on_game_id                 (game_id)
 #  index_servers_on_archived_at             (archived_at)
 #  index_servers_on_country_code            (country_code)
 #  index_servers_on_marked_for_deletion_at  (marked_for_deletion_at)
@@ -29,7 +29,7 @@
 #
 # Foreign Keys
 #
-#  fk_rails_...  (app_id => apps.id)
+#  fk_rails_...  (game_id => games.id)
 #
 class Server < ApplicationRecord
   COUNTRY_CODES = ISO3166::Country.codes
@@ -41,7 +41,7 @@ class Server < ApplicationRecord
   validate :verified_server_with_same_name_exist?
 
   validates(
-    :app_id,
+    :game_id,
     :name,
     :country_code,
     :site_url,
@@ -53,7 +53,7 @@ class Server < ApplicationRecord
   validates :description, length: { maximum: 1_000 }
   validates :info, length: { maximum: 1_000 }
 
-  belongs_to :app
+  belongs_to :game
 
   has_one :banner_image, class_name: 'ServerBannerImage', dependent: :destroy
 
@@ -135,10 +135,10 @@ class Server < ApplicationRecord
   end
 
   def verified_server_with_same_name_exist?
-    if Server.verified.exists?(name: name, app_id: app_id)
+    if Server.verified.exists?(name: name, game_id: game_id)
       errors.add(
         :name,
-        'There is already a verified server with same name for this app. You can try to rename yours.'
+        'There is already a verified server with same name for this game. You can try to rename yours.'
       )
     end
   end

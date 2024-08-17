@@ -4,9 +4,6 @@
 
 import { application } from './application'
 
-import AppSelectComponentController from './app_select_component_controller'
-application.register('app-select-component', AppSelectComponentController)
-
 import AutoClickController from './auto_click_controller'
 application.register('auto-click', AutoClickController)
 
@@ -30,6 +27,9 @@ application.register('form-follow-redirect-on-success', FormFollowRedirectOnSucc
 
 import FormResetFieldsController from './form_reset_fields_controller'
 application.register('form-reset-fields', FormResetFieldsController)
+
+import GameSelectComponentController from './game_select_component_controller'
+application.register('game-select-component', GameSelectComponentController)
 
 import HelloController from './hello_controller'
 application.register('hello', HelloController)

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class AppSelectComponent < ApplicationComponent
+class GameSelectComponent < ApplicationComponent
   attr_reader(:form, :only_in_use, :default_value, :selected_value, :blank_name)
 
   def initialize(form, only_in_use: false, default_value: nil, selected_value: nil, blank_name: 'All')
@@ -12,7 +12,7 @@ class AppSelectComponent < ApplicationComponent
     @selected_value = selected_value
     @blank_name = blank_name
 
-    @query = AppSelectOptionsQuery.new(only_in_use: only_in_use)
+    @query = GameSelectOptionsQuery.new(only_in_use: only_in_use)
   end
 
   def blank_option

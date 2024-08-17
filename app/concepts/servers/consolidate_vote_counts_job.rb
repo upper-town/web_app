@@ -19,7 +19,7 @@ module Servers
       end
 
       if schedule_consolidate_rankings_job
-        ConsolidateRankingsJob.set(queue: 'critical').perform_async(server.app_id, method)
+        ConsolidateRankingsJob.set(queue: 'critical').perform_async(server.game_id, method)
       end
     end
   end

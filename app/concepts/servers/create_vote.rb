@@ -11,10 +11,10 @@ module Servers
       @user_account = user_account
 
       @rate_limiter = RateLimiting::BasicRateLimiter.new(
-        "servers_create_vote:#{@server.app_id}:#{request.remote_ip}",
+        "servers_create_vote:#{@server.game_id}:#{request.remote_ip}",
         1,
         6.hours.to_i,
-        'You have already voted for this game or app.'
+        'You have already voted for this game.'
       )
     end
 
@@ -23,7 +23,7 @@ module Servers
       return result if result.failure?
 
       server_vote.server = server
-      server_vote.app_id = server.app_id
+      server_vote.game_id = server.game_id
       server_vote.country_code = server.country_code
       server_vote.remote_ip = request.remote_ip
       server_vote.user_account = user_account

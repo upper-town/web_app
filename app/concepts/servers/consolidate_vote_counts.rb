@@ -36,14 +36,14 @@ module Servers
     end
 
     def upsert_country_server_stats(period, reference_date, reference_range)
-      country_app_vote_counts = query_country_server_vote_counts(reference_range)
+      country_game_vote_counts = query_country_server_vote_counts(reference_range)
       consolidated_at = Time.current
 
-      server_stat_hashes = country_app_vote_counts.map do |(app_id, country_code), country_vote_count|
+      server_stat_hashes = country_game_vote_counts.map do |(game_id, country_code), country_vote_count|
         {
           period: period,
           reference_date: reference_date,
-          app_id: app_id,
+          game_id: game_id,
           country_code: country_code,
           server_id: server.id,
           vote_count: country_vote_count,
@@ -55,14 +55,14 @@ module Servers
     end
 
     def upsert_all_server_stats(period, reference_date, reference_range)
-      all_app_vote_counts = query_all_server_vote_counts(reference_range)
+      all_game_vote_counts = query_all_server_vote_counts(reference_range)
       consolidated_at = Time.current
 
-      server_stat_hashes = all_app_vote_counts.map do |app_id, all_vote_count|
+      server_stat_hashes = all_game_vote_counts.map do |game_id, all_vote_count|
         {
           period: period,
           reference_date: reference_date,
-          app_id: app_id,
+          game_id: game_id,
           country_code: ServerStat::ALL,
           server_id: server.id,
           vote_count: all_vote_count,
@@ -79,7 +79,7 @@ module Servers
         unique_by: [
           :period,
           :reference_date,
-          :app_id,
+          :game_id,
           :country_code,
           :server_id,
         ]
@@ -90,7 +90,7 @@ module Servers
       ServerVote
         .where(server: server)
         .where(created_at: reference_range)
-        .group(:app_id, :country_code)
+        .group(:game_id, :country_code)
         .count
     end
 
@@ -98,7 +98,7 @@ module Servers
       ServerVote
         .where(server: server)
         .where(created_at: reference_range)
-        .group(:app_id)
+        .group(:game_id)
         .count
     end
   end

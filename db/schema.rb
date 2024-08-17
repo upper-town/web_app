@@ -104,20 +104,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_02_195758) do
     t.index ["email"], name: "index_admin_users_on_email", unique: true
   end
 
-  create_table "apps", force: :cascade do |t|
-    t.string "slug", null: false
-    t.string "name", null: false
-    t.string "type", null: false
-    t.string "site_url", default: "", null: false
-    t.string "description", default: "", null: false
-    t.text "info", default: "", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["name"], name: "index_apps_on_name", unique: true
-    t.index ["slug"], name: "index_apps_on_slug", unique: true
-    t.index ["type"], name: "index_apps_on_type"
-  end
-
   create_table "feature_flags", force: :cascade do |t|
     t.string "name", null: false
     t.string "value", null: false
@@ -126,6 +112,18 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_02_195758) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["name"], name: "index_feature_flags_on_name", unique: true
+  end
+
+  create_table "games", force: :cascade do |t|
+    t.string "slug", null: false
+    t.string "name", null: false
+    t.string "site_url", default: "", null: false
+    t.string "description", default: "", null: false
+    t.text "info", default: "", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["name"], name: "index_games_on_name", unique: true
+    t.index ["slug"], name: "index_games_on_slug", unique: true
   end
 
   create_table "server_banner_images", force: :cascade do |t|
@@ -144,7 +142,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_02_195758) do
   create_table "server_stats", force: :cascade do |t|
     t.string "period", null: false
     t.date "reference_date", null: false
-    t.bigint "app_id", null: false
+    t.bigint "game_id", null: false
     t.string "country_code", null: false
     t.bigint "server_id", null: false
     t.bigint "vote_count", default: 0, null: false
@@ -153,7 +151,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_02_195758) do
     t.datetime "ranking_number_consolidated_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["period", "reference_date", "app_id", "country_code", "server_id"], name: "index_server_stats_on_period_reference_app_country_server", unique: true
+    t.index ["period", "reference_date", "game_id", "country_code", "server_id"], name: "index_server_stats_on_period_reference_app_country_server", unique: true
     t.index ["server_id"], name: "index_server_stats_on_server_id"
   end
 
@@ -171,13 +169,13 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_02_195758) do
     t.string "reference", default: "", null: false
     t.string "remote_ip", default: "", null: false
     t.bigint "user_account_id"
-    t.bigint "app_id", null: false
+    t.bigint "game_id", null: false
     t.string "country_code", null: false
     t.bigint "server_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["app_id", "country_code"], name: "index_server_votes_on_app_id_and_country_code"
     t.index ["created_at"], name: "index_server_votes_on_created_at"
+    t.index ["game_id", "country_code"], name: "index_server_votes_on_game_id_and_country_code"
     t.index ["server_id"], name: "index_server_votes_on_server_id"
     t.index ["user_account_id"], name: "index_server_votes_on_user_account_id"
   end
@@ -226,16 +224,16 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_02_195758) do
     t.string "site_url", null: false
     t.string "description", default: "", null: false
     t.text "info", default: "", null: false
-    t.bigint "app_id", null: false
+    t.bigint "game_id", null: false
     t.datetime "verified_at"
     t.text "verified_notice", default: "", null: false
     t.datetime "archived_at"
     t.datetime "marked_for_deletion_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["app_id"], name: "index_servers_on_app_id"
     t.index ["archived_at"], name: "index_servers_on_archived_at"
     t.index ["country_code"], name: "index_servers_on_country_code"
+    t.index ["game_id"], name: "index_servers_on_game_id"
     t.index ["marked_for_deletion_at"], name: "index_servers_on_marked_for_deletion_at"
     t.index ["name"], name: "index_servers_on_name"
     t.index ["verified_at"], name: "index_servers_on_verified_at"
@@ -304,18 +302,18 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_02_195758) do
   add_foreign_key "admin_user_sessions", "admin_users"
   add_foreign_key "admin_user_tokens", "admin_users"
   add_foreign_key "server_banner_images", "servers"
-  add_foreign_key "server_stats", "apps"
+  add_foreign_key "server_stats", "games"
   add_foreign_key "server_stats", "servers"
   add_foreign_key "server_user_accounts", "servers"
   add_foreign_key "server_user_accounts", "user_accounts"
-  add_foreign_key "server_votes", "apps"
+  add_foreign_key "server_votes", "games"
   add_foreign_key "server_votes", "servers"
   add_foreign_key "server_votes", "user_accounts"
   add_foreign_key "server_webhook_configs", "servers"
   add_foreign_key "server_webhook_events", "server_webhook_configs"
   add_foreign_key "server_webhook_events", "servers"
   add_foreign_key "server_webhook_secrets", "servers"
-  add_foreign_key "servers", "apps"
+  add_foreign_key "servers", "games"
   add_foreign_key "user_accounts", "users"
   add_foreign_key "user_sessions", "users"
   add_foreign_key "user_tokens", "users"

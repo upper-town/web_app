@@ -4,16 +4,16 @@ class ServersController < ApplicationController
   def index
     current_time = Time.current
 
-    @app = app_from_params
+    @game = game_from_params
     @period = period_from_params
     @country_code = country_code_from_params
 
-    @selected_value_app_id = @app ? @app.id : nil
+    @selected_value_game_id = @game ? @game.id : nil
     @selected_value_period = @period
     @selected_value_country_code = @country_code
 
     @pagination = Pagination.new(
-      Servers::IndexQuery.new(@app, @period, @country_code, current_time).call,
+      Servers::IndexQuery.new(@game, @period, @country_code, current_time).call,
       request,
       options: { per_page: 20 }
     )
@@ -38,11 +38,11 @@ class ServersController < ApplicationController
 
   private
 
-  def app_from_params
-    if params[:app_id].blank?
+  def game_from_params
+    if params[:game_id].blank?
       nil
-    elsif (app = App.find_by(id: params[:app_id]))
-      app
+    elsif (game = Game.find_by(id: params[:game_id]))
+      game
     else
       raise InvalidQueryParamError
     end

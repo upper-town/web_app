@@ -121,7 +121,7 @@ module Inside
       params
         .require(:server)
         .permit(
-          :app_id,
+          :game_id,
           :country_code,
           :name,
           :site_url,

@@ -48,7 +48,7 @@ module Servers
       <<-SQL.squish
         LEFT JOIN "server_stats" ON
               "server_stats"."server_id" = "servers"."id"
-          AND "server_stats"."app_id"    = "servers"."app_id"
+          AND "server_stats"."game_id"    = "servers"."game_id"
           AND #{sql_on_periods_and_reference_dates}
           AND #{sql_on_country_code}
       SQL

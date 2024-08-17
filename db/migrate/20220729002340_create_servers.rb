@@ -9,7 +9,7 @@ class CreateServers < ActiveRecord::Migration[7.1]
       t.string :description,      null: false, default: ''
       t.text   :info,             null: false, default: ''
 
-      t.references :app, null: false, foreign_key: true, index: false
+      t.references :game, null: false, foreign_key: true, index: false
 
       t.datetime :verified_at,            null: true
       t.text     :verified_notice,        null: false, default: ''
@@ -20,7 +20,7 @@ class CreateServers < ActiveRecord::Migration[7.1]
     end
 
     add_index :servers, :name
-    add_index :servers, :app_id
+    add_index :servers, :game_id
     add_index :servers, :country_code
     add_index :servers, :verified_at
     add_index :servers, :archived_at

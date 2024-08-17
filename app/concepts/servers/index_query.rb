@@ -2,18 +2,18 @@
 
 module Servers
   class IndexQuery
-    attr_reader(:app, :period, :country_code, :current_time)
+    attr_reader(:game, :period, :country_code, :current_time)
 
-    def initialize(app = nil, period = nil, country_code = nil, current_time = nil)
-      @app = app
+    def initialize(game = nil, period = nil, country_code = nil, current_time = nil)
+      @game = game
       @period = period || ServerStat::MONTH
       @country_code = country_code || ServerStat::ALL
       @current_time = current_time || Time.current
     end
 
     def call
-      scope = Server.includes(:app)
-      scope = scope.where(app: app) if app.present?
+      scope = Server.includes(:game)
+      scope = scope.where(game: game) if game.present?
       scope = scope.where(country_code: country_code) if Server::COUNTRY_CODES.include?(country_code)
       scope = scope.joins(sql_left_join_server_stats)
 
@@ -26,7 +26,7 @@ module Servers
       <<-SQL.squish
         LEFT JOIN "server_stats" ON
               "server_stats"."server_id" = "servers"."id"
-          AND "server_stats"."app_id"    = "servers"."app_id"
+          AND "server_stats"."game_id"    = "servers"."game_id"
           AND #{sql_on_period_and_reference_date}
           AND #{sql_on_country_code}
       SQL

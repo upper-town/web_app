@@ -1,11 +1,10 @@
 # frozen_string_literal: true
 
-class CreateApps < ActiveRecord::Migration[7.1]
+class CreateGames < ActiveRecord::Migration[7.1]
   def change
-    create_table :apps do |t|
+    create_table :games do |t|
       t.string :slug,        null: false
       t.string :name,        null: false
-      t.string :type,        null: false
       t.string :site_url,    null: false, default: ''
       t.string :description, null: false, default: ''
       t.text   :info,        null: false, default: ''
@@ -13,9 +12,7 @@ class CreateApps < ActiveRecord::Migration[7.1]
       t.timestamps
     end
 
-    add_index :apps, :slug, unique: true
-    add_index :apps, :name, unique: true
-
-    add_index :apps, :type
+    add_index :games, :slug, unique: true
+    add_index :games, :name, unique: true
   end
 end

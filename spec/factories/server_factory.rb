@@ -16,24 +16,24 @@
 #  verified_notice        :text             default(""), not null
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
-#  app_id                 :bigint           not null
+#  game_id                :bigint           not null
 #
 # Indexes
 #
-#  index_servers_on_app_id                  (app_id)
 #  index_servers_on_archived_at             (archived_at)
 #  index_servers_on_country_code            (country_code)
+#  index_servers_on_game_id                 (game_id)
 #  index_servers_on_marked_for_deletion_at  (marked_for_deletion_at)
 #  index_servers_on_name                    (name)
 #  index_servers_on_verified_at             (verified_at)
 #
 # Foreign Keys
 #
-#  fk_rails_...  (app_id => apps.id)
+#  fk_rails_...  (game_id => games.id)
 #
 FactoryBot.define do
   factory :server do
-    app
+    game
 
     country_code { 'US' }
     sequence(:name) { |n| "Server #{n}" }

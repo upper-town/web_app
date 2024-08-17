@@ -7,11 +7,11 @@
         'action' => 'change->servers#filter'
       }
     ) do |form| %>
-      <%= render(AppSelectComponent.new(
+      <%= render(GameSelectComponent.new(
         form,
         only_in_use: true,
         blank_name: 'All',
-        selected_value: @selected_value_app_id
+        selected_value: @selected_value_game_id
       )) %>
       <div class="flex">
         <%= render(PeriodSelectComponent.new(

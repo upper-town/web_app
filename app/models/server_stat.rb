@@ -14,17 +14,17 @@
 #  vote_count_consolidated_at     :datetime
 #  created_at                     :datetime         not null
 #  updated_at                     :datetime         not null
-#  app_id                         :bigint           not null
+#  game_id                        :bigint           not null
 #  server_id                      :bigint           not null
 #
 # Indexes
 #
-#  index_server_stats_on_period_reference_app_country_server  (period,reference_date,app_id,country_code,server_id) UNIQUE
+#  index_server_stats_on_period_reference_app_country_server  (period,reference_date,game_id,country_code,server_id) UNIQUE
 #  index_server_stats_on_server_id                            (server_id)
 #
 # Foreign Keys
 #
-#  fk_rails_...  (app_id => apps.id)
+#  fk_rails_...  (game_id => games.id)
 #  fk_rails_...  (server_id => servers.id)
 #
 class ServerStat < ApplicationRecord
@@ -48,7 +48,7 @@ class ServerStat < ApplicationRecord
   validates :country_code, inclusion: { in: COUNTRY_CODES }
 
   belongs_to :server
-  belongs_to :app
+  belongs_to :game
 
   def self.loop_through(period, past_time = MIN_PAST_TIME, current_time = nil)
     past_time = MIN_PAST_TIME if past_time < MIN_PAST_TIME

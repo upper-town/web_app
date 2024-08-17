@@ -3,10 +3,10 @@
 module Seeds
   module Development
     class CreateServers
-      attr_reader :app_ids
+      attr_reader :game_ids
 
-      def initialize(app_ids)
-        @app_ids = app_ids
+      def initialize(game_ids)
+        @game_ids = game_ids
       end
 
       def call
@@ -14,8 +14,8 @@ module Seeds
 
         server_ids = []
 
-        app_ids.map do |app_id|
-          server_hashes = 1.upto(10).map { |n| build_attributes_for_server(app_id, n) }
+        game_ids.map do |game_id|
+          server_hashes = 1.upto(10).map { |n| build_attributes_for_server(game_id, n) }
           result = Server.insert_all(server_hashes)
 
           server_ids.concat(result.rows.flatten)
@@ -26,7 +26,7 @@ module Seeds
 
       private
 
-      def build_attributes_for_server(app_id, n)
+      def build_attributes_for_server(game_id, n)
         name = "#{Faker::Lorem.words(number: 3).join(' ').titleize}-#{n}"
         country_code = Seeds::Common.generate_country_code
         site_url = "https://nice-server-#{n}.example.com/"
@@ -42,7 +42,7 @@ module Seeds
         ].join("\n\n")
 
         {
-          app_id:           app_id,
+          game_id:          game_id,
           name:             name,
           country_code:     country_code,
           site_url:         site_url,

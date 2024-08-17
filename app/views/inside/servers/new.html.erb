@@ -6,7 +6,7 @@
 ) do |form| %>
   <div class="mb-3">
     <%= form.label(:app_id, 'App', class: 'form-label') %>
-    <%= render(AppSelectComponent.new(
+    <%= render(GameSelectComponent.new(
       form,
       only_in_use: false,
       blank_name: nil,

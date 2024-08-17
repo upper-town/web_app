@@ -2,23 +2,22 @@
 
 module Seeds
   module Development
-    class CreateApps
+    class CreateGames
       def call
         return unless Rails.env.development?
 
-        result = App.insert_all(app_hashes)
+        result = Game.insert_all(game_hashes)
 
-        result.rows.flatten # app_ids
+        result.rows.flatten # game_ids
       end
 
       private
 
-      def app_hashes
+      def game_hashes
         [
           {
             slug:        'minecraft',
             name:        'Minecraft',
-            type:        App::GAME,
             site_url:    'https://www.minecraft.net/',
             description: '',
             info:        '',
@@ -26,7 +25,6 @@ module Seeds
           {
             slug:        'perfect-world-international',
             name:        'Perfect World International (PWI)',
-            type:        App::GAME,
             site_url:    'https://www.arcgames.com/en/games/pwi',
             description: '',
             info:        '',

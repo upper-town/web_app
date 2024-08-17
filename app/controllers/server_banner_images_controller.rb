@@ -17,7 +17,7 @@ class ServerBannerImagesController < ActionController::API
       elsif allowed?(server_banner_image)
         render_image(server_banner_image)
       else
-        head(:not_found)
+        head(:not_found) # TODO: render a "waiting for approval" image?
       end
     end
   rescue ActiveRecord::RecordNotFound

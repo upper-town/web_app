@@ -6,14 +6,14 @@ module Servers
 
     sidekiq_options(lock: :while_executing)
 
-    def perform(app_id, method)
-      app = App.find(app_id)
+    def perform(game_id, method)
+      game = Game.find(game_id)
 
       case method
       when 'current'
-        ConsolidateRankings.new(app).process_current
+        ConsolidateRankings.new(game).process_current
       when 'all'
-        ConsolidateRankings.new(app).process_all
+        ConsolidateRankings.new(game).process_all
       else
         raise 'Invalid method for Servers::ConsolidateRankingsJob'
       end
