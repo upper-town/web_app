@@ -58,7 +58,6 @@ group :test do
   gem 'rspec-rails', '~> 6.1'
   gem 'rspec', '~> 3.13'
   gem 'selenium-webdriver', '~> 4.20'
-  gem 'shoulda-matchers', '~> 6.2'
   gem 'vcr', '~> 6.2'
   gem 'webmock', '~> 3.23'
 end

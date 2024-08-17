@@ -42,7 +42,7 @@ class EmailValidator
 
   def initialize(email)
     @email = email.to_s
-    @errors = ['not validated yet']
+    @errors = [:not_validated_yet]
   end
 
   def valid?
@@ -62,13 +62,13 @@ class EmailValidator
 
   def validate_format
     unless email.match?(PATTERN)
-      errors << 'format is not valid'
+      errors << :format_is_not_valid
     end
   end
 
   def validate_email_domain
     if match_reserved_domain? || match_disposable_email_domains?
-      errors << 'domain is not supported'
+      errors << :domain_is_not_supported
     end
   end
 

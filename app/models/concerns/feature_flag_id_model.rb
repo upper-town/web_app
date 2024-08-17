@@ -2,7 +2,7 @@
 
 module FeatureFlagIdModel
   def feature_flag_id
-    "#{self.class.name}#{id}"
+    "#{self.class.name}_#{id}"
   end
 
   alias ffid feature_flag_id

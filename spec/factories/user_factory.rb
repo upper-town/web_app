@@ -30,6 +30,6 @@
 #
 FactoryBot.define do
   factory :user do
-    sequence(:email) { |n| "user.#{n}@upper.town" }
+    sequence(:email) { |n| "user.#{n}@development.upper.town" }
   end
 end

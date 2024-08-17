@@ -53,7 +53,6 @@ class User < ApplicationRecord
   def self.find_by_token(purpose, token)
     return if purpose.blank? || token.blank?
 
-    # TODO: test this
     joins(:tokens)
       .where(tokens: { purpose: purpose, token: token })
       .where('tokens.expires_at > ?', Time.current)
@@ -131,7 +130,7 @@ class User < ApplicationRecord
     !locked?
   end
 
-  def lock!(reason, comment = nil)
+  def lock_access!(reason, comment = nil)
     update!(
       locked_reason:  reason,
       locked_comment: comment,
@@ -139,7 +138,7 @@ class User < ApplicationRecord
     )
   end
 
-  def unlock!
+  def unlock_access!
     update!(
       locked_reason:  nil,
       locked_comment: nil,
