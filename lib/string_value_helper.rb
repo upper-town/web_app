@@ -22,10 +22,10 @@ module StringValueHelper
     value.to_s.squish
   end
 
-  def values_list_uniq(value, separator = ',', remove_whitespaces = true)
+  def values_list_uniq(value, separator = ',', do_remove_whitespaces = true)
     value.to_s.split(separator).map do |str|
-      if remove_whitespaces
-        self.remove_whitespaces(str)
+      if do_remove_whitespaces
+        remove_whitespaces(str)
       else
         normalize_whitespaces(str)
       end
