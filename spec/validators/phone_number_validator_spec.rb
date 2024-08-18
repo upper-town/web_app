@@ -7,12 +7,12 @@ RSpec.describe PhoneNumberValidator do
     validator = described_class.new('+1 (202) 555-9999')
 
     expect(validator.errors).not_to be_empty
-    expect(validator.errors).to include('not validated yet')
+    expect(validator.errors).to include(:not_validated_yet)
   end
 
   describe '#valid?' do
     context 'when phone number is not valid' do
-      it 'returns false and set errors' do
+      it 'returns false and sets errors' do
         [
           nil,
           '',
@@ -27,7 +27,7 @@ RSpec.describe PhoneNumberValidator do
 
           expect(validator.valid?).to be(false)
           expect(validator.errors).not_to be_empty
-          expect(validator.errors).to include('not valid')
+          expect(validator.errors).to include(:not_valid)
         end
       end
     end
@@ -65,7 +65,7 @@ RSpec.describe PhoneNumberValidator do
       expect(described_class.new(nil).phone_number).to eq('')
       expect(described_class.new('').phone_number).to  eq('')
 
-      expect(described_class.new('xxx').phone_number).to eq('xxx')
+      expect(described_class.new('abcdef').phone_number).to eq('abcdef')
       expect(described_class.new('+1 (202) 555-9999').phone_number).to eq('+1 (202) 555-9999')
     end
   end

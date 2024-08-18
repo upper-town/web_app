@@ -5,7 +5,7 @@ require 'rails_helper'
 RSpec.describe PhoneNumberRecordValidator do
   describe '#validate' do
     context 'when record has an invalid phone number' do
-      it 'set record.errors' do
+      it 'sets record.errors' do
         [
           'aaa',
           '0',
@@ -13,18 +13,18 @@ RSpec.describe PhoneNumberRecordValidator do
           '1',
           '111',
         ].each do |invalid_phone_number|
-          record = generic_active_record_class.new(phone_number: invalid_phone_number)
+          record = generic_model_class.new(phone_number: invalid_phone_number)
 
           validator = described_class.new(record)
           validator.validate
 
           expect(record.errors).not_to be_empty
-          expect(record.errors.messages[:phone_number]).to include('not valid')
+          expect(record.errors.of_kind?(:phone_number, :not_valid)).to be(true)
         end
       end
     end
 
-    context 'when record has a valid phone number' do
+    context 'when record has a valid phone number or blank' do
       it 'does not set errors' do
         [
           nil,
@@ -47,7 +47,7 @@ RSpec.describe PhoneNumberRecordValidator do
           '+55(16)95555-9999',
           '+5516955559999',
         ].each do |valid_phone_number|
-          record = generic_active_record_class.new(phone_number: valid_phone_number)
+          record = generic_model_class.new(phone_number: valid_phone_number)
 
           validator = described_class.new(record)
           validator.validate
@@ -59,23 +59,19 @@ RSpec.describe PhoneNumberRecordValidator do
 
     describe 'passing :attribute_name options' do
       it 'uses the attribute_name from options instead of :phone_number' do
-        record = generic_active_record_class.new(other: 'invalid_phone_number')
+        record = generic_model_class.new(other: 'abcdef')
 
         validator = described_class.new(record, attribute_name: :other)
         validator.validate
 
         expect(record.errors).not_to be_empty
-        expect(record.errors.messages[:other]).to include('not valid')
+        expect(record.errors.of_kind?(:other, :not_valid)).to be(true)
       end
     end
   end
 
-  def generic_active_record_class
-    Class.new do
-      include ActiveModel::Model
-      include ActiveModel::Validations
-      include ActiveModel::Attributes
-
+  def generic_model_class
+    Class.new(ApplicationModel) do
       attribute :phone_number
       attribute :other
     end
