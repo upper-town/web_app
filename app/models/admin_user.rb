@@ -53,17 +53,11 @@ class AdminUser < ApplicationRecord
   def self.find_by_token(purpose, token)
     return if purpose.blank? || token.blank?
 
-    # TODO: test this
     joins(:tokens)
       .where(tokens: { purpose: purpose, token: token })
       .where('tokens.expires_at > ?', Time.current)
       .order(created_at: :desc)
       .first
-  end
-
-  # Super Admin status can only be granted through env var.
-  def super_admin?
-    StringValueHelper.values_list_uniq(ENV.fetch('SUPER_ADMIN_USER_EMAILS'), '').include?(email)
   end
 
   def regenerate_token!(purpose, expires_in = nil, data = {})
@@ -136,7 +130,7 @@ class AdminUser < ApplicationRecord
     !locked?
   end
 
-  def lock!(reason, comment = nil)
+  def lock_access!(reason, comment = nil)
     update!(
       locked_reason:  reason,
       locked_comment: comment,
@@ -144,7 +138,7 @@ class AdminUser < ApplicationRecord
     )
   end
 
-  def unlock!
+  def unlock_access!
     update!(
       locked_reason:  nil,
       locked_comment: nil,
@@ -157,5 +151,10 @@ class AdminUser < ApplicationRecord
       password:          password,
       password_reset_at: Time.current
     )
+  end
+
+  # Super Admin status can only be granted through env var.
+  def super_admin?
+    StringValueHelper.values_list_uniq(ENV.fetch('SUPER_ADMIN_USER_EMAILS', '')).include?(email)
   end
 end
