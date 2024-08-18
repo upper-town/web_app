@@ -53,9 +53,9 @@ RSpec.describe AdminRole do
 
   describe 'normalizations' do
     it 'normalizes key' do
-      admin_role = create(:admin_role, key: "\n\t Admin  Role \n")
+      admin_role = create(:admin_role, key: "\n\t Admin  Role Key\n")
 
-      expect(admin_role.key).to eq('admin_role')
+      expect(admin_role.key).to eq('admin_role_key')
     end
 
     it 'normalizes description' do
@@ -71,15 +71,15 @@ RSpec.describe AdminRole do
       admin_role.validate
       expect(admin_role.errors.of_kind?(:key, :blank)).to be(true)
 
-      another_admin_role = create(:admin_role, key: 'Admin_Role')
+      another_admin_role = create(:admin_role, key: 'Admin_Role_Key')
 
-      admin_role = build(:admin_role, key: 'admin_role')
+      admin_role = build(:admin_role, key: 'admin_role_key')
       admin_role.validate
       expect(admin_role.errors.of_kind?(:key, :taken)).to be(true)
 
       another_admin_role.destroy!
 
-      admin_role = build(:admin_role, key: 'admin_role')
+      admin_role = build(:admin_role, key: 'admin_role_key')
       admin_role.validate
       expect(admin_role.errors.key?(:key)).to be(false)
     end
