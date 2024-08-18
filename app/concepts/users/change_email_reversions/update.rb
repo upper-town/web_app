@@ -21,12 +21,12 @@ module Users
         result = rate_limiter.call
         return result if result.failure?
 
-        user, user_token = find_user_and_token
+        user, token = find_user_and_token
 
-        if !user || !user_token
+        if !user || !token
           Result.failure('Invalid or expired token.')
         else
-          revert_change_email(user, user_token)
+          revert_change_email(user, token)
         end
       end
 
@@ -35,23 +35,23 @@ module Users
       def find_user_and_token
         [
           User.find_by_token(:change_email_reversion, change_email_reversion.token),
-          UserToken.find_by(token: change_email_reversion.token)
+          Token.find_by(token: change_email_reversion.token)
         ]
       end
 
-      def revert_change_email(user, user_token)
+      def revert_change_email(user, token)
         if user.invalid?
           return Result.failure(user.errors, user: user)
         end
 
-        if user_token.data['email'].blank?
+        if token.data['email'].blank?
           return Result.failure('Invalid token: new email address is not associated with token')
         end
 
         begin
           ActiveRecord::Base.transaction do
-            user.revert_change_email!(user_token.data['email'])
-            user_token.expire!
+            user.revert_change_email!(token.data['email'])
+            token.expire!
           end
         rescue StandardError => e
           rate_limiter.uncall

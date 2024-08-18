@@ -34,29 +34,29 @@ RSpec.describe AdminUser do
   describe 'associations' do
     it 'has many sessions' do
       admin_user = create(:admin_user)
-      admin_user_session = create(:admin_user_session, admin_user: admin_user)
+      admin_session = create(:admin_session, admin_user: admin_user)
 
-      expect(admin_user.sessions).to include(admin_user_session)
+      expect(admin_user.sessions).to include(admin_session)
       admin_user.destroy!
-      expect { admin_user_session.reload }.to raise_error(ActiveRecord::RecordNotFound)
+      expect { admin_session.reload }.to raise_error(ActiveRecord::RecordNotFound)
     end
 
     it 'has many tokens' do
       admin_user = create(:admin_user)
-      admin_user_token = create(:admin_user_token, admin_user: admin_user)
+      admin_token = create(:admin_token, admin_user: admin_user)
 
-      expect(admin_user.tokens).to include(admin_user_token)
+      expect(admin_user.tokens).to include(admin_token)
       admin_user.destroy!
-      expect { admin_user_token.reload }.to raise_error(ActiveRecord::RecordNotFound)
+      expect { admin_token.reload }.to raise_error(ActiveRecord::RecordNotFound)
     end
 
     it 'has one account' do
       admin_user = create(:admin_user)
-      admin_user_account = create(:admin_user_account, admin_user: admin_user)
+      admin_account = create(:admin_account, admin_user: admin_user)
 
-      expect(admin_user.account).to eq(admin_user_account)
+      expect(admin_user.account).to eq(admin_account)
       admin_user.destroy!
-      expect { admin_user_account.reload }.to raise_error(ActiveRecord::RecordNotFound)
+      expect { admin_account.reload }.to raise_error(ActiveRecord::RecordNotFound)
     end
   end
 
@@ -167,9 +167,9 @@ RSpec.describe AdminUser do
     context 'when token is found but expired' do
       it 'returns nil' do
         freeze_time do
-          admin_user_token = create(:admin_user_token, expires_at: 1.second.ago)
+          admin_token = create(:admin_token, expires_at: 1.second.ago)
 
-          admin_user = described_class.find_by_token(admin_user_token.purpose, admin_user_token.token)
+          admin_user = described_class.find_by_token(admin_token.purpose, admin_token.token)
 
           expect(admin_user).to be_nil
         end
@@ -179,60 +179,60 @@ RSpec.describe AdminUser do
     context 'when token is found and not expired' do
       it 'returns admin_user' do
         freeze_time do
-          admin_user_token = create(:admin_user_token, expires_at: 1.second.from_now)
+          admin_token = create(:admin_token, expires_at: 1.second.from_now)
 
-          admin_user = described_class.find_by_token(admin_user_token.purpose, admin_user_token.token)
+          admin_user = described_class.find_by_token(admin_token.purpose, admin_token.token)
 
-          expect(admin_user).to eq(admin_user_token.admin_user)
+          expect(admin_user).to eq(admin_token.admin_user)
         end
       end
     end
   end
 
   describe '#regenerate_token!' do
-    it 'creates an AdminUserToken record' do
+    it 'creates an AdminToken record' do
       freeze_time do
         admin_user = create(:admin_user)
         returned_token = nil
 
         expect do
           returned_token = admin_user.regenerate_token!('email_confirmation', 15.minutes, { 'some' => 'data' })
-        end.to change(AdminUserToken, :count).by(1)
+        end.to change(AdminToken, :count).by(1)
 
-        admin_user_token = AdminUserToken.last
-        expect(admin_user_token.purpose).to eq('email_confirmation')
-        expect(admin_user_token.token).to be_present
-        expect(admin_user_token.token).to eq(returned_token)
-        expect(admin_user_token.token.length).to eq(44)
-        expect(admin_user_token.expires_at).to eq(15.minutes.from_now)
-        expect(admin_user_token.data).to eq({ 'some' => 'data' })
+        admin_token = AdminToken.last
+        expect(admin_token.purpose).to eq('email_confirmation')
+        expect(admin_token.token).to be_present
+        expect(admin_token.token).to eq(returned_token)
+        expect(admin_token.token.length).to eq(44)
+        expect(admin_token.expires_at).to eq(15.minutes.from_now)
+        expect(admin_token.data).to eq({ 'some' => 'data' })
       end
     end
 
     describe 'default expires_in and data' do
-      it 'creates a AdminUserToken record' do
+      it 'creates a AdminToken record' do
         freeze_time do
           admin_user = create(:admin_user)
           returned_token = nil
 
           expect do
             returned_token = admin_user.regenerate_token!('email_confirmation')
-          end.to change(AdminUserToken, :count).by(1)
+          end.to change(AdminToken, :count).by(1)
 
-          admin_user_token = AdminUserToken.last
-          expect(admin_user_token.purpose).to eq('email_confirmation')
-          expect(admin_user_token.token).to be_present
-          expect(admin_user_token.token).to eq(returned_token)
-          expect(admin_user_token.token.length).to eq(44)
-          expect(admin_user_token.expires_at).to eq(1.hour.from_now)
-          expect(admin_user_token.data).to eq({})
+          admin_token = AdminToken.last
+          expect(admin_token.purpose).to eq('email_confirmation')
+          expect(admin_token.token).to be_present
+          expect(admin_token.token).to eq(returned_token)
+          expect(admin_token.token.length).to eq(44)
+          expect(admin_token.expires_at).to eq(1.hour.from_now)
+          expect(admin_token.data).to eq({})
         end
       end
     end
   end
 
   describe '#current_token' do
-    context 'when AdminUserTokens are not found' do
+    context 'when AdminTokens are not found' do
       it 'returns nil' do
         admin_user = create(:admin_user)
 
@@ -240,23 +240,23 @@ RSpec.describe AdminUser do
       end
     end
 
-    context 'when AdminUserTokens are found' do
+    context 'when AdminTokens are found' do
       it 'returns the latest token' do
         admin_user = create(:admin_user)
-        _admin_user_token1 = create(
-          :admin_user_token,
+        _admin_token1 = create(
+          :admin_token,
           admin_user: admin_user,
           purpose: 'email_confirmation',
           created_at: 1.hour.ago
         )
-        admin_user_token2 = create(
-          :admin_user_token,
+        admin_token2 = create(
+          :admin_token,
           admin_user: admin_user,
           purpose: 'email_confirmation',
           created_at: 1.minute.ago
         )
 
-        expect(admin_user.current_token('email_confirmation')).to eq(admin_user_token2.token)
+        expect(admin_user.current_token('email_confirmation')).to eq(admin_token2.token)
       end
     end
   end

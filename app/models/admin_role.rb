@@ -15,10 +15,10 @@
 #  index_admin_roles_on_key  (key) UNIQUE
 #
 class AdminRole < ApplicationRecord
-  has_many :admin_user_roles, dependent: :destroy
+  has_many :admin_roles, dependent: :destroy
   has_many :admin_role_permissions, dependent: :destroy
 
-  has_many :admin_users, through: :admin_user_roles
+  has_many :admin_users, through: :admin_roles
   has_many :permissions, through: :admin_role_permissions, source: :admin_permission
 
   validates :key, :description, presence: true

@@ -21,7 +21,7 @@ RSpec.describe ServerWebhooks::CreateEvent do
         end
       end
 
-      describe 'ServerVote without UserAccount' do
+      describe 'ServerVote without Account' do
         it 'creates a ServerWebhookEvent with ServerVote payload' do
           server = create(:server)
           event_type = 'server_votes.create'
@@ -32,7 +32,7 @@ RSpec.describe ServerWebhooks::CreateEvent do
             server:       server,
             game:         server.game,
             country_code: 'US',
-            user_account: nil,
+            account:      nil,
           )
 
           described_class.new(server, event_type, server_vote.id).call
@@ -43,24 +43,24 @@ RSpec.describe ServerWebhooks::CreateEvent do
           expect(server_webhook_event.status).to eq(ServerWebhookEvent::PENDING)
           expect(server_webhook_event.payload).to eq({
             'server_vote' => {
-              'id'              => server_vote.id,
-              'reference'       => 'user_123456',
-              'remote_ip'       => '8.8.8.8',
-              'server_id'       => server.id,
-              'game_id'         => server.game.id,
-              'country_code'    => 'US',
-              'user_account_id' => nil,
-              'created_at'      => server_vote.created_at.as_json,
+              'id'           => server_vote.id,
+              'reference'    => 'user_123456',
+              'remote_ip'    => '8.8.8.8',
+              'server_id'    => server.id,
+              'game_id'      => server.game.id,
+              'country_code' => 'US',
+              'account_id'   => nil,
+              'created_at'   => server_vote.created_at.as_json,
             }
           })
         end
       end
 
-      describe 'ServerVote with UserAccount' do
-        it 'creates a ServerWebhookEvent with ServerVote payload that includes UserAccount id' do
+      describe 'ServerVote with Account' do
+        it 'creates a ServerWebhookEvent with ServerVote payload that includes Account id' do
           server = create(:server)
           event_type = 'server_votes.create'
-          user_account = create(:user_account)
+          account = create(:account)
           server_vote = create(
             :server_vote,
             reference:    'user_123456',
@@ -68,7 +68,7 @@ RSpec.describe ServerWebhooks::CreateEvent do
             server:       server,
             game:         server.game,
             country_code: 'US',
-            user_account: user_account,
+            account:      account,
           )
 
           described_class.new(server, event_type, server_vote.id).call
@@ -79,14 +79,14 @@ RSpec.describe ServerWebhooks::CreateEvent do
           expect(server_webhook_event.status).to eq(ServerWebhookEvent::PENDING)
           expect(server_webhook_event.payload).to eq({
             'server_vote' => {
-              'id'              => server_vote.id,
-              'reference'       => 'user_123456',
-              'remote_ip'       => '8.8.8.8',
-              'server_id'       => server.id,
-              'game_id'         => server.game.id,
-              'country_code'    => 'US',
-              'user_account_id' => user_account.id,
-              'created_at'      => server_vote.created_at.as_json,
+              'id'           => server_vote.id,
+              'reference'    => 'user_123456',
+              'remote_ip'    => '8.8.8.8',
+              'server_id'    => server.id,
+              'game_id'      => server.game.id,
+              'country_code' => 'US',
+              'account_id'   => account.id,
+              'created_at'   => server_vote.created_at.as_json,
             }
           })
         end

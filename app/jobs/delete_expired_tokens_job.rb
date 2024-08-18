@@ -6,7 +6,7 @@ class DeleteExpiredTokensJob
   sidekiq_options(lock: :while_executing)
 
   def perform
-    UserToken.expired.delete_all
-    AdminUserToken.expired.delete_all
+    Token.expired.delete_all
+    AdminToken.expired.delete_all
   end
 end

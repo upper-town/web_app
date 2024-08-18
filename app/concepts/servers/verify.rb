@@ -9,7 +9,7 @@ module Servers
     end
 
     def call(current_time = Time.current)
-      result = VerifyLinkedUserAccounts.new(server).call(current_time)
+      result = VerifyLinkedAccounts.new(server).call(current_time)
 
       if result.success?
         update_as_verified(current_time)

@@ -2,13 +2,13 @@
 
 module Servers
   class CreateVote
-    attr_reader :server, :server_vote, :request, :user_account, :rate_limiter
+    attr_reader :server, :server_vote, :request, :account, :rate_limiter
 
-    def initialize(server, server_vote, request, user_account = nil)
+    def initialize(server, server_vote, request, account = nil)
       @server = server
       @server_vote = server_vote
       @request = request
-      @user_account = user_account
+      @account = account
 
       @rate_limiter = RateLimiting::BasicRateLimiter.new(
         "servers_create_vote:#{@server.game_id}:#{request.remote_ip}",
@@ -26,7 +26,7 @@ module Servers
       server_vote.game_id = server.game_id
       server_vote.country_code = server.country_code
       server_vote.remote_ip = request.remote_ip
-      server_vote.user_account = user_account
+      server_vote.account = account
 
       if server_vote.invalid?
         rate_limiter.uncall

@@ -21,14 +21,14 @@ module Users
         result = rate_limiter.call
         return result if result.failure?
 
-        user, user_token = find_user_and_token
+        user, token = find_user_and_token
 
-        if !user || !user_token
+        if !user || !token
           Result.failure('Invalid or expired token.')
         elsif user.confirmed_change_email?
           Result.failure('New Email address has already been confirmed.', user: user)
         else
-          confirm_change_email(user, user_token)
+          confirm_change_email(user, token)
         end
       end
 
@@ -37,28 +37,28 @@ module Users
       def find_user_and_token
         [
           User.find_by_token(:change_email_confirmation, change_email_confirmation_edit.token),
-          UserToken.find_by(token: change_email_confirmation_edit.token)
+          Token.find_by(token: change_email_confirmation_edit.token)
         ]
       end
 
-      def confirm_change_email(user, user_token)
+      def confirm_change_email(user, token)
         if user.invalid?
           return Result.failure(user.errors, user: user)
         end
 
-        if user_token.data['change_email'].blank? || user.change_email != user_token.data['change_email']
+        if token.data['change_email'].blank? || user.change_email != token.data['change_email']
           return Result.failure('Invalid token: new email address is not associated with token')
         end
 
         begin
           ActiveRecord::Base.transaction do
             user.update!(
-              email: user_token.data['change_email'],
+              email: token.data['change_email'],
               change_email: nil
             )
             user.confirm_change_email!
             user.confirm_email!
-            user_token.expire!
+            token.expire!
           end
         rescue StandardError => e
           rate_limiter.uncall

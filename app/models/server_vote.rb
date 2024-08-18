@@ -4,33 +4,33 @@
 #
 # Table name: server_votes
 #
-#  id              :bigint           not null, primary key
-#  country_code    :string           not null
-#  reference       :string           default(""), not null
-#  remote_ip       :string           default(""), not null
-#  created_at      :datetime         not null
-#  updated_at      :datetime         not null
-#  game_id         :bigint           not null
-#  server_id       :bigint           not null
-#  user_account_id :bigint
+#  id           :bigint           not null, primary key
+#  country_code :string           not null
+#  reference    :string           default(""), not null
+#  remote_ip    :string           default(""), not null
+#  created_at   :datetime         not null
+#  updated_at   :datetime         not null
+#  account_id   :bigint
+#  game_id      :bigint           not null
+#  server_id    :bigint           not null
 #
 # Indexes
 #
+#  index_server_votes_on_account_id                (account_id)
 #  index_server_votes_on_created_at                (created_at)
 #  index_server_votes_on_game_id_and_country_code  (game_id,country_code)
 #  index_server_votes_on_server_id                 (server_id)
-#  index_server_votes_on_user_account_id           (user_account_id)
 #
 # Foreign Keys
 #
+#  fk_rails_...  (account_id => accounts.id)
 #  fk_rails_...  (game_id => games.id)
 #  fk_rails_...  (server_id => servers.id)
-#  fk_rails_...  (user_account_id => user_accounts.id)
 #
 class ServerVote < ApplicationRecord
   validates :country_code, inclusion: { in: Server::COUNTRY_CODES }
 
   belongs_to :server
   belongs_to :game
-  belongs_to :user_account, optional: true
+  belongs_to :account, optional: true
 end

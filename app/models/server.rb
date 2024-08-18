@@ -60,8 +60,8 @@ class Server < ApplicationRecord
   has_many :votes, class_name: 'ServerVote', dependent: :destroy
   has_many :stats, class_name: 'ServerStat', dependent: :destroy
 
-  has_many :server_user_accounts, dependent: :destroy
-  has_many :user_accounts, through: :server_user_accounts
+  has_many :server_accounts, dependent: :destroy
+  has_many :accounts, through: :server_accounts
 
   has_many :webhook_configs, class_name: 'ServerWebhookConfig', dependent: :destroy
   has_many :webhook_secrets, class_name: 'ServerWebhookSecret', dependent: :destroy
@@ -115,11 +115,11 @@ class Server < ApplicationRecord
     !verified?
   end
 
-  def verified_user_accounts
-    UserAccount
-      .joins(:server_user_accounts)
-      .where(server_user_accounts: { server_id: id })
-      .where.not(server_user_accounts: { verified_at: nil })
+  def verified_accounts
+    Account
+      .joins(:server_accounts)
+      .where(server_accounts: { server_id: id })
+      .where.not(server_accounts: { verified_at: nil })
   end
 
   def integrated?

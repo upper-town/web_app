@@ -34,9 +34,9 @@ class AdminUser < ApplicationRecord
 
   include FeatureFlagIdModel
 
-  has_many :sessions, class_name: 'AdminUserSession', dependent: :destroy
-  has_many :tokens, class_name: 'AdminUserToken', dependent: :destroy
-  has_one :account, class_name: 'AdminUserAccount', dependent: :destroy
+  has_many :sessions, class_name: 'AdminSession', dependent: :destroy
+  has_many :tokens, class_name: 'AdminToken', dependent: :destroy
+  has_one :account, class_name: 'AdminAccount', dependent: :destroy
 
   has_secure_password validations: false
 

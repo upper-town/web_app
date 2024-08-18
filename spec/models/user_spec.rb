@@ -34,29 +34,29 @@ RSpec.describe User do
   describe 'associations' do
     it 'has many sessions' do
       user = create(:user)
-      user_session = create(:user_session, user: user)
+      session = create(:session, user: user)
 
-      expect(user.sessions).to include(user_session)
+      expect(user.sessions).to include(session)
       user.destroy!
-      expect { user_session.reload }.to raise_error(ActiveRecord::RecordNotFound)
+      expect { session.reload }.to raise_error(ActiveRecord::RecordNotFound)
     end
 
     it 'has many tokens' do
       user = create(:user)
-      user_token = create(:user_token, user: user)
+      token = create(:token, user: user)
 
-      expect(user.tokens).to include(user_token)
+      expect(user.tokens).to include(token)
       user.destroy!
-      expect { user_token.reload }.to raise_error(ActiveRecord::RecordNotFound)
+      expect { token.reload }.to raise_error(ActiveRecord::RecordNotFound)
     end
 
     it 'has one account' do
       user = create(:user)
-      user_account = create(:user_account, user: user)
+      account = create(:account, user: user)
 
-      expect(user.account).to eq(user_account)
+      expect(user.account).to eq(account)
       user.destroy!
-      expect { user_account.reload }.to raise_error(ActiveRecord::RecordNotFound)
+      expect { account.reload }.to raise_error(ActiveRecord::RecordNotFound)
     end
   end
 
@@ -167,9 +167,9 @@ RSpec.describe User do
     context 'when token is found but expired' do
       it 'returns nil' do
         freeze_time do
-          user_token = create(:user_token, expires_at: 1.second.ago)
+          token = create(:token, expires_at: 1.second.ago)
 
-          user = described_class.find_by_token(user_token.purpose, user_token.token)
+          user = described_class.find_by_token(token.purpose, token.token)
 
           expect(user).to be_nil
         end
@@ -179,60 +179,60 @@ RSpec.describe User do
     context 'when token is found and not expired' do
       it 'returns user' do
         freeze_time do
-          user_token = create(:user_token, expires_at: 1.second.from_now)
+          token = create(:token, expires_at: 1.second.from_now)
 
-          user = described_class.find_by_token(user_token.purpose, user_token.token)
+          user = described_class.find_by_token(token.purpose, token.token)
 
-          expect(user).to eq(user_token.user)
+          expect(user).to eq(token.user)
         end
       end
     end
   end
 
   describe '#regenerate_token!' do
-    it 'creates a UserToken record' do
+    it 'creates a Token record' do
       freeze_time do
         user = create(:user)
         returned_token = nil
 
         expect do
           returned_token = user.regenerate_token!('email_confirmation', 15.minutes, { 'some' => 'data' })
-        end.to change(UserToken, :count).by(1)
+        end.to change(Token, :count).by(1)
 
-        user_token = UserToken.last
-        expect(user_token.purpose).to eq('email_confirmation')
-        expect(user_token.token).to be_present
-        expect(user_token.token).to eq(returned_token)
-        expect(user_token.token.length).to eq(44)
-        expect(user_token.expires_at).to eq(15.minutes.from_now)
-        expect(user_token.data).to eq({ 'some' => 'data' })
+        token = Token.last
+        expect(token.purpose).to eq('email_confirmation')
+        expect(token.token).to be_present
+        expect(token.token).to eq(returned_token)
+        expect(token.token.length).to eq(44)
+        expect(token.expires_at).to eq(15.minutes.from_now)
+        expect(token.data).to eq({ 'some' => 'data' })
       end
     end
 
     describe 'default expires_in and data' do
-      it 'creates a UserToken record' do
+      it 'creates a Token record' do
         freeze_time do
           user = create(:user)
           returned_token = nil
 
           expect do
             returned_token = user.regenerate_token!('email_confirmation')
-          end.to change(UserToken, :count).by(1)
+          end.to change(Token, :count).by(1)
 
-          user_token = UserToken.last
-          expect(user_token.purpose).to eq('email_confirmation')
-          expect(user_token.token).to be_present
-          expect(user_token.token).to eq(returned_token)
-          expect(user_token.token.length).to eq(44)
-          expect(user_token.expires_at).to eq(1.hour.from_now)
-          expect(user_token.data).to eq({})
+          token = Token.last
+          expect(token.purpose).to eq('email_confirmation')
+          expect(token.token).to be_present
+          expect(token.token).to eq(returned_token)
+          expect(token.token.length).to eq(44)
+          expect(token.expires_at).to eq(1.hour.from_now)
+          expect(token.data).to eq({})
         end
       end
     end
   end
 
   describe '#current_token' do
-    context 'when UserTokens are not found' do
+    context 'when Tokens are not found' do
       it 'returns nil' do
         user = create(:user)
 
@@ -240,13 +240,13 @@ RSpec.describe User do
       end
     end
 
-    context 'when UserTokens are found' do
+    context 'when Tokens are found' do
       it 'returns the latest token' do
         user = create(:user)
-        _user_token1 = create(:user_token, user: user, purpose: 'email_confirmation', created_at: 1.hour.ago)
-        user_token2 = create(:user_token, user: user, purpose: 'email_confirmation', created_at: 1.minute.ago)
+        _token1 = create(:token, user: user, purpose: 'email_confirmation', created_at: 1.hour.ago)
+        token2 = create(:token, user: user, purpose: 'email_confirmation', created_at: 1.minute.ago)
 
-        expect(user.current_token('email_confirmation')).to eq(user_token2.token)
+        expect(user.current_token('email_confirmation')).to eq(token2.token)
       end
     end
   end

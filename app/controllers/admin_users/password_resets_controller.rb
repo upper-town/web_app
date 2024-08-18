@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module AdminUsers
-  class PasswordResetsController < ApplicationAdminUserController
+  class PasswordResetsController < ApplicationAdminController
     before_action :authenticate_admin_user!
 
     def new

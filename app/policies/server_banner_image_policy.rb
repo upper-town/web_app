@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 class ServerBannerImagePolicy
-  include Auth::AdminUserManageSession
-  include Auth::UserManageSession
+  include Auth::AdminManageSession
+  include Auth::ManageSession
 
   attr_reader :server_banner_image, :request
 
@@ -15,9 +15,9 @@ class ServerBannerImagePolicy
     if current_admin_user
       true
     elsif current_user
-      ServerUserAccount.exists?(
+      ServerAccount.exists?(
         server_id: server_banner_image.server_id,
-        user_account_id: current_user_account.id
+        account_id: current_account.id
       )
     else
       false

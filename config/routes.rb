@@ -73,10 +73,10 @@
 #                                     server GET    /servers/:id(.:format)                                 servers#show
 #                                server_vote GET    /server_votes/:id(.:format)                            server_votes#show
 #                        server_banner_image GET    /server_banner_images/:id(.:format)                    server_banner_images#show
-#                               user_account GET    /u/:id(.:format)                                       user_accounts#show
+#                                    account GET    /u/:id(.:format)                                       accounts#show
 #                                inside_root GET    /i(.:format)                                           inside/dashboards#show
 #                           inside_dashboard GET    /i/dashboard(.:format)                                 inside/dashboards#show
-#                        inside_user_account GET    /i/user_account(.:format)                              inside/user_accounts#show
+#                             inside_account GET    /i/account(.:format)                                   inside/accounts#show
 #  new_inside_user_change_email_confirmation GET    /i/user/change_email_confirmation/new(.:format)        inside/users/change_email_confirmations#new
 #      inside_user_change_email_confirmation POST   /i/user/change_email_confirmation(.:format)            inside/users/change_email_confirmations#create
 #                            new_inside_user GET    /i/user/new(.:format)                                  inside/users/users#new
@@ -126,7 +126,7 @@ Rails.application.routes.draw do
 
   # /u/
 
-  resources :user_accounts, path: 'u', only: [:show]
+  resources :accounts, path: 'u', only: [:show]
 
   # /i/
 
@@ -134,7 +134,7 @@ Rails.application.routes.draw do
     root to: 'dashboards#show'
 
     resource :dashboard, only: [:show]
-    resource :user_account, only: [:show]
+    resource :account, only: [:show]
     resource :user, module: :users do
       resource :change_email_confirmation, only: [:new, :create]
     end

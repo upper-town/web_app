@@ -15,6 +15,29 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_02_195758) do
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
 
+  create_table "accounts", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_accounts_on_user_id", unique: true
+  end
+
+  create_table "admin_account_roles", force: :cascade do |t|
+    t.bigint "admin_account_id", null: false
+    t.bigint "admin_role_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["admin_account_id", "admin_role_id"], name: "index_admin_account_roles_account_id_role_id", unique: true
+    t.index ["admin_role_id"], name: "index_admin_account_roles_on_admin_role_id"
+  end
+
+  create_table "admin_accounts", force: :cascade do |t|
+    t.bigint "admin_user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["admin_user_id"], name: "index_admin_accounts_on_admin_user_id", unique: true
+  end
+
   create_table "admin_permissions", force: :cascade do |t|
     t.string "key", null: false
     t.string "description", default: "", null: false
@@ -40,23 +63,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_02_195758) do
     t.index ["key"], name: "index_admin_roles_on_key", unique: true
   end
 
-  create_table "admin_user_account_roles", force: :cascade do |t|
-    t.bigint "admin_user_account_id", null: false
-    t.bigint "admin_role_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["admin_role_id"], name: "index_admin_user_account_roles_on_admin_role_id"
-    t.index ["admin_user_account_id", "admin_role_id"], name: "index_admin_user_account_roles_account_id_role_id", unique: true
-  end
-
-  create_table "admin_user_accounts", force: :cascade do |t|
-    t.bigint "admin_user_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["admin_user_id"], name: "index_admin_user_accounts_on_admin_user_id", unique: true
-  end
-
-  create_table "admin_user_sessions", force: :cascade do |t|
+  create_table "admin_sessions", force: :cascade do |t|
     t.string "token", null: false
     t.string "remote_ip", null: false
     t.string "user_agent", default: "", null: false
@@ -64,11 +71,11 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_02_195758) do
     t.bigint "admin_user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["admin_user_id"], name: "index_admin_user_sessions_on_admin_user_id"
-    t.index ["token"], name: "index_admin_user_sessions_on_token", unique: true
+    t.index ["admin_user_id"], name: "index_admin_sessions_on_admin_user_id"
+    t.index ["token"], name: "index_admin_sessions_on_token", unique: true
   end
 
-  create_table "admin_user_tokens", force: :cascade do |t|
+  create_table "admin_tokens", force: :cascade do |t|
     t.string "token", null: false
     t.string "purpose", null: false
     t.datetime "expires_at", null: false
@@ -76,10 +83,10 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_02_195758) do
     t.bigint "admin_user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["admin_user_id"], name: "index_admin_user_tokens_on_admin_user_id"
-    t.index ["expires_at"], name: "index_admin_user_tokens_on_expires_at"
-    t.index ["purpose"], name: "index_admin_user_tokens_on_purpose"
-    t.index ["token"], name: "index_admin_user_tokens_on_token", unique: true
+    t.index ["admin_user_id"], name: "index_admin_tokens_on_admin_user_id"
+    t.index ["expires_at"], name: "index_admin_tokens_on_expires_at"
+    t.index ["purpose"], name: "index_admin_tokens_on_purpose"
+    t.index ["token"], name: "index_admin_tokens_on_token", unique: true
   end
 
   create_table "admin_users", force: :cascade do |t|
@@ -126,6 +133,16 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_02_195758) do
     t.index ["slug"], name: "index_games_on_slug", unique: true
   end
 
+  create_table "server_accounts", force: :cascade do |t|
+    t.bigint "server_id", null: false
+    t.bigint "account_id", null: false
+    t.datetime "verified_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id", "server_id"], name: "index_server_accounts_on_account_id_and_server_id", unique: true
+    t.index ["server_id"], name: "index_server_accounts_on_server_id"
+  end
+
   create_table "server_banner_images", force: :cascade do |t|
     t.bigint "server_id", null: false
     t.string "content_type", null: false
@@ -155,29 +172,19 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_02_195758) do
     t.index ["server_id"], name: "index_server_stats_on_server_id"
   end
 
-  create_table "server_user_accounts", force: :cascade do |t|
-    t.bigint "server_id", null: false
-    t.bigint "user_account_id", null: false
-    t.datetime "verified_at"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["server_id"], name: "index_server_user_accounts_on_server_id"
-    t.index ["user_account_id", "server_id"], name: "index_server_user_accounts_on_user_account_id_and_server_id", unique: true
-  end
-
   create_table "server_votes", force: :cascade do |t|
     t.string "reference", default: "", null: false
     t.string "remote_ip", default: "", null: false
-    t.bigint "user_account_id"
+    t.bigint "account_id"
     t.bigint "game_id", null: false
     t.string "country_code", null: false
     t.bigint "server_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["account_id"], name: "index_server_votes_on_account_id"
     t.index ["created_at"], name: "index_server_votes_on_created_at"
     t.index ["game_id", "country_code"], name: "index_server_votes_on_game_id_and_country_code"
     t.index ["server_id"], name: "index_server_votes_on_server_id"
-    t.index ["user_account_id"], name: "index_server_votes_on_user_account_id"
   end
 
   create_table "server_webhook_configs", force: :cascade do |t|
@@ -239,14 +246,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_02_195758) do
     t.index ["verified_at"], name: "index_servers_on_verified_at"
   end
 
-  create_table "user_accounts", force: :cascade do |t|
-    t.bigint "user_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["user_id"], name: "index_user_accounts_on_user_id", unique: true
-  end
-
-  create_table "user_sessions", force: :cascade do |t|
+  create_table "sessions", force: :cascade do |t|
     t.string "token", null: false
     t.string "remote_ip", null: false
     t.string "user_agent", default: "", null: false
@@ -254,11 +254,11 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_02_195758) do
     t.bigint "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["token"], name: "index_user_sessions_on_token", unique: true
-    t.index ["user_id"], name: "index_user_sessions_on_user_id"
+    t.index ["token"], name: "index_sessions_on_token", unique: true
+    t.index ["user_id"], name: "index_sessions_on_user_id"
   end
 
-  create_table "user_tokens", force: :cascade do |t|
+  create_table "tokens", force: :cascade do |t|
     t.string "token", null: false
     t.string "purpose", null: false
     t.datetime "expires_at", null: false
@@ -266,10 +266,10 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_02_195758) do
     t.bigint "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["expires_at"], name: "index_user_tokens_on_expires_at"
-    t.index ["purpose"], name: "index_user_tokens_on_purpose"
-    t.index ["token"], name: "index_user_tokens_on_token", unique: true
-    t.index ["user_id"], name: "index_user_tokens_on_user_id"
+    t.index ["expires_at"], name: "index_tokens_on_expires_at"
+    t.index ["purpose"], name: "index_tokens_on_purpose"
+    t.index ["token"], name: "index_tokens_on_token", unique: true
+    t.index ["user_id"], name: "index_tokens_on_user_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -294,27 +294,27 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_02_195758) do
     t.index ["email"], name: "index_users_on_email", unique: true
   end
 
+  add_foreign_key "accounts", "users"
+  add_foreign_key "admin_account_roles", "admin_accounts"
+  add_foreign_key "admin_account_roles", "admin_roles"
+  add_foreign_key "admin_accounts", "admin_users"
   add_foreign_key "admin_role_permissions", "admin_permissions"
   add_foreign_key "admin_role_permissions", "admin_roles"
-  add_foreign_key "admin_user_account_roles", "admin_roles"
-  add_foreign_key "admin_user_account_roles", "admin_user_accounts"
-  add_foreign_key "admin_user_accounts", "admin_users"
-  add_foreign_key "admin_user_sessions", "admin_users"
-  add_foreign_key "admin_user_tokens", "admin_users"
+  add_foreign_key "admin_sessions", "admin_users"
+  add_foreign_key "admin_tokens", "admin_users"
+  add_foreign_key "server_accounts", "accounts"
+  add_foreign_key "server_accounts", "servers"
   add_foreign_key "server_banner_images", "servers"
   add_foreign_key "server_stats", "games"
   add_foreign_key "server_stats", "servers"
-  add_foreign_key "server_user_accounts", "servers"
-  add_foreign_key "server_user_accounts", "user_accounts"
+  add_foreign_key "server_votes", "accounts"
   add_foreign_key "server_votes", "games"
   add_foreign_key "server_votes", "servers"
-  add_foreign_key "server_votes", "user_accounts"
   add_foreign_key "server_webhook_configs", "servers"
   add_foreign_key "server_webhook_events", "server_webhook_configs"
   add_foreign_key "server_webhook_events", "servers"
   add_foreign_key "server_webhook_secrets", "servers"
   add_foreign_key "servers", "games"
-  add_foreign_key "user_accounts", "users"
-  add_foreign_key "user_sessions", "users"
-  add_foreign_key "user_tokens", "users"
+  add_foreign_key "sessions", "users"
+  add_foreign_key "tokens", "users"
 end

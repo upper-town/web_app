@@ -6,7 +6,7 @@ class CreateServerVotes < ActiveRecord::Migration[7.1]
       t.string :reference, null: false, default: ''
       t.string :remote_ip, null: false, default: ''
 
-      t.references :user_account, null: true,  foreign_key: true, index: false
+      t.references :account, null: true,  foreign_key: true, index: false
 
       t.references :game,         null: false, foreign_key: true, index: false
       t.string     :country_code, null: false
@@ -15,7 +15,7 @@ class CreateServerVotes < ActiveRecord::Migration[7.1]
       t.timestamps
     end
 
-    add_index :server_votes, :user_account_id
+    add_index :server_votes, :account_id
     add_index :server_votes, [:game_id, :country_code]
     add_index :server_votes, :server_id
     add_index :server_votes, :created_at

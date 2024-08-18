@@ -4,7 +4,7 @@ module Inside
   class ServerVotesController < BaseController
     def index
       @pagination_cursor = PaginationCursor.new(
-        current_user_account.server_votes,
+        current_account.server_votes,
         request,
         options: { per_page: 50 }
       )

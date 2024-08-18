@@ -2,12 +2,12 @@
 
 module Servers
   class Create
-    attr_reader :server, :server_banner_image_uploaded_file, :user_account
+    attr_reader :server, :server_banner_image_uploaded_file, :account
 
-    def initialize(server, server_banner_image_uploaded_file, user_account)
+    def initialize(server, server_banner_image_uploaded_file, account)
       @server = server
       @server_banner_image_uploaded_file = server_banner_image_uploaded_file
-      @user_account = user_account
+      @account = account
     end
 
     def call
@@ -32,7 +32,7 @@ module Servers
           )
         end
 
-        server.user_accounts << user_account
+        server.accounts << account
       end
 
       Result.success(server: server)

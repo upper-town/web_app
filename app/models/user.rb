@@ -34,9 +34,9 @@ class User < ApplicationRecord
 
   include FeatureFlagIdModel
 
-  has_many :sessions, class_name: 'UserSession', dependent: :destroy
-  has_many :tokens, class_name: 'UserToken', dependent: :destroy
-  has_one :account, class_name: 'UserAccount', dependent: :destroy
+  has_many :sessions, class_name: 'Session', dependent: :destroy
+  has_many :tokens, class_name: 'Token', dependent: :destroy
+  has_one :account, class_name: 'Account', dependent: :destroy
 
   has_secure_password validations: false
 

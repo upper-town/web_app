@@ -2,17 +2,17 @@
 
 module Inside
   class ServersController < BaseController
-    MAX_VERIFIED_SERVERS_PER_USER_ACCOUNT = 10
-    MAX_NOT_VERIFIED_SERVERS_PER_USER_ACCOUNT = 2
+    MAX_VERIFIED_SERVERS_PER_ACCOUNT = 10
+    MAX_NOT_VERIFIED_SERVERS_PER_ACCOUNT = 2
 
     before_action(
-      :max_verified_servers_per_user_account,
-      :max_not_verified_servers_per_user_account,
+      :max_verified_servers_per_account,
+      :max_not_verified_servers_per_account,
       only: [:new, :create]
     )
 
     def index
-      @servers = current_user_account.servers
+      @servers = current_account.servers
     end
 
     def new
@@ -41,7 +41,7 @@ module Inside
       result = Servers::Create.new(
         @server,
         server_banner_image_uploaded_file,
-        current_user_account
+        current_account
       ).call
 
       if result.success?
@@ -130,21 +130,21 @@ module Inside
         )
     end
 
-    def max_verified_servers_per_user_account
-      count = current_user_account.servers.verified.count
+    def max_verified_servers_per_account
+      count = current_account.servers.verified.count
 
-      if count >= MAX_VERIFIED_SERVERS_PER_USER_ACCOUNT
+      if count >= MAX_VERIFIED_SERVERS_PER_ACCOUNT
         redirect_to(
           inside_servers_path,
-          warning: 'You already have too many verified servers associated with your user account.'
+          warning: 'You already have too many verified servers associated with your account.'
         )
       end
     end
 
-    def max_not_verified_servers_per_user_account
-      count = current_user_account.servers.not_verified.count
+    def max_not_verified_servers_per_account
+      count = current_account.servers.not_verified.count
 
-      if count >= MAX_NOT_VERIFIED_SERVERS_PER_USER_ACCOUNT
+      if count >= MAX_NOT_VERIFIED_SERVERS_PER_ACCOUNT
         redirect_to(
           inside_servers_path,
           warning: 'You have many servers pending verification. Please verify them first before adding more servers.'

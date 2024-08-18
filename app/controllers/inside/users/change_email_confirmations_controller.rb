@@ -34,7 +34,7 @@ module Inside
 
         if result.success?
           redirect_to(
-            inside_user_account_path,
+            inside_account_path,
             success: 'Your request to change email address has been created.'
           )
         else

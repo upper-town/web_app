@@ -2,7 +2,7 @@
 
 module Admin
   class SidekiqConstraint
-    include Auth::AdminUserManageSession
+    include Auth::AdminManageSession
 
     attr_accessor :request
 

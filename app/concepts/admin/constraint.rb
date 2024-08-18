@@ -2,7 +2,7 @@
 
 module Admin
   class Constraint
-    include Auth::AdminUserManageSession
+    include Auth::AdminManageSession
 
     attr_accessor :request
 

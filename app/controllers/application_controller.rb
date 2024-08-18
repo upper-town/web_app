@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 class ApplicationController < ActionController::Base
-  include Auth::UserAuthenticationControl
-  include Auth::UserAuthorizationControl
+  include Auth::AuthenticationControl
+  include Auth::AuthorizationControl
 
   include AddFlashTypes
   include ManageCaptcha

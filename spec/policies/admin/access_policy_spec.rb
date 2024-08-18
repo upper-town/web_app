@@ -9,7 +9,7 @@ RSpec.describe Admin::AccessPolicy do
         admin_user = create(:admin_user, email: 'admin.user@upper.town')
 
         EnvVarHelper.with_values('SUPER_ADMIN_USER_EMAILS' => 'admin.user@upper.town') do
-          access_policy = described_class.new(admin_user, 'some_admin_permission_key')
+          access_policy = described_class.new(admin_user, 'admin_permission_key')
 
           expect(access_policy.allowed?).to be(true)
         end
@@ -22,7 +22,7 @@ RSpec.describe Admin::AccessPolicy do
           admin_user = create(:admin_user)
 
           EnvVarHelper.with_values('SUPER_ADMIN_USER_EMAILS' => '') do
-            access_policy = described_class.new(admin_user, 'some_admin_permission_key')
+            access_policy = described_class.new(admin_user, 'admin_permission_key')
 
             expect(access_policy.allowed?).to be(false)
           end
@@ -32,14 +32,14 @@ RSpec.describe Admin::AccessPolicy do
       context 'when admin_user has the permission' do
         it 'returns true' do
           admin_role = create(:admin_role)
-          admin_permission = create(:admin_permission, key: 'some_admin_permission_key')
+          admin_permission = create(:admin_permission, key: 'admin_permission_key')
           create(:admin_role_permission, admin_role: admin_role, admin_permission: admin_permission)
 
           admin_user = create(:admin_user)
-          create(:admin_user_role, admin_user: admin_user, admin_role: admin_role)
+          create(:admin_role, admin_user: admin_user, admin_role: admin_role)
 
           EnvVarHelper.with_values('SUPER_ADMIN_USER_EMAILS' => '') do
-            access_policy = described_class.new(admin_user, 'some_admin_permission_key')
+            access_policy = described_class.new(admin_user, 'admin_permission_key')
 
             expect(access_policy.allowed?).to be(true)
           end
