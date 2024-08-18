@@ -62,7 +62,7 @@ RSpec.describe AdminUser do
 
   describe 'features' do
     it 'has secure password' do
-      admin_user = build(:admin_user, email: 'admin.user@development.upper.town', password: 'abcd1234')
+      admin_user = build(:admin_user, email: 'admin.user@upper.town', password: 'abcd1234')
 
       expect(admin_user.password_digest).to be_present
       expect(admin_user.password_digest).not_to eq('abcd1234')
@@ -71,7 +71,7 @@ RSpec.describe AdminUser do
 
       expect(
         described_class.authenticate_by(
-          email: 'admin.user@development.upper.town', password: 'abcd1234'
+          email: 'admin.user@upper.town', password: 'abcd1234'
         )
       ).to eq(admin_user)
     end
@@ -79,15 +79,15 @@ RSpec.describe AdminUser do
 
   describe 'normalizations' do
     it 'normalizes email' do
-      admin_user = create(:admin_user, email: ' admin.USER @development.UPPER .Town ')
+      admin_user = create(:admin_user, email: ' admin.USER @UPPER .Town ')
 
-      expect(admin_user.email).to eq('admin.user@development.upper.town')
+      expect(admin_user.email).to eq('admin.user@upper.town')
     end
 
     it 'normalizes change_email' do
-      admin_user = create(:admin_user, change_email: ' admin.USER @development.UPPER .Town ')
+      admin_user = create(:admin_user, change_email: ' admin.USER @UPPER .Town ')
 
-      expect(admin_user.change_email).to eq('admin.user@development.upper.town')
+      expect(admin_user.change_email).to eq('admin.user@upper.town')
     end
   end
 
@@ -97,7 +97,7 @@ RSpec.describe AdminUser do
       admin_user.validate
       expect(admin_user.errors.of_kind?(:email, :blank)).to be(true)
 
-      admin_user = build(:admin_user, email: '@development.upper.town')
+      admin_user = build(:admin_user, email: '@upper.town')
       admin_user.validate
       expect(admin_user.errors.of_kind?(:email, :format_is_not_valid)).to be(true)
 
@@ -382,16 +382,16 @@ RSpec.describe AdminUser do
       freeze_time do
         admin_user = create(
           :admin_user,
-          email: 'admin.user@development.upper.town',
+          email: 'admin.user@upper.town',
           email_confirmed_at: 2.hours.ago,
-          change_email: 'admin.user@development.upper.town',
+          change_email: 'admin.user@upper.town',
           change_email_confirmed_at: 1.hour.ago,
           change_email_reverted_at: nil
         )
 
-        admin_user.revert_change_email!('previous.admin.user@development.upper.town')
+        admin_user.revert_change_email!('previous.admin.user@upper.town')
 
-        expect(admin_user.email).to eq('previous.admin.user@development.upper.town')
+        expect(admin_user.email).to eq('previous.admin.user@upper.town')
         expect(admin_user.email_confirmed_at).to eq(Time.current)
         expect(admin_user.change_email).to be_nil
         expect(admin_user.change_email_confirmed_at).to be_nil
@@ -488,10 +488,10 @@ RSpec.describe AdminUser do
   describe '#super_admin?' do
     context 'when env var does not contain AdminUser email address' do
       it 'returns false' do
-        admin_user = create(:admin_user, email: 'admin.user.1@development.upper.town')
+        admin_user = create(:admin_user, email: 'admin.user.1@upper.town')
 
         EnvVarHelper.with_values(
-          'SUPER_ADMIN_USER_EMAILS' => 'admin.user.2@development.upper.town'
+          'SUPER_ADMIN_USER_EMAILS' => 'admin.user.2@upper.town'
         ) do
           expect(admin_user.super_admin?).to be(false)
         end
@@ -500,11 +500,11 @@ RSpec.describe AdminUser do
 
     context 'when env var contains AdminUser email address' do
       it 'returns true' do
-        admin_user = create(:admin_user, email: 'admin.user.1@development.upper.town')
+        admin_user = create(:admin_user, email: 'admin.user.1@upper.town')
 
         EnvVarHelper.with_values(
           'SUPER_ADMIN_USER_EMAILS' =>
-            'admin.user.2@development.upper.town,admin.user.1@development.upper.town'
+            'admin.user.2@upper.town,admin.user.1@upper.town'
         ) do
           expect(admin_user.super_admin?).to be(true)
         end

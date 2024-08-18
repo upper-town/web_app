@@ -62,7 +62,7 @@ RSpec.describe User do
 
   describe 'features' do
     it 'has secure password' do
-      user = build(:user, email: 'user@development.upper.town', password: 'abcd1234')
+      user = build(:user, email: 'user@upper.town', password: 'abcd1234')
 
       expect(user.password_digest).to be_present
       expect(user.password_digest).not_to eq('abcd1234')
@@ -71,7 +71,7 @@ RSpec.describe User do
 
       expect(
         described_class.authenticate_by(
-          email: 'user@development.upper.town', password: 'abcd1234'
+          email: 'user@upper.town', password: 'abcd1234'
         )
       ).to eq(user)
     end
@@ -79,15 +79,15 @@ RSpec.describe User do
 
   describe 'normalizations' do
     it 'normalizes email' do
-      user = create(:user, email: ' USER @development.UPPER .Town ')
+      user = create(:user, email: ' USER @UPPER .Town ')
 
-      expect(user.email).to eq('user@development.upper.town')
+      expect(user.email).to eq('user@upper.town')
     end
 
     it 'normalizes change_email' do
-      user = create(:user, change_email: ' USER @development.UPPER .Town ')
+      user = create(:user, change_email: ' USER @UPPER .Town ')
 
-      expect(user.change_email).to eq('user@development.upper.town')
+      expect(user.change_email).to eq('user@upper.town')
     end
   end
 
@@ -97,7 +97,7 @@ RSpec.describe User do
       user.validate
       expect(user.errors.of_kind?(:email, :blank)).to be(true)
 
-      user = build(:user, email: '@development.upper.town')
+      user = build(:user, email: '@upper.town')
       user.validate
       expect(user.errors.of_kind?(:email, :format_is_not_valid)).to be(true)
 
@@ -372,16 +372,16 @@ RSpec.describe User do
       freeze_time do
         user = create(
           :user,
-          email: 'user@development.upper.town',
+          email: 'user@upper.town',
           email_confirmed_at: 2.hours.ago,
-          change_email: 'user@development.upper.town',
+          change_email: 'user@upper.town',
           change_email_confirmed_at: 1.hour.ago,
           change_email_reverted_at: nil
         )
 
-        user.revert_change_email!('previous.user@development.upper.town')
+        user.revert_change_email!('previous.user@upper.town')
 
-        expect(user.email).to eq('previous.user@development.upper.town')
+        expect(user.email).to eq('previous.user@upper.town')
         expect(user.email_confirmed_at).to eq(Time.current)
         expect(user.change_email).to be_nil
         expect(user.change_email_confirmed_at).to be_nil
