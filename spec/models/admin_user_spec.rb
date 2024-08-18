@@ -34,20 +34,24 @@ RSpec.describe AdminUser do
   describe 'associations' do
     it 'has many sessions' do
       admin_user = create(:admin_user)
-      admin_session = create(:admin_session, admin_user: admin_user)
+      admin_session1 = create(:admin_session, admin_user: admin_user)
+      admin_session2 = create(:admin_session, admin_user: admin_user)
 
-      expect(admin_user.sessions).to include(admin_session)
+      expect(admin_user.sessions).to contain_exactly(admin_session1, admin_session2)
       admin_user.destroy!
-      expect { admin_session.reload }.to raise_error(ActiveRecord::RecordNotFound)
+      expect { admin_session1.reload }.to raise_error(ActiveRecord::RecordNotFound)
+      expect { admin_session2.reload }.to raise_error(ActiveRecord::RecordNotFound)
     end
 
     it 'has many tokens' do
       admin_user = create(:admin_user)
-      admin_token = create(:admin_token, admin_user: admin_user)
+      admin_token1 = create(:admin_token, admin_user: admin_user)
+      admin_token2 = create(:admin_token, admin_user: admin_user)
 
-      expect(admin_user.tokens).to include(admin_token)
+      expect(admin_user.tokens).to contain_exactly(admin_token1, admin_token2)
       admin_user.destroy!
-      expect { admin_token.reload }.to raise_error(ActiveRecord::RecordNotFound)
+      expect { admin_token1.reload }.to raise_error(ActiveRecord::RecordNotFound)
+      expect { admin_token2.reload }.to raise_error(ActiveRecord::RecordNotFound)
     end
 
     it 'has one account' do

@@ -19,36 +19,43 @@ RSpec.describe Server do
 
     it 'has many votes' do
       server = create(:server)
-      server_vote = create(:server_vote, server: server)
+      server_vote1 = create(:server_vote, server: server)
+      server_vote2 = create(:server_vote, server: server)
 
-      expect(server.votes).to include(server_vote)
+      expect(server.votes).to contain_exactly(server_vote1, server_vote2)
       server.destroy!
-      expect { server_vote.reload }.to raise_error(ActiveRecord::RecordNotFound)
+      expect { server_vote1.reload }.to raise_error(ActiveRecord::RecordNotFound)
+      expect { server_vote2.reload }.to raise_error(ActiveRecord::RecordNotFound)
     end
 
     it 'has many stats' do
       server = create(:server)
-      server_stat = create(:server_stat, server: server)
+      server_stat1 = create(:server_stat, server: server)
+      server_stat2 = create(:server_stat, server: server)
 
-      expect(server.stats).to include(server_stat)
+      expect(server.stats).to contain_exactly(server_stat1, server_stat2)
       server.destroy!
-      expect { server_stat.reload }.to raise_error(ActiveRecord::RecordNotFound)
+      expect { server_stat1.reload }.to raise_error(ActiveRecord::RecordNotFound)
+      expect { server_stat2.reload }.to raise_error(ActiveRecord::RecordNotFound)
     end
 
     it 'has many server_accounts' do
       server = create(:server)
-      server_account = create(:server_account, server: server)
+      server_account1 = create(:server_account, server: server)
+      server_account2 = create(:server_account, server: server)
 
-      expect(server.server_accounts).to include(server_account)
+      expect(server.server_accounts).to contain_exactly(server_account1, server_account2)
       server.destroy!
-      expect { server_account.reload }.to raise_error(ActiveRecord::RecordNotFound)
+      expect { server_account1.reload }.to raise_error(ActiveRecord::RecordNotFound)
+      expect { server_account2.reload }.to raise_error(ActiveRecord::RecordNotFound)
     end
 
     it 'has many accounts through server_accounts' do
       server = create(:server)
-      server_account = create(:server_account, server: server)
+      server_account1 = create(:server_account, server: server)
+      server_account2 = create(:server_account, server: server)
 
-      expect(server.accounts).to contain_exactly(server_account.account)
+      expect(server.accounts).to contain_exactly(server_account1.account, server_account2.account)
     end
 
     it 'has many verified_accounts through server_accounts' do
@@ -61,29 +68,35 @@ RSpec.describe Server do
 
     it 'has many webhook_configs' do
       server = create(:server)
-      server_webhook_config = create(:server_webhook_config, server: server)
+      server_webhook_config1 = create(:server_webhook_config, server: server)
+      server_webhook_config2 = create(:server_webhook_config, server: server)
 
-      expect(server.webhook_configs).to include(server_webhook_config)
+      expect(server.webhook_configs).to contain_exactly(server_webhook_config1, server_webhook_config2)
       server.destroy!
-      expect { server_webhook_config.reload }.to raise_error(ActiveRecord::RecordNotFound)
+      expect { server_webhook_config1.reload }.to raise_error(ActiveRecord::RecordNotFound)
+      expect { server_webhook_config2.reload }.to raise_error(ActiveRecord::RecordNotFound)
     end
 
     it 'has many webhook_secrets' do
       server = create(:server)
-      server_webhook_secret = create(:server_webhook_secret, server: server)
+      server_webhook_secret1 = create(:server_webhook_secret, server: server)
+      server_webhook_secret2 = create(:server_webhook_secret, server: server)
 
-      expect(server.webhook_secrets).to include(server_webhook_secret)
+      expect(server.webhook_secrets).to contain_exactly(server_webhook_secret1, server_webhook_secret2)
       server.destroy!
-      expect { server_webhook_secret.reload }.to raise_error(ActiveRecord::RecordNotFound)
+      expect { server_webhook_secret1.reload }.to raise_error(ActiveRecord::RecordNotFound)
+      expect { server_webhook_secret2.reload }.to raise_error(ActiveRecord::RecordNotFound)
     end
 
     it 'has many webhook_events' do
       server = create(:server)
-      server_webhook_event = create(:server_webhook_event, server: server)
+      server_webhook_event1 = create(:server_webhook_event, server: server)
+      server_webhook_event2 = create(:server_webhook_event, server: server)
 
-      expect(server.webhook_events).to include(server_webhook_event)
+      expect(server.webhook_events).to contain_exactly(server_webhook_event1, server_webhook_event2)
       server.destroy!
-      expect { server_webhook_event.reload }.to raise_error(ActiveRecord::RecordNotFound)
+      expect { server_webhook_event1.reload }.to raise_error(ActiveRecord::RecordNotFound)
+      expect { server_webhook_event2.reload }.to raise_error(ActiveRecord::RecordNotFound)
     end
   end
 
@@ -95,15 +108,15 @@ RSpec.describe Server do
     end
 
     it 'normalizes description' do
-      server = create(:server, description: "\n\t Server  Description \n")
+      server = create(:server, description: "\n\t Server  description \n")
 
-      expect(server.description).to eq('Server Description')
+      expect(server.description).to eq('Server description')
     end
 
     it 'normalizes info' do
-      server = create(:server, info: "\n\t Server  Info  \n")
+      server = create(:server, info: "\n\t Server  info  \n")
 
-      expect(server.info).to eq('Server  Info')
+      expect(server.info).to eq('Server  info')
     end
   end
 

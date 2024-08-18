@@ -30,7 +30,6 @@ RSpec.describe AdminPermission do
     it 'has many distinct accounts through roles' do
       admin_account1 = create(:admin_account)
       admin_account2 = create(:admin_account)
-      _admin_account3 = create(:admin_account)
       admin_role1 = create(:admin_role)
       admin_role2 = create(:admin_role)
       admin_role3 = create(:admin_role)
@@ -38,9 +37,9 @@ RSpec.describe AdminPermission do
       create(:admin_account_role, admin_account: admin_account1, admin_role: admin_role2)
       create(:admin_account_role, admin_account: admin_account2, admin_role: admin_role3)
       admin_permission = create(:admin_permission)
-      _admin_role_permission1 = create(:admin_role_permission, admin_role: admin_role1, admin_permission: admin_permission)
-      _admin_role_permission2 = create(:admin_role_permission, admin_role: admin_role2, admin_permission: admin_permission)
-      _admin_role_permission3 = create(:admin_role_permission, admin_role: admin_role3, admin_permission: admin_permission)
+      create(:admin_role_permission, admin_role: admin_role1, admin_permission: admin_permission)
+      create(:admin_role_permission, admin_role: admin_role2, admin_permission: admin_permission)
+      create(:admin_role_permission, admin_role: admin_role3, admin_permission: admin_permission)
 
       expect(admin_permission.accounts).to contain_exactly(
         admin_account1, admin_account2

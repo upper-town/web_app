@@ -34,20 +34,24 @@ RSpec.describe User do
   describe 'associations' do
     it 'has many sessions' do
       user = create(:user)
-      session = create(:session, user: user)
+      session1 = create(:session, user: user)
+      session2 = create(:session, user: user)
 
-      expect(user.sessions).to include(session)
+      expect(user.sessions).to contain_exactly(session1, session2)
       user.destroy!
-      expect { session.reload }.to raise_error(ActiveRecord::RecordNotFound)
+      expect { session1.reload }.to raise_error(ActiveRecord::RecordNotFound)
+      expect { session2.reload }.to raise_error(ActiveRecord::RecordNotFound)
     end
 
     it 'has many tokens' do
       user = create(:user)
-      token = create(:token, user: user)
+      token1 = create(:token, user: user)
+      token2 = create(:token, user: user)
 
-      expect(user.tokens).to include(token)
+      expect(user.tokens).to contain_exactly(token1, token2)
       user.destroy!
-      expect { token.reload }.to raise_error(ActiveRecord::RecordNotFound)
+      expect { token1.reload }.to raise_error(ActiveRecord::RecordNotFound)
+      expect { token2.reload }.to raise_error(ActiveRecord::RecordNotFound)
     end
 
     it 'has one account' do
