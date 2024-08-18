@@ -32,6 +32,10 @@
 en:
   hello: "Hello world"
 
+  errors:
+    messages:
+      generic_error: "An error has occurred"
+
   activerecord:
     errors:
       models:

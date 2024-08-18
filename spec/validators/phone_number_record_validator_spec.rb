@@ -71,7 +71,14 @@ RSpec.describe PhoneNumberRecordValidator do
   end
 
   def generic_model_class
-    Class.new(ApplicationModel) do
+    Class.new do
+      include ActiveModel::Model
+      include ActiveModel::Attributes
+
+      def self.name
+        'GenericModelClass'
+      end
+
       attribute :phone_number
       attribute :other
     end

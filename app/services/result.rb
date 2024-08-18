@@ -3,7 +3,7 @@
 class Result
   extend ActiveModel::Naming # Required dependency for ActiveModel::Errors
 
-  GENERIC_ERROR = 'An error has occurred'
+  GENERIC_ERROR = :generic_error
 
   attr_reader :errors, :data
 
@@ -42,7 +42,7 @@ class Result
       add_errors_from_hash(error_values)
     when Array
       add_errors_from_array(:base, error_values)
-    when String, Symbol, Numeric
+    when Symbol, String, Numeric
       add_errors_from_literal(:base, error_values)
     when ActiveModel::Errors
       add_errors_from_active_model_errors(error_values)
@@ -88,7 +88,14 @@ class Result
   end
 
   def add_errors_from_literal(key, value)
-    errors.add(key.to_sym, value.to_s) if value.present?
+    return if value.blank?
+
+    case value
+    when Symbol
+      errors.add(key.to_sym, value)
+    when String, Numeric
+      errors.add(key.to_sym, value.to_s)
+    end
   end
 
   def add_errors_from_active_model_errors(active_model_errors)
