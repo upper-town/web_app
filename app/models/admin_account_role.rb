@@ -12,8 +12,8 @@
 #
 # Indexes
 #
-#  index_admin_account_roles_account_id_role_id  (admin_account_id,admin_role_id) UNIQUE
-#  index_admin_account_roles_on_admin_role_id    (admin_role_id)
+#  idx_on_admin_account_id_admin_role_id_29d5733394  (admin_account_id,admin_role_id) UNIQUE
+#  index_admin_account_roles_on_admin_role_id        (admin_role_id)
 #
 # Foreign Keys
 #

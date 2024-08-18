@@ -27,7 +27,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_02_195758) do
     t.bigint "admin_role_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["admin_account_id", "admin_role_id"], name: "index_admin_account_roles_account_id_role_id", unique: true
+    t.index ["admin_account_id", "admin_role_id"], name: "idx_on_admin_account_id_admin_role_id_29d5733394", unique: true
     t.index ["admin_role_id"], name: "index_admin_account_roles_on_admin_role_id"
   end
 

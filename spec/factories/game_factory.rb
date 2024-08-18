@@ -20,7 +20,7 @@
 #
 FactoryBot.define do
   factory :game do
-    sequence(:name) { |n| "Game Test #{n}" }
-    sequence(:slug) { |n| "game-test-#{n}" }
+    sequence(:name) { |n| "Game #{n}" }
+    sequence(:slug) { |n| "game-#{n}" }
   end
 end
