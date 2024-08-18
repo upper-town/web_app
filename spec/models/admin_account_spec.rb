@@ -28,7 +28,7 @@ RSpec.describe AdminAccount do
         .to contain_exactly(admin_account_role1.admin_role, admin_account_role2.admin_role)
     end
 
-    it 'has_may permissions through roles' do
+    it 'has_may distinct permissions through roles' do
       admin_role1 = create(:admin_role)
       admin_role2 = create(:admin_role)
       admin_permission1 = create(:admin_permission)
@@ -36,6 +36,7 @@ RSpec.describe AdminAccount do
       admin_permission3 = create(:admin_permission)
       create(:admin_role_permission, admin_role: admin_role1, admin_permission: admin_permission1)
       create(:admin_role_permission, admin_role: admin_role1, admin_permission: admin_permission2)
+      create(:admin_role_permission, admin_role: admin_role2, admin_permission: admin_permission1)
       create(:admin_role_permission, admin_role: admin_role2, admin_permission: admin_permission3)
       admin_account = create(:admin_account)
       create(:admin_account_role, admin_account: admin_account, admin_role: admin_role1)

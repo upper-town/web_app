@@ -22,8 +22,8 @@ class AdminAccount < ApplicationRecord
 
   has_many :admin_account_roles, dependent: :destroy
 
-  has_many :roles,       through: :admin_account_roles, source: :admin_role
-  has_many :permissions, through: :roles
+  has_many :roles, through: :admin_account_roles, source: :admin_role
+  has_many :permissions, -> { distinct }, through: :roles
 
   # Super Admin status can only be granted through env var.
   def super_admin?
