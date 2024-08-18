@@ -35,6 +35,6 @@ FactoryBot.define do
 
     payload { {} }
     status { ServerWebhookEvent::PENDING }
-    type { 'test.event_type' }
+    type { 'test.event' }
   end
 end

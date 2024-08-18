@@ -25,6 +25,6 @@ FactoryBot.define do
   factory :server_webhook_config do
     server
 
-    event_type { 'test.event_type' }
+    event_type { 'test.event' }
   end
 end
