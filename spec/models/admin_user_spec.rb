@@ -122,19 +122,11 @@ RSpec.describe AdminUser do
   end
 
   describe 'FeatureFlagIdModel' do
-    describe '#feature_flag_id' do
+    describe '#to_ffid' do
       it 'returns the class name, underscore, record id' do
         admin_user = create(:admin_user)
 
-        expect(admin_user.feature_flag_id).to eq("AdminUser_#{admin_user.id}")
-      end
-    end
-
-    describe '#ffid' do
-      it 'returns the class name, underscore, record id' do
-        admin_user = create(:admin_user)
-
-        expect(admin_user.ffid).to eq("AdminUser_#{admin_user.id}")
+        expect(admin_user.to_ffid).to eq("admin_user_#{admin_user.id}")
       end
     end
   end

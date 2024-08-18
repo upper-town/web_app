@@ -48,17 +48,17 @@ RSpec.describe FeatureFlag do
           create(:feature_flag, name: 'something', value: 'true')
           user = create(:user)
 
-          EnvVarHelper.with_values('FF_SOMETHING' => "false:User#{user.id}") do
+          EnvVarHelper.with_values('FF_SOMETHING' => "false:user_#{user.id}") do
             expect(described_class.enabled?(:something)).to eq(true)
             expect(described_class.enabled?(:something, user)).to eq(false)
-            expect(described_class.enabled?(:something, "User#{user.id}")).to eq(false)
+            expect(described_class.enabled?(:something, "user_#{user.id}")).to eq(false)
 
             expect(described_class.disabled?(:something))
               .to eq(!described_class.enabled?(:something))
             expect(described_class.disabled?(:something, user))
               .to eq(!described_class.enabled?(:something, user))
-            expect(described_class.disabled?(:something, "User#{user.id}"))
-              .to eq(!described_class.enabled?(:something, "User#{user.id}"))
+            expect(described_class.disabled?(:something, "user_#{user.id}"))
+              .to eq(!described_class.enabled?(:something, "user_#{user.id}"))
           end
         end
       end
@@ -69,17 +69,17 @@ RSpec.describe FeatureFlag do
           create(:feature_flag, name: 'something', value: 'false')
           user = create(:user)
 
-          EnvVarHelper.with_values('FF_SOMETHING' => "true:User#{user.id}") do
+          EnvVarHelper.with_values('FF_SOMETHING' => "true:user_#{user.id}") do
             expect(described_class.enabled?(:something)).to eq(false)
             expect(described_class.enabled?(:something, user)).to eq(true)
-            expect(described_class.enabled?(:something, "User#{user.id}")).to eq(true)
+            expect(described_class.enabled?(:something, "user_#{user.id}")).to eq(true)
 
             expect(described_class.disabled?(:something))
               .to eq(!described_class.enabled?(:something))
             expect(described_class.disabled?(:something, user))
               .to eq(!described_class.enabled?(:something, user))
-            expect(described_class.disabled?(:something, "User#{user.id}"))
-              .to eq(!described_class.enabled?(:something, "User#{user.id}"))
+            expect(described_class.disabled?(:something, "user_#{user.id}"))
+              .to eq(!described_class.enabled?(:something, "user_#{user.id}"))
           end
         end
       end
@@ -98,36 +98,36 @@ RSpec.describe FeatureFlag do
       context 'when disabled for specific records' do
         it 'returns accordingly from database feature flag' do
           user = create(:user)
-          create(:feature_flag, name: 'something', value: "false:User#{user.id}")
+          create(:feature_flag, name: 'something', value: "false:user_#{user.id}")
 
           expect(described_class.enabled?(:something)).to eq(true)
           expect(described_class.enabled?(:something, user)).to eq(false)
-          expect(described_class.enabled?(:something, "User#{user.id}")).to eq(false)
+          expect(described_class.enabled?(:something, "user_#{user.id}")).to eq(false)
 
           expect(described_class.disabled?(:something))
             .to eq(!described_class.enabled?(:something))
           expect(described_class.disabled?(:something, user))
             .to eq(!described_class.enabled?(:something, user))
-          expect(described_class.disabled?(:something, "User#{user.id}"))
-            .to eq(!described_class.enabled?(:something, "User#{user.id}"))
+          expect(described_class.disabled?(:something, "user_#{user.id}"))
+            .to eq(!described_class.enabled?(:something, "user_#{user.id}"))
         end
       end
 
       context 'when enabled for specific records' do
         it 'returns accordingly from database feature flag' do
           user = create(:user)
-          create(:feature_flag, name: 'something', value: "true:User#{user.id}")
+          create(:feature_flag, name: 'something', value: "true:user_#{user.id}")
 
           expect(described_class.enabled?(:something)).to eq(false)
           expect(described_class.enabled?(:something, user)).to eq(true)
-          expect(described_class.enabled?(:something, "User#{user.id}")).to eq(true)
+          expect(described_class.enabled?(:something, "user_#{user.id}")).to eq(true)
 
           expect(described_class.disabled?(:something))
             .to eq(!described_class.enabled?(:something))
           expect(described_class.disabled?(:something, user))
             .to eq(!described_class.enabled?(:something, user))
-          expect(described_class.disabled?(:something, "User#{user.id}"))
-            .to eq(!described_class.enabled?(:something, "User#{user.id}"))
+          expect(described_class.disabled?(:something, "user_#{user.id}"))
+            .to eq(!described_class.enabled?(:something, "user_#{user.id}"))
         end
       end
     end
@@ -208,33 +208,33 @@ RSpec.describe FeatureFlag do
       [
         [nil, false, []],
 
-        ['',                   false, []],
-        [':',                  false, []],
-        [':User1,User2',       false, ['User1', 'User2']],
-        [':User1,User1,User1', false, ['User1']],
+        ['',                     false, []],
+        [':',                    false, []],
+        [':user_1,user_2',       false, ['user_1', 'user_2']],
+        [':user_1,user_1,user_1', false, ['user_1']],
 
-        ['false',             false, []],
-        ['false:',            false, []],
-        ['false:User1,User2', false, ['User1', 'User2']],
-        ['FALSE:User1,User2', false, ['User1', 'User2']],
+        ['false',               false, []],
+        ['false:',              false, []],
+        ['false:user_1,user_2', false, ['user_1', 'user_2']],
+        ['FALSE:user_1,user_2', false, ['user_1', 'user_2']],
 
-        ['anything',             false, []],
-        ['anything:',            false, []],
-        ['anything:User1,User2', false, ['User1', 'User2']],
-        ['ANYTHING:User1,User2', false, ['User1', 'User2']],
+        ['anything',               false, []],
+        ['anything:',              false, []],
+        ['anything:user_1,user_2', false, ['user_1', 'user_2']],
+        ['ANYTHING:user_1,user_2', false, ['user_1', 'user_2']],
 
-        ['true',             true, []],
-        ['true:',            true, []],
-        ['true:User1,User2', true, ['User1', 'User2']],
-        ['TRUE:User1,User2', true, ['User1', 'User2']],
+        ['true',               true, []],
+        ['true:',              true, []],
+        ['true:user_1,user_2', true, ['user_1', 'user_2']],
+        ['TRUE:user_1,user_2', true, ['user_1', 'user_2']],
 
-        ['enabled:User1,User2', true, ['User1', 'User2']],
-        ['ENABLED:User1,User2', true, ['User1', 'User2']],
+        ['enabled:user_1,user_2', true, ['user_1', 'user_2']],
+        ['ENABLED:user_1,user_2', true, ['user_1', 'user_2']],
 
-        ['on:User1,User2', true, ['User1', 'User2']],
-        ['ON:User1,User2', true, ['User1', 'User2']],
+        ['on:user_1,user_2', true, ['user_1', 'user_2']],
+        ['ON:user_1,user_2', true, ['user_1', 'user_2']],
 
-        ["\n true : , \nUser1 , User 2 ,,\n,User1", true, ['User1', 'User2']],
+        ["\n true : , \nuser_1 , user_ 2 ,,\n,user_1", true, ['user_1', 'user_2']],
       ].each do |value, expected_boolean, expected_array|
         enabled, ffids = described_class.parse_enabled_and_ffids(value)
 
@@ -252,19 +252,19 @@ RSpec.describe FeatureFlag do
 
   describe '.build_ffid' do
     context 'when object is an ApplicationRecord' do
-      it 'calls #ffid on it' do
+      it 'calls #to_ffid on it' do
         user = create(:user)
 
         ffid = described_class.build_ffid(user)
 
-        expect(ffid).to eq("User#{user.id}")
+        expect(ffid).to eq("user_#{user.id}")
       end
     end
 
     context 'when object is anything else' do
       it 'calls #to_s on it' do
-        expect(described_class.build_ffid('User123')).to eq('User123')
-        expect(described_class.build_ffid(:User123)).to eq('User123')
+        expect(described_class.build_ffid('user_123')).to eq('user_123')
+        expect(described_class.build_ffid(:user_123)).to eq('user_123')
         expect(described_class.build_ffid(123)).to eq('123')
         expect(described_class.build_ffid(nil)).to eq('')
       end

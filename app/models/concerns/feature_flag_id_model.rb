@@ -1,9 +1,7 @@
 # frozen_string_literal: true
 
 module FeatureFlagIdModel
-  def feature_flag_id
-    "#{self.class.name}_#{id}"
+  def to_ffid
+    "#{self.class.name.underscore}_#{id}"
   end
-
-  alias ffid feature_flag_id
 end

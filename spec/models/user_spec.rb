@@ -122,19 +122,11 @@ RSpec.describe User do
   end
 
   describe 'FeatureFlagIdModel' do
-    describe '#feature_flag_id' do
+    describe '#to_ffid' do
       it 'returns the class name, underscore, record id' do
         user = create(:user)
 
-        expect(user.feature_flag_id).to eq("User_#{user.id}")
-      end
-    end
-
-    describe '#ffid' do
-      it 'returns the class name, underscore, record id' do
-        user = create(:user)
-
-        expect(user.ffid).to eq("User_#{user.id}")
+        expect(user.to_ffid).to eq("user_#{user.id}")
       end
     end
   end

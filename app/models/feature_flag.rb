@@ -28,8 +28,8 @@ class FeatureFlag < ApplicationRecord
   #
   #   FF_SOMETHING="true"
   #   FF_SOMETHING="false"
-  #   FF_SOMETHING="true:User_1,User_2"
-  #   FF_SOMETHING="false:User_1,User_2"
+  #   FF_SOMETHING="true:user_1,user_2"
+  #   FF_SOMETHING="false:user_1,user_2"
   #
   # Where:
   #
@@ -42,7 +42,7 @@ class FeatureFlag < ApplicationRecord
   #   false
   #     Indicates the feature flag is disabled
   #
-  #   User_1,User_2
+  #   user_1,user_2
   #     Comma-separated list of Record Feature Flag IDs (ffids) to which the
   #     feature flag applies. See FeatureFlagIdModel.
   #
@@ -50,7 +50,7 @@ class FeatureFlag < ApplicationRecord
   #
   #   FeatureFlag.enabled?(:something)
   #   FeatureFlag.enabled?(:something, user)
-  #   FeatureFlag.enabled?(:something, 'User_1')
+  #   FeatureFlag.enabled?(:something, 'user_1')
   #
   ENV_VAR_PREFIX  = 'FF_'
   VALUE_SEPARATOR = ':'
@@ -102,7 +102,7 @@ class FeatureFlag < ApplicationRecord
   def self.build_ffid(object)
     case object
     when ApplicationRecord
-      object.ffid
+      object.to_ffid
     else
       object.to_s
     end
