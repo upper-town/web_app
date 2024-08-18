@@ -53,4 +53,13 @@ RSpec.describe ServerVote do
       expect(server_vote.account).to be_present
     end
   end
+
+  describe 'validations' do
+    it 'validates country_code' do
+      server_vote = build(:server_vote, country_code: '123456')
+      server_vote.validate
+
+      expect(server_vote.errors.of_kind?(:country_code, :inclusion)).to be(true)
+    end
+  end
 end
