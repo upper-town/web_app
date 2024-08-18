@@ -9,7 +9,7 @@ module Admin
     def matches?(request)
       @request = request
 
-      Admin::AccessPolicy.new(current_admin_user, 'access_sidekiq').allowed?
+      Admin::AccessPolicy.new(current_admin_account, 'access_sidekiq').allowed?
     end
   end
 end

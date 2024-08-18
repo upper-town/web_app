@@ -484,31 +484,4 @@ RSpec.describe AdminUser do
       end
     end
   end
-
-  describe '#super_admin?' do
-    context 'when env var does not contain AdminUser email address' do
-      it 'returns false' do
-        admin_user = create(:admin_user, email: 'admin.user.1@upper.town')
-
-        EnvVarHelper.with_values(
-          'SUPER_ADMIN_USER_EMAILS' => 'admin.user.2@upper.town'
-        ) do
-          expect(admin_user.super_admin?).to be(false)
-        end
-      end
-    end
-
-    context 'when env var contains AdminUser email address' do
-      it 'returns true' do
-        admin_user = create(:admin_user, email: 'admin.user.1@upper.town')
-
-        EnvVarHelper.with_values(
-          'SUPER_ADMIN_USER_EMAILS' =>
-            'admin.user.2@upper.town,admin.user.1@upper.town'
-        ) do
-          expect(admin_user.super_admin?).to be(true)
-        end
-      end
-    end
-  end
 end

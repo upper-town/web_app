@@ -17,6 +17,6 @@
 FactoryBot.define do
   factory :admin_role do
     sequence(:key) { |n| "admin_role_key_#{n}" }
-    description { 'Some AdminRole' }
+    description { 'AdminRole' }
   end
 end

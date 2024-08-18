@@ -12,8 +12,7 @@ class CreateAdminAccountRoles < ActiveRecord::Migration[7.1]
     add_index(
       :admin_account_roles,
       [:admin_account_id, :admin_role_id],
-      unique: true,
-      name: 'index_admin_account_roles_account_id_role_id'
+      unique: true
     )
     add_index :admin_account_roles, :admin_role_id
   end

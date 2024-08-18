@@ -152,9 +152,4 @@ class AdminUser < ApplicationRecord
       password_reset_at: Time.current
     )
   end
-
-  # Super Admin status can only be granted through env var.
-  def super_admin?
-    StringValueHelper.values_list_uniq(ENV.fetch('SUPER_ADMIN_USER_EMAILS', '')).include?(email)
-  end
 end
