@@ -7,7 +7,7 @@ RSpec.describe EmailValidator do
     validator = described_class.new('user@upper.town')
 
     expect(validator.errors).not_to be_empty
-    expect(validator.errors).to include('not validated yet')
+    expect(validator.errors).to include(:not_validated_yet)
   end
 
   describe '#valid?' do
@@ -32,7 +32,7 @@ RSpec.describe EmailValidator do
 
           expect(validator.valid?).to be(false)
           expect(validator.errors).not_to be_empty
-          expect(validator.errors).to include('format is not valid')
+          expect(validator.errors).to include(:format_is_not_valid)
         end
 
         invalid_long_email =
@@ -46,7 +46,7 @@ RSpec.describe EmailValidator do
 
         expect(validator.valid?).to be(false)
         expect(validator.errors).not_to be_empty
-        expect(validator.errors).to include('format is not valid')
+        expect(validator.errors).to include(:format_is_not_valid)
       end
     end
 
@@ -85,7 +85,7 @@ RSpec.describe EmailValidator do
 
             expect(validator.valid?).to be(false)
             expect(validator.errors).not_to be_empty
-            expect(validator.errors).to include('domain is not valid')
+            expect(validator.errors).to include(:domain_is_not_supported)
           end
         end
 
@@ -124,7 +124,7 @@ RSpec.describe EmailValidator do
 
           expect(validator.valid?).to be(false)
           expect(validator.errors).not_to be_empty
-          expect(validator.errors).to include('domain is not valid')
+          expect(validator.errors).to include(:domain_is_not_supported)
         end
       end
     end
@@ -158,7 +158,7 @@ RSpec.describe EmailValidator do
       expect(described_class.new(nil).email).to eq('')
       expect(described_class.new('').email).to  eq('')
 
-      expect(described_class.new('xxx').email).to eq('xxx')
+      expect(described_class.new('abcdef').email).to eq('abcdef')
       expect(described_class.new('user@upper.town').email).to eq('user@upper.town')
     end
   end

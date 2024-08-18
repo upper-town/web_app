@@ -5,20 +5,32 @@ require 'rails_helper'
 RSpec.describe EmailRecordValidator do
   describe '#validate' do
     context 'when record has an invalid email' do
-      it 'set record.errors' do
-        record = generic_active_record_class.new(email: 'invalid_email')
+      it 'sets record.errors' do
+        record = generic_model_class.new(email: 'abcdef')
 
         validator = described_class.new(record)
         validator.validate
 
         expect(record.errors).not_to be_empty
-        expect(record.errors.messages[:email]).to be_present
+        expect(record.errors.of_kind?(:email, :format_is_not_valid)).to be(true)
+      end
+    end
+
+    context 'when record has an unsupported email' do
+      it 'sets record.errors' do
+        record = generic_model_class.new(email: 'user@example.com')
+
+        validator = described_class.new(record)
+        validator.validate
+
+        expect(record.errors).not_to be_empty
+        expect(record.errors.of_kind?(:email, :domain_is_not_supported)).to be(true)
       end
     end
 
     context 'when record has a valid email' do
       it 'does not set errors' do
-        record = generic_active_record_class.new(email: 'user@google.com')
+        record = generic_model_class.new(email: 'user@google.com')
 
         validator = described_class.new(record)
         validator.validate
@@ -29,23 +41,19 @@ RSpec.describe EmailRecordValidator do
 
     describe 'passing :attribute_name options' do
       it 'uses the attribute_name from options instead of :email' do
-        record = generic_active_record_class.new(other: 'invalid_email')
+        record = generic_model_class.new(other: 'abcdef')
 
         validator = described_class.new(record, attribute_name: :other)
         validator.validate
 
         expect(record.errors).not_to be_empty
-        expect(record.errors.messages[:other]).to be_present
+        expect(record.errors.of_kind?(:other, :format_is_not_valid)).to be(true)
       end
     end
   end
 
-  def generic_active_record_class
-    Class.new do
-      include ActiveModel::Model
-      include ActiveModel::Validations
-      include ActiveModel::Attributes
-
+  def generic_model_class
+    Class.new(ApplicationModel) do
       attribute :email
       attribute :other
     end
