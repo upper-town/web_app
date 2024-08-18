@@ -31,6 +31,7 @@ RSpec.describe EmailValidator do
           validator = described_class.new(invalid_email)
 
           expect(validator.valid?).to be(false)
+          expect(validator.invalid?).to be(true)
           expect(validator.errors).not_to be_empty
           expect(validator.errors).to include(:format_is_not_valid)
         end
@@ -45,6 +46,16 @@ RSpec.describe EmailValidator do
         validator = described_class.new(invalid_long_email)
 
         expect(validator.valid?).to be(false)
+        expect(validator.invalid?).to be(true)
+        expect(validator.errors).not_to be_empty
+        expect(validator.errors).to include(:format_is_not_valid)
+
+        invalid_many_subdomains_email = 'user@sub1.sub2.sub3.google.com'
+
+        validator = described_class.new(invalid_many_subdomains_email)
+
+        expect(validator.valid?).to be(false)
+        expect(validator.invalid?).to be(true)
         expect(validator.errors).not_to be_empty
         expect(validator.errors).to include(:format_is_not_valid)
       end
@@ -68,7 +79,7 @@ RSpec.describe EmailValidator do
         private
         test
       ].each do |reserved_name|
-        it "returns false and set errors for email with reserved name \"#{reserved_name}\"" do
+        it "returns false and set errors for email with reserved name #{reserved_name.inspect}" do
           [
             "user@sub.#{reserved_name}",
             "user@#{reserved_name}.com",
@@ -84,12 +95,13 @@ RSpec.describe EmailValidator do
             validator = described_class.new(email_with_reserved_domain)
 
             expect(validator.valid?).to be(false)
+            expect(validator.invalid?).to be(true)
             expect(validator.errors).not_to be_empty
             expect(validator.errors).to include(:domain_is_not_supported)
           end
         end
 
-        it "returns true and does not set errors for email looks like \"#{reserved_name}\"" do
+        it "returns true and does not set errors when email looks like #{reserved_name.inspect}" do
           [
             "user@#{reserved_name}.abc.com.br",
 
@@ -107,6 +119,7 @@ RSpec.describe EmailValidator do
             validator = described_class.new(email_looks_like_reserved_name)
 
             expect(validator.valid?).to be(true)
+            expect(validator.invalid?).to be(false)
             expect(validator.errors).to be_empty
           end
         end
@@ -123,6 +136,7 @@ RSpec.describe EmailValidator do
           validator = described_class.new(disposable_email)
 
           expect(validator.valid?).to be(false)
+          expect(validator.invalid?).to be(true)
           expect(validator.errors).not_to be_empty
           expect(validator.errors).to include(:domain_is_not_supported)
         end
@@ -147,6 +161,7 @@ RSpec.describe EmailValidator do
           validator = described_class.new(valid_email)
 
           expect(validator.valid?).to be(true)
+          expect(validator.invalid?).to be(false)
           expect(validator.errors).to be_empty
         end
       end

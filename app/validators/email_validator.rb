@@ -88,12 +88,10 @@ class EmailValidator
     parts = host.split('.')
 
     case parts.size
-    when 2, 3
+    when 1..3
       parts.any? { |part| RESERVED_NAMES.include?(part) }
-    when 4
-      parts.drop(1).any? { |part| RESERVED_NAMES.include?(part) }
     else
-      false
+      parts.drop(1).any? { |part| RESERVED_NAMES.include?(part) }
     end
   end
 
