@@ -64,7 +64,7 @@ RSpec.describe Result do
       it 'sets errors from String, Symbol, Numeric, and skips blanks' do
         [
           ['error message', 'error message', { base: ['error message'] }],
-          [:invalid,        :invalid,        { base: ['is invalid']  }],
+          [:invalid,        :invalid,        { base: ['is invalid'] }],
           [123456,          '123456',        { base: ['123456']  }],
           [1234.56,         '1234.56',       { base: ['1234.56'] }],
         ].each do |error_value, expected_type, expected_messages|
@@ -239,7 +239,7 @@ RSpec.describe Result do
     it 'adds to errors from String, Symbol, Numeric, and skips blanks' do
       [
         ['error message', ['existing error message', 'error message'], { base: ['existing error message', 'error message'] }],
-        [:invalid,        ['existing error message', :invalid],        { base: ['existing error message', 'is invalid']  }],
+        [:invalid,        ['existing error message', :invalid],        { base: ['existing error message', 'is invalid'] }],
         [123456,          ['existing error message', '123456'],        { base: ['existing error message', '123456']  }],
         [1234.56,         ['existing error message', '1234.56'],       { base: ['existing error message', '1234.56'] }],
       ].each do |error_value, expected_error_types, expected_error_messages|
