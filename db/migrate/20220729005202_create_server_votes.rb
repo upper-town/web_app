@@ -6,7 +6,7 @@ class CreateServerVotes < ActiveRecord::Migration[7.1]
       t.string :reference, null: false, default: ''
       t.string :remote_ip, null: false, default: ''
 
-      t.references :account, null: true,  foreign_key: true, index: false
+      t.references :account, null: true, foreign_key: true, index: false
 
       t.references :game,         null: false, foreign_key: true, index: false
       t.string     :country_code, null: false

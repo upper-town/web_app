@@ -14,13 +14,13 @@ module Auth
 
     included do
       before_action(
-        :current_admin_user,
         :current_admin_session,
+        :current_admin_user,
         :current_admin_account
       )
       helper_method(
-        :current_admin_user,
         :current_admin_session,
+        :current_admin_user,
         :current_admin_account,
         :signed_in_admin_user?,
         :signed_out_admin_user?
