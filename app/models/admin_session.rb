@@ -15,8 +15,7 @@
 #
 # Indexes
 #
-#  index_admin_sessions_on_admin_user_id  (admin_user_id)
-#  index_admin_sessions_on_token          (token) UNIQUE
+#  index_admin_sessions_on_admin_user_id_and_token  (admin_user_id,token) UNIQUE
 #
 # Foreign Keys
 #

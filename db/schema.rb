@@ -71,8 +71,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_02_195758) do
     t.bigint "admin_user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["admin_user_id"], name: "index_admin_sessions_on_admin_user_id"
-    t.index ["token"], name: "index_admin_sessions_on_token", unique: true
+    t.index ["admin_user_id", "token"], name: "index_admin_sessions_on_admin_user_id_and_token", unique: true
   end
 
   create_table "admin_tokens", force: :cascade do |t|

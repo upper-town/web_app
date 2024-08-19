@@ -13,8 +13,6 @@ class CreateAdminSessions < ActiveRecord::Migration[7.1]
       t.timestamps
     end
 
-    add_index :admin_sessions, :token, unique: true
-
-    add_index :admin_sessions, :admin_user_id
+    add_index :admin_sessions, [:admin_user_id, :token], unique: true
   end
 end
