@@ -2,33 +2,33 @@
 
 module Auth
   module ManageReturnTo
-    include CookieJsonValue
+    include JsonCookie
 
     def ignored_return_to_paths
       raise NotImplementedError
     end
 
-    RETURN_TO = 'return_to'
+    RETURN_TO_NAME = 'return_to'
 
-    def create_return_to(duration = 3.minutes)
-      return if ignored_return_to_paths.include?(request.path)
+    def write_return_to(duration = 3.minutes)
       return unless request.get?
+      return if ignored_return_to_paths.include?(request.path)
 
-      return_to = ReturnTo.new(url: request.original_url, expires_at: duration.from_now)
-      write_cookie_json_value(RETURN_TO, return_to)
+      write_json_cookie(
+        RETURN_TO_NAME,
+        ReturnTo.new(url: request.original_url, expires_at: duration.from_now)
+      )
     end
 
     def consume_return_to
-      attributes = parse_cookie_json_value(RETURN_TO)
-      return_to = ReturnTo.new(attributes)
+      return_to = ReturnTo.new(read_json_cookie(RETURN_TO_NAME))
+      delete_json_cookie(RETURN_TO_NAME)
 
-      request.cookie_jar.delete(RETURN_TO)
-
-      return_to.url unless return_to.expired?
+      return_to.url.presence unless return_to.expired?
     end
 
     class ReturnTo < ApplicationModel
-      attribute :url, :string
+      attribute :url, :string, default: nil
       attribute :expires_at, :datetime, default: nil
 
       def expired?

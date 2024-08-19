@@ -46,10 +46,10 @@ module Users
 
       if result.success?
         sign_in_user!(result.data[:user], @session.remember_me)
-        return_to = consume_return_to
+        return_to_url = consume_return_to
 
         redirect_to(
-          return_to || inside_dashboard_path,
+          return_to_url || inside_dashboard_path,
           success: 'You are logged in.'
         )
       else

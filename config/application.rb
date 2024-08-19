@@ -52,6 +52,6 @@ module WebApp
       self.datetime_type = :timestamptz
     end
 
-    config.session_store :cookie_store, key: 'session'
+    config.session_store :cookie_store, key: 'app_session'
   end
 end

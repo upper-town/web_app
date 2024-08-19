@@ -27,8 +27,14 @@ RSpec.describe Admin::Constraint do
     request = ActionDispatch::Request.new({})
 
     if signed_in
-      admin_session = create(:admin_session, admin_user: admin_user, expires_at: 1.month.from_now)
-      request.cookie_jar['admin_session'] = { value: "#{admin_user.id}:#{admin_session.token}" }
+      token = TokenGenerator::AdminSession.generate.first
+      create(
+        :admin_session,
+        admin_user: admin_user,
+        token_digest: TokenGenerator::AdminSession.digest(token),
+        expires_at: 1.month.from_now
+      )
+      request.cookie_jar['admin_session'] = { token: token }.to_json
     end
 
     request

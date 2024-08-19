@@ -64,18 +64,21 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_02_195758) do
   end
 
   create_table "admin_sessions", force: :cascade do |t|
-    t.string "token", null: false
+    t.string "token_digest", null: false
+    t.string "token_last_four", null: false
     t.string "remote_ip", null: false
     t.string "user_agent", default: "", null: false
     t.datetime "expires_at", null: false
     t.bigint "admin_user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["admin_user_id", "token"], name: "index_admin_sessions_on_admin_user_id_and_token", unique: true
+    t.index ["admin_user_id"], name: "index_admin_sessions_on_admin_user_id"
+    t.index ["token_digest"], name: "index_admin_sessions_on_token_digest", unique: true
   end
 
   create_table "admin_tokens", force: :cascade do |t|
-    t.string "token", null: false
+    t.string "token_digest", null: false
+    t.string "token_last_four", null: false
     t.string "purpose", null: false
     t.datetime "expires_at", null: false
     t.jsonb "data", default: {}, null: false
@@ -85,7 +88,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_02_195758) do
     t.index ["admin_user_id"], name: "index_admin_tokens_on_admin_user_id"
     t.index ["expires_at"], name: "index_admin_tokens_on_expires_at"
     t.index ["purpose"], name: "index_admin_tokens_on_purpose"
-    t.index ["token"], name: "index_admin_tokens_on_token", unique: true
+    t.index ["token_digest"], name: "index_admin_tokens_on_token_digest", unique: true
   end
 
   create_table "admin_users", force: :cascade do |t|
@@ -246,19 +249,21 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_02_195758) do
   end
 
   create_table "sessions", force: :cascade do |t|
-    t.string "token", null: false
+    t.string "token_digest", null: false
+    t.string "token_last_four", null: false
     t.string "remote_ip", null: false
     t.string "user_agent", default: "", null: false
     t.datetime "expires_at", null: false
     t.bigint "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["token"], name: "index_sessions_on_token", unique: true
+    t.index ["token_digest"], name: "index_sessions_on_token_digest", unique: true
     t.index ["user_id"], name: "index_sessions_on_user_id"
   end
 
   create_table "tokens", force: :cascade do |t|
-    t.string "token", null: false
+    t.string "token_digest", null: false
+    t.string "token_last_four", null: false
     t.string "purpose", null: false
     t.datetime "expires_at", null: false
     t.jsonb "data", default: {}, null: false
@@ -267,7 +272,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_02_195758) do
     t.datetime "updated_at", null: false
     t.index ["expires_at"], name: "index_tokens_on_expires_at"
     t.index ["purpose"], name: "index_tokens_on_purpose"
-    t.index ["token"], name: "index_tokens_on_token", unique: true
+    t.index ["token_digest"], name: "index_tokens_on_token_digest", unique: true
     t.index ["user_id"], name: "index_tokens_on_user_id"
   end
 

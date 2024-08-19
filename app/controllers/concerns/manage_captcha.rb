@@ -1,13 +1,11 @@
 # frozen_string_literal: true
 
 module ManageCaptcha
-  MANAGE_CAPTCHA_TOKEN_LENGTH = 24
-
   extend ActiveSupport::Concern
 
-  include CookieJsonValue
+  include JsonCookie
 
-  CAPTCHA_SKIP = 'captcha_skip'
+  CAPTCHA_SKIP_NAME = 'captcha_skip'
 
   included do
     helper_method(
@@ -17,71 +15,88 @@ module ManageCaptcha
   end
 
   def captcha_check(if_success_skip_paths: [], limit: 2)
-    if can_skip_captcha?
-      consume_captcha_skip
-
-      return Result.success
-    end
-
-    result = Captcha.call(request)
-
-    if result.success? && if_success_skip_paths.any?
-      create_captcha_skip(if_success_skip_paths, limit)
-    end
-
-    result
+    perform_captcha_skip || perform_captcha_check(if_success_skip_paths, limit)
   end
 
   def captcha_script_tag
-    return if can_skip_captcha?
+    return if read_captcha_skip.can_skip?(request.path)
 
     Captcha.script_tag(request)
   end
 
   def captcha_widget_tag(...)
-    return if can_skip_captcha?
+    return if read_captcha_skip.can_skip?(request.path)
 
     Captcha.widget_tag(...)
   end
 
-  def can_skip_captcha?
-    captcha_skip = parse_captcha_skip
-    return false unless captcha_skip.paths.include?(request.path)
-
-    count = Caching.redis.get(captcha_skip.key)
-    return false unless count
-
-    count.to_i.positive?
-  end
-
   private
 
-  def create_captcha_skip(paths, limit)
-    key = "captcha_skip:#{SecureRandom.base58(MANAGE_CAPTCHA_TOKEN_LENGTH)}"
-    Caching.redis.set(key, limit, ex: 1.hour)
+  def perform_captcha_skip
+    captcha_skip = read_captcha_skip
 
-    captcha_skip = CaptchaSkip.new(key: key, paths: paths)
-    write_cookie_json_value(CAPTCHA_SKIP, captcha_skip)
+    if captcha_skip.can_skip?(request.path)
+      count = captcha_skip.consume
+      delete_captcha_skip if count <= 0
+
+      Result.success
+    end
   end
 
-  def parse_captcha_skip
-    attributes = parse_cookie_json_value(CAPTCHA_SKIP)
-    CaptchaSkip.new(attributes)
+  def perform_captcha_check(if_success_skip_paths, limit)
+    result = Captcha.call(request)
+
+    if result.success? && if_success_skip_paths.any?
+      write_captcha_skip(if_success_skip_paths, limit)
+    end
+
+    result
   end
 
-  def consume_captcha_skip
-    captcha_skip = parse_captcha_skip
-    count = Caching.redis.decr(captcha_skip.key)
+  def read_captcha_skip
+    CaptchaSkip.new(read_json_cookie(CAPTCHA_SKIP_NAME))
+  end
 
-    request.cookie_jar.delete(CAPTCHA_SKIP) if count <= 0
+  def write_captcha_skip(paths, limit)
+    token = TokenGenerator.generate(26).first
+    captcha_skip = CaptchaSkip.new(token: token, paths: paths)
+
+    Caching.redis.set(captcha_skip.key, limit, ex: 1.hour)
+
+    write_json_cookie(CAPTCHA_SKIP_NAME, captcha_skip)
+  end
+
+  def delete_captcha_skip
+    delete_json_cookie(CAPTCHA_SKIP_NAME)
   end
 
   class CaptchaSkip < ApplicationModel
-    attribute :key, :string, default: 'captcha_skip'
+    attribute :token, :string, default: ''
     attribute :paths, array: true, default: []
+
+    validates :token, presence: true
+    validates :paths, presence: true
+
+    def key
+      "#{CAPTCHA_SKIP_NAME}:#{token}"
+    end
 
     def paths=(value)
       super(Array(value).compact_blank)
+    end
+
+    def can_skip?(path)
+      return false unless valid?
+      return false unless paths.include?(path)
+
+      count = Caching.redis.get(key)
+      return false unless count
+
+      count.to_i.positive?
+    end
+
+    def consume
+      Caching.redis.decr(key)
     end
   end
 end

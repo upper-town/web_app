@@ -17,28 +17,36 @@ module Users
       private
 
       def change_email_reversion(user)
-        user.regenerate_token!(:change_email_reversion, 30.days, { email: user.email })
+        change_email_reversion_token = user.regenerate_token!(
+          :change_email_reversion,
+          30.days,
+          { email: user.email }
+        )
         user.update!(change_email_reversion_sent_at: Time.current)
 
         UsersMailer
           .with(
             email: user.email,
             change_email: user.change_email,
-            change_email_reversion_token: user.current_token(:change_email_reversion)
+            change_email_reversion_token: change_email_reversion_token
           )
           .change_email_reversion
           .deliver_now
       end
 
       def change_email_confirmation(user)
-        user.regenerate_token!(:change_email_confirmation, nil, { change_email: user.change_email })
+        change_email_confirmation_token = user.regenerate_token!(
+          :change_email_confirmation,
+          nil,
+          { change_email: user.change_email }
+        )
         user.update!(change_email_confirmation_sent_at: Time.current)
 
         UsersMailer
           .with(
             email: user.email,
             change_email: user.change_email,
-            change_email_confirmation_token: user.current_token(:change_email_confirmation)
+            change_email_confirmation_token: change_email_confirmation_token
           )
           .change_email_confirmation
           .deliver_now

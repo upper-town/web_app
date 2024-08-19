@@ -10,13 +10,13 @@ module Users
       def perform(user_id)
         user = User.find(user_id)
 
-        user.regenerate_token!(:email_confirmation)
+        email_confirmation_token = user.regenerate_token!(:email_confirmation)
         user.update!(email_confirmation_sent_at: Time.current)
 
         UsersMailer
           .with(
             email: user.email,
-            email_confirmation_token: user.current_token(:email_confirmation)
+            email_confirmation_token: email_confirmation_token
           )
           .email_confirmation
           .deliver_now

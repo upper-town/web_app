@@ -9,7 +9,7 @@ module Auth
 
     extend ActiveSupport::Concern
 
-    include AdminManageSession
+    include ManageAdminSession
     include ManageReturnTo
 
     included do
@@ -57,7 +57,7 @@ module Auth
     end
 
     def handle_admin_user_not_authenticated
-      create_return_to
+      write_return_to
 
       redirect_to(
         admin_users_sign_in_path,
@@ -66,7 +66,7 @@ module Auth
     end
 
     def handle_admin_user_expired_session
-      create_return_to
+      write_return_to
 
       redirect_to(
         admin_users_sign_in_path,

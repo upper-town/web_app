@@ -5,12 +5,12 @@
   data: { 'controller' => 'form-error-messages-handler' }
 ) do |form| %>
   <div class="mb-3">
-    <%= form.label(:app_id, 'App', class: 'form-label') %>
+    <%= form.label(:game_id, 'Game', class: 'form-label') %>
     <%= render(GameSelectComponent.new(
       form,
       only_in_use: false,
       blank_name: nil,
-      selected_value: @server.app_id
+      selected_value: @server.game_id
     )) %>
   </div>
 

@@ -57,7 +57,7 @@ module Auth
     end
 
     def handle_user_not_authenticated
-      create_return_to
+      write_return_to
 
       redirect_to(
         users_sign_in_path,
@@ -66,7 +66,7 @@ module Auth
     end
 
     def handle_user_expired_session
-      create_return_to
+      write_return_to
 
       redirect_to(
         users_sign_in_path,

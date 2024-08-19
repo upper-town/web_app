@@ -4,19 +4,20 @@
 #
 # Table name: sessions
 #
-#  id         :bigint           not null, primary key
-#  expires_at :datetime         not null
-#  remote_ip  :string           not null
-#  token      :string           not null
-#  user_agent :string           default(""), not null
-#  created_at :datetime         not null
-#  updated_at :datetime         not null
-#  user_id    :bigint           not null
+#  id              :bigint           not null, primary key
+#  expires_at      :datetime         not null
+#  remote_ip       :string           not null
+#  token_digest    :string           not null
+#  token_last_four :string           not null
+#  user_agent      :string           default(""), not null
+#  created_at      :datetime         not null
+#  updated_at      :datetime         not null
+#  user_id         :bigint           not null
 #
 # Indexes
 #
-#  index_sessions_on_token    (token) UNIQUE
-#  index_sessions_on_user_id  (user_id)
+#  index_sessions_on_token_digest  (token_digest) UNIQUE
+#  index_sessions_on_user_id       (user_id)
 #
 # Foreign Keys
 #

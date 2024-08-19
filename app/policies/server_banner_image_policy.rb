@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class ServerBannerImagePolicy
-  include Auth::AdminManageSession
+  include Auth::ManageAdminSession
   include Auth::ManageSession
 
   attr_reader :server_banner_image, :request

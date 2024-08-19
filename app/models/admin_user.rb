@@ -30,7 +30,6 @@
 #
 class AdminUser < ApplicationRecord
   TOKEN_EXPIRATION = 1.hour
-  TOKEN_LENGTH     = 44
 
   include FeatureFlagIdModel
 
@@ -54,7 +53,7 @@ class AdminUser < ApplicationRecord
     return if purpose.blank? || token.blank?
 
     joins(:tokens)
-      .where(tokens: { purpose: purpose, token: token })
+      .where(tokens: { purpose: purpose, token_digest: TokenGenerator::Admin.digest(token) })
       .where('tokens.expires_at > ?', Time.current)
       .order(created_at: :desc)
       .first
@@ -63,21 +62,17 @@ class AdminUser < ApplicationRecord
   def regenerate_token!(purpose, expires_in = nil, data = {})
     expires_in ||= TOKEN_EXPIRATION
 
-    token = tokens.create!(
+    token, token_digest, token_last_four = TokenGenerator::Admin.generate
+
+    tokens.create!(
       purpose: purpose,
-      token: SecureRandom.base58(TOKEN_LENGTH),
       expires_at: expires_in.from_now,
-      data: data
+      data: data,
+      token_digest: token_digest,
+      token_last_four: token_last_four,
     )
 
-    token.token
-  end
-
-  def current_token(purpose)
-    tokens
-      .where(purpose: purpose)
-      .order(created_at: :desc)
-      .first&.token
+    token
   end
 
   def confirmed_email?

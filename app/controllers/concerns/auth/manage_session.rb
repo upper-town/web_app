@@ -2,14 +2,15 @@
 
 module Auth
   module ManageSession
-    SESSION_COOKIE_NAME = 'session'
+    SESSION_NAME = 'session'
     SESSION_REMEMBER_ME_DURATION = 4.months
-    SESSION_TOKEN_LENGTH = 44
 
     extend ActiveSupport::Concern
 
+    include JsonCookie
+
     def current_session
-      Current.session ||= find_session(read_session_cookie)
+      Current.session ||= find_session
     end
 
     def current_user
@@ -29,47 +30,58 @@ module Auth
     end
 
     def sign_in_user!(user, remember_me = false)
-      session = create_session(user, remember_me)
-      store_session_cookie(session.token, remember_me)
+      token = create_session(user, remember_me)
+      write_session_value(token, remember_me)
     end
 
     def sign_out_user!
       current_session&.destroy!
-      delete_session_cookie
+      delete_session_value
     end
 
     private
 
-    def store_session_cookie(token, remember_me)
-      request.cookie_jar[SESSION_COOKIE_NAME] = {
-        value: token,
-        expires: remember_me ? SESSION_REMEMBER_ME_DURATION : nil,
-        httponly: true,
-        secure: Rails.env.production?
-      }
+    def read_session_value
+      SessionValue.new(read_json_cookie(SESSION_NAME))
     end
 
-    def read_session_cookie
-      request.cookie_jar[SESSION_COOKIE_NAME]
+    def write_session_value(token, remember_me)
+      write_json_cookie(
+        SESSION_NAME,
+        SessionValue.new(token: token),
+        expires: remember_me ? SESSION_REMEMBER_ME_DURATION : nil
+      )
     end
 
-    def delete_session_cookie
-      request.cookie_jar.delete(SESSION_COOKIE_NAME)
+    def delete_session_value
+      delete_json_cookie(SESSION_NAME)
     end
 
     def create_session(user, remember_me)
+      token, token_digest, token_last_four = TokenGenerator::Session.generate
+
       user.sessions.create!(
-        token:      SecureRandom.base58(SESSION_TOKEN_LENGTH),
+        token_digest: token_digest,
+        token_last_four: token_last_four,
         remote_ip:  request.remote_ip,
         user_agent: request.user_agent,
         expires_at: remember_me ? SESSION_REMEMBER_ME_DURATION.from_now : 1.day.from_now
       )
+
+      token
     end
 
-    def find_session(token)
-      return if token.blank?
+    def find_session
+      session_value = read_session_value
+      return if session_value.invalid?
 
-      Session.find_by(token: token)
+      Session.find_by_token(session_value.token)
+    end
+
+    class SessionValue < ApplicationModel
+      attribute :token, :string, default: ''
+
+      validates :token, presence: true
     end
   end
 end

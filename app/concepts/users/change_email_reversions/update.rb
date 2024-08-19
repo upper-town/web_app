@@ -35,7 +35,7 @@ module Users
       def find_user_and_token
         [
           User.find_by_token(:change_email_reversion, change_email_reversion.token),
-          Token.find_by(token: change_email_reversion.token)
+          Token.find_by_token(change_email_reversion.token)
         ]
       end
 

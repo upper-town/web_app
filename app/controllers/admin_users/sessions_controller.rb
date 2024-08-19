@@ -53,10 +53,10 @@ module AdminUsers
 
       if result.success?
         sign_in_admin_user!(result.data[:admin_user], @session.remember_me)
-        return_to = consume_return_to
+        return_to_url = consume_return_to
 
         redirect_to(
-          return_to || admin_dashboard_path,
+          return_to_url || admin_dashboard_path,
           success: 'You are logged in.'
         )
       else
