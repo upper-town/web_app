@@ -30,7 +30,7 @@ module Auth
 
     def sign_in_admin_user!(admin_user, remember_me = false)
       admin_session = create_admin_session(admin_user, remember_me)
-      store_admin_session_cookie(admin_session.token, remember_me)
+      store_admin_session_cookie(admin_session, remember_me)
     end
 
     def sign_out_admin_user!
@@ -40,9 +40,11 @@ module Auth
 
     private
 
-    def store_admin_session_cookie(token, remember_me)
+    def store_admin_session_cookie(admin_session, remember_me)
+      cookie_value = "#{admin_session.admin_user_id}:#{admin_session.token}"
+
       request.cookie_jar[ADMIN_SESSION_COOKIE_NAME] = {
-        value: token,
+        value: cookie_value,
         expires: remember_me ? ADMIN_SESSION_REMEMBER_ME_DURATION : nil,
         httponly: true,
         secure: Rails.env.production?
@@ -66,10 +68,13 @@ module Auth
       )
     end
 
-    def find_admin_session(token)
-      return if token.blank?
+    def find_admin_session(cookie_value)
+      return if cookie_value.blank?
 
-      AdminSession.find_by(token: token)
+      admin_user_id, token = cookie_value.split(':')
+      return if admin_user_id.blank? || token.blank?
+
+      AdminSession.find_by(admin_user_id: admin_user_id, token: token)
     end
   end
 end
