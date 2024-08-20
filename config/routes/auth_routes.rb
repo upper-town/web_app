@@ -3,10 +3,10 @@
 module ActionDispatch
   module Routing
     class Mapper
-      def auth_routes_for(name, path_salt = nil)
-        salted_name = path_salt.present? ? "#{name}_#{path_salt}" : name
+      def auth_routes
+        name = 'users'
 
-        scope(salted_name, module: name, as: name, path: name) do
+        scope(name, module: name, as: name, path: name) do
           get 'sign_up',  to: 'email_confirmations#new'
           get 'sign_in',  to: 'sessions#new'
           get 'sign_out', to: 'sessions#destroy'

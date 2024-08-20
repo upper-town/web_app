@@ -105,12 +105,15 @@ require 'sidekiq/web'
 require 'sidekiq/cron/web'
 require 'sidekiq_unique_jobs/web'
 
+require_relative 'routes/auth_routes'
+require_relative 'routes/admin_auth_routes'
 require_relative 'routes/admin_routes'
-require_relative 'routes/authentication_routes'
 
 Rails.application.routes.draw do
-  auth_routes_for(:users)
-  auth_routes_for(:admin_users, ENV.fetch('ADMIN_USERS_PATH_SALT'))
+  auth_routes
+  admin_auth_routes
+
+  # /admin
 
   admin_routes
 

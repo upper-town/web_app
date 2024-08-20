@@ -3,7 +3,9 @@
 module ActionDispatch
   module Routing
     class Mapper
-      def admin_routes(name = 'admin')
+      def admin_routes
+        name = 'admin'
+
         constraints(Admin::Constraint.new) do
           scope(name, module: name, as: name, path: name) do
             root to: 'dashboards#show'
