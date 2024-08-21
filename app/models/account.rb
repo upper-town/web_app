@@ -23,11 +23,10 @@ class Account < ApplicationRecord
   has_many :server_votes, dependent: :nullify
   has_many :server_accounts, dependent: :destroy
   has_many :servers, through: :server_accounts
-
-  def verified_servers
-    Server
-      .joins(:server_accounts)
-      .where(server_accounts: { account_id: id })
-      .where.not(server_accounts: { verified_at: nil })
-  end
+  has_many(
+    :verified_servers,
+    -> { where.not(server_accounts: { verified_at: nil }) },
+    through: :server_accounts,
+    source: :server
+  )
 end
