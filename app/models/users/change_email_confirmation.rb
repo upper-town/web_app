@@ -6,16 +6,9 @@ module Users
     attribute :change_email, :string
     attribute :password, :string
 
-    validates(
-      :email,
-      :change_email,
-      :password,
-      presence: true
-    )
-
-    validate do |record|
-      EmailRecordValidator.new(record, attribute_name: :change_email).validate
-    end
+    validates :email, presence: true
+    validates :change_email, presence: true, email: true
+    validates :password, presence: true
 
     def email=(value)
       super(EmailNormalizer.new(value).call)
