@@ -34,7 +34,7 @@ class ServerAccount < ApplicationRecord
   end
 
   def verified?
-    verified_at
+    verified_at.present?
   end
 
   def not_verified?
