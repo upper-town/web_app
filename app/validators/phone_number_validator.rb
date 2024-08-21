@@ -1,28 +1,15 @@
 # frozen_string_literal: true
 
-class PhoneNumberValidator
-  attr_reader :phone_number, :errors
+class PhoneNumberValidator < ActiveModel::EachValidator
+  def validate_each(record, attribute, value)
+    return if value.blank?
 
-  def initialize(phone_number)
-    @phone_number = phone_number.to_s
-    @errors = [:not_validated_yet]
-  end
+    validate_phone_number = ValidatePhoneNumber.new(value)
 
-  def valid?
-    errors.clear
+    return if validate_phone_number.valid?
 
-    validate_possible
-
-    errors.empty?
-  end
-
-  def invalid?
-    !valid?
-  end
-
-  def validate_possible
-    unless Phonelib.parse(phone_number).possible?
-      errors << :not_valid
+    validate_phone_number.errors.each do |message_or_type|
+      record.errors.add(attribute, message_or_type)
     end
   end
 end
