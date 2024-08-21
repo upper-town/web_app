@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module FeatureFlagIdModel
+module FeatureFlagId
   def to_ffid
     "#{self.class.name.underscore}_#{id}"
   end

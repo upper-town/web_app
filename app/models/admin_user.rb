@@ -29,13 +29,13 @@
 #  index_admin_users_on_email  (email) UNIQUE
 #
 class AdminUser < ApplicationRecord
-  TOKEN_EXPIRATION = 1.hour
+  include FeatureFlagId
+  include HasAdminTokens
 
-  include FeatureFlagIdModel
+  has_one :account, class_name: 'AdminAccount', dependent: :destroy
 
   has_many :sessions, class_name: 'AdminSession', dependent: :destroy
   has_many :tokens, class_name: 'AdminToken', dependent: :destroy
-  has_one :account, class_name: 'AdminAccount', dependent: :destroy
 
   has_secure_password validations: false
 
@@ -47,32 +47,6 @@ class AdminUser < ApplicationRecord
 
   validate do |record|
     EmailRecordValidator.new(record).validate
-  end
-
-  def self.find_by_token(purpose, token)
-    return if purpose.blank? || token.blank?
-
-    joins(:tokens)
-      .where(tokens: { purpose: purpose, token_digest: TokenGenerator::Admin.digest(token) })
-      .where('tokens.expires_at > ?', Time.current)
-      .order(created_at: :desc)
-      .first
-  end
-
-  def regenerate_token!(purpose, expires_in = nil, data = {})
-    expires_in ||= TOKEN_EXPIRATION
-
-    token, token_digest, token_last_four = TokenGenerator::Admin.generate
-
-    tokens.create!(
-      purpose: purpose,
-      expires_at: expires_in.from_now,
-      data: data,
-      token_digest: token_digest,
-      token_last_four: token_last_four,
-    )
-
-    token
   end
 
   def confirmed_email?

@@ -125,7 +125,7 @@ RSpec.describe User do
     end
   end
 
-  describe 'FeatureFlagIdModel' do
+  describe 'FeatureFlagId' do
     describe '#to_ffid' do
       it 'returns the class name, underscore, record id' do
         user = create(:user)
@@ -135,99 +135,101 @@ RSpec.describe User do
     end
   end
 
-  describe '.find_by_token' do
-    context 'when purpose is blank' do
-      it 'returns nil' do
-        user = described_class.find_by_token('', 'abcdef123456')
-
-        expect(user).to be_nil
-      end
-    end
-
-    context 'when token is blank' do
-      it 'returns nil' do
-        user = described_class.find_by_token('email_confirmation', '')
-
-        expect(user).to be_nil
-      end
-    end
-
-    context 'when token is not found' do
-      it 'returns nil' do
-        user = described_class.find_by_token('email_confirmation', 'abcdef123456')
-
-        expect(user).to be_nil
-      end
-    end
-
-    context 'when token is found but expired' do
-      it 'returns nil' do
-        freeze_time do
-          token = create(
-            :token,
-            token_digest: TokenGenerator.digest('abcdef123456'),
-            expires_at: 1.second.ago
-          )
-
-          user = described_class.find_by_token(token.purpose, 'abcdef123456')
+  describe 'HasTokens' do
+    describe '.find_by_token' do
+      context 'when purpose is blank' do
+        it 'returns nil' do
+          user = described_class.find_by_token('', 'abcdef123456')
 
           expect(user).to be_nil
         end
       end
-    end
 
-    context 'when token is found and not expired' do
-      it 'returns user' do
-        freeze_time do
-          token = create(
-            :token,
-            token_digest: TokenGenerator.digest('abcdef123456'),
-            expires_at: 1.second.from_now
-          )
+      context 'when token is blank' do
+        it 'returns nil' do
+          user = described_class.find_by_token('email_confirmation', '')
 
-          user = described_class.find_by_token(token.purpose, 'abcdef123456')
+          expect(user).to be_nil
+        end
+      end
 
-          expect(user).to eq(token.user)
+      context 'when token is not found' do
+        it 'returns nil' do
+          user = described_class.find_by_token('email_confirmation', 'abcdef123456')
+
+          expect(user).to be_nil
+        end
+      end
+
+      context 'when token is found but expired' do
+        it 'returns nil' do
+          freeze_time do
+            token = create(
+              :token,
+              token_digest: TokenGenerator.digest('abcdef123456'),
+              expires_at: 1.second.ago
+            )
+
+            user = described_class.find_by_token(token.purpose, 'abcdef123456')
+
+            expect(user).to be_nil
+          end
+        end
+      end
+
+      context 'when token is found and not expired' do
+        it 'returns user' do
+          freeze_time do
+            token = create(
+              :token,
+              token_digest: TokenGenerator.digest('abcdef123456'),
+              expires_at: 1.second.from_now
+            )
+
+            user = described_class.find_by_token(token.purpose, 'abcdef123456')
+
+            expect(user).to eq(token.user)
+          end
         end
       end
     end
-  end
 
-  describe '#regenerate_token!' do
-    it 'creates a Token record and returns token' do
-      freeze_time do
-        user = create(:user)
-        returned_token = nil
-
-        expect do
-          returned_token = user.regenerate_token!('email_confirmation', 15.minutes, { 'some' => 'data' })
-        end.to change(Token, :count).by(1)
-
-        token = Token.last
-        expect(token.purpose).to eq('email_confirmation')
-        expect(token.token_digest).to eq(TokenGenerator.digest(returned_token))
-        expect(token.token_last_four).to eq(returned_token.last(4))
-        expect(token.expires_at).to eq(15.minutes.from_now)
-        expect(token.data).to eq({ 'some' => 'data' })
-      end
-    end
-
-    describe 'default expires_in and data' do
+    describe '#regenerate_token!' do
       it 'creates a Token record and returns token' do
         freeze_time do
           user = create(:user)
           returned_token = nil
 
           expect do
-            returned_token = user.regenerate_token!('email_confirmation')
+            returned_token = user.regenerate_token!('email_confirmation', 15.minutes, { 'some' => 'data' })
           end.to change(Token, :count).by(1)
 
           token = Token.last
           expect(token.purpose).to eq('email_confirmation')
           expect(token.token_digest).to eq(TokenGenerator.digest(returned_token))
           expect(token.token_last_four).to eq(returned_token.last(4))
-          expect(token.expires_at).to eq(1.hour.from_now)
-          expect(token.data).to eq({})
+          expect(token.expires_at).to eq(15.minutes.from_now)
+          expect(token.data).to eq({ 'some' => 'data' })
+        end
+      end
+
+      describe 'default expires_in and data' do
+        it 'creates a Token record and returns token' do
+          freeze_time do
+            user = create(:user)
+            returned_token = nil
+
+            expect do
+              returned_token = user.regenerate_token!('email_confirmation')
+            end.to change(Token, :count).by(1)
+
+            token = Token.last
+            expect(token.purpose).to eq('email_confirmation')
+            expect(token.token_digest).to eq(TokenGenerator.digest(returned_token))
+            expect(token.token_last_four).to eq(returned_token.last(4))
+            expect(token.expires_at).to eq(1.hour.from_now)
+            expect(token.data).to eq({})
+          end
         end
       end
     end

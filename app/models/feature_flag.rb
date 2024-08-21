@@ -44,7 +44,7 @@ class FeatureFlag < ApplicationRecord
   #
   #   user_1,user_2
   #     Comma-separated list of Record Feature Flag IDs (ffids) to which the
-  #     feature flag applies. See FeatureFlagIdModel.
+  #     feature flag applies. See FeatureFlagId.
   #
   # Usage:
   #
