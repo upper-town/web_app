@@ -64,39 +64,6 @@ RSpec.describe AdminUser do
     end
   end
 
-  describe 'features' do
-    it 'has secure password' do
-      admin_user = build(:admin_user, email: 'admin.user@upper.town', password: 'abcd1234')
-
-      expect(admin_user.password_digest).to be_present
-      expect(admin_user.password_digest).not_to eq('abcd1234')
-
-      admin_user.save!
-
-      expect(
-        described_class.authenticate_by(
-          email: 'admin.user@upper.town', password: 'abcd1234'
-        )
-      ).to eq(admin_user)
-    end
-  end
-
-  describe 'validations' do
-    it 'validates password' do
-      admin_user = build(:admin_user, password: '')
-      admin_user.validate
-      expect(admin_user.errors.of_kind?(:password, :blank)).to be(false)
-
-      admin_user = build(:admin_user, password: 'abcd')
-      admin_user.validate
-      expect(admin_user.errors.of_kind?(:password, :too_short)).to be(true)
-
-      admin_user = build(:admin_user, password: 'abcd1234')
-      admin_user.validate
-      expect(admin_user.errors.of_kind?(:password, :too_short)).to be(false)
-    end
-  end
-
   describe 'FeatureFlagId' do
     describe '#to_ffid' do
       it 'returns the class name, underscore, record id' do
@@ -445,20 +412,53 @@ RSpec.describe AdminUser do
     end
   end
 
-  describe '#reset_password!' do
-    it 'updates password and password_reset_at' do
-      freeze_time do
-        admin_user = create(:admin_user, password_digest: nil)
+  describe 'HasPassword' do
+    it 'has secure password' do
+      admin_user = build(:admin_user, email: 'admin.user@upper.town', password: 'abcd1234')
 
-        admin_user.reset_password!('abcd1234')
+      expect(admin_user.password_digest).to be_present
+      expect(admin_user.password_digest).not_to eq('abcd1234')
 
-        expect(admin_user.password_digest).to be_present
-        expect(admin_user.password_digest).not_to eq('abcd1234')
-        expect(admin_user.password_reset_at).to eq(Time.current)
+      admin_user.save!
 
-        expect(
-          described_class.authenticate_by(email: admin_user.email, password: 'abcd1234')
-        ).to eq(admin_user)
+      expect(
+        described_class.authenticate_by(
+          email: 'admin.user@upper.town', password: 'abcd1234'
+        )
+      ).to eq(admin_user)
+    end
+
+    describe 'validations' do
+      it 'validates password' do
+        admin_user = build(:admin_user, password: '')
+        admin_user.validate
+        expect(admin_user.errors.of_kind?(:password, :blank)).to be(false)
+
+        admin_user = build(:admin_user, password: 'abcd')
+        admin_user.validate
+        expect(admin_user.errors.of_kind?(:password, :too_short)).to be(true)
+
+        admin_user = build(:admin_user, password: 'abcd1234')
+        admin_user.validate
+        expect(admin_user.errors.of_kind?(:password, :too_short)).to be(false)
+      end
+    end
+
+    describe '#reset_password!' do
+      it 'updates password and password_reset_at' do
+        freeze_time do
+          admin_user = create(:admin_user, password_digest: nil)
+
+          admin_user.reset_password!('abcd1234')
+
+          expect(admin_user.password_digest).to be_present
+          expect(admin_user.password_digest).not_to eq('abcd1234')
+          expect(admin_user.password_reset_at).to eq(Time.current)
+
+          expect(
+            described_class.authenticate_by(email: admin_user.email, password: 'abcd1234')
+          ).to eq(admin_user)
+        end
       end
     end
   end
