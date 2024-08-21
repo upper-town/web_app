@@ -345,70 +345,72 @@ RSpec.describe AdminUser do
     end
   end
 
-  describe '#locked?' do
-    context 'when locked_at is blank' do
-      it 'returns false' do
-        admin_user = create(:admin_user, locked_at: nil)
+  describe 'HasLock' do
+    describe '#locked?' do
+      context 'when locked_at is blank' do
+        it 'returns false' do
+          admin_user = create(:admin_user, locked_at: nil)
 
-        expect(admin_user.locked?).to be(false)
+          expect(admin_user.locked?).to be(false)
+        end
+      end
+
+      context 'when locked_at is present' do
+        it 'returns true' do
+          admin_user = create(:admin_user, locked_at: Time.current)
+
+          expect(admin_user.locked?).to be(true)
+        end
       end
     end
 
-    context 'when locked_at is present' do
-      it 'returns true' do
-        admin_user = create(:admin_user, locked_at: Time.current)
+    describe '#unlocked?' do
+      context 'when locked_at is blank' do
+        it 'returns true' do
+          admin_user = create(:admin_user, locked_at: nil)
 
-        expect(admin_user.locked?).to be(true)
+          expect(admin_user.unlocked?).to be(true)
+        end
+      end
+
+      context 'when locked_at is present' do
+        it 'returns false' do
+          admin_user = create(:admin_user, locked_at: Time.current)
+
+          expect(admin_user.unlocked?).to be(false)
+        end
       end
     end
-  end
 
-  describe '#unlocked?' do
-    context 'when locked_at is blank' do
-      it 'returns true' do
-        admin_user = create(:admin_user, locked_at: nil)
+    describe '#lock_access!' do
+      it 'updates locked attributes' do
+        freeze_time do
+          admin_user = create(:admin_user, locked_reason: nil, locked_comment: nil, locked_at: nil)
 
-        expect(admin_user.unlocked?).to be(true)
+          admin_user.lock_access!('Bad Actor', 'AdminUser did bad things')
+
+          expect(admin_user.locked_reason).to eq('Bad Actor')
+          expect(admin_user.locked_comment).to eq('AdminUser did bad things')
+          expect(admin_user.locked_at).to eq(Time.current)
+        end
       end
     end
 
-    context 'when locked_at is present' do
-      it 'returns false' do
-        admin_user = create(:admin_user, locked_at: Time.current)
+    describe '#unlock_access!' do
+      it 'set locked attributes to nil' do
+        admin_user = create(
+          :admin_user,
+          locked_reason: 'Bad Actor',
+          locked_comment: 'AdminUser did bad things',
+          locked_at: Time.current
+        )
 
-        expect(admin_user.unlocked?).to be(false)
+        admin_user.unlock_access!
+
+        expect(admin_user.locked_reason).to be_nil
+        expect(admin_user.locked_comment).to be_nil
+        expect(admin_user.locked_at).to be_nil
       end
-    end
-  end
-
-  describe '#lock_access!' do
-    it 'updates locked attributes' do
-      freeze_time do
-        admin_user = create(:admin_user, locked_reason: nil, locked_comment: nil, locked_at: nil)
-
-        admin_user.lock_access!('Bad Actor', 'AdminUser did bad things')
-
-        expect(admin_user.locked_reason).to eq('Bad Actor')
-        expect(admin_user.locked_comment).to eq('AdminUser did bad things')
-        expect(admin_user.locked_at).to eq(Time.current)
-      end
-    end
-  end
-
-  describe '#unlock_access!' do
-    it 'set locked attributes to nil' do
-      admin_user = create(
-        :admin_user,
-        locked_reason: 'Bad Actor',
-        locked_comment: 'AdminUser did bad things',
-        locked_at: Time.current
-      )
-
-      admin_user.unlock_access!
-
-      expect(admin_user.locked_reason).to be_nil
-      expect(admin_user.locked_comment).to be_nil
-      expect(admin_user.locked_at).to be_nil
     end
   end
 

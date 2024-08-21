@@ -33,33 +33,10 @@ class AdminUser < ApplicationRecord
   include HasAdminTokens
   include HasEmailConfirmation
   include HasPassword
+  include HasLock
 
   has_one :account, class_name: 'AdminAccount', dependent: :destroy
 
   has_many :sessions, class_name: 'AdminSession', dependent: :destroy
   has_many :tokens, class_name: 'AdminToken', dependent: :destroy
-
-  def locked?
-    locked_at.present?
-  end
-
-  def unlocked?
-    !locked?
-  end
-
-  def lock_access!(reason, comment = nil)
-    update!(
-      locked_reason:  reason,
-      locked_comment: comment,
-      locked_at:      Time.current
-    )
-  end
-
-  def unlock_access!
-    update!(
-      locked_reason:  nil,
-      locked_comment: nil,
-      locked_at:      nil,
-    )
-  end
 end

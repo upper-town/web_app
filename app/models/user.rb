@@ -33,33 +33,10 @@ class User < ApplicationRecord
   include HasTokens
   include HasEmailConfirmation
   include HasPassword
+  include HasLock
 
   has_one :account, class_name: 'Account', dependent: :destroy
 
   has_many :sessions, class_name: 'Session', dependent: :destroy
   has_many :tokens, class_name: 'Token', dependent: :destroy
-
-  def locked?
-    locked_at.present?
-  end
-
-  def unlocked?
-    !locked?
-  end
-
-  def lock_access!(reason, comment = nil)
-    update!(
-      locked_reason:  reason,
-      locked_comment: comment,
-      locked_at:      Time.current
-    )
-  end
-
-  def unlock_access!
-    update!(
-      locked_reason:  nil,
-      locked_comment: nil,
-      locked_at:      nil,
-    )
-  end
 end
