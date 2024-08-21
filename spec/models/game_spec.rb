@@ -136,11 +136,11 @@ RSpec.describe Game do
       game.validate
       expect(game.errors.of_kind?(:site_url, :too_long)).to be(true)
 
-      game = build(:game, site_url: 'abc://example')
+      game = build(:game, site_url: 'abc://game')
       game.validate
       expect(game.errors.of_kind?(:site_url, :format_is_not_valid)).to be(true)
 
-      game = build(:game, site_url: 'https://game.company.example.com')
+      game = build(:game, site_url: 'https://game.company.com')
       game.validate
       expect(game.errors.key?(:site_url)).to be(false)
     end

@@ -11,11 +11,11 @@ module Users
     validates :password, presence: true
 
     def email=(value)
-      super(EmailNormalizer.new(value).call)
+      super(NormalizeEmail.call(value))
     end
 
     def change_email=(value)
-      super(EmailNormalizer.new(value).call)
+      super(NormalizeEmail.call(value))
     end
   end
 end

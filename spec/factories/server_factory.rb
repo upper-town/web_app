@@ -37,6 +37,6 @@ FactoryBot.define do
 
     country_code { 'US' }
     sequence(:name) { |n| "Server #{n}" }
-    sequence(:site_url) { |n| "https://server-#{n}.example.com/" }
+    sequence(:site_url) { |n| "https://server-#{n}.upper.town/" }
   end
 end

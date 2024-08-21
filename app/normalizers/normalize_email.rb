@@ -1,11 +1,9 @@
 # frozen_string_literal: true
 
-class EmailNormalizer
-  attr_reader :email
+class NormalizeEmail
+  include Callable
 
-  def self.call(...)
-    new(...).call
-  end
+  attr_reader :email
 
   def initialize(email)
     @email = email
@@ -13,6 +11,7 @@ class EmailNormalizer
 
   def call
     return if email.nil?
+    return '' if email.blank?
 
     email.gsub(/[[:space:]]/, '').downcase
   end

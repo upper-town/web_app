@@ -2,12 +2,12 @@
 
 require 'rails_helper'
 
-RSpec.describe PhoneNumberNormalizer do
+RSpec.describe NormalizePhoneNumber do
   describe '#call' do
     it 'tries to normalize phone number to international format' do
       [
-        [nil, ''],
-        ['', ''],
+        [nil, nil],
+        ["\n\t \n", ''],
 
         ['202-555-9999',      '+12025559999'],
         ['(202) 555-9999',    '+12025559999'],

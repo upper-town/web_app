@@ -225,11 +225,11 @@ RSpec.describe Server do
       server.validate
       expect(server.errors.of_kind?(:site_url, :too_long)).to be(true)
 
-      server = build(:server, site_url: 'abc://example')
+      server = build(:server, site_url: 'abc://game')
       server.validate
       expect(server.errors.of_kind?(:site_url, :format_is_not_valid)).to be(true)
 
-      server = build(:server, site_url: 'https://server-1.game.example.com')
+      server = build(:server, site_url: 'https://server-1.game.company.com')
       server.validate
       expect(server.errors.key?(:site_url)).to be(false)
     end

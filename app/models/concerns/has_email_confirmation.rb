@@ -4,8 +4,8 @@ module HasEmailConfirmation
   extend ActiveSupport::Concern
 
   included do
-    normalizes :email, with: EmailNormalizer
-    normalizes :change_email, with: EmailNormalizer
+    normalizes :email, with: NormalizeEmail
+    normalizes :change_email, with: NormalizeEmail
 
     validates :email, presence: true, uniqueness: { case_sensitive: false }, email: true
   end

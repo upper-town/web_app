@@ -7,7 +7,7 @@ module Users
     validates :email, presence: true, length: { minimum: 3, maximum: 255 }
 
     def email=(value)
-      super(EmailNormalizer.new(value).call)
+      super(NormalizeEmail.call(value))
     end
   end
 end
