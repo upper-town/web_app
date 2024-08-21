@@ -3,14 +3,13 @@
 require 'rails_helper'
 
 RSpec.describe ValidatePhoneNumber do
-  it 'initializes with errors not empty before calling #valid?' do
+  it 'initializes with errors not empty before calling #valid? or #invalid?' do
     validator = described_class.new('+1 (202) 555-9999')
 
-    expect(validator.errors).not_to be_empty
     expect(validator.errors).to include(:not_validated_yet)
   end
 
-  describe '#valid?' do
+  describe '#valid? and #invalid?' do
     context 'when phone number is not valid' do
       it 'returns false and sets errors' do
         [
@@ -26,7 +25,7 @@ RSpec.describe ValidatePhoneNumber do
           validator = described_class.new(invaild_phone_number)
 
           expect(validator.valid?).to be(false)
-          expect(validator.errors).not_to be_empty
+          expect(validator.invalid?).to be(true)
           expect(validator.errors).to include(:not_valid)
         end
       end
@@ -54,6 +53,7 @@ RSpec.describe ValidatePhoneNumber do
           validator = described_class.new(valid_phone_number)
 
           expect(validator.valid?).to be(true)
+          expect(validator.invalid?).to be(false)
           expect(validator.errors).to be_empty
         end
       end

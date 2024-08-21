@@ -3,10 +3,9 @@
 require 'rails_helper'
 
 RSpec.describe ValidateEmail do
-  it 'initializes with errors not empty before calling #valid?' do
+  it 'initializes with errors not empty before calling #valid? or #invalid?' do
     validator = described_class.new('user@upper.town')
 
-    expect(validator.errors).not_to be_empty
     expect(validator.errors).to include(:not_validated_yet)
   end
 
@@ -32,7 +31,6 @@ RSpec.describe ValidateEmail do
 
           expect(validator.valid?).to be(false)
           expect(validator.invalid?).to be(true)
-          expect(validator.errors).not_to be_empty
           expect(validator.errors).to include(:format_is_not_valid)
         end
 
@@ -47,7 +45,6 @@ RSpec.describe ValidateEmail do
 
         expect(validator.valid?).to be(false)
         expect(validator.invalid?).to be(true)
-        expect(validator.errors).not_to be_empty
         expect(validator.errors).to include(:format_is_not_valid)
 
         invalid_many_subdomains_email = 'user@sub1.sub2.sub3.google.com'
@@ -56,7 +53,6 @@ RSpec.describe ValidateEmail do
 
         expect(validator.valid?).to be(false)
         expect(validator.invalid?).to be(true)
-        expect(validator.errors).not_to be_empty
         expect(validator.errors).to include(:format_is_not_valid)
       end
     end
@@ -96,7 +92,6 @@ RSpec.describe ValidateEmail do
 
             expect(validator.valid?).to be(false)
             expect(validator.invalid?).to be(true)
-            expect(validator.errors).not_to be_empty
             expect(validator.errors).to include(:domain_is_not_supported)
           end
         end
@@ -137,7 +132,6 @@ RSpec.describe ValidateEmail do
 
           expect(validator.valid?).to be(false)
           expect(validator.invalid?).to be(true)
-          expect(validator.errors).not_to be_empty
           expect(validator.errors).to include(:domain_is_not_supported)
         end
       end
