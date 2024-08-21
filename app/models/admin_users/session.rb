@@ -2,15 +2,12 @@
 
 module AdminUsers
   class Session < ApplicationModel
-    attribute :email, :string
-    attribute :password, :string
-    attribute :remember_me, :boolean
+    attribute :email, :string, default: nil
+    attribute :password, :string, default: nil
+    attribute :remember_me, :boolean, default: false
 
-    validates(
-      :email,
-      :password,
-      presence: true
-    )
+    validates :email, presence: true, length: { minimum: 3, maximum: 255 }
+    validates :password, presence: true, length: { maximum: 255 }
 
     def email=(value)
       super(EmailNormalizer.new(value).call)

@@ -177,13 +177,21 @@ RSpec.describe AdminUser do
   describe 'HasEmailConfirmation' do
     describe 'normalizations' do
       it 'normalizes email' do
-        admin_user = create(:admin_user, email: ' admin.USER @UPPER .Town ')
+        admin_user = build(:admin_user, email: nil)
+
+        expect(admin_user.email).to be_nil
+
+        admin_user = build(:admin_user, email: "\n\t admin.USER  @UPPER .Town \n")
 
         expect(admin_user.email).to eq('admin.user@upper.town')
       end
 
       it 'normalizes change_email' do
-        admin_user = create(:admin_user, change_email: ' admin.USER @UPPER .Town ')
+        admin_user = build(:admin_user, change_email: nil)
+
+        expect(admin_user.change_email).to be_nil
+
+        admin_user = build(:admin_user, change_email: "\n\t admin.USER  @UPPER .Town \n")
 
         expect(admin_user.change_email).to eq('admin.user@upper.town')
       end
