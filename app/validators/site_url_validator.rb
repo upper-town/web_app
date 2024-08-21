@@ -1,44 +1,15 @@
 # frozen_string_literal: true
 
-class SiteUrlValidator
-  PATTERN = %r{
-    \A
-      (?<protocol>
-        https?
-      )
-      ://
-      (?<host>
-        ([a-z0-9] [a-z0-9-]{,50} \.){,3}
-         [a-z0-9] [a-z0-9-]{,50} \.
-         [a-z0-9] [a-z0-9-]{,50}/?
-      )
-    \z
-  }xi
+class SiteUrlValidator < ActiveModel::EachValidator
+  def validate_each(record, attribute, value)
+    return if value.blank?
 
-  attr_reader :site_url, :errors
+    validate_site_url = ValidateSiteUrl.new(value)
 
-  def initialize(site_url)
-    @site_url = site_url.to_s
-    @errors = [:not_validated_yet]
-  end
+    return if validate_site_url.valid?
 
-  def valid?
-    errors.clear
-
-    validate_format
-
-    errors.empty?
-  end
-
-  def invalid?
-    !valid?
-  end
-
-  private
-
-  def validate_format
-    unless site_url.match?(PATTERN)
-      errors << :format_is_not_valid
+    validate_site_url.errors.each do |message_or_type|
+      record.errors.add(attribute, message_or_type)
     end
   end
 end

@@ -60,11 +60,8 @@ class Server < ApplicationRecord
   validates :description, length: { maximum: 1_000 }
   validates :info, length: { maximum: 1_000 }
   validates :country_code, inclusion: { in: COUNTRY_CODES }, presence: true
-  validates :site_url, length: { minimum: 3, maximum: 255 }, presence: true
+  validates :site_url, presence: true, length: { minimum: 3, maximum: 255 }, site_url: true
 
-  validate do |record|
-    SiteUrlRecordValidator.new(record).validate
-  end
   validate :verified_server_with_same_name_exist?
 
   def self.archived

@@ -26,6 +26,17 @@ RSpec.describe EmailValidator do
       end
     end
 
+    context 'when record has a blank email' do
+      it 'does not set errors' do
+        record = generic_model_class.new(email: ' ')
+
+        validator = described_class.new(attributes: [:email])
+        validator.validate(record)
+
+        expect(record.errors.key?(:email)).to be(false)
+      end
+    end
+
     context 'when record has a valid email' do
       it 'does not set errors' do
         record = generic_model_class.new(email: 'user@upper.town')
@@ -33,7 +44,7 @@ RSpec.describe EmailValidator do
         validator = described_class.new(attributes: [:email])
         validator.validate(record)
 
-        expect(record.errors).to be_empty
+        expect(record.errors.key?(:email)).to be(false)
       end
     end
   end

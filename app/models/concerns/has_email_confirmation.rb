@@ -7,7 +7,7 @@ module HasEmailConfirmation
     normalizes :email, with: EmailNormalizer
     normalizes :change_email, with: EmailNormalizer
 
-    validates :email, presence: true, email: true, uniqueness: { case_sensitive: false }
+    validates :email, presence: true, uniqueness: { case_sensitive: false }, email: true
   end
 
   def confirmed_email?

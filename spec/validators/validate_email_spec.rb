@@ -4,52 +4,47 @@ require 'rails_helper'
 
 RSpec.describe ValidateEmail do
   it 'initializes with errors not empty before calling #valid? or #invalid?' do
-    validator = described_class.new('user@upper.town')
+    validator = described_class.new('user@gmail.com')
 
     expect(validator.errors).to include(:not_validated_yet)
   end
 
   describe '#valid?' do
     context 'when email format is not valid' do
-      it 'returns false and set errors' do
-        [
-          nil,
-          '',
-          " \n  ",
-          'user',
-          'user@',
-          'user@google',
-          'user@google.com1.com2.com3.com4',
-          '.user@@google.com',
-          '_user@@google.com',
-          'user@@google.com',
-          'user#@google.com',
-          'user+test@google.com',
-          'user,test@google.com'
-        ].each do |invalid_email|
+      [
+        nil,
+        '',
+        " \n\t",
+        'user',
+        'user@',
+        'user@gmail',
+        'user@sub1.sub2.sub3.sub4.gmail.com',
+        '.user@@gmail.com',
+        '_user@@gmail.com',
+        'user@@gmail.com',
+        'user#@gmail.com',
+        'user+test@gmail.com',
+        'user,test@gmail.com'
+      ].each do |invalid_email|
+        it "returns false for #{invalid_email.inspect}" do
           validator = described_class.new(invalid_email)
 
           expect(validator.valid?).to be(false)
           expect(validator.invalid?).to be(true)
           expect(validator.errors).to include(:format_is_not_valid)
         end
+      end
 
+      it 'returns false for long email' do
         invalid_long_email =
-          'userxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx52@' \
-          'googlexxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx52.' \
-          'com1xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx52.' \
-          'com2xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx52.' \
-          'com3xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx52'
+          'userxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx@' \
+          'sub1xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.' \
+          'sub2xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.' \
+          'sub3xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.' \
+          'googlexxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.' \
+          'comxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
 
         validator = described_class.new(invalid_long_email)
-
-        expect(validator.valid?).to be(false)
-        expect(validator.invalid?).to be(true)
-        expect(validator.errors).to include(:format_is_not_valid)
-
-        invalid_many_subdomains_email = 'user@sub1.sub2.sub3.google.com'
-
-        validator = described_class.new(invalid_many_subdomains_email)
 
         expect(validator.valid?).to be(false)
         expect(validator.invalid?).to be(true)
@@ -57,7 +52,7 @@ RSpec.describe ValidateEmail do
       end
     end
 
-    context 'when email domain is reserved' do
+    describe 'reserved names' do
       %w[
         corp
         domain
@@ -75,54 +70,46 @@ RSpec.describe ValidateEmail do
         private
         test
       ].each do |reserved_name|
-        it "returns false and set errors for email with reserved name #{reserved_name.inspect}" do
+        context "when email contains reserved name #{reserved_name.inspect}" do
           [
-            "user@sub.#{reserved_name}",
-            "user@#{reserved_name}.com",
+            [false, "user@sub.#{reserved_name}"],
+            [false, "user@#{reserved_name}.com"],
 
-            "user@sub.sub.#{reserved_name}",
-            "user@sub.#{reserved_name}.com",
-            "user@#{reserved_name}.com.br",
+            [false, "user@sub.sub.#{reserved_name}"],
+            [false, "user@sub.#{reserved_name}.com"],
+            [false, "user@#{reserved_name}.sub.com"],
 
-            "user@sub.sub.sub.#{reserved_name}",
-            "user@sub.sub.#{reserved_name}.com",
-            "user@sub.#{reserved_name}.com.br",
-          ].each do |email_with_reserved_domain|
-            validator = described_class.new(email_with_reserved_domain)
+            [false, "user@sub.sub.sub.#{reserved_name}"],
+            [false, "user@sub.sub.#{reserved_name}.com"],
+            [false, "user@sub.#{reserved_name}.sub.com"],
+            [true,  "user@#{reserved_name}.sub.sub.com"],
 
-            expect(validator.valid?).to be(false)
-            expect(validator.invalid?).to be(true)
-            expect(validator.errors).to include(:domain_is_not_supported)
-          end
-        end
+            [false, "user@sub.sub.sub.sub.#{reserved_name}"],
+            [false, "user@sub.sub.sub.#{reserved_name}.com"],
+            [false, "user@sub.sub.#{reserved_name}.sub.com"],
+            [true,  "user@sub.#{reserved_name}.sub.sub.com"],
+            [true,  "user@#{reserved_name}.sub.sub.sub.com"],
+          ].each do |valid, email_with_reserved_domain|
+            it "returns #{valid} for #{email_with_reserved_domain.inspect}" do
+              validator = described_class.new(email_with_reserved_domain)
 
-        it "returns true and does not set errors when email looks like #{reserved_name.inspect}" do
-          [
-            "user@#{reserved_name}.abc.com.br",
-
-            "user@sub.#{reserved_name}abc",
-            "user@#{reserved_name}abc.com",
-
-            "user@sub.sub.#{reserved_name}abc",
-            "user@sub.#{reserved_name}abc.com",
-            "user@#{reserved_name}abc.com.br",
-
-            "user@sub.sub.sub.#{reserved_name}abc",
-            "user@sub.sub.#{reserved_name}abc.com",
-            "user@sub.#{reserved_name}abc.com.br",
-          ].each do |email_looks_like_reserved_name|
-            validator = described_class.new(email_looks_like_reserved_name)
-
-            expect(validator.valid?).to be(true)
-            expect(validator.invalid?).to be(false)
-            expect(validator.errors).to be_empty
+              if valid
+                expect(validator.valid?).to be(true)
+                expect(validator.invalid?).to be(false)
+                expect(validator.errors).to be_empty
+              else
+                expect(validator.valid?).to be(false)
+                expect(validator.invalid?).to be(true)
+                expect(validator.errors).to include(:domain_is_not_supported)
+              end
+            end
           end
         end
       end
     end
 
     context 'when email domain is from a disposable email service' do
-      it 'returns false and set errors' do
+      it 'returns false' do
         file_path = Rails.root.join('vendor/disposable_email_domains/list_test.txt')
 
         File.foreach(file_path, chomp: true) do |disposable_email_host|
@@ -139,19 +126,19 @@ RSpec.describe ValidateEmail do
 
     context 'when email is valid' do
       [
-        'user@google.com',
-        'USER@GOOGLE.COM',
-        'user@google.com1.com2.com3',
-        'user.test@google.com',
-        'user-test@google.com',
-        'user_test@google.com',
-        'userxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx51@' \
-          'googlexxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx51.' \
-          'com1xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx51.' \
-          'com2xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx51.' \
-          'com3xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx51',
+        'user@gmail.com',
+        'USER@GMAIL.COM',
+        'user@sub1.sub2.sub3.gmail.com',
+        'user.test@gmail.com',
+        'user-test@gmail.com',
+        'user_test@gmail.com',
+        'userxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx@' \
+          'gmailxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.' \
+          'com1xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.' \
+          'com2xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.' \
+          'com3xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
       ].each do |valid_email|
-        it "returns true and does not set errors for #{valid_email}" do
+        it "returns true for #{valid_email}" do
           validator = described_class.new(valid_email)
 
           expect(validator.valid?).to be(true)

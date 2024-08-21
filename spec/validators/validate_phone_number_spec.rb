@@ -15,7 +15,7 @@ RSpec.describe ValidatePhoneNumber do
         [
           nil,
           '',
-          " \n  ",
+          " \n\t",
           'aaa',
           '0',
           '000',

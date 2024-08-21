@@ -4,14 +4,13 @@ class ValidateEmail
   PATTERN = %r{
     \A
       (?<user>
-        [a-z0-9] [a-z0-9._-]{,50}
+        [a-z0-9] [a-z0-9._-]{,49}
       )
       @
       (?<host>
-        ([a-z0-9] [a-z0-9-]{,50} \.)?
-         [a-z0-9] [a-z0-9-]{,50} \.
-        ([a-z0-9] [a-z0-9-]{,50} \.)?
-         [a-z0-9] [a-z0-9-]{,50}
+        ([a-z0-9] [a-z0-9-]{,49} \.){,3}
+         [a-z0-9] [a-z0-9-]{,49} \.
+         [a-z0-9] [a-z0-9-]{,49}
       )
     \z
   }xi
@@ -89,12 +88,7 @@ class ValidateEmail
   def host_has_reserved_name?(host)
     parts = host.split('.')
 
-    case parts.size
-    when 1..3
-      parts.any? { |part| RESERVED_NAMES.include?(part) }
-    else
-      parts.drop(1).any? { |part| RESERVED_NAMES.include?(part) }
-    end
+    parts.last(3).any? { |part| RESERVED_NAMES.include?(part) }
   end
 
   def host_is_disposable_email_domain?(host)
