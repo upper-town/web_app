@@ -31,6 +31,7 @@
 class AdminUser < ApplicationRecord
   include FeatureFlagId
   include HasAdminTokens
+  include HasEmailConfirmation
 
   has_one :account, class_name: 'AdminAccount', dependent: :destroy
 
@@ -39,57 +40,7 @@ class AdminUser < ApplicationRecord
 
   has_secure_password validations: false
 
-  normalizes :email, with: EmailNormalizer
-  normalizes :change_email, with: EmailNormalizer
-
-  validates :email, uniqueness: { case_sensitive: false }, presence: true
   validates :password, length: { minimum: 8 }, allow_blank: true
-
-  validate do |record|
-    EmailRecordValidator.new(record).validate
-  end
-
-  def confirmed_email?
-    email_confirmed_at.present?
-  end
-
-  def unconfirmed_email?
-    !confirmed_email?
-  end
-
-  def confirm_email!
-    update!(email_confirmed_at: Time.current)
-  end
-
-  def unconfirm_email!
-    update!(email_confirmed_at: nil)
-  end
-
-  def confirmed_change_email?
-    change_email_confirmed_at.present?
-  end
-
-  def unconfirmed_change_email?
-    !confirmed_change_email?
-  end
-
-  def confirm_change_email!
-    update!(change_email_confirmed_at: Time.current)
-  end
-
-  def unconfirm_change_email!
-    update!(change_email_confirmed_at: nil)
-  end
-
-  def revert_change_email!(previous_email)
-    update!(
-      email: previous_email,
-      email_confirmed_at: Time.current,
-      change_email: nil,
-      change_email_confirmed_at: nil,
-      change_email_reverted_at: Time.current
-    )
-  end
 
   def locked?
     locked_at.present?

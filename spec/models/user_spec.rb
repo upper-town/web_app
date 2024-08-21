@@ -81,35 +81,7 @@ RSpec.describe User do
     end
   end
 
-  describe 'normalizations' do
-    it 'normalizes email' do
-      user = create(:user, email: ' USER @UPPER .Town ')
-
-      expect(user.email).to eq('user@upper.town')
-    end
-
-    it 'normalizes change_email' do
-      user = create(:user, change_email: ' USER @UPPER .Town ')
-
-      expect(user.change_email).to eq('user@upper.town')
-    end
-  end
-
   describe 'validations' do
-    it 'validates email' do
-      user = build(:user, email: '')
-      user.validate
-      expect(user.errors.of_kind?(:email, :blank)).to be(true)
-
-      user = build(:user, email: '@upper.town')
-      user.validate
-      expect(user.errors.of_kind?(:email, :format_is_not_valid)).to be(true)
-
-      user = build(:user, email: 'user@example.com')
-      user.validate
-      expect(user.errors.of_kind?(:email, :domain_is_not_supported)).to be(true)
-    end
-
     it 'validates password' do
       user = build(:user, password: '')
       user.validate
@@ -235,141 +207,173 @@ RSpec.describe User do
     end
   end
 
-  describe '#confirmed_email?' do
-    context 'when email_confirmed_at is blank' do
-      it 'returns false' do
-        user = create(:user, email_confirmed_at: nil)
+  describe 'HasEmailConfirmation' do
+    describe 'normalizations' do
+      it 'normalizes email' do
+        user = create(:user, email: ' USER @UPPER .Town ')
 
-        expect(user.confirmed_email?).to be(false)
+        expect(user.email).to eq('user@upper.town')
+      end
+
+      it 'normalizes change_email' do
+        user = create(:user, change_email: ' USER @UPPER .Town ')
+
+        expect(user.change_email).to eq('user@upper.town')
       end
     end
 
-    context 'when email_confirmed_at is present' do
-      it 'returns true' do
+    describe 'validations' do
+      it 'validates email' do
+        user = build(:user, email: '')
+        user.validate
+        expect(user.errors.of_kind?(:email, :blank)).to be(true)
+
+        user = build(:user, email: '@upper.town')
+        user.validate
+        expect(user.errors.of_kind?(:email, :format_is_not_valid)).to be(true)
+
+        user = build(:user, email: 'user@example.com')
+        user.validate
+        expect(user.errors.of_kind?(:email, :domain_is_not_supported)).to be(true)
+      end
+    end
+
+    describe '#confirmed_email?' do
+      context 'when email_confirmed_at is blank' do
+        it 'returns false' do
+          user = create(:user, email_confirmed_at: nil)
+
+          expect(user.confirmed_email?).to be(false)
+        end
+      end
+
+      context 'when email_confirmed_at is present' do
+        it 'returns true' do
+          user = create(:user, email_confirmed_at: Time.current)
+
+          expect(user.confirmed_email?).to be(true)
+        end
+      end
+    end
+
+    describe '#unconfirmed_email?' do
+      context 'when email_confirmed_at is blank' do
+        it 'returns true' do
+          user = create(:user, email_confirmed_at: nil)
+
+          expect(user.unconfirmed_email?).to be(true)
+        end
+      end
+
+      context 'when email_confirmed_at is present' do
+        it 'returns false' do
+          user = create(:user, email_confirmed_at: Time.current)
+
+          expect(user.unconfirmed_email?).to be(false)
+        end
+      end
+    end
+
+    describe '#confirm_email!' do
+      it 'updates email_confirmed_at to the current time' do
+        freeze_time do
+          user = create(:user, email_confirmed_at: nil)
+
+          user.confirm_email!
+
+          expect(user.email_confirmed_at).to eq(Time.current)
+        end
+      end
+    end
+
+    describe '#unconfirm_email!' do
+      it 'updates email_confirmed_at to nil' do
         user = create(:user, email_confirmed_at: Time.current)
 
-        expect(user.confirmed_email?).to be(true)
-      end
-    end
-  end
+        user.unconfirm_email!
 
-  describe '#unconfirmed_email?' do
-    context 'when email_confirmed_at is blank' do
-      it 'returns true' do
-        user = create(:user, email_confirmed_at: nil)
-
-        expect(user.unconfirmed_email?).to be(true)
+        expect(user.email_confirmed_at).to be_nil
       end
     end
 
-    context 'when email_confirmed_at is present' do
-      it 'returns false' do
-        user = create(:user, email_confirmed_at: Time.current)
+    describe '#confirmed_change_email?' do
+      context 'when change_email_confirmed_at is blank' do
+        it 'returns false' do
+          user = create(:user, change_email_confirmed_at: nil)
 
-        expect(user.unconfirmed_email?).to be(false)
+          expect(user.confirmed_change_email?).to be(false)
+        end
       end
-    end
-  end
 
-  describe '#confirm_email!' do
-    it 'updates email_confirmed_at to the current time' do
-      freeze_time do
-        user = create(:user, email_confirmed_at: nil)
+      context 'when change_email_confirmed_at is present' do
+        it 'returns true' do
+          user = create(:user, change_email_confirmed_at: Time.current)
 
-        user.confirm_email!
-
-        expect(user.email_confirmed_at).to eq(Time.current)
-      end
-    end
-  end
-
-  describe '#unconfirm_email!' do
-    it 'updates email_confirmed_at to nil' do
-      user = create(:user, email_confirmed_at: Time.current)
-
-      user.unconfirm_email!
-
-      expect(user.email_confirmed_at).to be_nil
-    end
-  end
-
-  describe '#confirmed_change_email?' do
-    context 'when change_email_confirmed_at is blank' do
-      it 'returns false' do
-        user = create(:user, change_email_confirmed_at: nil)
-
-        expect(user.confirmed_change_email?).to be(false)
+          expect(user.confirmed_change_email?).to be(true)
+        end
       end
     end
 
-    context 'when change_email_confirmed_at is present' do
-      it 'returns true' do
+    describe '#unconfirmed_change_email?' do
+      context 'when change_email_confirmed_at is blank' do
+        it 'returns true' do
+          user = create(:user, change_email_confirmed_at: nil)
+
+          expect(user.unconfirmed_change_email?).to be(true)
+        end
+      end
+
+      context 'when change_email_confirmed_at is present' do
+        it 'returns false' do
+          user = create(:user, change_email_confirmed_at: Time.current)
+
+          expect(user.unconfirmed_change_email?).to be(false)
+        end
+      end
+    end
+
+    describe '#confirm_change_email!' do
+      it 'updates change_email_confirmed_at to the current time' do
+        freeze_time do
+          user = create(:user, change_email_confirmed_at: nil)
+
+          user.confirm_change_email!
+
+          expect(user.change_email_confirmed_at).to eq(Time.current)
+        end
+      end
+    end
+
+    describe '#unconfirm_change_email!' do
+      it 'updates change_email_confirmed_at to nil' do
         user = create(:user, change_email_confirmed_at: Time.current)
 
-        expect(user.confirmed_change_email?).to be(true)
-      end
-    end
-  end
+        user.unconfirm_change_email!
 
-  describe '#unconfirmed_change_email?' do
-    context 'when change_email_confirmed_at is blank' do
-      it 'returns true' do
-        user = create(:user, change_email_confirmed_at: nil)
-
-        expect(user.unconfirmed_change_email?).to be(true)
-      end
-    end
-
-    context 'when change_email_confirmed_at is present' do
-      it 'returns false' do
-        user = create(:user, change_email_confirmed_at: Time.current)
-
-        expect(user.unconfirmed_change_email?).to be(false)
-      end
-    end
-  end
-
-  describe '#confirm_change_email!' do
-    it 'updates change_email_confirmed_at to the current time' do
-      freeze_time do
-        user = create(:user, change_email_confirmed_at: nil)
-
-        user.confirm_change_email!
-
-        expect(user.change_email_confirmed_at).to eq(Time.current)
-      end
-    end
-  end
-
-  describe '#unconfirm_change_email!' do
-    it 'updates change_email_confirmed_at to nil' do
-      user = create(:user, change_email_confirmed_at: Time.current)
-
-      user.unconfirm_change_email!
-
-      expect(user.change_email_confirmed_at).to be_nil
-    end
-  end
-
-  describe '#revert_change_email!' do
-    it 'reverts email to the previous_email' do
-      freeze_time do
-        user = create(
-          :user,
-          email: 'user@upper.town',
-          email_confirmed_at: 2.hours.ago,
-          change_email: 'user@upper.town',
-          change_email_confirmed_at: 1.hour.ago,
-          change_email_reverted_at: nil
-        )
-
-        user.revert_change_email!('previous.user@upper.town')
-
-        expect(user.email).to eq('previous.user@upper.town')
-        expect(user.email_confirmed_at).to eq(Time.current)
-        expect(user.change_email).to be_nil
         expect(user.change_email_confirmed_at).to be_nil
-        expect(user.change_email_reverted_at).to eq(Time.current)
+      end
+    end
+
+    describe '#revert_change_email!' do
+      it 'reverts email to the previous_email' do
+        freeze_time do
+          user = create(
+            :user,
+            email: 'user@upper.town',
+            email_confirmed_at: 2.hours.ago,
+            change_email: 'user@upper.town',
+            change_email_confirmed_at: 1.hour.ago,
+            change_email_reverted_at: nil
+          )
+
+          user.revert_change_email!('previous.user@upper.town')
+
+          expect(user.email).to eq('previous.user@upper.town')
+          expect(user.email_confirmed_at).to eq(Time.current)
+          expect(user.change_email).to be_nil
+          expect(user.change_email_confirmed_at).to be_nil
+          expect(user.change_email_reverted_at).to eq(Time.current)
+        end
       end
     end
   end
