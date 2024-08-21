@@ -34,9 +34,11 @@ class ValidateEmail
     test
   ]
 
-  DISPOSABLE_EMAIL_DOMAINS_LIST = Rails.root.join(
-    'vendor/disposable_email_domains/list.txt'
-  ).readlines(chomp: true)
+  DISPOSABLE_EMAIL_DOMAINS_LIST = if Rails.env.test?
+    Rails.root.join('vendor/disposable_email_domains/list_test.txt').readlines(chomp: true)
+  else
+    Rails.root.join('vendor/disposable_email_domains/list.txt').readlines(chomp: true)
+  end
 
   attr_reader :email, :errors
 

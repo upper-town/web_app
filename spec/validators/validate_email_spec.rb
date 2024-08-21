@@ -128,7 +128,7 @@ RSpec.describe ValidateEmail do
 
     context 'when email domain is from a disposable email service' do
       it 'returns false and set errors' do
-        file_path = Rails.root.join('vendor/disposable_email_domains/list.txt')
+        file_path = Rails.root.join('vendor/disposable_email_domains/list_test.txt')
 
         File.foreach(file_path, chomp: true) do |disposable_email_host|
           disposable_email = "user@#{disposable_email_host}"
