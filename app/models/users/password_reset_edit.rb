@@ -2,13 +2,14 @@
 
 module Users
   class PasswordResetEdit < ApplicationModel
-    attribute :password, :string
-    attribute :token,    :string
+    attribute :token, :string, default: nil
+    attribute :password, :string, default: nil
 
-    validates(
-      :password,
-      :token,
-      presence: true
-    )
+    validates :token, presence: true, length: { maximum: 255 }
+    validates :password, presence: true, length: { maximum: 255 }
+
+    def token=(value)
+      super(NormalizeToken.call(value))
+    end
   end
 end
