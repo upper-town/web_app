@@ -9,10 +9,9 @@ module Servers
     end
 
     def process_all
-      past_time = ServerStat::MIN_PAST_TIME
       current_time = Time.current
 
-      process(past_time, current_time)
+      process(nil, current_time)
     end
 
     def process_current

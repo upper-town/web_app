@@ -28,8 +28,6 @@
 #  fk_rails_...  (server_id => servers.id)
 #
 class ServerStat < ApplicationRecord
-  MIN_PAST_TIME = Time.iso8601('2022-01-01T00:00:00Z')
-
   YEAR  = 'year'
   MONTH = 'month'
   WEEK  = 'week'
@@ -44,18 +42,58 @@ class ServerStat < ApplicationRecord
   ALL_EMOJI_FLAG = '🌐'
   COUNTRY_CODES = [ALL, *Server::COUNTRY_CODES]
 
-  validates :period, inclusion: { in: PERIODS }
-  validates :country_code, inclusion: { in: COUNTRY_CODES }
-
   belongs_to :server
   belongs_to :game
 
-  def self.loop_through(period, past_time = MIN_PAST_TIME, current_time = nil)
-    past_time = MIN_PAST_TIME if past_time < MIN_PAST_TIME
-    current_time = Time.current if current_time.nil?
+  validates :period, inclusion: { in: PERIODS }
+  validates :country_code, inclusion: { in: COUNTRY_CODES }
+
+  def self.min_past_time
+    Time.iso8601(ENV.fetch('PERIODS_MIN_PAST_TIME'))
+  end
+
+  def self.reference_date_for(period, current_time)
+    current_time = current_time.utc
+
+    case period
+    when ServerStat::YEAR  then current_time.end_of_year.to_date
+    when ServerStat::MONTH then current_time.end_of_month.to_date
+    when ServerStat::WEEK  then current_time.end_of_week.to_date
+    else
+      raise 'Invalid period for ServerStat.reference_date_for'
+    end
+  end
+
+  def self.reference_range_for(period, current_time)
+    current_time = current_time.utc
+
+    case period
+    when YEAR  then current_time.all_year
+    when MONTH then current_time.all_month
+    when WEEK  then current_time.all_week
+    else
+      raise 'Invalid period for ServerStat.reference_range_for'
+    end
+  end
+
+  def self.next_time_for(period, current_time)
+    current_time = current_time.utc
+
+    case period
+    when YEAR  then current_time.next_year
+    when MONTH then current_time.next_month
+    when WEEK  then current_time.next_week
+    else
+      raise 'Invalid period for ServerStat.next_time_for'
+    end
+  end
+
+  def self.loop_through(period, past_time = nil, current_time = nil)
+    past_time = (past_time.nil? || past_time < min_past_time) ? min_past_time : past_time.utc
+    current_time = current_time.nil? ? Time.current.utc : current_time.utc
 
     if past_time > current_time
-      raise 'Invalid past_time or current_time for ServerStart.loop_through'
+      raise 'Invalid past_time or current_time for ServerStat.loop_through'
     end
 
     past_time = past_time.beginning_of_day
@@ -68,40 +106,6 @@ class ServerStat < ApplicationRecord
       yield reference_date, reference_range
 
       past_time = next_time_for(period, past_time)
-    end
-  end
-
-  def self.next_time_for(period, current_time)
-    case period
-    when YEAR  then current_time.next_year
-    when MONTH then current_time.next_month
-    when WEEK  then current_time.next_week
-    else
-      raise 'Invalid period for ServerStart.next_time_for'
-    end
-  end
-
-  def self.reference_range_for(period, current_time)
-    time_utc = current_time.utc
-
-    case period
-    when YEAR  then time_utc.all_year
-    when MONTH then time_utc.all_month
-    when WEEK  then time_utc.all_week
-    else
-      raise 'Invalid period for ServerStat.reference_range_for'
-    end
-  end
-
-  def self.reference_date_for(period, current_time)
-    time_utc = current_time.utc
-
-    case period
-    when ServerStat::YEAR  then time_utc.end_of_year.to_date
-    when ServerStat::MONTH then time_utc.end_of_month.to_date
-    when ServerStat::WEEK  then time_utc.end_of_week.to_date
-    else
-      raise 'Invalid period for ServerStat.reference_date_for'
     end
   end
 end

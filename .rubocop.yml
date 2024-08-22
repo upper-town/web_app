@@ -170,6 +170,8 @@ Style/StringConcatenation:
   Enabled: false
 Style/SymbolArray:
   Enabled: false
+Style/TernaryParentheses:
+  Enabled: false
 Style/TrailingCommaInArguments:
   Enabled: false
 Style/TrailingCommaInArrayLiteral:
