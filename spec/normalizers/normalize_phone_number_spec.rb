@@ -24,8 +24,8 @@ RSpec.describe NormalizePhoneNumber do
         ['+55 (16) 95555-9999', '+5516955559999'],
         ['+55(16)95555-9999',   '+5516955559999'],
         ['+5516955559999',      '+5516955559999'],
-      ].each do |given_phone_number, expected_phone_number|
-        expect(described_class.new(given_phone_number).call).to eq(expected_phone_number)
+      ].each do |given, expected|
+        expect(described_class.new(given).call).to eq(expected)
       end
     end
   end

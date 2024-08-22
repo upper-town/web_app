@@ -12,8 +12,8 @@ RSpec.describe NormalizeEmail do
         ['user@example.com',      'user@example.com'],
         ['  USER@example .COM  ', 'user@example.com'],
         [' 1! @# user @ example .COM.net...(ORG)  ', '1!@#user@example.com.net...(org)'],
-      ].each do |given_email, expected_email|
-        expect(described_class.new(given_email).call).to eq(expected_email)
+      ].each do |give, expected|
+        expect(described_class.new(give).call).to eq(expected)
       end
     end
   end
