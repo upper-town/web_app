@@ -90,7 +90,10 @@ RSpec.describe StringValueHelper do
       ].each do |value, separator, remove_whitespaces, expected_array|
         returned = described_class.values_list_uniq(value, separator, remove_whitespaces)
 
-        expect(returned).to(eq(expected_array), "Failed for #{value.inspect}")
+        expect(returned).to(
+          eq(expected_array),
+          "Failed for value=#{value.inspect} and remove_whitespaces=#{remove_whitespaces.inspect}"
+        )
       end
     end
   end

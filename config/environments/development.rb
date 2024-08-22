@@ -2,6 +2,8 @@
 
 require 'active_support/core_ext/integer/time'
 
+Rails.application.routes.default_url_options = { host: ENV.fetch('APP_HOST'), port: ENV.fetch('APP_PORT') }
+
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
@@ -70,14 +72,12 @@ Rails.application.configure do
 
   config.hosts << ENV.fetch('APP_HOST')
 
-  default_url_options = { host: ENV.fetch('APP_HOST'), port: ENV.fetch('APP_PORT') }
-
   # Raise error when a before_action's only/except options reference missing actions
   config.action_controller.raise_on_missing_callback_actions = true
 
-  config.action_controller.default_url_options = default_url_options
+  config.action_controller.default_url_options = { host: ENV.fetch('APP_HOST'), port: ENV.fetch('APP_PORT') }
 
-  config.action_mailer.default_url_options = default_url_options
+  config.action_mailer.default_url_options = { host: ENV.fetch('APP_HOST'), port: ENV.fetch('APP_PORT') }
   config.action_mailer.perform_caching = false
   config.action_mailer.raise_delivery_errors = true
   config.action_mailer.delivery_method = :smtp
