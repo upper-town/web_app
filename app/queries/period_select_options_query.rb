@@ -2,6 +2,6 @@
 
 class PeriodSelectOptionsQuery
   def call
-    ServerStat::PERIOD_OPTIONS
+    Periods::PERIOD_OPTIONS
   end
 end

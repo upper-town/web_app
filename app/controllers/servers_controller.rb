@@ -50,8 +50,8 @@ class ServersController < ApplicationController
 
   def period_from_params
     if params[:period].blank?
-      ServerStat::MONTH
-    elsif ServerStat::PERIODS.include?(params[:period])
+      Periods::MONTH
+    elsif Periods::PERIODS.include?(params[:period])
       params[:period]
     else
       raise InvalidQueryParamError

@@ -26,7 +26,7 @@ module Servers
       # TODO: Consider acquiring a lock on game just to we don't run more than
       # one instance of this service simultaneously for the same game
 
-      ServerStat::PERIODS.each do |period|
+      Periods::PERIODS.each do |period|
         ServerStat.loop_through(period, past_time, current_time) do |reference_date, _|
           upsert_server_stats(period, reference_date)
         end

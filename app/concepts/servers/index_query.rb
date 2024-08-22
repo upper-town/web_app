@@ -6,7 +6,7 @@ module Servers
 
     def initialize(game = nil, period = nil, country_code = nil, current_time = nil)
       @game = game
-      @period = period || ServerStat::MONTH
+      @period = period || Periods::MONTH
       @country_code = country_code || ServerStat::ALL
       @current_time = current_time || Time.current
     end

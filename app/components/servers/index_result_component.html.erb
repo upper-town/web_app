@@ -44,35 +44,35 @@
       </div>
       <div class="flex divide-x divide-slate-50 p-2">
         <div class="text-center flex-auto">
-          <div class="p-1 <%= @period == ServerStat::YEAR ? 'border-4 border-dashed border-indigo-500' : '' %>">
+          <div class="p-1 <%= @period == Periods::YEAR ? 'border-4 border-dashed border-indigo-500' : '' %>">
             <span class="text-sm">
               Year
             </span>
             <br>
             <span class="font-medium text-lg">
-              <%= format_ranking_number(@server_stats_hash[ServerStat::YEAR].ranking_number) %>
+              <%= format_ranking_number(@server_stats_hash[Periods::YEAR].ranking_number) %>
             </span>
           </div>
         </div>
         <div class="text-center flex-auto">
-          <div class="p-1 <%= @period == ServerStat::MONTH ? 'border-4 border-dashed border-indigo-500' : '' %>">
+          <div class="p-1 <%= @period == Periods::MONTH ? 'border-4 border-dashed border-indigo-500' : '' %>">
             <span class="text-sm">
               Month
             </span>
             <br>
             <span class="font-medium text-lg">
-              <%= format_ranking_number(@server_stats_hash[ServerStat::MONTH].ranking_number) %>
+              <%= format_ranking_number(@server_stats_hash[Periods::MONTH].ranking_number) %>
             </span>
           </div>
         </div>
         <div class="text-center flex-auto">
-          <div class="p-1 <%= @period == ServerStat::WEEK ? 'border-4 border-dashed border-indigo-500' : '' %>">
+          <div class="p-1 <%= @period == Periods::WEEK ? 'border-4 border-dashed border-indigo-500' : '' %>">
             <span class="text-sm">
               Week
             </span>
             <br>
             <span class="font-medium text-lg">
-              <%= format_ranking_number(@server_stats_hash[ServerStat::WEEK].ranking_number) %>
+              <%= format_ranking_number(@server_stats_hash[Periods::WEEK].ranking_number) %>
             </span>
           </div>
         </div>
@@ -85,35 +85,35 @@
       </div>
       <div class="flex divide-x divide-slate-50 p-2">
         <div class="text-center p-1 flex-auto">
-          <div class="p-1 <%= @period == ServerStat::YEAR ? 'border-4 border-dashed border-indigo-500' : '' %>">
+          <div class="p-1 <%= @period == Periods::YEAR ? 'border-4 border-dashed border-indigo-500' : '' %>">
             <span class="text-sm">
               Year
             </span>
             <br>
             <span class="font-medium text-lg">
-              <%= format_vote_count(@server_stats_hash[ServerStat::YEAR].vote_count) %>
+              <%= format_vote_count(@server_stats_hash[Periods::YEAR].vote_count) %>
             </span>
           </div>
         </div>
         <div class="text-center p-1 flex-auto">
-          <div class="p-1 <%= @period == ServerStat::MONTH ? 'border-4 border-dashed border-indigo-500' : '' %>">
+          <div class="p-1 <%= @period == Periods::MONTH ? 'border-4 border-dashed border-indigo-500' : '' %>">
             <span class="text-sm">
               Month
             </span>
             <br>
             <span class="font-medium text-lg">
-              <%= format_vote_count(@server_stats_hash[ServerStat::MONTH].vote_count) %>
+              <%= format_vote_count(@server_stats_hash[Periods::MONTH].vote_count) %>
             </span>
           </div>
         </div>
         <div class="text-center p-1 flex-auto">
-          <div class="p-1 <%= @period == ServerStat::WEEK ? 'border-4 border-dashed border-indigo-500' : '' %>">
+          <div class="p-1 <%= @period == Periods::WEEK ? 'border-4 border-dashed border-indigo-500' : '' %>">
             <span class="text-sm">
               Week
             </span>
             <br>
             <span class="font-medium text-lg">
-              <%= format_vote_count(@server_stats_hash[ServerStat::WEEK].vote_count) %>
+              <%= format_vote_count(@server_stats_hash[Periods::WEEK].vote_count) %>
             </span>
           </div>
         </div>

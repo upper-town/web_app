@@ -26,7 +26,7 @@ module Servers
     #   <#Interger (Server.id)> => {
     #     "year"  => <#ServerStat (year))>,
     #     "month" => <#ServerStat (month))>,
-    #     "day"   => <#ServerStat (year))>,
+    #     "week"  => <#ServerStat (week))>,
     #   },
     #   ...
     # }
@@ -55,7 +55,7 @@ module Servers
     end
 
     def sql_on_periods_and_reference_dates
-      conditions = ServerStat::PERIODS.map do |period|
+      conditions = Periods::PERIODS.map do |period|
         <<-SQL.squish
               "server_stats"."period"         = #{quote_for_sql(period)}
           AND "server_stats"."reference_date" = #{quote_for_sql(ServerStat.reference_date_for(period, current_time))}
