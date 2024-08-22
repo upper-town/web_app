@@ -42,10 +42,6 @@ class AdminToken < ApplicationRecord
     where('expires_at > ?', Time.current)
   end
 
-  def self.expire(tokens)
-    where(token: tokens).update_all(expires_at: 1.day.ago)
-  end
-
   def expired?
     expires_at <= Time.current
   end
