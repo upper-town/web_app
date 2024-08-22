@@ -1,0 +1,3 @@
+#!/bin/bash
+
+bundle exec rubocop && bundle exec rspec --pattern "spec/**/*_spec.rb" --exclude-pattern "spec/system/**/*_spec.rb"
