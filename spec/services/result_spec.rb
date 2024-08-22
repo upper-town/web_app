@@ -30,7 +30,12 @@ RSpec.describe Result do
           }
         )
 
-        expect(result.errors).not_to be_empty
+        expect(result.errors.of_kind?(:error_code_1, 'error message')).to be(true)
+        expect(result.errors.of_kind?(:error_code_2, :invalid)).to be(true)
+        expect(result.errors.of_kind?(:error_code_3, '123456')).to be(true)
+        expect(result.errors.of_kind?(:error_code_8, 'error message')).to be(true)
+        expect(result.errors.of_kind?(:error_code_8, :invalid)).to be(true)
+        expect(result.errors.of_kind?(:error_code_8, '123456')).to be(true)
         expect(result.errors.messages).to eq(
           {
             error_code_1: ['error message'],
@@ -39,12 +44,6 @@ RSpec.describe Result do
             error_code_8: ['error message', 'is invalid', '123456'],
           }
         )
-        expect(result.errors.of_kind?(:error_code_1, 'error message')).to be(true)
-        expect(result.errors.of_kind?(:error_code_2, :invalid)).to be(true)
-        expect(result.errors.of_kind?(:error_code_3, '123456')).to be(true)
-        expect(result.errors.of_kind?(:error_code_8, 'error message')).to be(true)
-        expect(result.errors.of_kind?(:error_code_8, :invalid)).to be(true)
-        expect(result.errors.of_kind?(:error_code_8, '123456')).to be(true)
       end
 
       it 'sets errors from Array, and skips blanks' do
@@ -52,13 +51,12 @@ RSpec.describe Result do
           ['error message', :invalid, 123456, ' ', false, nil]
         )
 
-        expect(result.errors).not_to be_empty
-        expect(result.errors.messages).to eq(
-          { base: ['error message', 'is invalid', '123456'] },
-        )
         expect(result.errors.of_kind?(:base, 'error message')).to be(true)
         expect(result.errors.of_kind?(:base, :invalid)).to be(true)
         expect(result.errors.of_kind?(:base, '123456')).to be(true)
+        expect(result.errors.messages).to eq(
+          { base: ['error message', 'is invalid', '123456'] },
+        )
       end
 
       it 'sets errors from String, Symbol, Numeric, and skips blanks' do
@@ -70,15 +68,16 @@ RSpec.describe Result do
         ].each do |error_value, expected_type, expected_messages|
           result = described_class.new(error_value)
 
-          expect(result.errors).not_to be_empty
+          expect(result.errors.of_kind?(:base, expected_type)).to(
+            be(true), "Failed for #{error_value.inspect}"
+          )
           expect(result.errors.messages).to eq(expected_messages)
-          expect(result.errors.of_kind?(:base, expected_type)).to be(true)
         end
 
         [' ', '', :'', false, nil].each do |blank_error_value|
           result = described_class.new(blank_error_value)
 
-          expect(result.errors).to be_empty
+          expect(result.errors).to(be_empty, "Failed for #{blank_error_value.inspect}")
         end
       end
 
@@ -89,30 +88,28 @@ RSpec.describe Result do
 
         result = described_class.new(active_model_errors)
 
-        expect(result.errors).not_to be_empty
+        expect(result.errors.of_kind?(:name, 'error message')).to be(true)
+        expect(result.errors.of_kind?(:description, :invalid)).to be(true)
         expect(result.errors.messages).to eq(
           {
             name: ['error message'],
             description: ['is invalid'],
           }
         )
-        expect(result.errors.of_kind?(:name, 'error message')).to be(true)
-        expect(result.errors.of_kind?(:description, :invalid)).to be(true)
       end
 
       it 'sets errors from true with a generic message' do
         result = described_class.new(true)
 
-        expect(result.errors).not_to be_empty
-        expect(result.errors.messages).to eq({ base: ['An error has occurred'] })
         expect(result.errors.of_kind?(:base, :generic_error)).to be(true)
+        expect(result.errors.messages).to eq({ base: ['An error has occurred'] })
       end
 
       it 'does not set errors from nil, false' do
         [nil, false].each do |nil_or_false_error_value|
           result = described_class.new(nil_or_false_error_value)
 
-          expect(result.errors).to be_empty
+          expect(result.errors).to(be_empty, "Failed for #{nil_or_false_error_value.inspect}")
         end
       end
 
@@ -200,7 +197,13 @@ RSpec.describe Result do
         }
       )
 
-      expect(result.errors).not_to be_empty
+      expect(result.errors.of_kind?(:base, 'existing error message')).to be(true)
+      expect(result.errors.of_kind?(:error_code_1, 'error message')).to be(true)
+      expect(result.errors.of_kind?(:error_code_2, :invalid)).to be(true)
+      expect(result.errors.of_kind?(:error_code_3, '123456')).to be(true)
+      expect(result.errors.of_kind?(:error_code_8, 'error message')).to be(true)
+      expect(result.errors.of_kind?(:error_code_8, :invalid)).to be(true)
+      expect(result.errors.of_kind?(:error_code_8, '123456')).to be(true)
       expect(result.errors.messages).to eq(
         {
           base: ['existing error message'],
@@ -210,13 +213,6 @@ RSpec.describe Result do
           error_code_8: ['error message', 'is invalid', '123456'],
         }
       )
-      expect(result.errors.of_kind?(:base, 'existing error message')).to be(true)
-      expect(result.errors.of_kind?(:error_code_1, 'error message')).to be(true)
-      expect(result.errors.of_kind?(:error_code_2, :invalid)).to be(true)
-      expect(result.errors.of_kind?(:error_code_3, '123456')).to be(true)
-      expect(result.errors.of_kind?(:error_code_8, 'error message')).to be(true)
-      expect(result.errors.of_kind?(:error_code_8, :invalid)).to be(true)
-      expect(result.errors.of_kind?(:error_code_8, '123456')).to be(true)
     end
 
     it 'adds to errors from Array, and skips blanks' do
@@ -226,14 +222,13 @@ RSpec.describe Result do
         ['error message', :invalid, 123456, ' ', false, nil]
       )
 
-      expect(result.errors).not_to be_empty
-      expect(result.errors.messages).to eq(
-        { base: ['existing error message', 'error message', 'is invalid', '123456'] },
-      )
       expect(result.errors.of_kind?(:base, 'existing error message')).to be(true)
       expect(result.errors.of_kind?(:base, 'error message')).to be(true)
       expect(result.errors.of_kind?(:base, :invalid)).to be(true)
       expect(result.errors.of_kind?(:base, '123456')).to be(true)
+      expect(result.errors.messages).to eq(
+        { base: ['existing error message', 'error message', 'is invalid', '123456'] },
+      )
     end
 
     it 'adds to errors from String, Symbol, Numeric, and skips blanks' do
@@ -247,11 +242,10 @@ RSpec.describe Result do
 
         result.add_errors(error_value)
 
-        expect(result.errors).not_to be_empty
-        expect(result.errors.messages).to eq(expected_error_messages)
         expected_error_types.each do |expected_type|
-          expect(result.errors.of_kind?(:base, expected_type)).to be(true)
+          expect(result.errors.of_kind?(:base, expected_type)).to(be(true), "Failed for #{error_value.inspect}")
         end
+        expect(result.errors.messages).to eq(expected_error_messages)
       end
 
       [' ', '', :'', false, nil].each do |blank_error_value|
@@ -259,11 +253,12 @@ RSpec.describe Result do
 
         result.add_errors(blank_error_value)
 
-        expect(result.errors).not_to be_empty
+        expect(result.errors.of_kind?(:base, 'existing error message')).to(
+          be(true), "Failed for #{blank_error_value.inspect}"
+        )
         expect(result.errors.messages).to eq(
           { base: ['existing error message'] }
         )
-        expect(result.errors.of_kind?(:base, 'existing error message')).to be(true)
       end
     end
 
@@ -276,7 +271,9 @@ RSpec.describe Result do
 
       result.add_errors(active_model_errors)
 
-      expect(result.errors).not_to be_empty
+      expect(result.errors.of_kind?(:base, 'existing error message')).to be(true)
+      expect(result.errors.of_kind?(:name, 'error message')).to be(true)
+      expect(result.errors.of_kind?(:description, :invalid)).to be(true)
       expect(result.errors.messages).to eq(
         {
           base: ['existing error message'],
@@ -284,9 +281,6 @@ RSpec.describe Result do
           description: ['is invalid'],
         }
       )
-      expect(result.errors.of_kind?(:base, 'existing error message')).to be(true)
-      expect(result.errors.of_kind?(:name, 'error message')).to be(true)
-      expect(result.errors.of_kind?(:description, :invalid)).to be(true)
     end
 
     it 'adds to errors from true with a generic message' do
@@ -294,12 +288,11 @@ RSpec.describe Result do
 
       result.add_errors(true)
 
-      expect(result.errors).not_to be_empty
+      expect(result.errors.of_kind?(:base, :generic_error)).to be(true)
+      expect(result.errors.of_kind?(:base, 'existing error message')).to be(true)
       expect(result.errors.messages).to eq(
         { base: ['existing error message', 'An error has occurred'] }
       )
-      expect(result.errors.of_kind?(:base, 'existing error message')).to be(true)
-      expect(result.errors.of_kind?(:base, :generic_error)).to be(true)
     end
 
     it 'does not add to errors from nil, false' do
@@ -308,11 +301,12 @@ RSpec.describe Result do
 
         result.add_errors(nil_or_false_error_value)
 
-        expect(result.errors).not_to be_empty
+        expect(result.errors.of_kind?(:base, 'existing error message')).to(
+          be(true), "Failed for #{nil_or_false_error_value.inspect}"
+        )
         expect(result.errors.messages).to eq(
           { base: ['existing error message'] }
         )
-        expect(result.errors.of_kind?(:base, 'existing error message')).to be(true)
       end
     end
 
@@ -348,24 +342,18 @@ RSpec.describe Result do
     it 'ensures a Result instance is created with errors, defaults to a generic error' do
       result = described_class.failure(nil)
 
-      expect(result.errors).not_to be_empty
+      expect(result.errors.of_kind?(:base, :generic_error)).to be(true)
       expect(result.errors.messages).to eq(
         { base: ['An error has occurred'] }
       )
-      expect(result.errors.of_kind?(:base, :generic_error)).to be(true)
     end
 
     it 'accepts errors and data' do
       result = described_class.failure('error message', attr: 'value')
 
-      expect(result.errors).not_to be_empty
-      expect(result.errors.messages).to eq(
-        { base: ['error message'] }
-      )
-      expect(result.data).to eq(
-        { 'attr' => 'value' }
-      )
       expect(result.errors.of_kind?(:base, 'error message')).to be(true)
+      expect(result.errors.messages).to eq({ base: ['error message'] })
+      expect(result.data).to eq({ 'attr' => 'value' })
     end
   end
 

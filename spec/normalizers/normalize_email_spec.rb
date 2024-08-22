@@ -12,8 +12,10 @@ RSpec.describe NormalizeEmail do
         ['user@example.com',      'user@example.com'],
         ['  USER@example .COM  ', 'user@example.com'],
         [' 1! @# user @ example .COM.net...(ORG)  ', '1!@#user@example.com.net...(org)'],
-      ].each do |give, expected|
-        expect(described_class.new(give).call).to eq(expected)
+      ].each do |value, expected|
+        returned = described_class.new(value).call
+
+        expect(returned).to(eq(expected), "Failed for #{value.inspect}")
       end
     end
   end

@@ -172,12 +172,9 @@ RSpec.describe FeatureFlag do
         ['FF_SOMETHING', 'anything', 'anything'],
       ].each do |env_var_name, env_var_value, expected_value|
         EnvVarHelper.with_values(env_var_name => env_var_value) do
-          value = described_class.fetch_value_from_env_vars(name)
+          returned = described_class.fetch_value_from_env_vars(name)
 
-          expect(value).to(
-            eq(expected_value),
-            "Failed for #{name.inspect}: #{value.inspect} is not equal to #{expected_value.inspect}"
-          )
+          expect(returned).to(eq(expected_value), "Failed for #{env_var_name.inspect}")
         end
       end
     end
@@ -238,14 +235,8 @@ RSpec.describe FeatureFlag do
       ].each do |value, expected_boolean, expected_array|
         enabled, ffids = described_class.parse_enabled_and_ffids(value)
 
-        expect(enabled).to(
-          eq(expected_boolean),
-          "Failed for #{value.inspect}: #{enabled.inspect} is not equal to #{expected_boolean.inspect}"
-        )
-        expect(ffids).to(
-          eq(expected_array),
-          "Failed for #{value.inspect}: #{ffids.inspect} is not equal to #{expected_array.inspect}"
-        )
+        expect(enabled).to(eq(expected_boolean), "Failed for #{value.inspect}")
+        expect(ffids).to(eq(expected_array), "Failed for #{value.inspect}")
       end
     end
   end

@@ -36,10 +36,7 @@ RSpec.describe StringValueHelper do
       ].each do |value, expected_boolean|
         returned = described_class.to_boolean(value)
 
-        expect(returned).to(
-          eq(expected_boolean),
-          "Failed for #{value.inspect}: #{returned.inspect} is not equal to #{expected_boolean.inspect}"
-        )
+        expect(returned).to(eq(expected_boolean), "Failed for #{value.inspect}")
       end
     end
   end
@@ -56,10 +53,7 @@ RSpec.describe StringValueHelper do
       ].each do |value, expected_str|
         returned = described_class.remove_whitespaces(value)
 
-        expect(returned).to(
-          eq(expected_str),
-          "Failed for #{value.inspect}: #{returned.inspect} is not equal to #{expected_str.inspect}"
-        )
+        expect(returned).to(eq(expected_str), "Failed for #{value.inspect}")
       end
     end
   end
@@ -76,10 +70,7 @@ RSpec.describe StringValueHelper do
       ].each do |value, expected_str|
         returned = described_class.normalize_whitespaces(value)
 
-        expect(returned).to(
-          eq(expected_str),
-          "Failed for #{value.inspect}: #{returned.inspect} is not equal to #{expected_str.inspect}"
-        )
+        expect(returned).to(eq(expected_str), "Failed for #{value.inspect}")
       end
     end
   end
@@ -99,11 +90,7 @@ RSpec.describe StringValueHelper do
       ].each do |value, separator, remove_whitespaces, expected_array|
         returned = described_class.values_list_uniq(value, separator, remove_whitespaces)
 
-        expect(returned).to(
-          eq(expected_array),
-          "Failed for value=#{value.inspect}, separator=#{separator.inspect}, remove_whitespaces=#{remove_whitespaces}: " \
-          "#{returned.inspect} is not equal to #{expected_array.inspect}"
-        )
+        expect(returned).to(eq(expected_array), "Failed for #{value.inspect}")
       end
     end
   end

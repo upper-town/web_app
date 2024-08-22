@@ -11,26 +11,26 @@ RSpec.describe ValidateSiteUrl do
 
   describe '#valid?' do
     context 'when site_url format is not valid' do
-      [
-        nil,
-        '',
-        " \n\t",
-        'ftp://',
-        'ftp://google',
-        'ftp://google.com',
-        'https://sub1.sub2.sub3.sub4.sub5.sub6.com',
-      ].each do |invalid_site_url|
-        it "returns false for #{invalid_site_url.inspect}" do
+      it 'returns false and set errors' do
+        [
+          nil,
+          '',
+          " \n\t",
+          'ftp://',
+          'ftp://google',
+          'ftp://google.com',
+          'https://sub1.sub2.sub3.sub4.sub5.sub6.com',
+        ].each do |invalid_site_url|
           validator = described_class.new(invalid_site_url)
 
-          expect(validator.valid?).to be(false)
+          expect(validator.valid?).to(be(false), "Failed for #{invalid_site_url.inspect}")
           expect(validator.invalid?).to be(true)
           expect(validator.errors).to include(:format_is_not_valid)
         end
       end
     end
 
-    it 'returns false for long site_url' do
+    it 'returns false and set errors for long site_url' do
       invalid_long_site_url =
         'https://' \
         'sub1xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.' \
@@ -48,59 +48,63 @@ RSpec.describe ValidateSiteUrl do
     end
 
     describe 'reserved names' do
-      %w[
-        corp
-        domain
-        example
-        home
-        host
-        internal
-        intranet
-        invalid
-        lan
-        local
-        localdomain
-        localhost
-        onion
-        private
-        test
-      ].each do |reserved_name|
-        context "when site_url contains reserved name #{reserved_name.inspect}" do
-          [
-            [false, "https://sub.#{reserved_name}"],
-            [false, "https://#{reserved_name}.com"],
+      context 'when site_url contains reserved name' do
+        it 'returns accordingly' do
+          %w[
+            corp
+            domain
+            example
+            home
+            host
+            internal
+            intranet
+            invalid
+            lan
+            local
+            localdomain
+            localhost
+            onion
+            private
+            test
+          ].each do |reserved_name|
+            [
+              [false, "https://sub.#{reserved_name}"],
+              [false, "https://#{reserved_name}.com"],
 
-            [false, "https://sub.sub.#{reserved_name}"],
-            [false, "https://sub.#{reserved_name}.com"],
-            [false, "https://#{reserved_name}.sub.com"],
+              [false, "https://sub.sub.#{reserved_name}"],
+              [false, "https://sub.#{reserved_name}.com"],
+              [false, "https://#{reserved_name}.sub.com"],
 
-            [false, "https://sub.sub.sub.#{reserved_name}"],
-            [false, "https://sub.sub.#{reserved_name}.com"],
-            [false, "https://sub.#{reserved_name}.sub.com"],
-            [true,  "https://#{reserved_name}.sub.sub.com"],
+              [false, "https://sub.sub.sub.#{reserved_name}"],
+              [false, "https://sub.sub.#{reserved_name}.com"],
+              [false, "https://sub.#{reserved_name}.sub.com"],
+              [true,  "https://#{reserved_name}.sub.sub.com"],
 
-            [false, "https://sub.sub.sub.sub.#{reserved_name}"],
-            [false, "https://sub.sub.sub.#{reserved_name}.com"],
-            [false, "https://sub.sub.#{reserved_name}.sub.com"],
-            [true,  "https://sub.#{reserved_name}.sub.sub.com"],
-            [true,  "https://#{reserved_name}.sub.sub.sub.com"],
+              [false, "https://sub.sub.sub.sub.#{reserved_name}"],
+              [false, "https://sub.sub.sub.#{reserved_name}.com"],
+              [false, "https://sub.sub.#{reserved_name}.sub.com"],
+              [true,  "https://sub.#{reserved_name}.sub.sub.com"],
+              [true,  "https://#{reserved_name}.sub.sub.sub.com"],
 
-            [false, "https://sub.sub.sub.sub.sub.#{reserved_name}"],
-            [false, "https://sub.sub.sub.sub.#{reserved_name}.com"],
-            [false, "https://sub.sub.sub.#{reserved_name}.sub.com"],
-            [true,  "https://sub.sub.#{reserved_name}.sub.sub.com"],
-            [true,  "https://sub.#{reserved_name}.sub.sub.sub.com"],
-            [true,  "https://#{reserved_name}.sub.sub.sub.sub.com"],
-          ].each do |valid, site_url_with_reserved_domain|
-            it "returns #{valid} for #{site_url_with_reserved_domain.inspect}" do
+              [false, "https://sub.sub.sub.sub.sub.#{reserved_name}"],
+              [false, "https://sub.sub.sub.sub.#{reserved_name}.com"],
+              [false, "https://sub.sub.sub.#{reserved_name}.sub.com"],
+              [true,  "https://sub.sub.#{reserved_name}.sub.sub.com"],
+              [true,  "https://sub.#{reserved_name}.sub.sub.sub.com"],
+              [true,  "https://#{reserved_name}.sub.sub.sub.sub.com"],
+            ].each do |valid, site_url_with_reserved_domain|
               validator = described_class.new(site_url_with_reserved_domain)
 
               if valid
-                expect(validator.valid?).to be(true)
+                expect(validator.valid?).to(
+                  be(true), "Failed for #{reserved_name.inspect} and #{site_url_with_reserved_domain.inspect}"
+                )
                 expect(validator.invalid?).to be(false)
                 expect(validator.errors).to be_empty
               else
-                expect(validator.valid?).to be(false)
+                expect(validator.valid?).to(
+                  be(false), "Failed for #{reserved_name.inspect} and #{site_url_with_reserved_domain.inspect}"
+                )
                 expect(validator.invalid?).to be(true)
                 expect(validator.errors).to include(:domain_is_not_supported)
               end
@@ -111,31 +115,31 @@ RSpec.describe ValidateSiteUrl do
     end
 
     context 'when site_url is valid' do
-      [
-        'http://sub1.com/',
-        'http://sub1.sub2.com/',
-        'http://sub1.sub2.sub3.com/',
-        'http://sub1.sub2.sub3.sub4.com/',
-        'http://sub1.sub2.sub3.sub4.sub5.com/',
+      it 'returns true and does not set errors' do
+        [
+          'http://sub1.com/',
+          'http://sub1.sub2.com/',
+          'http://sub1.sub2.sub3.com/',
+          'http://sub1.sub2.sub3.sub4.com/',
+          'http://sub1.sub2.sub3.sub4.sub5.com/',
 
-        'https://sub1.com',
-        'https://sub1.sub2.com',
-        'https://sub1.sub2.sub3.com',
-        'https://sub1.sub2.sub3.sub4.com',
-        'https://sub1.sub2.sub3.sub4.sub5.com',
+          'https://sub1.com',
+          'https://sub1.sub2.com',
+          'https://sub1.sub2.sub3.com',
+          'https://sub1.sub2.sub3.sub4.com',
+          'https://sub1.sub2.sub3.sub4.sub5.com',
 
-        'https://' \
-          'sub1xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.' \
-          'sub2xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.' \
-          'sub3xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.' \
-          'sub4xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.' \
-          'sub5xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.' \
-          'comxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
-      ].each do |valid_site_url|
-        it "returns true for #{valid_site_url}" do
+          'https://' \
+            'sub1xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.' \
+            'sub2xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.' \
+            'sub3xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.' \
+            'sub4xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.' \
+            'sub5xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.' \
+            'comxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
+        ].each do |valid_site_url|
           validator = described_class.new(valid_site_url)
 
-          expect(validator.valid?).to be(true)
+          expect(validator.valid?).to(be(true), "Failed for #{valid_site_url.inspect}")
           expect(validator.invalid?).to be(false)
           expect(validator.errors).to be_empty
         end

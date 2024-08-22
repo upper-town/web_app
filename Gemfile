@@ -56,7 +56,7 @@ end
 group :test do
   gem 'capybara', '~> 3.40'
   gem 'rspec-rails', '~> 6.1'
-  gem 'rspec', '~> 3.13'
+  gem 'rspec', '~> 3.4'
   gem 'selenium-webdriver', '~> 4.20'
   gem 'vcr', '~> 6.2'
   gem 'webmock', '~> 3.23'

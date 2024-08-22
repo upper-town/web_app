@@ -24,7 +24,7 @@ RSpec.describe ValidatePhoneNumber do
         ].each do |invaild_phone_number|
           validator = described_class.new(invaild_phone_number)
 
-          expect(validator.valid?).to be(false)
+          expect(validator.valid?).to(be(false), "Failed for #{invaild_phone_number.inspect}")
           expect(validator.invalid?).to be(true)
           expect(validator.errors).to include(:not_valid)
         end
@@ -52,7 +52,7 @@ RSpec.describe ValidatePhoneNumber do
         ].each do |valid_phone_number|
           validator = described_class.new(valid_phone_number)
 
-          expect(validator.valid?).to be(true)
+          expect(validator.valid?).to(be(true), "Failed for #{valid_phone_number.inspect}")
           expect(validator.invalid?).to be(false)
           expect(validator.errors).to be_empty
         end
