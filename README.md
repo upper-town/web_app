@@ -75,16 +75,17 @@ in the cloud hosting service, and not from env files using `dotenv-rails`.
 
 ### Running the app in development
 
-`Procfile.development` has the list of processes needed for development. You can
+`Procfile.dev` has the list of processes needed for development. You can
 use [`foreman`] or [`overmind`] to run them all at once. Overmind is suggested
 in the [`bin/dev`] script.
+
+You can also run processes separately, each one in a terminal window.
+In this case, make sure to run `source .env.development` and
+`source .env.development.local` before running the processes.
 
 [`foreman`]: https://rubygems.org/gems/foreman
 [`overmind`]: https://github.com/DarthSim/overmind/
 [`bin/dev`]: bin/dev
-
-Make sure to `source .env.development` and `source .env.development.local`
-before running the apps.
 
 ### FactoryBot
 
