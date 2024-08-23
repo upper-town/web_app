@@ -15,6 +15,8 @@
 #  index_admin_permissions_on_key  (key) UNIQUE
 #
 class AdminPermission < ApplicationRecord
+  SIDEKIQ_ACCESS = 'sidekiq_access'
+
   has_many :admin_role_permissions, dependent: :destroy
 
   has_many :roles, through: :admin_role_permissions, source: :admin_role
