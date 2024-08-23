@@ -12,6 +12,7 @@
 #  payload                  :jsonb            not null
 #  status                   :string           not null
 #  type                     :string           not null
+#  uuid                     :uuid             not null
 #  created_at               :datetime         not null
 #  updated_at               :datetime         not null
 #  server_id                :bigint           not null
@@ -23,6 +24,7 @@
 #  index_server_webhook_events_on_server_webhook_config_id  (server_webhook_config_id)
 #  index_server_webhook_events_on_type                      (type)
 #  index_server_webhook_events_on_updated_at                (updated_at)
+#  index_server_webhook_events_on_uuid                      (uuid) UNIQUE
 #
 # Foreign Keys
 #
@@ -33,6 +35,7 @@ FactoryBot.define do
   factory :server_webhook_event do
     server
 
+    uuid { SecureRandom.uuid }
     payload { {} }
     status { ServerWebhookEvent::PENDING }
     type { 'test.event' }

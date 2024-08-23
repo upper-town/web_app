@@ -17,9 +17,11 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_02_195758) do
 
   create_table "accounts", force: :cascade do |t|
     t.bigint "user_id", null: false
+    t.uuid "uuid", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_accounts_on_user_id", unique: true
+    t.index ["uuid"], name: "index_accounts_on_uuid", unique: true
   end
 
   create_table "admin_account_roles", force: :cascade do |t|
@@ -181,12 +183,14 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_02_195758) do
     t.bigint "game_id", null: false
     t.string "country_code", null: false
     t.bigint "server_id", null: false
+    t.uuid "uuid", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["account_id"], name: "index_server_votes_on_account_id"
     t.index ["created_at"], name: "index_server_votes_on_created_at"
     t.index ["game_id", "country_code"], name: "index_server_votes_on_game_id_and_country_code"
     t.index ["server_id"], name: "index_server_votes_on_server_id"
+    t.index ["uuid"], name: "index_server_votes_on_uuid", unique: true
   end
 
   create_table "server_webhook_configs", force: :cascade do |t|
@@ -210,12 +214,14 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_02_195758) do
     t.datetime "last_published_at"
     t.datetime "delivered_at"
     t.bigint "server_webhook_config_id"
+    t.uuid "uuid", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["server_id"], name: "index_server_webhook_events_on_server_id"
     t.index ["server_webhook_config_id"], name: "index_server_webhook_events_on_server_webhook_config_id"
     t.index ["type"], name: "index_server_webhook_events_on_type"
     t.index ["updated_at"], name: "index_server_webhook_events_on_updated_at"
+    t.index ["uuid"], name: "index_server_webhook_events_on_uuid", unique: true
   end
 
   create_table "server_webhook_secrets", force: :cascade do |t|

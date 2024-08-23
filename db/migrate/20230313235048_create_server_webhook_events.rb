@@ -15,6 +15,8 @@ class CreateServerWebhookEvents < ActiveRecord::Migration[7.1]
 
       t.references :server_webhook_config, null: true, foreign_key: true, index: false
 
+      t.uuid :uuid, null: false
+
       t.timestamps
     end
 
@@ -22,5 +24,6 @@ class CreateServerWebhookEvents < ActiveRecord::Migration[7.1]
     add_index :server_webhook_events, :server_id
     add_index :server_webhook_events, :server_webhook_config_id
     add_index :server_webhook_events, :updated_at
+    add_index :server_webhook_events, :uuid, unique: true
   end
 end

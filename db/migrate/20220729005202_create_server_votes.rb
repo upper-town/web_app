@@ -12,6 +12,8 @@ class CreateServerVotes < ActiveRecord::Migration[7.1]
       t.string     :country_code, null: false
       t.references :server,       null: false, foreign_key: true, index: false
 
+      t.uuid :uuid, null: false
+
       t.timestamps
     end
 
@@ -19,5 +21,6 @@ class CreateServerVotes < ActiveRecord::Migration[7.1]
     add_index :server_votes, [:game_id, :country_code]
     add_index :server_votes, :server_id
     add_index :server_votes, :created_at
+    add_index :server_votes, :uuid, unique: true
   end
 end
