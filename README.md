@@ -118,8 +118,8 @@ This section describes some code guidelines.
 ### Rails Controllers
 
 A controller should contain application layer code regarding the
-request/response cycle and delegate business logic to data models, services,
-queries, jobs, or concepts.
+request/response cycle and delegate business logic to services, queries, jobs,
+or concepts.
 
 It should set instance variables to be used by views.
 
@@ -248,7 +248,7 @@ Embracing Rails, we can think of a layered architecture as:
 - **Application layer**: Rails Controllers, Routes
 - **Infrastructure layer**: Rails ApplicationRecord, API clients, Sidekiq, and other gems
 - **Presentation layter**: Rails Views, Helpers, Presenters, ViewComponents
-- **Domain layer**: data models, services, jobs, queries, concepts
+- **Domain layer**: models, services, jobs, queries, concepts
 
 ## Tests
 
