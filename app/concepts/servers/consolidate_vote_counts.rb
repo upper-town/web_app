@@ -27,7 +27,7 @@ module Servers
       # one instance of this service simultaneously for the same server
 
       Periods::PERIODS.each do |period|
-        ServerStat.loop_through(period, past_time, current_time) do |reference_date, reference_range|
+        Periods.loop_through(period, past_time, current_time) do |reference_date, reference_range|
           upsert_country_server_stats(period, reference_date, reference_range)
           upsert_all_server_stats(period, reference_date, reference_range)
         end

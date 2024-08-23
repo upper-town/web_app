@@ -58,7 +58,7 @@ module Servers
       conditions = Periods::PERIODS.map do |period|
         <<-SQL.squish
               "server_stats"."period"         = #{quote_for_sql(period)}
-          AND "server_stats"."reference_date" = #{quote_for_sql(ServerStat.reference_date_for(period, current_time))}
+          AND "server_stats"."reference_date" = #{quote_for_sql(Periods.reference_date_for(period, current_time))}
         SQL
       end
 
