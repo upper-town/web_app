@@ -118,8 +118,8 @@ This section describes some code guidelines.
 ### Rails Controllers
 
 A controller should contain application layer code regarding the
-request/response cycle and delegate business logic to services, queries, jobs,
-or concepts.
+request/response cycle and delegate business logic to data models, services,
+queries, jobs, or concepts.
 
 It should set instance variables to be used by views.
 
@@ -179,7 +179,7 @@ framework in use:
 - Define a `perform` method with the args you need. Remember to use primitive
   types for args because when a job is scheduled, its args are serialized as
   JSON and persisted to a Redis queue. Later, a worker process picks up the job
-  from the queue, deserializes the args and performs it.
+  from the queue, deserializes the args and performs it
 - Follow the [Sidekiq best practices]
 
 [sidekiq]: https://rubygems.org/gems/sidekiq
@@ -204,11 +204,11 @@ be Ruby classes or inherit from a Rails validator class:
 
 - Create a validator in `app/validators/`
 - Use a descriptive name for the validator class and add a `Validator`
-  suffix to it
-- Use names like `.valid?` and `#validate` for the validator methods
-- Return `true`/`false`, and/or set `errors` to the `ActiveRecord`-like object
+  suffix to it when it is a model validator
+- Use names like `#valid?` and `#validate` for the validator methods
+- Return `true`/`false`, and/or set `errors`
 - Initialize with a record or value if necessary but avoid storing state
-  in validators
+  in validators other than the `errors`
 
 ### Presenters
 
@@ -246,19 +246,20 @@ Vans.
 Embracing Rails, we can think of a layered architecture as:
 
 - **Application layer**: Rails Controllers, Routes
-- **Infrastructure layer**: Rails Models, API clients, Sidekiq, and other gems
+- **Infrastructure layer**: Rails ApplicationRecord, API clients, Sidekiq, and other gems
 - **Presentation layter**: Rails Views, Helpers, Presenters, ViewComponents
-- **Domain layer**: services, jobs, queries, concepts
+- **Domain layer**: data models, services, jobs, queries, concepts
 
 ## Tests
 
-To run the test suite, simply run `bundle exec rspec`.
+To run the test suite, simply run `bundle exec rspec` or
+`bin/test` and `bin/test_system`
 
-For a given feature, there are different types of tests we can run varying from
-unit tests to system tests. In terms of time to write and compute time to run,
-unit tests are low-cost and system tests are more expensive. So, it is practical
-to follow a [testing pyramid] by only testing critical flows with system tests
-and being inclined to write more request and unit tests.
+For a given feature, there are different types of tests we can run: unit tests,
+request tests, and system tests. In terms of time to write and compute time to
+run, unit and requests tests are low-cost and system tests are more expensive.
+So, it is practical to follow a [testing pyramid] by only testing critical
+flows with system tests and being inclined to write more unit and request tests.
 
 [testing pyramid]: https://martinfowler.com/articles/practical-test-pyramid.html
 
@@ -268,14 +269,26 @@ it can be useful to run them _headfully_. To run a system spec _headfully_,
 set the `HEADFUL` environment variable while running the test command:
 `HEADFUL=true bundle exec rspec`
 
-### VCR to record and replay HTTP requests
+### WebMock stubs and VCR to record and replay HTTP requests
 
-During tests, external HTTP requests are blocked and, to allow requests to be
-sent, we need to set [VCR] to record them. VCR is a gem that records to YAML
-files the HTTP requests performed in a test case, and it replays them the next
-time the same test is run.
+During tests, external HTTP requests are blocked. To allow requests to be sent,
+we need to either stub them with [WebMock] or set [VCR] to record them.
 
+[WebMock]: https://rubygems.org/gems/webmock
 [vcr]: https://rubygems.org/gems/vcr
+
+#### Using WebMock
+
+WebMock is a gem that provides a set of utility methods to stub requests and
+assert they have or have not been requested during a test case.
+See [WebMock docs] for many examples on how to use it.
+
+[WebMock docs]: https://github.com/bblimke/webmock
+
+#### Using VCR
+
+VCR is a gem that records to YAML files the HTTP requests performed in a test
+case, and it replays them the next time the same test is run.
 
 To use VCR, you can wrap your code in a block with
 
