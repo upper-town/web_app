@@ -13,3 +13,14 @@ VCR.configure do |c|
   # Example of how to filter sensitive values in VCR records
   # c.filter_sensitive_data('filtered_SOME_ENV_VAR') { ENV.fetch('SOME_ENV_VAR') }
 end
+
+# Turned off by default: enable it with the vcr: true tag in tests.
+VCR.turn_off!
+
+RSpec.configure do |config|
+  config.around(vcr: true) do |example|
+    VCR.turn_on!
+    example.run
+    VCR.turn_off!
+  end
+end
