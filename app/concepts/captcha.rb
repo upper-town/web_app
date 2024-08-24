@@ -36,28 +36,36 @@ module Captcha
   # rubocop:enable Rails/OutputSafety
 
   def call(request)
-    return Result.success if StringValueHelper.to_boolean(ENV.fetch('CAPTCHA_DISABLED', 'false'))
+    if captcha_disabled?
+      return Result.success
+    end
 
     captcha_response, remote_ip = extract_values(request)
 
     if captcha_response.blank?
-      return Result.failure('Please pass the captcha.')
+      return Result.failure('Please pass the captcha')
     end
 
-    http_response = send_verify_request(captcha_response, remote_ip)
+    begin
+      response = send_verify_request(captcha_response, remote_ip)
 
-    if !http_response.success?
-      return Result.failure('Could not verify captcha. Please try again later.')
+      if response.body['success'].blank? || !response.body['success']
+        Result.failure('Captcha verification failed')
+      else
+        Result.success
+      end
+    rescue Faraday::ClientError, Faraday::ServerError
+      Result.failure('Could not verify captcha. Please try again later')
+    rescue Faraday::Error
+      Result.failure('Connection Failed or Parsing Error')
     end
-
-    if !http_response.body['success']
-      return Result.failure('Captcha verification failed.')
-    end
-
-    Result.success
   end
 
   private
+
+  def captcha_disabled?
+    StringValueHelper.to_boolean(ENV.fetch('CAPTCHA_DISABLED', 'false'))
+  end
 
   def extract_values(request)
     [
@@ -67,9 +75,10 @@ module Captcha
   end
 
   def send_verify_request(captcha_response, remote_ip)
-    connection = Faraday.new(BASE_URL) do |conn|
-      conn.request :url_encoded
-      conn.response :json
+    connection = Faraday.new(url: BASE_URL) do |builder|
+      builder.request :url_encoded
+      builder.response :json
+      builder.response :raise_error
     end
 
     connection.post(VERIFY_PATH) do |request|
