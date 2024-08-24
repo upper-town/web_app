@@ -5,7 +5,7 @@ class CreateAccounts < ActiveRecord::Migration[7.1]
     create_table :accounts do |t|
       t.references :user, null: false, foreign_key: true, index: false
 
-      t.uuid :uuid, null: false
+      t.uuid :uuid, null: false, default: 'gen_random_uuid()'
 
       t.timestamps
     end

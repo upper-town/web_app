@@ -17,7 +17,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_02_195758) do
 
   create_table "accounts", force: :cascade do |t|
     t.bigint "user_id", null: false
-    t.uuid "uuid", null: false
+    t.uuid "uuid", default: -> { "gen_random_uuid()" }, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_accounts_on_user_id", unique: true
@@ -183,7 +183,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_02_195758) do
     t.bigint "game_id", null: false
     t.string "country_code", null: false
     t.bigint "server_id", null: false
-    t.uuid "uuid", null: false
+    t.uuid "uuid", default: -> { "gen_random_uuid()" }, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["account_id"], name: "index_server_votes_on_account_id"
@@ -214,7 +214,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_02_195758) do
     t.datetime "last_published_at"
     t.datetime "delivered_at"
     t.bigint "server_webhook_config_id"
-    t.uuid "uuid", null: false
+    t.uuid "uuid", default: -> { "gen_random_uuid()" }, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["server_id"], name: "index_server_webhook_events_on_server_id"

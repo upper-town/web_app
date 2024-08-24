@@ -15,7 +15,7 @@ class CreateServerWebhookEvents < ActiveRecord::Migration[7.1]
 
       t.references :server_webhook_config, null: true, foreign_key: true, index: false
 
-      t.uuid :uuid, null: false
+      t.uuid :uuid, null: false, default: 'gen_random_uuid()'
 
       t.timestamps
     end

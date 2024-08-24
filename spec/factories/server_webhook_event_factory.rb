@@ -35,7 +35,6 @@ FactoryBot.define do
   factory :server_webhook_event do
     server
 
-    uuid { SecureRandom.uuid }
     payload { {} }
     status { ServerWebhookEvent::PENDING }
     type { 'test.event' }

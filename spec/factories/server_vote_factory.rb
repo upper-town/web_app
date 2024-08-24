@@ -34,7 +34,6 @@ FactoryBot.define do
     server
     game
 
-    uuid { SecureRandom.uuid }
     country_code { 'US' }
   end
 end

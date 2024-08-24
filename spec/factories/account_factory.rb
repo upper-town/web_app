@@ -22,7 +22,5 @@
 FactoryBot.define do
   factory :account do
     user
-
-    uuid { SecureRandom.uuid }
   end
 end

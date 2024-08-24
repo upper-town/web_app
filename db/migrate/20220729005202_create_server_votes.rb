@@ -12,7 +12,7 @@ class CreateServerVotes < ActiveRecord::Migration[7.1]
       t.string     :country_code, null: false
       t.references :server,       null: false, foreign_key: true, index: false
 
-      t.uuid :uuid, null: false
+      t.uuid :uuid, null: false, default: 'gen_random_uuid()'
 
       t.timestamps
     end
