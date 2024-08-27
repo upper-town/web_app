@@ -9,7 +9,7 @@ RSpec.describe ValidateEmail do
     expect(validator.errors).to include(:not_validated_yet)
   end
 
-  describe '#valid?' do
+  describe '#valid? and #invalid?' do
     context 'when email format is not valid' do
       it 'returns false and set errors' do
         [

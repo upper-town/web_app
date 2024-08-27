@@ -9,12 +9,12 @@ module Servers
     end
 
     def call(current_time = Time.current)
-      result = VerifyLinkedAccounts.new(server).call(current_time)
+      result = VerifyAccounts::Perform.new(server).call(current_time)
 
       if result.success?
         update_as_verified(current_time)
       else
-        update_as_not_verified(current_time, result)
+        update_as_not_verified(result)
       end
     end
 
@@ -27,7 +27,7 @@ module Servers
       )
     end
 
-    def update_as_not_verified(current_time, result)
+    def update_as_not_verified(result)
       notice = result.errors.full_messages.join('; ')
 
       server.update!(

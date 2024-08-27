@@ -22,7 +22,7 @@ class ValidatePhoneNumber
 
   def validate_possible
     unless Phonelib.parse(phone_number).possible?
-      errors << :not_valid
+      @errors << :not_valid
     end
   end
 end

@@ -9,7 +9,7 @@ Dotenv.load('.env.test.local', '.env.test')
 require 'webmock/rspec'
 require 'vcr'
 require 'capybara/rspec'
-require 'sidekiq/testing'
+require 'rspec-sidekiq'
 
 require 'string_value_helper'
 

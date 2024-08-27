@@ -62,7 +62,7 @@ class Server < ApplicationRecord
   validates :country_code, inclusion: { in: COUNTRY_CODES }, presence: true
   validates :site_url, presence: true, length: { minimum: 3, maximum: 255 }, site_url: true
 
-  validate :verified_server_with_same_name_exist?
+  validate :verified_server_with_same_name_exist
 
   def self.archived
     where.not(archived_at: nil)
@@ -126,7 +126,9 @@ class Server < ApplicationRecord
 
   private
 
-  def verified_server_with_same_name_exist?
+  def verified_server_with_same_name_exist
+    return if not_verified?
+
     if Server.verified.exists?(name: name, game_id: game_id)
       errors.add(:name, :verified_server_with_same_name_exist)
     end

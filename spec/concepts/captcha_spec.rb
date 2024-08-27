@@ -98,7 +98,7 @@ RSpec.describe Captcha do
         result = described_class.call(request)
 
         expect(result).to be_failure
-        expect(result.errors.of_kind?(:base, 'Connection Failed or Parsing Error')).to be(true)
+        expect(result.errors.of_kind?(:base, 'Connection failed')).to be(true)
 
         expect(captcha_verify_request).to have_been_requested
       end

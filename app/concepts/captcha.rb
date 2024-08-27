@@ -57,7 +57,7 @@ module Captcha
     rescue Faraday::ClientError, Faraday::ServerError
       Result.failure('Could not verify captcha. Please try again later')
     rescue Faraday::Error
-      Result.failure('Connection Failed or Parsing Error')
+      Result.failure('Connection failed')
     end
   end
 

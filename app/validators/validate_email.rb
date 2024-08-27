@@ -63,13 +63,13 @@ class ValidateEmail
 
   def validate_format
     unless email.match?(PATTERN)
-      errors << :format_is_not_valid
+      @errors << :format_is_not_valid
     end
   end
 
   def validate_email_domain
     if match_reserved_domain? || match_disposable_email_domains?
-      errors << :domain_is_not_supported
+      @errors << :domain_is_not_supported
     end
   end
 

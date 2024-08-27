@@ -119,6 +119,9 @@ RSpec/MultipleExpectations:
 RSpec/NestedGroups:
   Max: 6
 
+RSpecRails/NegationBeValid:
+  Enabled: false
+
 # https://docs.rubocop.org/rubocop/cops_style.html
 Style/BlockComments:
   Enabled: false

@@ -57,13 +57,13 @@ class ValidateSiteUrl
 
   def validate_format
     unless site_url.match?(PATTERN)
-      errors << :format_is_not_valid
+      @errors << :format_is_not_valid
     end
   end
 
   def validate_site_url_domain
     if match_reserved_domain?
-      errors << :domain_is_not_supported
+      @errors << :domain_is_not_supported
     end
   end
 

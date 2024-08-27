@@ -243,12 +243,19 @@ RSpec.describe Server do
         game: game,
         verified_at: Time.current
       )
+
+      server.verified_at = nil
       server.validate
-      expect(server.errors.of_kind?(:name, :verified_server_with_same_name_exist)).to be(true)
+      expect(server.errors).not_to be_of_kind(:name, :verified_server_with_same_name_exist)
+
+      server.verified_at = Time.current
+      server.validate
+      expect(server.errors).to be_of_kind(:name, :verified_server_with_same_name_exist)
 
       existing_verified_server.destroy!
+
       server.validate
-      expect(server.errors.key?(:name)).to be(false)
+      expect(server.errors).not_to have_key(:name)
     end
   end
 
