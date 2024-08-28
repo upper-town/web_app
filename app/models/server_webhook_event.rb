@@ -46,14 +46,22 @@ class ServerWebhookEvent < ApplicationRecord
     FAILED
   ]
 
-  SERVER_VOTES_CREATE = 'server_votes.create'
+  SERVER_VOTE_CREATED = 'server_vote.created'
 
   TYPES = [
-    SERVER_VOTES_CREATE,
+    SERVER_VOTE_CREATED,
   ]
 
   belongs_to :server
-  belongs_to :config, class_name: 'ServerWebhookConfig', optional: true
+  belongs_to(
+    :config,
+    class_name: 'ServerWebhookConfig',
+    foreign_key: :server_webhook_config_id,
+    inverse_of: :events,
+    optional: true
+  )
+
+  validates :status, inclusion: { in: STATUSES }, presence: true
 
   def pending?
     status == PENDING
@@ -78,6 +86,6 @@ class ServerWebhookEvent < ApplicationRecord
   def retry_in
     return unless retry?
 
-    (failed_attempts**4) + 60 + (rand(10) * failed_attempts)
+    (failed_attempts**4) + 60 + (SecureRandom.rand(10) * failed_attempts)
   end
 end
