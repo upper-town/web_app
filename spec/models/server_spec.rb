@@ -108,17 +108,6 @@ RSpec.describe Server do
       expect { server_webhook_config2.reload }.to raise_error(ActiveRecord::RecordNotFound)
     end
 
-    it 'has many webhook_secrets' do
-      server = create(:server)
-      server_webhook_secret1 = create(:server_webhook_secret, server: server)
-      server_webhook_secret2 = create(:server_webhook_secret, server: server)
-
-      expect(server.webhook_secrets).to contain_exactly(server_webhook_secret1, server_webhook_secret2)
-      server.destroy!
-      expect { server_webhook_secret1.reload }.to raise_error(ActiveRecord::RecordNotFound)
-      expect { server_webhook_secret2.reload }.to raise_error(ActiveRecord::RecordNotFound)
-    end
-
     it 'has many webhook_events' do
       server = create(:server)
       server_webhook_event1 = create(:server_webhook_event, server: server)
@@ -424,18 +413,11 @@ RSpec.describe Server do
   describe '#webhook_config' do
     context 'when enabled server_webhook_config exists for event_type' do
       it 'returns it' do
-        another_server = create(:server)
-        _another_server_webhook_config = create(
-          :server_webhook_config,
-          server: another_server,
-          event_type: 'test.event',
-          disabled_at: nil
-        )
         server = create(:server)
         server_webhook_config = create(
           :server_webhook_config,
           server: server,
-          event_type: 'test.event',
+          event_types: ['test.event'],
           disabled_at: nil
         )
 
@@ -449,14 +431,14 @@ RSpec.describe Server do
         _another_server_webhook_config = create(
           :server_webhook_config,
           server: another_server,
-          event_type: 'test.event',
+          event_types: ['test.event'],
           disabled_at: nil
         )
         server = create(:server)
         _server_webhook_config = create(
           :server_webhook_config,
           server: server,
-          event_type: 'test.event',
+          event_types: ['test.event'],
           disabled_at: Time.current
         )
 
@@ -468,18 +450,11 @@ RSpec.describe Server do
   describe '#webhook_config?' do
     context 'when enabled server_webhook_config exists for event_type' do
       it 'returns true' do
-        another_server = create(:server)
-        _another_server_webhook_config = create(
-          :server_webhook_config,
-          server: another_server,
-          event_type: 'test.event',
-          disabled_at: nil
-        )
         server = create(:server)
         _server_webhook_config = create(
           :server_webhook_config,
           server: server,
-          event_type: 'test.event',
+          event_types: ['test.event'],
           disabled_at: nil
         )
 
@@ -493,14 +468,14 @@ RSpec.describe Server do
         _another_server_webhook_config = create(
           :server_webhook_config,
           server: another_server,
-          event_type: 'test.event',
+          event_types: ['test.event'],
           disabled_at: nil
         )
         server = create(:server)
         _server_webhook_config = create(
           :server_webhook_config,
           server: server,
-          event_type: 'test.event',
+          event_types: ['test.event'],
           disabled_at: Time.current
         )
 
@@ -510,20 +485,13 @@ RSpec.describe Server do
   end
 
   describe '#integrated?' do
-    context 'when enabled server_webhook_config exists for server_votes.create' do
+    context 'when enabled server_webhook_config exists for server_vote.created' do
       it 'returns true' do
-        another_server = create(:server)
-        _another_server_webhook_config = create(
-          :server_webhook_config,
-          server: another_server,
-          event_type: 'server_votes.create',
-          disabled_at: nil
-        )
         server = create(:server)
         _server_webhook_config = create(
           :server_webhook_config,
           server: server,
-          event_type: 'server_votes.create',
+          event_types: ['server_vote.created'],
           disabled_at: nil
         )
 
@@ -531,20 +499,20 @@ RSpec.describe Server do
       end
     end
 
-    context 'when enabled server_webhook_config does not exit for server_votes.create' do
+    context 'when enabled server_webhook_config does not exit for server_vote.created' do
       it 'returns false' do
         another_server = create(:server)
         _another_server_webhook_config = create(
           :server_webhook_config,
           server: another_server,
-          event_type: 'server_votes.create',
+          event_types: ['server_vote.created'],
           disabled_at: nil
         )
         server = create(:server)
         _server_webhook_config = create(
           :server_webhook_config,
           server: server,
-          event_type: 'server_votes.create',
+          event_types: ['server_vote.created'],
           disabled_at: Time.current
         )
 

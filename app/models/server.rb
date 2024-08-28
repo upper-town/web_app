@@ -49,7 +49,6 @@ class Server < ApplicationRecord
     source: :account
 
   has_many :webhook_configs, class_name: 'ServerWebhookConfig', dependent: :destroy
-  has_many :webhook_secrets, class_name: 'ServerWebhookSecret', dependent: :destroy
   has_many :webhook_events,  class_name: 'ServerWebhookEvent',  dependent: :destroy
 
   normalizes :name, with: ->(str) { str.squish }
@@ -113,15 +112,19 @@ class Server < ApplicationRecord
   end
 
   def webhook_config(event_type)
-    webhook_configs.enabled.find_by(event_type: event_type)
+    webhook_configs.enabled.find do |webhook_config|
+      webhook_config.subscribed?(event_type)
+    end
   end
 
   def webhook_config?(event_type)
-    webhook_configs.enabled.exists?(event_type: event_type)
+    webhook_configs.enabled.any? do |webhook_config|
+      webhook_config.subscribed?(event_type)
+    end
   end
 
   def integrated?
-    webhook_config?(ServerWebhookEvent::SERVER_VOTES_CREATE)
+    webhook_config?(ServerWebhookEvent::SERVER_VOTE_CREATED)
   end
 
   private
