@@ -15,7 +15,7 @@ Current domains in use by this app:
 
 Also,
 
-- **Observability**: https://observe.upper.town
+- **Observability**: https://upperstatus.town/observe
 - **Status Page**: https://upperstatus.town
 
 Current email addresses in use by this app:
