@@ -16,7 +16,7 @@ module ServerWebhooks
       ServerWebhookEvent.where(
         status: [
           ServerWebhookEvent::FAILED,
-          ServerWebhookEvent::DELIVERED
+          ServerWebhookEvent::DELIVERED,
         ],
         updated_at: ..(3.months.ago)
       )
