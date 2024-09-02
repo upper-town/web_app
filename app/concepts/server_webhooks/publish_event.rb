@@ -68,19 +68,15 @@ module ServerWebhooks
 
       Result.success
     rescue Faraday::ClientError, Faraday::ServerError => e
-      result_failure_retry("Request failed: #{e}", check_up: true)
+      result_failure_retry("Request failed: #{e}")
     rescue Faraday::Error => e
-      result_failure_retry("Connection failed: #{e}", check_up: true)
+      result_failure_retry("Connection failed: #{e}")
     end
 
-    def result_failure_retry(notice, check_up: false)
+    def result_failure_retry(notice)
       retry_in = increment_failed_attempts!(notice)
-      check_up_config_id = check_up ? server_webhook_event.config.id : nil
 
-      Result.failure("May retry event: #{notice}", {
-        retry_in: retry_in,
-        check_up_config_id: check_up_config_id
-      }.compact)
+      Result.failure("May retry event: #{notice}", retry_in: retry_in)
     end
 
     def increment_failed_attempts!(notice)

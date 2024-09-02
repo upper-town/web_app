@@ -174,7 +174,7 @@ RSpec.describe ServerWebhooks::PublishEvent do
 
     context 'when event and config are OK' do
       context 'when request to publish responds with 4xx status' do
-        it 'returns failure with retry_in and check_up_config_id' do
+        it 'returns failure with retry_in' do
           freeze_time do
             server_webhook_config = create(
               :server_webhook_config,
@@ -228,13 +228,12 @@ RSpec.describe ServerWebhooks::PublishEvent do
             expect(result.failure?).to be(true)
             expect(result.errors[:base]).to include(/May retry event/)
             expect(result.data[:retry_in]).to be_present
-            expect(result.data[:check_up_config_id]).to eq(server_webhook_config.id)
           end
         end
       end
 
       context 'when request to publish responds with 5xx status' do
-        it 'returns failure with retry_in and check_up_config_id' do
+        it 'returns failure with retry_in' do
           freeze_time do
             server_webhook_config = create(
               :server_webhook_config,
@@ -288,13 +287,12 @@ RSpec.describe ServerWebhooks::PublishEvent do
             expect(result.failure?).to be(true)
             expect(result.errors[:base]).to include(/May retry event/)
             expect(result.data[:retry_in]).to be_present
-            expect(result.data[:check_up_config_id]).to eq(server_webhook_config.id)
           end
         end
       end
 
       context 'when request to publish times out' do
-        it 'returns failure with retry_in and check_up_config_id' do
+        it 'returns failure with retry_in' do
           freeze_time do
             server_webhook_config = create(
               :server_webhook_config,
@@ -348,7 +346,6 @@ RSpec.describe ServerWebhooks::PublishEvent do
             expect(result.failure?).to be(true)
             expect(result.errors[:base]).to include(/May retry event/)
             expect(result.data[:retry_in]).to be_present
-            expect(result.data[:check_up_config_id]).to eq(server_webhook_config.id)
           end
         end
       end
