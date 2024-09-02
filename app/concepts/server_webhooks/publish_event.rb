@@ -2,6 +2,8 @@
 
 module ServerWebhooks
   class PublishEvent
+    include Callable
+
     TIMEOUT = 60
 
     attr_reader :server_webhook_event

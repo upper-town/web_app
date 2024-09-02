@@ -4,7 +4,7 @@ require 'rails_helper'
 
 RSpec.describe ServerWebhooks::PublishEventJob do
   describe '#perform' do
-    context 'when a ServerWebhookEvent cannot be found with server_webhook_event_id' do
+    context 'when a ServerWebhookEvent is not found' do
       it 'raises an error' do
         expect do
           described_class.new.perform(0)
@@ -13,110 +13,77 @@ RSpec.describe ServerWebhooks::PublishEventJob do
     end
 
     context 'when PublishEvent result is a success' do
-      it 'does not schedule any other job' do
-        publish_event = instance_double(ServerWebhooks::PublishEvent)
-        result = Result.success
-        allow(ServerWebhooks::PublishEvent).to receive(:new).and_return(publish_event)
-        allow(publish_event).to receive(:call).and_return(result)
-
+      it 'does not enqueue any other job' do
+        allow(ServerWebhooks::PublishEvent).to receive(:call).and_return(Result.success)
         server_webhook_event = create(:server_webhook_event)
-
-        check_up_enabled_config_job_size_before = ServerWebhooks::CheckUpEnabledConfigJob.jobs.size
-        publish_event_job_size_before = described_class.jobs.size
 
         described_class.new.perform(server_webhook_event.id)
 
-        check_up_enabled_config_job_size_after = ServerWebhooks::CheckUpEnabledConfigJob.jobs.size
-        publish_event_job_size_after = described_class.jobs.size
+        expect(ServerWebhooks::CheckUpEnabledConfigJob).not_to have_enqueued_sidekiq_job
+        expect(described_class).not_to have_enqueued_sidekiq_job
 
-        expect(check_up_enabled_config_job_size_after).to eq(check_up_enabled_config_job_size_before)
-        expect(publish_event_job_size_after).to eq(publish_event_job_size_before)
-        expect(ServerWebhooks::PublishEvent).to have_received(:new).with(server_webhook_event).once
-        expect(publish_event).to have_received(:call).once
+        expect(ServerWebhooks::PublishEvent).to have_received(:call).with(server_webhook_event)
       end
     end
 
     context 'when PublishEvent result is a failure' do
       context 'when result does not have a check_up_enabled_config_id' do
-        it 'does not schedule job to perform a check up' do
-          publish_event = instance_double(ServerWebhooks::PublishEvent)
-          result = Result.failure
-          allow(ServerWebhooks::PublishEvent).to receive(:new).and_return(publish_event)
-          allow(publish_event).to receive(:call).and_return(result)
-
+        it 'does not enqueue job to perform a check up' do
+          allow(ServerWebhooks::PublishEvent).to receive(:call).and_return(Result.failure)
           server_webhook_event = create(:server_webhook_event)
-          check_up_enabled_config_job_size_before = ServerWebhooks::CheckUpEnabledConfigJob.jobs.size
 
           described_class.new.perform(server_webhook_event.id)
 
-          check_up_enabled_config_job_size_after = ServerWebhooks::CheckUpEnabledConfigJob.jobs.size
-          expect(check_up_enabled_config_job_size_after).to eq(check_up_enabled_config_job_size_before)
-          expect(ServerWebhooks::PublishEvent).to have_received(:new).with(server_webhook_event).once
-          expect(publish_event).to have_received(:call).once
+          expect(ServerWebhooks::CheckUpEnabledConfigJob).not_to have_enqueued_sidekiq_job
+
+          expect(ServerWebhooks::PublishEvent).to have_received(:call).with(server_webhook_event)
         end
       end
 
       context 'when result does not have a retry_in' do
-        it 'does not reschedule job to publish the event later' do
-          publish_event = instance_double(ServerWebhooks::PublishEvent)
-          result = Result.failure
-          allow(ServerWebhooks::PublishEvent).to receive(:new).and_return(publish_event)
-          allow(publish_event).to receive(:call).and_return(result)
-
+        it 'does not reenqueue job to publish the event later' do
+          allow(ServerWebhooks::PublishEvent).to receive(:call).and_return(Result.failure)
           server_webhook_event = create(:server_webhook_event)
-          publish_event_job_size_before = described_class.jobs.size
 
           described_class.new.perform(server_webhook_event.id)
 
-          publish_event_job_size_after = described_class.jobs.size
-          expect(publish_event_job_size_after).to eq(publish_event_job_size_before)
-          expect(ServerWebhooks::PublishEvent).to have_received(:new).with(server_webhook_event).once
-          expect(publish_event).to have_received(:call).once
+          expect(described_class).not_to have_enqueued_sidekiq_job
+
+          expect(ServerWebhooks::PublishEvent).to have_received(:call).with(server_webhook_event)
         end
       end
 
       context 'when result has a check_up_enabled_config_id' do
-        it 'schedules job to perform a check up on that ServerWebhookConfig' do
-          publish_event = instance_double(ServerWebhooks::PublishEvent)
-          result = Result.failure(nil, check_up_enabled_config_id: 123456)
-          allow(ServerWebhooks::PublishEvent).to receive(:new).and_return(publish_event)
-          allow(publish_event).to receive(:call).and_return(result)
-
+        it 'enqueues job to perform a check up on that ServerWebhookConfig' do
+          allow(ServerWebhooks::PublishEvent)
+            .to receive(:call)
+            .and_return(Result.failure(nil, check_up_enabled_config_id: 123456))
           server_webhook_event = create(:server_webhook_event)
-          check_up_enabled_config_job_size_before = ServerWebhooks::CheckUpEnabledConfigJob.jobs.size
 
           described_class.new.perform(server_webhook_event.id)
 
-          check_up_enabled_config_job_size_after = ServerWebhooks::CheckUpEnabledConfigJob.jobs.size
-          last_check_up_enabled_config_job = ServerWebhooks::CheckUpEnabledConfigJob.jobs.last
-          expect(check_up_enabled_config_job_size_after).to eq(check_up_enabled_config_job_size_before + 1)
-          expect(last_check_up_enabled_config_job['args']).to eq([123456])
-          expect(ServerWebhooks::PublishEvent).to have_received(:new).with(server_webhook_event).once
-          expect(publish_event).to have_received(:call).once
+          expect(ServerWebhooks::CheckUpEnabledConfigJob).to have_enqueued_sidekiq_job(123456)
+
+          expect(ServerWebhooks::PublishEvent).to have_received(:call).with(server_webhook_event)
         end
       end
 
       context 'when result has a retry_in' do
-        it 'reschedules job to publish the event later' do
-          freeze_time
+        it 'reenqueues job to publish the event later' do
+          freeze_time do
+            allow(ServerWebhooks::PublishEvent)
+              .to receive(:call)
+              .and_return(Result.failure(nil, retry_in: 120))
+            server_webhook_event = create(:server_webhook_event)
 
-          publish_event = instance_double(ServerWebhooks::PublishEvent)
-          result = Result.failure(nil, retry_in: 120)
-          allow(ServerWebhooks::PublishEvent).to receive(:new).and_return(publish_event)
-          allow(publish_event).to receive(:call).and_return(result)
+            described_class.new.perform(server_webhook_event.id)
 
-          server_webhook_event = create(:server_webhook_event)
-          publish_event_job_size_before = described_class.jobs.size
+            expect(described_class)
+              .to have_enqueued_sidekiq_job(server_webhook_event.id)
+              .at(120.seconds.from_now)
 
-          described_class.new.perform(server_webhook_event.id)
-
-          publish_event_job_size_after = described_class.jobs.size
-          last_publish_event_job = described_class.jobs.last
-          expect(publish_event_job_size_after).to eq(publish_event_job_size_before + 1)
-          expect(last_publish_event_job['args']).to eq([server_webhook_event.id])
-          expect(last_publish_event_job['at']).to eq(120.seconds.from_now.to_i)
-          expect(ServerWebhooks::PublishEvent).to have_received(:new).with(server_webhook_event).once
-          expect(publish_event).to have_received(:call).once
+            expect(ServerWebhooks::PublishEvent).to have_received(:call).with(server_webhook_event)
+          end
         end
       end
     end
