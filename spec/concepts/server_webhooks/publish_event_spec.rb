@@ -350,6 +350,65 @@ RSpec.describe ServerWebhooks::PublishEvent do
         end
       end
 
+      context 'when there are multiple failures' do
+        it 'returns failure with retry_in nil and status failed' do
+          freeze_time do
+            server_webhook_config = create(
+              :server_webhook_config,
+              method: 'POST',
+              url: 'https://game.company.com/webhook_events',
+              disabled_at: nil,
+              event_types: ['test.event'],
+              secret: 'aaaaaaaa'
+            )
+            server_webhook_event = create(
+              :server_webhook_event,
+              config: server_webhook_config,
+              type: 'test.event',
+              status: 'pending',
+              payload: { 'server_vote' => { 'uuid' => '11111111-1111-1111-1111-111111111111' } },
+              last_published_at: nil,
+              failed_attempts: 24,
+              notice: ''
+            )
+            expected_body = {
+              'webhook_event' => {
+                'type' => 'test.event',
+                'payload' => server_webhook_event.payload,
+                'last_published_at' => Time.current.iso8601,
+                'failed_attempts' => 24,
+              }
+            }.to_json
+            expected_headers = {
+              'Content-Type' => 'application/json',
+              'X-Signature' => OpenSSL::HMAC.hexdigest('sha256', 'aaaaaaaa', expected_body)
+            }
+            publish_event_request = stub_publish_event_request(
+              url: 'https://game.company.com/webhook_events',
+              method: :post,
+              headers: expected_headers,
+              body: expected_body,
+              response_status: 400
+            )
+
+            result = described_class.new(server_webhook_event).call
+
+            expect(publish_event_request).to have_been_requested
+            expect(ServerWebhooks::UpdateDeliveredEventJob).not_to have_enqueued_sidekiq_job
+
+            server_webhook_event.reload
+            expect(server_webhook_event.status).to eq('failed')
+            expect(server_webhook_event.last_published_at).to eq(Time.current)
+            expect(server_webhook_event.failed_attempts).to eq(25)
+            expect(server_webhook_event.notice).to match(/Request failed/)
+
+            expect(result.failure?).to be(true)
+            expect(result.errors[:base]).to include(/May retry event/)
+            expect(result.data[:retry_in]).to be_nil
+          end
+        end
+      end
+
       context 'when request to publish responds with 2xx status' do
         it 'returns success' do
           freeze_time do
