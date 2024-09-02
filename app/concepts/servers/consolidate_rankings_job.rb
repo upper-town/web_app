@@ -6,7 +6,7 @@ module Servers
 
     sidekiq_options(lock: :while_executing)
 
-    def perform(game_id, method)
+    def perform(game_id, method = 'current')
       game = Game.find(game_id)
 
       case method
