@@ -58,7 +58,7 @@ group :test do
   gem 'rspec-rails', '~> 6.1'
   gem 'rspec-sidekiq', '~> 5.0'
   gem 'rspec', '~> 3.4'
-  gem 'selenium-webdriver', '~> 4.20'
+  gem 'selenium-webdriver', '~> 4.24'
   gem 'vcr', '~> 6.2'
   gem 'webmock', '~> 3.23'
 end
