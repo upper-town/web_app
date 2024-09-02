@@ -195,13 +195,15 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_02_195758) do
 
   create_table "server_webhook_configs", force: :cascade do |t|
     t.bigint "server_id", null: false
-    t.string "event_type", null: false
-    t.string "url", default: "", null: false
+    t.string "url", null: false
+    t.string "event_types", default: ["*"], null: false, array: true
+    t.string "secret", null: false
+    t.string "other_secret"
     t.string "notice", default: "", null: false
     t.datetime "disabled_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["server_id", "event_type"], name: "index_server_webhook_configs_on_server_id_and_event_type", unique: true
+    t.index ["server_id"], name: "index_server_webhook_configs_on_server_id"
   end
 
   create_table "server_webhook_events", force: :cascade do |t|
@@ -222,15 +224,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_02_195758) do
     t.index ["type"], name: "index_server_webhook_events_on_type"
     t.index ["updated_at"], name: "index_server_webhook_events_on_updated_at"
     t.index ["uuid"], name: "index_server_webhook_events_on_uuid", unique: true
-  end
-
-  create_table "server_webhook_secrets", force: :cascade do |t|
-    t.bigint "server_id", null: false
-    t.string "secret", null: false
-    t.datetime "archived_at"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["server_id"], name: "index_server_webhook_secrets_on_server_id"
   end
 
   create_table "servers", force: :cascade do |t|
@@ -323,7 +316,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_02_195758) do
   add_foreign_key "server_webhook_configs", "servers"
   add_foreign_key "server_webhook_events", "server_webhook_configs"
   add_foreign_key "server_webhook_events", "servers"
-  add_foreign_key "server_webhook_secrets", "servers"
   add_foreign_key "servers", "games"
   add_foreign_key "sessions", "users"
   add_foreign_key "tokens", "users"

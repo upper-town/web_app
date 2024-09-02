@@ -46,6 +46,12 @@ class ServerWebhookConfig < ApplicationRecord
     where.not(disabled_at: nil)
   end
 
+  def self.for(server_id, event_type)
+    enabled
+      .where(server_id: server_id)
+      .filter { |config| config.subscribed?(event_type) }
+  end
+
   def enabled?
     disabled_at.nil?
   end

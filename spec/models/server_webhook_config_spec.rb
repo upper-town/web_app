@@ -91,6 +91,48 @@ RSpec.describe ServerWebhookConfig do
     end
   end
 
+  describe '.for' do
+    it 'returns enabled server_webhook_config for server and event_type' do
+      server = create(:server)
+      other_server = create(:server)
+      server_webhook_config1 = create(
+        :server_webhook_config,
+        server: server,
+        event_types: ['server_vote.created'],
+        disabled_at: nil
+      )
+      _server_webhook_config2 = create(
+        :server_webhook_config,
+        server: other_server,
+        event_types: ['server_vote.created'],
+        disabled_at: nil
+      )
+      _server_webhook_config3 = create(
+        :server_webhook_config,
+        server: server,
+        event_types: ['server_vote.created'],
+        disabled_at: Time.current
+      )
+      _server_webhook_config4 = create(
+        :server_webhook_config,
+        server: server,
+        event_types: ['test.event'],
+        disabled_at: nil
+      )
+      server_webhook_config5 = create(
+        :server_webhook_config,
+        server: server,
+        event_types: ['server_vote.*'],
+        disabled_at: nil
+      )
+
+      expect(described_class.for(server, 'server_vote.created')).to contain_exactly(
+        server_webhook_config1,
+        server_webhook_config5
+      )
+    end
+  end
+
   describe '#enabled?' do
     context 'when disabled_at is present' do
       it 'returns false' do

@@ -67,6 +67,7 @@ RSpec.describe Servers::CreateVote do
             change(ServerVote, :count).by(0)
           )
         )
+        expect(server_vote).to have_received(:save!)
 
         expect(RateLimiting.redis.get(rate_limiter_key)).to eq('0')
 
