@@ -13,7 +13,7 @@ module Servers
       @rate_limiter = RateLimiting::BasicRateLimiter.new(
         "servers_create_vote:#{server.game_id}:#{request.remote_ip}",
         1,
-        6.hours.to_i,
+        6.hours,
         'You have already voted for this game'
       )
     end

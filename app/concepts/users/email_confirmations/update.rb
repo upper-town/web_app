@@ -12,7 +12,7 @@ module Users
         @rate_limiter = RateLimiting::BasicRateLimiter.new(
           "users_email_confirmations_update:#{request.remote_ip}",
           2,
-          5.minutes.to_i
+          5.minutes
         )
       end
 

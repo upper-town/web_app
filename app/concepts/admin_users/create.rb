@@ -11,7 +11,7 @@ module AdminUsers
       @rate_limiter = RateLimiting::BasicRateLimiter.new(
         "admin_users_create:#{request.remote_ip}",
         2,
-        5.minutes.to_i,
+        5.minutes,
         'Email confirmation has already been sent.'
       )
     end

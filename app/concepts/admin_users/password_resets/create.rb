@@ -12,7 +12,7 @@ module AdminUsers
         @rate_limiter = RateLimiting::BasicRateLimiter.new(
           "admin_users_password_resets_create:#{request.remote_ip}",
           2,
-          5.minutes.to_i,
+          5.minutes
         )
       end
 

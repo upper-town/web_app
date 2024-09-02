@@ -11,7 +11,7 @@ module Users
       @rate_limiter = RateLimiting::BasicRateLimiter.new(
         "users_authenticate_session:#{request.remote_ip}",
         3,
-        2.minutes.to_i,
+        2.minutes,
         'Too many attempts.'
       )
     end

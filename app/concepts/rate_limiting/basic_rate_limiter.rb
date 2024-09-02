@@ -7,7 +7,7 @@ module RateLimiting
     def initialize(key, max_count, expires_in, error_message = '')
       @key = key
       @max_count = max_count
-      @expires_in = expires_in
+      @expires_in = expires_in.to_i
       @error_message = error_message
     end
 
