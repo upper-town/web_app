@@ -6,7 +6,7 @@ module Servers
 
     sidekiq_options(lock: :while_executing)
 
-    def perform(server_id, method, schedule_consolidate_rankings_job = false)
+    def perform(server_id, method = 'current')
       server = Server.find(server_id)
 
       case method
@@ -16,10 +16,6 @@ module Servers
         ConsolidateVoteCounts.new(server).process_all
       else
         raise 'Invalid method for Servers::ConsolidateVoteCountsJob'
-      end
-
-      if schedule_consolidate_rankings_job
-        ConsolidateRankingsJob.set(queue: 'critical').perform_async(server.game_id, method)
       end
     end
   end
