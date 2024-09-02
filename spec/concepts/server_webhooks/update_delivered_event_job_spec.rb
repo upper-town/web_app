@@ -4,7 +4,7 @@ require 'rails_helper'
 
 RSpec.describe ServerWebhooks::UpdateDeliveredEventJob do
   describe '#perform' do
-    context 'when a ServerWebhookEvent cannot be found with server_webhook_event_id' do
+    context 'when a ServerWebhookEvent is not found' do
       it 'raises an error' do
         expect do
           described_class.new.perform(0)
@@ -12,7 +12,7 @@ RSpec.describe ServerWebhooks::UpdateDeliveredEventJob do
       end
     end
 
-    context 'when a ServerWebhookEvent is found with server_webhook_event_id' do
+    context 'when a ServerWebhookEvent is found' do
       it 'updates its notice and status' do
         server_webhook_event = create(
           :server_webhook_event,
