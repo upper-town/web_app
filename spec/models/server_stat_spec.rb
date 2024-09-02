@@ -46,6 +46,11 @@ RSpec.describe ServerStat do
 
   describe 'validations' do
     it 'validates period' do
+      server_stat = build(:server_stat, period: ' ')
+      server_stat.validate
+
+      expect(server_stat.errors.of_kind?(:period, :blank)).to be(true)
+
       server_stat = build(:server_stat, period: 'something_else')
       server_stat.validate
 
@@ -58,6 +63,11 @@ RSpec.describe ServerStat do
     end
 
     it 'validates country_code' do
+      server_stat = build(:server_stat, country_code: ' ')
+      server_stat.validate
+
+      expect(server_stat.errors.of_kind?(:country_code, :blank)).to be(true)
+
       server_stat = build(:server_stat, country_code: 'something_else')
       server_stat.validate
 
