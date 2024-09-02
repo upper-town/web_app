@@ -68,4 +68,8 @@ class ServerWebhookConfig < ApplicationRecord
   def subscribed?(event_type)
     event_types.any? { |event_type_pattern| File.fnmatch?(event_type_pattern, event_type) }
   end
+
+  def not_subscribed?(...)
+    !subscribed?(...)
+  end
 end

@@ -195,7 +195,7 @@ RSpec.describe ServerWebhookConfig do
     end
   end
 
-  describe '#subscribed?' do
+  describe '#subscribed? and #not_subscribed?' do
     it 'glob matches event_types with given string' do
       [
         [true,  'server_vote.created', ['*']],
@@ -211,9 +211,13 @@ RSpec.describe ServerWebhookConfig do
         if should_match
           expect(server_webhook_config.subscribed?(str))
             .to be(true), "Failed for #{should_match.inspect} #{str.inspect} #{event_types.inspect}"
+          expect(server_webhook_config.not_subscribed?(str))
+            .to be(false)
         else
           expect(server_webhook_config.subscribed?(str))
             .to be(false), "Failed for #{should_match.inspect} #{str.inspect} #{event_types.inspect}"
+          expect(server_webhook_config.not_subscribed?(str))
+            .to be(true)
         end
       end
     end
