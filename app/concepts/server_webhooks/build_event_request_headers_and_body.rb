@@ -2,6 +2,8 @@
 
 module ServerWebhooks
   class BuildEventRequestHeadersAndBody
+    include Callable
+
     attr_reader :server_webhook_event
 
     def initialize(server_webhook_event)

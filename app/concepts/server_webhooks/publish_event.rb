@@ -4,8 +4,6 @@ module ServerWebhooks
   class PublishEvent
     include Callable
 
-    TIMEOUT = 60
-
     attr_reader :server_webhook_event
 
     def initialize(server_webhook_event)
@@ -19,7 +17,7 @@ module ServerWebhooks
       result = check_delivered
       return result if result.failure?
 
-      result = check_and_set_config!
+      result = check_config
       return result if result.failure?
 
       try_publish!
@@ -29,7 +27,7 @@ module ServerWebhooks
 
     def check_failed
       if server_webhook_event.failed?
-        Result.failure('Cannot retry event: it has been retried and failed multiple times')
+        Result.failure('Could not retry event: it has been retried and failed multiple times')
       else
         Result.success
       end
@@ -43,61 +41,54 @@ module ServerWebhooks
       end
     end
 
-    def check_and_set_config!
-      server_webhook_config = server_webhook_event.server.webhook_config
+    def check_config
+      notice =
+        if server_webhook_event.config.blank?
+          'Could not find config for this event type at the time of publishing it'
+        elsif server_webhook_event.config.not_subscribed?(server_webhook_event.type)
+          'Could not find config that is subscribed to this event type at the time of publishing it'
+        elsif server_webhook_event.config.disabled?
+          'Could not find an enabled config for this event type at the time of publishing it'
+        end
 
-      if server_webhook_config.blank?
-        notice = 'Could not find an enabled integration config for webhook event at the time of publishing it'
-        retry_in = increment_failed_attempts!(notice)
-
-        Result.failure(
-          "May retry event: #{notice}",
-          retry_in: retry_in
-        )
+      if notice.present?
+        result_failure_retry(notice)
       else
-        server_webhook_event.update!(config: server_webhook_config)
-
         Result.success
       end
     end
 
     def try_publish!
       server_webhook_event.update!(last_published_at: Time.current)
+      headers, body = BuildEventRequestHeadersAndBody.call(server_webhook_event)
 
-      request_headers, request_body = BuildEventRequestHeadersAndBody.new(server_webhook_event).call
+      send_request(build_connection(headers), body)
 
-      response = build_connection(request_headers).post(nil, request_body)
+      UpdateDeliveredEventJob.perform_async(server_webhook_event.id)
 
-      if response.success?
-        UpdateDeliveredEventJob.perform_async(server_webhook_event.id)
+      Result.success
+    rescue Faraday::ClientError, Faraday::ServerError => e
+      result_failure_retry("Request failed: #{e}", check_up: true)
+    rescue Faraday::Error => e
+      result_failure_retry("Connection failed: #{e}", check_up: true)
+    end
 
-        Result.success
-      else
-        notice = "Unsuccessful POST request: HTTP status #{response.status}"
-        retry_in = increment_failed_attempts!(notice)
-
-        Result.failure(
-          "May retry event: #{notice}",
-          retry_in: retry_in,
-          check_up_enabled_config_id: server_webhook_event.config.id
-        )
-      end
-    rescue Faraday::ConnectionFailed, Faraday::TimeoutError => e
-      notice = "Connection Failed or Timeout Error: #{e}"
+    def result_failure_retry(notice, check_up: false)
       retry_in = increment_failed_attempts!(notice)
+      check_up_config_id = check_up ? server_webhook_event.config.id : nil
 
-      Result.failure(
-        "May retry event: #{notice}",
+      Result.failure("May retry event: #{notice}", {
         retry_in: retry_in,
-        check_up_enabled_config_id: server_webhook_event.config.id
-      )
+        check_up_config_id: check_up_config_id
+      }.compact)
     end
 
     def increment_failed_attempts!(notice)
       server_webhook_event.increment(:failed_attempts)
-      server_webhook_event.notice = notice
-      server_webhook_event.status = determine_status
-      server_webhook_event.save!
+      server_webhook_event.update!(
+        notice: notice,
+        status: determine_status
+      )
 
       server_webhook_event.retry_in
     end
@@ -112,12 +103,21 @@ module ServerWebhooks
 
     def build_connection(headers)
       Faraday.new(
-        server_webhook_event.config.url,
-        {
-          headers: headers,
-          request: { timeout: TIMEOUT }
-        }
-      )
+        url: server_webhook_event.config.url,
+        headers: headers
+      ) do |builder|
+        builder.response :raise_error
+      end
+    end
+
+    def send_request(connection, body)
+      case server_webhook_event.config.method
+      when 'POST'  then connection.post(nil, body)
+      when 'PUT'   then connection.put(nil, body)
+      when 'PATCH' then connection.patch(nil, body)
+      else
+        raise 'HTTP method not supported for webhook request'
+      end
     end
   end
 end

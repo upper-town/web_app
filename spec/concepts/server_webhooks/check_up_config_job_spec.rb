@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe ServerWebhooks::CheckUpEnabledConfigJob do
+RSpec.describe ServerWebhooks::CheckUpConfigJob do
   describe '#perform' do
     context 'when ServerWebhookConfig cannot be found with server_webhook_config_id' do
       it 'does not do anything' do

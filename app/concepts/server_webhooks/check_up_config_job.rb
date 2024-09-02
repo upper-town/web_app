@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module ServerWebhooks
-  class CheckUpEnabledConfigJob
+  class CheckUpConfigJob
     include Sidekiq::Job
 
     MAX_RECENT_EVENTS_IN_RETRY_OR_FAILED = 50

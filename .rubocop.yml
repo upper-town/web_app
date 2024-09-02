@@ -71,8 +71,8 @@ Metrics/MethodLength:
     - spec/**/*.rb
   Max: 100
 Metrics/ParameterLists:
-  Max: 6
-  MaxOptionalParameters: 6
+  Max: 10
+  MaxOptionalParameters: 10
 Metrics/PerceivedComplexity:
   Max: 30
 
