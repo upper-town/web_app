@@ -63,5 +63,25 @@ RSpec.describe ServerVote do
 
       expect(server_vote.errors.of_kind?(:country_code, :inclusion)).to be(true)
     end
+
+    it 'validates server_available' do
+      server = create(:server, archived_at: Time.current)
+      server_vote = build(:server_vote, server: server)
+      server_vote.validate
+
+      expect(server_vote.errors.of_kind?(:server, 'cannot be archived')).to be(true)
+
+      server = create(:server, marked_for_deletion_at: Time.current)
+      server_vote = build(:server_vote, server: server)
+      server_vote.validate
+
+      expect(server_vote.errors.of_kind?(:server, 'cannot be marked_for_deletion')).to be(true)
+
+      server = create(:server)
+      server_vote = build(:server_vote, server: server)
+      server_vote.validate
+
+      expect(server_vote.errors.key?(:server)).to be(false)
+    end
   end
 end

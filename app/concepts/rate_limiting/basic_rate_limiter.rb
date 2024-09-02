@@ -47,7 +47,7 @@ module RateLimiting
     end
 
     def try_again_message(ttl_seconds)
-      "Please try again in #{ttl_to_sentence(ttl_seconds)}."
+      "Please try again in #{ttl_to_sentence(ttl_seconds)}"
     end
 
     def ttl_to_sentence(seconds)

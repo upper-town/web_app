@@ -11,10 +11,10 @@ module Servers
       @account = account
 
       @rate_limiter = RateLimiting::BasicRateLimiter.new(
-        "servers_create_vote:#{@server.game_id}:#{request.remote_ip}",
+        "servers_create_vote:#{server.game_id}:#{request.remote_ip}",
         1,
         6.hours.to_i,
-        'You have already voted for this game.'
+        'You have already voted for this game'
       )
     end
 
@@ -23,13 +23,14 @@ module Servers
       return result if result.failure?
 
       server_vote.server = server
-      server_vote.game_id = server.game_id
+      server_vote.game = server.game
       server_vote.country_code = server.country_code
       server_vote.remote_ip = request.remote_ip
       server_vote.account = account
 
       if server_vote.invalid?
         rate_limiter.uncall
+
         return Result.failure(server_vote.errors)
       end
 
@@ -40,23 +41,20 @@ module Servers
         raise e
       end
 
-      schedule_consolidate_vote_counts
-      schedule_server_webhooks_create_event
+      enqueue_consolidate_vote_counts
+      enqueue_server_webhook_event_create
 
       Result.success(server_vote: server_vote)
     end
 
     private
 
-    def schedule_consolidate_vote_counts
+    def enqueue_consolidate_vote_counts
       ConsolidateVoteCountsJob.set(queue: 'critical').perform_async(server_vote.server_id, 'current', true)
     end
 
-    def schedule_server_webhooks_create_event
-      event_type = ServerWebhookEvent::SERVER_VOTES_CREATE
-      return unless server.webhook_config?(event_type)
-
-      ServerWebhooks::CreateEventJob.perform_async(server_vote.server_id, event_type, server_vote.id)
+    def enqueue_server_webhook_event_create
+      ServerWebhooks::CreateEvents::ServerVoteCreatedJob.perform_async(server_vote.id)
     end
   end
 end
