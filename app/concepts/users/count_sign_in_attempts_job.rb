@@ -11,9 +11,9 @@ module Users
       return unless user
 
       if succeeded
-        user.increment(:sign_in_count)
+        user.increment!(:sign_in_count)
       else
-        user.increment(:failed_attempts)
+        user.increment!(:failed_attempts)
       end
     end
   end

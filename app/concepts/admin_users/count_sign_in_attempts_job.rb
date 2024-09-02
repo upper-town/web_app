@@ -11,9 +11,9 @@ module AdminUsers
       return unless admin_user
 
       if succeeded
-        admin_user.increment(:sign_in_count)
+        admin_user.increment!(:sign_in_count)
       else
-        admin_user.increment(:failed_attempts)
+        admin_user.increment!(:failed_attempts)
       end
     end
   end
