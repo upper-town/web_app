@@ -7,6 +7,7 @@
 #  id           :bigint           not null, primary key
 #  disabled_at  :datetime
 #  event_types  :string           default(["\"*\""]), not null, is an Array
+#  method       :string           default("POST"), not null
 #  notice       :string           default(""), not null
 #  other_secret :string
 #  secret       :string           not null
@@ -26,6 +27,8 @@
 class ServerWebhookConfig < ApplicationRecord
   belongs_to :server
 
+  METHODS = ['POST', 'GET', 'PUT', 'PATCH']
+
   has_many :events, class_name: 'ServerWebhookEvent', dependent: :nullify
 
   encrypts :secret
@@ -34,9 +37,11 @@ class ServerWebhookConfig < ApplicationRecord
   normalizes :event_types, with: ->(list) do
     list.map { |str| str.downcase.delete('^[a-z_.*]') if str }.compact_blank
   end
-
   normalizes :secret, with: ->(str) { str.gsub(/[[:space:]]/, '') }
   normalizes :other_secret, with: ->(str) { str.gsub(/[[:space:]]/, '') }
+  normalizes :method, with: ->(str) { str.upcase.delete('^[A-Z]') }
+
+  validates :method, inclusion: { in: METHODS }, presence: true
 
   def self.enabled
     where(disabled_at: nil)

@@ -7,6 +7,7 @@
 #  id           :bigint           not null, primary key
 #  disabled_at  :datetime
 #  event_types  :string           default(["\"*\""]), not null, is an Array
+#  method       :string           default("POST"), not null
 #  notice       :string           default(""), not null
 #  other_secret :string
 #  secret       :string           not null

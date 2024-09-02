@@ -195,6 +195,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_02_195758) do
 
   create_table "server_webhook_configs", force: :cascade do |t|
     t.bigint "server_id", null: false
+    t.string "method", default: "POST", null: false
     t.string "url", null: false
     t.string "event_types", default: ["*"], null: false, array: true
     t.string "secret", null: false

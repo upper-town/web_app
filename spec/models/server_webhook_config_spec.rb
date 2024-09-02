@@ -7,6 +7,7 @@
 #  id           :bigint           not null, primary key
 #  disabled_at  :datetime
 #  event_types  :string           default(["\"*\""]), not null, is an Array
+#  method       :string           default("POST"), not null
 #  notice       :string           default(""), not null
 #  other_secret :string
 #  secret       :string           not null
@@ -70,6 +71,31 @@ RSpec.describe ServerWebhookConfig do
       )
 
       expect(server_webhook_config.other_secret).to eq('aaaaaaaaaaaaaaaa')
+    end
+
+    it 'normalizes method' do
+      server_webhook_config = create(
+        :server_webhook_config,
+        method: " PO \nst \t\n"
+      )
+
+      expect(server_webhook_config.method).to eq('POST')
+    end
+  end
+
+  describe 'validations' do
+    it 'validates method' do
+      server_webhook_config = build(:server_webhook_config, method: ' ')
+      server_webhook_config.validate
+      expect(server_webhook_config.errors.of_kind?(:method, :blank)).to be(true)
+
+      server_webhook_config = build(:server_webhook_config, method: 'DELETE')
+      server_webhook_config.validate
+      expect(server_webhook_config.errors.of_kind?(:method, :inclusion)).to be(true)
+
+      server_webhook_config = build(:server_webhook_config, method: 'POST')
+      server_webhook_config.validate
+      expect(server_webhook_config.errors.key?(:method)).to be(false)
     end
   end
 
