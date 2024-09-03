@@ -12,9 +12,7 @@ module ServerWebhooks
 
     def call
       request_body = build_request_body
-      request_signature = build_request_signature(request_body)
-      request_other_signature = build_request_other_signature(request_body)
-      request_headers = build_request_headers(request_signature, request_other_signature)
+      request_headers = build_request_headers(build_request_signature(request_body))
 
       [request_headers, request_body]
     end
@@ -32,28 +30,16 @@ module ServerWebhooks
       }.to_json
     end
 
-    def build_request_signature(request_body)
-      secret = server_webhook_event.config.secret
-
-      generate_signature(secret, request_body)
-    end
-
-    def build_request_other_signature(request_body)
-      other_secret = server_webhook_event.config.other_secret
-      return if other_secret.blank?
-
-      generate_signature(other_secret, request_body)
-    end
-
-    def build_request_headers(request_signature, request_other_signature)
+    def build_request_headers(request_signature)
       {
-        'Content-Type'      => 'application/json',
-        'X-Signature'       => request_signature,
-        'X-Other-Signature' => request_other_signature,
+        'Content-Type' => 'application/json',
+        'X-Signature'  => request_signature,
       }.compact_blank
     end
 
-    def generate_signature(secret, request_body)
+    def build_request_signature(request_body)
+      secret = server_webhook_event.config.secret
+
       OpenSSL::HMAC.hexdigest('sha256', secret, request_body)
     end
   end

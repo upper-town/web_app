@@ -4,17 +4,16 @@
 #
 # Table name: server_webhook_configs
 #
-#  id           :bigint           not null, primary key
-#  disabled_at  :datetime
-#  event_types  :string           default(["\"*\""]), not null, is an Array
-#  method       :string           default("POST"), not null
-#  notice       :string           default(""), not null
-#  other_secret :string
-#  secret       :string           not null
-#  url          :string           not null
-#  created_at   :datetime         not null
-#  updated_at   :datetime         not null
-#  server_id    :bigint           not null
+#  id          :bigint           not null, primary key
+#  disabled_at :datetime
+#  event_types :string           default(["\"*\""]), not null, is an Array
+#  method      :string           default("POST"), not null
+#  notice      :string           default(""), not null
+#  secret      :string           not null
+#  url         :string           not null
+#  created_at  :datetime         not null
+#  updated_at  :datetime         not null
+#  server_id   :bigint           not null
 #
 # Indexes
 #

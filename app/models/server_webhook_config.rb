@@ -4,17 +4,16 @@
 #
 # Table name: server_webhook_configs
 #
-#  id           :bigint           not null, primary key
-#  disabled_at  :datetime
-#  event_types  :string           default(["\"*\""]), not null, is an Array
-#  method       :string           default("POST"), not null
-#  notice       :string           default(""), not null
-#  other_secret :string
-#  secret       :string           not null
-#  url          :string           not null
-#  created_at   :datetime         not null
-#  updated_at   :datetime         not null
-#  server_id    :bigint           not null
+#  id          :bigint           not null, primary key
+#  disabled_at :datetime
+#  event_types :string           default(["\"*\""]), not null, is an Array
+#  method      :string           default("POST"), not null
+#  notice      :string           default(""), not null
+#  secret      :string           not null
+#  url         :string           not null
+#  created_at  :datetime         not null
+#  updated_at  :datetime         not null
+#  server_id   :bigint           not null
 #
 # Indexes
 #
@@ -32,13 +31,11 @@ class ServerWebhookConfig < ApplicationRecord
   has_many :events, class_name: 'ServerWebhookEvent', dependent: :nullify
 
   encrypts :secret
-  encrypts :other_secret
 
   normalizes :event_types, with: ->(list) do
     list.map { |str| str.downcase.delete('^[a-z_.*]') if str }.compact_blank
   end
   normalizes :secret, with: ->(str) { str.gsub(/[[:space:]]/, '') }
-  normalizes :other_secret, with: ->(str) { str.gsub(/[[:space:]]/, '') }
   normalizes :method, with: ->(str) { str.upcase.delete('^[A-Z]') }
 
   validates :method, inclusion: { in: METHODS }, presence: true

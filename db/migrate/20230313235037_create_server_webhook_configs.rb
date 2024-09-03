@@ -9,7 +9,6 @@ class CreateServerWebhookConfigs < ActiveRecord::Migration[7.1]
       t.string   :url,          null: false
       t.string   :event_types,  null: false, array: true, default: ['*']
       t.string   :secret,       null: false
-      t.string   :other_secret, null: true
       t.string   :notice,       null: false, default: ''
       t.datetime :disabled_at,  null: true
 

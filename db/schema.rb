@@ -199,7 +199,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_02_195758) do
     t.string "url", null: false
     t.string "event_types", default: ["*"], null: false, array: true
     t.string "secret", null: false
-    t.string "other_secret"
     t.string "notice", default: "", null: false
     t.datetime "disabled_at"
     t.datetime "created_at", null: false
