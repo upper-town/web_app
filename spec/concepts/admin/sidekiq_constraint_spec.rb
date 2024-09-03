@@ -39,14 +39,15 @@ RSpec.describe Admin::SidekiqConstraint do
   end
 
   def build_request(admin_user, signed_in:)
-    request = ActionDispatch::Request.new({})
+    request = TestRequestHelper.build
 
     if signed_in
-      token = TokenGenerator::AdminSession.generate.first
+      token, token_digest, token_last_four = TokenGenerator::AdminSession.generate
       create(
         :admin_session,
         admin_user: admin_user,
-        token_digest: TokenGenerator::AdminSession.digest(token),
+        token_digest: token_digest,
+        token_last_four: token_last_four,
         expires_at: 1.month.from_now
       )
       request.cookie_jar['admin_session'] = { token: token }.to_json

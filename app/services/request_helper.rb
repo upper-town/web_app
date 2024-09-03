@@ -7,14 +7,6 @@ class RequestHelper
     @request = request
   end
 
-  def app_host_referer?
-    return false if request.referer.blank?
-
-    parsed_uri = URI.parse(request.referer)
-
-    ['http', 'https'].include?(parsed_uri.scheme) && parsed_uri.host == ENV.fetch('APP_HOST')
-  end
-
   def url_with_query_params(params_merge = {}, params_remove = [])
     params_merge.stringify_keys!
     params_remove.map!(&:to_s)
@@ -25,7 +17,16 @@ class RequestHelper
     decoded_query.merge!(params_merge)
     decoded_query.except!(*params_remove)
 
-    parsed_uri.query = URI.encode_www_form(decoded_query)
+    parsed_uri.query = decoded_query.empty? ? nil : URI.encode_www_form(decoded_query)
     parsed_uri.to_s
+  end
+
+  def app_host_referer?
+    return false if request.referer.blank?
+
+    parsed_uri = URI.parse(request.referer)
+    return false unless ['http', 'https'].include?(parsed_uri.scheme)
+
+    parsed_uri.host == ENV.fetch('APP_HOST')
   end
 end

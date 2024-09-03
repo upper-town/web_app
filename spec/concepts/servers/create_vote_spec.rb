@@ -8,7 +8,7 @@ RSpec.describe Servers::CreateVote do
       it 'returns failure' do
         server = create(:server)
         server_vote = build(:server_vote)
-        request = build_request(remote_ip: '1.1.1.1')
+        request = TestRequestHelper.build(remote_ip: '1.1.1.1')
         account = create(:account)
         rate_limiter_key = "servers_create_vote:#{server.game_id}:1.1.1.1"
         RateLimiting.redis.set(rate_limiter_key, '1')
@@ -32,7 +32,7 @@ RSpec.describe Servers::CreateVote do
       it 'returns failure and uncalls rate_limiter' do
         server = create(:server, archived_at: Time.current)
         server_vote = build(:server_vote)
-        request = build_request(remote_ip: '1.1.1.1')
+        request = TestRequestHelper.build(remote_ip: '1.1.1.1')
         account = create(:account)
         rate_limiter_key = "servers_create_vote:#{server.game_id}:1.1.1.1"
 
@@ -55,7 +55,7 @@ RSpec.describe Servers::CreateVote do
       it 'raises error and uncalls rate_limiter' do
         server = create(:server)
         server_vote = build(:server_vote)
-        request = build_request(remote_ip: '1.1.1.1')
+        request = TestRequestHelper.build(remote_ip: '1.1.1.1')
         account = create(:account)
         rate_limiter_key = "servers_create_vote:#{server.game_id}:1.1.1.1"
         allow(server_vote).to receive(:save!).and_raise(ActiveRecord::ActiveRecordError)
@@ -80,7 +80,7 @@ RSpec.describe Servers::CreateVote do
       it 'returns success, creates server_vote and enqueues jobs' do
         server = create(:server)
         server_vote = build(:server_vote, reference: 'anything123456')
-        request = build_request(remote_ip: '1.1.1.1')
+        request = TestRequestHelper.build(remote_ip: '1.1.1.1')
         account = create(:account)
         rate_limiter_key = "servers_create_vote:#{server.game_id}:1.1.1.1"
 
@@ -107,13 +107,5 @@ RSpec.describe Servers::CreateVote do
           .to have_enqueued_sidekiq_job(result.data[:server_vote].id)
       end
     end
-  end
-
-  def build_request(params: {}, remote_ip: '1.1.1.1')
-    request = ActionController::TestRequest.create(ApplicationController)
-    request.params.merge!(params)
-    request.remote_ip = remote_ip
-
-    request
   end
 end

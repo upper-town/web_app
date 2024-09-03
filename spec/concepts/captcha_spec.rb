@@ -6,7 +6,7 @@ RSpec.describe Captcha do
   # rubocop:disable Rails/OutputSafety
   describe 'script_tag' do
     it 'returns safe HTML script tag for the captcha' do
-      request = build_request
+      request = TestRequestHelper.build
       expected_html = <<~HTML.html_safe
         <script type="text/javascript" nonce="#{request.session.id}">
           function captchaOnload() {
@@ -46,7 +46,7 @@ RSpec.describe Captcha do
     context 'when development-only env var CAPTCHA_DISABLED is true' do
       it 'returns success and does not send request to verify captcha' do
         EnvVarHelper.with_values('CAPTCHA_DISABLED' => 'true') do
-          request = build_request(
+          request = TestRequestHelper.build(
             params: { 'h-captcha-response' => 'abcdef123456' },
             remote_ip: '8.8.8.8'
           )
@@ -66,7 +66,7 @@ RSpec.describe Captcha do
 
     context 'when captcha_response is blank' do
       it 'returns failure and does not send request to verify captcha' do
-        request = build_request(
+        request = TestRequestHelper.build(
           params: { 'h-captcha-response' => ' ' },
           remote_ip: '8.8.8.8'
         )
@@ -86,7 +86,7 @@ RSpec.describe Captcha do
 
     context 'when request to verify captcha times out' do
       it 'returns failure' do
-        request = build_request(
+        request = TestRequestHelper.build(
           params: { 'h-captcha-response' => 'abcdef123456' },
           remote_ip: '8.8.8.8'
         )
@@ -106,7 +106,7 @@ RSpec.describe Captcha do
 
     context 'when request to verify captcha responds with 5xx status' do
       it 'returns failure' do
-        request = build_request(
+        request = TestRequestHelper.build(
           params: { 'h-captcha-response' => 'abcdef123456' },
           remote_ip: '8.8.8.8'
         )
@@ -126,7 +126,7 @@ RSpec.describe Captcha do
 
     context 'when request to verify captcha responds with 4xx status' do
       it 'returns failure' do
-        request = build_request(
+        request = TestRequestHelper.build(
           params: { 'h-captcha-response' => 'abcdef123456' },
           remote_ip: '8.8.8.8'
         )
@@ -152,7 +152,7 @@ RSpec.describe Captcha do
           [false, { 'success' => false }],
           [true,  { 'success' => true  }],
         ].each_with_index do |(expected_success, response_body), index|
-          request = build_request(
+          request = TestRequestHelper.build(
             params: { 'h-captcha-response' => "abcdef123456#{index}" },
             remote_ip: '8.8.8.8'
           )
@@ -178,7 +178,7 @@ RSpec.describe Captcha do
   end
 
   def stub_captcha_verify_request(
-    body: { 'response' => 'abcdef123456', 'remoteip' => '0.0.0.0' },
+    body: { 'response' => 'abcdef123456', 'remoteip' => '1.1.1.1' },
     response_status: 200,
     response_headers: { 'Content-Type' => 'application/json' },
     response_body: { 'success' => true },
@@ -203,13 +203,5 @@ RSpec.describe Captcha do
         body: response_body.to_json,
       )
     end
-  end
-
-  def build_request(params: {}, remote_ip: '0.0.0.0')
-    request = ActionController::TestRequest.create(ApplicationController)
-    request.params.merge!(params)
-    request.remote_ip = remote_ip
-
-    request
   end
 end
