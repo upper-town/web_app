@@ -2,6 +2,8 @@
 
 module AdminUsers
   class AuthenticateSession
+    include Callable
+
     attr_reader :session, :request, :rate_limiter
 
     def initialize(session, request)
@@ -12,7 +14,7 @@ module AdminUsers
         "admin_users_authenticate_session:#{request.remote_ip}",
         3,
         2.minutes,
-        'Too many attempts.'
+        'Too many attempts'
       )
     end
 
@@ -20,21 +22,30 @@ module AdminUsers
       result = rate_limiter.call
       return result if result.failure?
 
-      find_and_authenticate_admin_user
+      result = check_exists
+      return result if result.failure?
+
+      authenticate
     end
 
     private
 
-    def find_and_authenticate_admin_user
+    def check_exists
+      if AdminUser.exists?(email: session.email)
+        Result.success
+      else
+        Result.failure('Incorrect password or email')
+      end
+    end
+
+    def authenticate
       admin_user = AdminUser.authenticate_by(email: session.email, password: session.password)
 
       if admin_user
         count_attempt(true)
-
         Result.success(admin_user: admin_user)
       else
         count_attempt(false)
-
         Result.failure('Incorrect password or email')
       end
     end
