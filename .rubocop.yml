@@ -108,6 +108,8 @@ Rails/SkipsModelValidations:
   Enabled: false
 
 # https://docs.rubocop.org/rubocop-rspec/cops_rspec.html
+RSpec/AnyInstance:
+  Enabled: false
 RSpec/BeEq:
   Enabled: false
 RSpec/ChangeByZero:

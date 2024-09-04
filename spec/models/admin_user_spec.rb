@@ -133,14 +133,14 @@ RSpec.describe AdminUser do
       end
     end
 
-    describe '#regenerate_token!' do
+    describe '#generate_token!' do
       it 'creates an AdminToken record and returns token' do
         freeze_time do
           admin_user = create(:admin_user)
           returned_token = nil
 
           expect do
-            returned_token = admin_user.regenerate_token!('email_confirmation', 15.minutes, { 'some' => 'data' })
+            returned_token = admin_user.generate_token!('email_confirmation', 15.minutes, { 'some' => 'data' })
           end.to change(AdminToken, :count).by(1)
 
           admin_token = AdminToken.last
@@ -159,7 +159,7 @@ RSpec.describe AdminUser do
             returned_token = nil
 
             expect do
-              returned_token = admin_user.regenerate_token!('email_confirmation')
+              returned_token = admin_user.generate_token!('email_confirmation')
             end.to change(AdminToken, :count).by(1)
 
             admin_token = AdminToken.last
@@ -168,6 +168,88 @@ RSpec.describe AdminUser do
             expect(admin_token.token_last_four).to eq(returned_token.last(4))
             expect(admin_token.expires_at).to eq(1.hour.from_now)
             expect(admin_token.data).to eq({})
+          end
+        end
+      end
+    end
+
+    describe '#expire_token!' do
+      context 'when purpose is blank' do
+        it 'does not expire admin_user tokens' do
+          freeze_time do
+            admin_user = create(:admin_user)
+            admin_token1 = create(
+              :admin_token,
+              admin_user: admin_user,
+              purpose: 'email_confirmation',
+              expires_at: 2.days.from_now
+            )
+            admin_token2 = create(
+              :admin_token,
+              admin_user: admin_user,
+              purpose: 'email_confirmation',
+              expires_at: 2.days.from_now
+            )
+            admin_token3 = create(
+              :admin_token,
+              admin_user: admin_user,
+              purpose: 'something_else',
+              expires_at: 2.days.from_now
+            )
+            another_admin_user = create(:admin_user)
+            admin_token4 = create(
+              :admin_token,
+              admin_user: another_admin_user,
+              purpose: 'email_confirmation',
+              expires_at: 2.days.from_now
+            )
+
+            admin_user.expire_token!(' ')
+
+            expect(admin_token1.reload.expires_at).to eq(2.days.from_now)
+            expect(admin_token2.reload.expires_at).to eq(2.days.from_now)
+            expect(admin_token3.reload.expires_at).to eq(2.days.from_now)
+            expect(admin_token4.reload.expires_at).to eq(2.days.from_now)
+          end
+        end
+      end
+
+      context 'when purpose is present' do
+        it 'expires admin_user tokens with that purpose' do
+          freeze_time do
+            admin_user = create(:admin_user)
+            admin_token1 = create(
+              :admin_token,
+              admin_user: admin_user,
+              purpose: 'email_confirmation',
+              expires_at: 2.days.from_now
+            )
+            admin_token2 = create(
+              :admin_token,
+              admin_user: admin_user,
+              purpose: 'email_confirmation',
+              expires_at: 2.days.from_now
+            )
+            admin_token3 = create(
+              :admin_token,
+              admin_user: admin_user,
+              purpose: 'something_else',
+              expires_at: 2.days.from_now
+            )
+            another_admin_user = create(:admin_user)
+            admin_token4 = create(
+              :admin_token,
+              admin_user: another_admin_user,
+              purpose: 'email_confirmation',
+              expires_at: 2.days.from_now
+            )
+
+            admin_user.expire_token!('email_confirmation')
+
+            expect(admin_token1.reload.expires_at).to eq(2.days.ago)
+            expect(admin_token2.reload.expires_at).to eq(2.days.ago)
+            expect(admin_token3.reload.expires_at).to eq(2.days.from_now)
+            expect(admin_token4.reload.expires_at).to eq(2.days.from_now)
           end
         end
       end

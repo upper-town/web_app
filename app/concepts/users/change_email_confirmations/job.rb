@@ -17,7 +17,7 @@ module Users
       private
 
       def change_email_reversion(user)
-        change_email_reversion_token = user.regenerate_token!(
+        change_email_reversion_token = user.generate_token!(
           :change_email_reversion,
           30.days,
           { email: user.email }
@@ -35,7 +35,7 @@ module Users
       end
 
       def change_email_confirmation(user)
-        change_email_confirmation_token = user.regenerate_token!(
+        change_email_confirmation_token = user.generate_token!(
           :change_email_confirmation,
           nil,
           { change_email: user.change_email }

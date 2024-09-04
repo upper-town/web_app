@@ -76,7 +76,7 @@ module Users
             success: 'Email address has been confirmed.'
           )
         else
-          password_reset_token = user.regenerate_token!(:password_reset)
+          password_reset_token = user.generate_token!(:password_reset)
 
           redirect_to(
             edit_users_password_reset_path(token: password_reset_token),

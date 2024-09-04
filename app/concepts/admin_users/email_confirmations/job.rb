@@ -10,7 +10,7 @@ module AdminUsers
       def perform(admin_user_id)
         admin_user = AdminUser.find(admin_user_id)
 
-        email_confirmation_token = admin_user.regenerate_token!(:email_confirmation)
+        email_confirmation_token = admin_user.generate_token!(:email_confirmation)
         admin_user.update!(email_confirmation_sent_at: Time.current)
 
         AdminUsersMailer

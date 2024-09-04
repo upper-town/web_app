@@ -10,7 +10,7 @@ module Users
       def perform(user_id)
         user = User.find(user_id)
 
-        password_reset_token = user.regenerate_token!(:password_reset)
+        password_reset_token = user.generate_token!(:password_reset)
         user.update!(password_reset_sent_at: Time.current)
 
         UsersMailer

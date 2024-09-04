@@ -10,7 +10,7 @@ module AdminUsers
       def perform(admin_user_id)
         admin_user = AdminUser.find(admin_user_id)
 
-        password_reset_token = admin_user.regenerate_token!(:password_reset)
+        password_reset_token = admin_user.generate_token!(:password_reset)
         admin_user.update!(password_reset_sent_at: Time.current)
 
         AdminUsersMailer

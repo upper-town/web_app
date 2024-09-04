@@ -10,7 +10,7 @@ module Users
       def perform(user_id)
         user = User.find(user_id)
 
-        email_confirmation_token = user.regenerate_token!(:email_confirmation)
+        email_confirmation_token = user.generate_token!(:email_confirmation)
         user.update!(email_confirmation_sent_at: Time.current)
 
         UsersMailer

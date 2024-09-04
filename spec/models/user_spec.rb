@@ -133,14 +133,14 @@ RSpec.describe User do
       end
     end
 
-    describe '#regenerate_token!' do
+    describe '#generate_token!' do
       it 'creates a Token record and returns token' do
         freeze_time do
           user = create(:user)
           returned_token = nil
 
           expect do
-            returned_token = user.regenerate_token!('email_confirmation', 15.minutes, { 'some' => 'data' })
+            returned_token = user.generate_token!('email_confirmation', 15.minutes, { 'some' => 'data' })
           end.to change(Token, :count).by(1)
 
           token = Token.last
@@ -159,7 +159,7 @@ RSpec.describe User do
             returned_token = nil
 
             expect do
-              returned_token = user.regenerate_token!('email_confirmation')
+              returned_token = user.generate_token!('email_confirmation')
             end.to change(Token, :count).by(1)
 
             token = Token.last
@@ -168,6 +168,88 @@ RSpec.describe User do
             expect(token.token_last_four).to eq(returned_token.last(4))
             expect(token.expires_at).to eq(1.hour.from_now)
             expect(token.data).to eq({})
+          end
+        end
+      end
+    end
+
+    describe '#expire_token!' do
+      context 'when purpose is blank' do
+        it 'does not expire user tokens' do
+          freeze_time do
+            user = create(:user)
+            token1 = create(
+              :token,
+              user: user,
+              purpose: 'email_confirmation',
+              expires_at: 2.days.from_now
+            )
+            token2 = create(
+              :token,
+              user: user,
+              purpose: 'email_confirmation',
+              expires_at: 2.days.from_now
+            )
+            token3 = create(
+              :token,
+              user: user,
+              purpose: 'something_else',
+              expires_at: 2.days.from_now
+            )
+            another_user = create(:user)
+            token4 = create(
+              :token,
+              user: another_user,
+              purpose: 'email_confirmation',
+              expires_at: 2.days.from_now
+            )
+
+            user.expire_token!(' ')
+
+            expect(token1.reload.expires_at).to eq(2.days.from_now)
+            expect(token2.reload.expires_at).to eq(2.days.from_now)
+            expect(token3.reload.expires_at).to eq(2.days.from_now)
+            expect(token4.reload.expires_at).to eq(2.days.from_now)
+          end
+        end
+      end
+
+      context 'when purpose is present' do
+        it 'expires user tokens with that purpose' do
+          freeze_time do
+            user = create(:user)
+            token1 = create(
+              :token,
+              user: user,
+              purpose: 'email_confirmation',
+              expires_at: 2.days.from_now
+            )
+            token2 = create(
+              :token,
+              user: user,
+              purpose: 'email_confirmation',
+              expires_at: 2.days.from_now
+            )
+            token3 = create(
+              :token,
+              user: user,
+              purpose: 'something_else',
+              expires_at: 2.days.from_now
+            )
+            another_user = create(:user)
+            token4 = create(
+              :token,
+              user: another_user,
+              purpose: 'email_confirmation',
+              expires_at: 2.days.from_now
+            )
+
+            user.expire_token!('email_confirmation')
+
+            expect(token1.reload.expires_at).to eq(2.days.ago)
+            expect(token2.reload.expires_at).to eq(2.days.ago)
+            expect(token3.reload.expires_at).to eq(2.days.from_now)
+            expect(token4.reload.expires_at).to eq(2.days.from_now)
           end
         end
       end

@@ -2,9 +2,11 @@
 
 module AdminUsers
   module EmailConfirmations
-    attr_reader :email_confirmation_edit, :request, :rate_limiter
-
     class Update
+      include Callable
+
+      attr_reader :email_confirmation_edit, :request, :rate_limiter
+
       def initialize(email_confirmation_edit, request)
         @email_confirmation_edit = email_confirmation_edit
         @request = request
@@ -12,7 +14,8 @@ module AdminUsers
         @rate_limiter = RateLimiting::BasicRateLimiter.new(
           "admin_users_email_confirmation_update:#{request.remote_ip}",
           2,
-          5.minutes
+          5.minutes,
+          'Too many attempts'
         )
       end
 
@@ -23,11 +26,11 @@ module AdminUsers
         admin_user = find_admin_user
 
         if !admin_user
-          Result.failure('Invalid or expired token.')
+          Result.failure('Invalid or expired token')
         elsif admin_user.confirmed_email?
-          Result.failure('Email address has already been confirmed.', admin_user: admin_user)
+          Result.failure('Email address has already been confirmed', admin_user: admin_user)
         else
-          confirm(admin_user)
+          confirm_email(admin_user)
         end
       end
 
@@ -37,15 +40,11 @@ module AdminUsers
         AdminUser.find_by_token(:email_confirmation, email_confirmation_edit.token)
       end
 
-      def confirm(admin_user)
-        if admin_user.invalid?
-          return Result.failure(admin_user.errors, admin_user: admin_user)
-        end
-
+      def confirm_email(admin_user)
         begin
           ActiveRecord::Base.transaction do
             admin_user.confirm_email!
-            admin_user.regenerate_token!(:email_confirmation)
+            admin_user.expire_token!(:email_confirmation)
           end
         rescue StandardError => e
           rate_limiter.uncall

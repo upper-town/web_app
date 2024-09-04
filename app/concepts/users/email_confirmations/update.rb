@@ -45,7 +45,7 @@ module Users
         begin
           ActiveRecord::Base.transaction do
             user.confirm_email!
-            user.regenerate_token!(:email_confirmation)
+            user.generate_token!(:email_confirmation)
           end
         rescue StandardError => e
           rate_limiter.uncall

@@ -43,7 +43,7 @@ module Users
         begin
           ActiveRecord::Base.transaction do
             user.reset_password!(password_reset_edit.password)
-            user.regenerate_token!(:password_reset)
+            user.generate_token!(:password_reset)
           end
         rescue ActiveRecord::RecordInvalid => e
           return Result.failure(e.record.errors, user: user)

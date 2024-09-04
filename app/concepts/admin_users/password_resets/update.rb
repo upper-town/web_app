@@ -43,7 +43,7 @@ module AdminUsers
         begin
           ActiveRecord::Base.transaction do
             admin_user.reset_password!(password_reset_edit.password)
-            admin_user.regenerate_token!(:password_reset)
+            admin_user.generate_token!(:password_reset)
           end
         rescue ActiveRecord::RecordInvalid => e
           return Result.failure(e.record.errors, admin_user: admin_user)
