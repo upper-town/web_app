@@ -2,6 +2,8 @@
 
 module Users
   class AuthenticateSession
+    include Callable
+
     attr_reader :session, :request, :rate_limiter
 
     def initialize(session, request)
@@ -12,7 +14,7 @@ module Users
         "users_authenticate_session:#{request.remote_ip}",
         3,
         2.minutes,
-        'Too many attempts.'
+        'Too many attempts'
       )
     end
 
@@ -20,21 +22,30 @@ module Users
       result = rate_limiter.call
       return result if result.failure?
 
-      find_and_authenticate_user
+      result = check_exists
+      return result if result.failure?
+
+      authenticate
     end
 
     private
 
-    def find_and_authenticate_user
+    def check_exists
+      if User.exists?(email: session.email)
+        Result.success
+      else
+        Result.failure('Incorrect password or email')
+      end
+    end
+
+    def authenticate
       user = User.authenticate_by(email: session.email, password: session.password)
 
       if user
         count_attempt(true)
-
         Result.success(user: user)
       else
         count_attempt(false)
-
         Result.failure('Incorrect password or email')
       end
     end
