@@ -25,6 +25,8 @@ Layout/ElseAlignment:
   Enabled: false
 Layout/EndAlignment:
   Enabled: false
+Layout/FirstArrayElementIndentation:
+  Enabled: false
 Layout/FirstHashElementIndentation:
   Enabled: false
 Layout/HashAlignment:
