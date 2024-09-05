@@ -64,7 +64,7 @@ module AdminUsers
     end
 
     def schedule_email_confirmation_job(admin_user)
-      AdminUsers::EmailConfirmations::Job.set(queue: 'critical').perform_async(admin_user.id)
+      AdminUsers::EmailConfirmations::EmailJob.set(queue: 'critical').perform_async(admin_user.id)
     end
   end
 end
