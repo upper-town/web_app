@@ -2,9 +2,11 @@
 
 module AdminUsers
   module PasswordResets
-    attr_reader :password_reset, :request, :rate_limiter
-
     class Create
+      include Callable
+
+      attr_reader :password_reset, :request, :rate_limiter
+
       def initialize(password_reset, request)
         @password_reset = password_reset
         @request = request
@@ -12,7 +14,8 @@ module AdminUsers
         @rate_limiter = RateLimiting::BasicRateLimiter.new(
           "admin_users_password_resets_create:#{request.remote_ip}",
           2,
-          5.minutes
+          5.minutes,
+          'Too many requests'
         )
       end
 
@@ -21,8 +24,7 @@ module AdminUsers
         return result if result.failure?
 
         admin_user = find_admin_user
-
-        schedule_email(admin_user) if admin_user
+        enqueue_email_job(admin_user) if admin_user
 
         Result.success
       end
@@ -33,7 +35,7 @@ module AdminUsers
         AdminUser.find_by(email: password_reset.email)
       end
 
-      def schedule_email(admin_user)
+      def enqueue_email_job(admin_user)
         AdminUsers::PasswordResets::EmailJob.perform_async(admin_user.id)
       end
     end
