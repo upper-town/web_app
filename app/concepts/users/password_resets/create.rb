@@ -3,6 +3,8 @@
 module Users
   module PasswordResets
     class Create
+      include Callable
+
       attr_reader :password_reset, :request, :rate_limiter
 
       def initialize(password_reset, request)
@@ -13,6 +15,7 @@ module Users
           "users_password_resets_create:#{request.remote_ip}",
           2,
           5.minutes,
+          'Too many requests'
         )
       end
 
@@ -21,8 +24,7 @@ module Users
         return result if result.failure?
 
         user = find_user
-
-        schedule_email(user) if user
+        enqueue_email_job(user) if user
 
         Result.success
       end
@@ -33,7 +35,7 @@ module Users
         User.find_by(email: password_reset.email)
       end
 
-      def schedule_email(user)
+      def enqueue_email_job(user)
         Users::PasswordResets::EmailJob.perform_async(user.id)
       end
     end
