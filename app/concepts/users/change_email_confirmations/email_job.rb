@@ -2,7 +2,7 @@
 
 module Users
   module ChangeEmailConfirmations
-    class Job
+    class EmailJob
       include Sidekiq::Job
 
       sidekiq_options(lock: :while_executing)

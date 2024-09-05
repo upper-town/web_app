@@ -3,6 +3,8 @@
 module Users
   module ChangeEmailConfirmations
     class Create
+      include Callable
+
       attr_reader :change_email_confirmation, :current_user_email, :request, :rate_limiter
 
       def initialize(change_email_confirmation, current_user_email, request)
@@ -14,7 +16,7 @@ module Users
           "users_change_email_confirmations_create:#{@request.remote_ip}",
           3,
           2.minutes,
-          'Too many attempts.'
+          'Too many attempts'
         )
       end
 
@@ -22,32 +24,33 @@ module Users
         result = rate_limiter.call
         return result if result.failure?
 
-        authenticate_and_change_user_email
+        if current_user_email != change_email_confirmation.email
+          Result.failure('Incorrect current email address')
+        else
+          authenticate_and_change_user_email
+        end
       end
 
       private
 
       def authenticate_and_change_user_email
-        if current_user_email != change_email_confirmation.email
-          return Result.failure('Incorrect current email address')
-        end
-
         user = User.authenticate_by(email: current_user_email, password: change_email_confirmation.password)
+        return Result.failure('Incorrect password') unless user
 
-        if user
-          user.update!(change_email: change_email_confirmation.change_email)
-          user.unconfirm_change_email!
+        begin
+          ActiveRecord::Base.transaction do
+            user.update!(change_email: change_email_confirmation.change_email)
+            user.unconfirm_change_email!
+          end
+        rescue StandardError => e
+          rate_limiter.uncall
 
-          schedule_change_email_confirmation_job(user)
-
-          Result.success(user: user)
-        else
-          Result.failure('Incorrect password')
+          raise e
         end
-      end
 
-      def schedule_change_email_confirmation_job(user)
         Users::ChangeEmailConfirmations::EmailJob.perform_in(30.seconds, user.id)
+
+        Result.success(user: user)
       end
     end
   end

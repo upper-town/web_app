@@ -48,6 +48,7 @@ module AdminUsers
           end
         rescue StandardError => e
           rate_limiter.uncall
+
           raise e
         end
 
