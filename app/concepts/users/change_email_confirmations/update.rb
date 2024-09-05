@@ -3,6 +3,8 @@
 module Users
   module ChangeEmailConfirmations
     class Update
+      include Callable
+
       attr_reader :change_email_confirmation_edit, :request, :rate_limiter
 
       def initialize(change_email_confirmation_edit, request)
@@ -13,7 +15,7 @@ module Users
           "users_change_email_confirmations_update:#{request.remote_ip}",
           3,
           2.minutes,
-          'Too many attempts.'
+          'Too many attempts'
         )
       end
 
@@ -24,9 +26,11 @@ module Users
         user, token = find_user_and_token
 
         if !user || !token
-          Result.failure('Invalid or expired token.')
+          Result.failure('Invalid or expired token')
         elsif user.confirmed_change_email?
-          Result.failure('New Email address has already been confirmed.', user: user)
+          Result.failure('New Email address has already been confirmed')
+        elsif token.data['change_email'].blank? || token.data['change_email'] != user.change_email
+          Result.failure('Invalid token: new email address is not associated with token')
         else
           confirm_change_email(user, token)
         end
@@ -42,14 +46,6 @@ module Users
       end
 
       def confirm_change_email(user, token)
-        if user.invalid?
-          return Result.failure(user.errors, user: user)
-        end
-
-        if token.data['change_email'].blank? || user.change_email != token.data['change_email']
-          return Result.failure('Invalid token: new email address is not associated with token')
-        end
-
         begin
           ActiveRecord::Base.transaction do
             user.update!(
