@@ -12,7 +12,8 @@ module AdminUsers
         @rate_limiter = RateLimiting::BasicRateLimiter.new(
           "admin_users_password_resets_update:#{request.remote_ip}",
           2,
-          5.minutes
+          5.minutes,
+          'Too many requests'
         )
       end
 
@@ -36,19 +37,14 @@ module AdminUsers
       end
 
       def reset_password(admin_user)
-        if admin_user.invalid?
-          return Result.failure(admin_user.errors, admin_user: admin_user)
-        end
-
         begin
           ActiveRecord::Base.transaction do
             admin_user.reset_password!(password_reset_edit.password)
-            admin_user.generate_token!(:password_reset)
+            admin_user.expire_token!(:password_reset)
           end
-        rescue ActiveRecord::RecordInvalid => e
-          return Result.failure(e.record.errors, admin_user: admin_user)
         rescue StandardError => e
           rate_limiter.uncall
+
           raise e
         end
 
