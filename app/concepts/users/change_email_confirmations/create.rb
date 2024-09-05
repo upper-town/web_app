@@ -47,7 +47,7 @@ module Users
       end
 
       def schedule_change_email_confirmation_job(user)
-        Users::ChangeEmailConfirmations::Job.perform_in(30.seconds, user.id)
+        Users::ChangeEmailConfirmations::EmailJob.perform_in(30.seconds, user.id)
       end
     end
   end
