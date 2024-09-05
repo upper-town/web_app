@@ -39,29 +39,62 @@ RSpec.describe AdminToken do
   describe '.find_by_token' do
     context 'when token value is blank' do
       it 'returns nil' do
-        admin_token = described_class.find_by_token(' ')
-
-        expect(admin_token).to be_nil
+        expect(described_class.find_by_token(' ',)).to be_nil
+        expect(described_class.find_by_token(' ', true)).to be_nil
       end
     end
 
     context 'when token is not found by its token_digest' do
       it 'returns nil' do
-        admin_token = described_class.find_by_token('abcdef123456')
-
-        expect(admin_token).to be_nil
+        expect(described_class.find_by_token('abcdef123456')).to be_nil
+        expect(described_class.find_by_token('abcdef123456', true)).to be_nil
       end
     end
 
-    context 'when token is found by its token_digest' do
-      it 'return AdminToken record' do
-        existing_admin_token = create(
-          :admin_token,
-          token_digest: TokenGenerator::Admin.digest('abcdef123456')
-        )
-        admin_token = described_class.find_by_token('abcdef123456')
+    describe 'include_expired false' do
+      context 'when token is found by its token_digest but is expired' do
+        it 'returns nil' do
+          token = 'abcdef123456'
+          _existing_admin_token = create(
+            :admin_token,
+            token_digest: TokenGenerator::Admin.digest(token),
+            expires_at: 2.days.ago
+          )
 
-        expect(admin_token).to eq(existing_admin_token)
+          expect(described_class.find_by_token(token)).to be_nil
+        end
+      end
+
+      context 'when token is found by its token_digest and is not expired' do
+        it 'returns Token record' do
+          token = 'abcdef123456'
+          existing_admin_token = create(
+            :admin_token,
+            token_digest: TokenGenerator::Admin.digest(token),
+            expires_at: 2.days.from_now
+          )
+
+          expect(described_class.find_by_token(token)).to eq(existing_admin_token)
+        end
+      end
+    end
+
+    describe 'include_expired true' do
+      context 'when token is found by its token_digest' do
+        it 'returns AdminToken record' do
+          [
+            ['aaaa1111', 2.days.ago],
+            ['bbbb2222', 2.days.from_now],
+          ].each do |token, expires_at|
+            existing_admin_token = create(
+              :admin_token,
+              token_digest: TokenGenerator::Admin.digest(token),
+              expires_at: expires_at
+            )
+
+            expect(described_class.find_by_token(token, true)).to eq(existing_admin_token)
+          end
+        end
       end
     end
   end

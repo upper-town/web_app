@@ -28,10 +28,14 @@
 class AdminToken < ApplicationRecord
   belongs_to :admin_user
 
-  def self.find_by_token(token)
+  def self.find_by_token(token, include_expired = false)
     return if token.blank?
 
-    find_by(token_digest: TokenGenerator::Admin.digest(token))
+    if include_expired
+      find_by(token_digest: TokenGenerator::Admin.digest(token))
+    else
+      not_expired.where(token_digest: TokenGenerator::Admin.digest(token)).first
+    end
   end
 
   def self.expired

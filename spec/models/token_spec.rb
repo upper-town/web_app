@@ -39,29 +39,62 @@ RSpec.describe Token do
   describe '.find_by_token' do
     context 'when token value is blank' do
       it 'returns nil' do
-        token = described_class.find_by_token(' ')
-
-        expect(token).to be_nil
+        expect(described_class.find_by_token(' ',)).to be_nil
+        expect(described_class.find_by_token(' ', true)).to be_nil
       end
     end
 
     context 'when token is not found by its token_digest' do
       it 'returns nil' do
-        token = described_class.find_by_token('abcdef123456')
-
-        expect(token).to be_nil
+        expect(described_class.find_by_token('abcdef123456')).to be_nil
+        expect(described_class.find_by_token('abcdef123456', true)).to be_nil
       end
     end
 
-    context 'when token is found by its token_digest' do
-      it 'return Token record' do
-        existing_token = create(
-          :token,
-          token_digest: TokenGenerator.digest('abcdef123456')
-        )
-        token = described_class.find_by_token('abcdef123456')
+    describe 'include_expired false' do
+      context 'when token is found by its token_digest but is expired' do
+        it 'returns nil' do
+          token = 'abcdef123456'
+          _existing_token = create(
+            :token,
+            token_digest: TokenGenerator.digest(token),
+            expires_at: 2.days.ago
+          )
 
-        expect(token).to eq(existing_token)
+          expect(described_class.find_by_token(token)).to be_nil
+        end
+      end
+
+      context 'when token is found by its token_digest and is not expired' do
+        it 'returns Token record' do
+          token = 'abcdef123456'
+          existing_token = create(
+            :token,
+            token_digest: TokenGenerator.digest(token),
+            expires_at: 2.days.from_now
+          )
+
+          expect(described_class.find_by_token(token)).to eq(existing_token)
+        end
+      end
+    end
+
+    describe 'include_expired true' do
+      context 'when token is found by its token_digest' do
+        it 'returns Token record' do
+          [
+            ['aaaa1111', 2.days.ago],
+            ['bbbb2222', 2.days.from_now],
+          ].each do |token, expires_at|
+            existing_token = create(
+              :token,
+              token_digest: TokenGenerator.digest(token),
+              expires_at: expires_at
+            )
+
+            expect(described_class.find_by_token(token, true)).to eq(existing_token)
+          end
+        end
       end
     end
   end
