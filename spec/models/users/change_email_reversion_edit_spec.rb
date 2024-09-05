@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe Users::ChangeEmailReversion do
+RSpec.describe Users::ChangeEmailReversionEdit do
   it 'has default values' do
     instance = described_class.new
 

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Users
-  class ChangeEmailReversion < ApplicationModel
+  class ChangeEmailReversionEdit < ApplicationModel
     attribute :token, :string, default: nil
     attribute :auto_click, :boolean, default: false
 

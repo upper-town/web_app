@@ -3,17 +3,17 @@
 module Users
   module ChangeEmailReversions
     class Update
-      attr_reader :change_email_reversion, :request, :rate_limiter
+      attr_reader :change_email_reversion_edit, :request, :rate_limiter
 
-      def initialize(change_email_reversion, request)
-        @change_email_reversion = change_email_reversion
+      def initialize(change_email_reversion_edit, request)
+        @change_email_reversion_edit = change_email_reversion_edit
         @request = request
 
         @rate_limiter = RateLimiting::BasicRateLimiter.new(
           "users_change_email_reversions_update:#{request.remote_ip}",
           3,
           2.minutes,
-          'Too many attempts.'
+          'Too many attempts'
         )
       end
 
@@ -24,7 +24,9 @@ module Users
         user, token = find_user_and_token
 
         if !user || !token
-          Result.failure('Invalid or expired token.')
+          Result.failure('Invalid or expired token')
+        elsif token.data['email'].blank?
+          Result.failure('Invalid token: old email address is not associated with token')
         else
           revert_change_email(user, token)
         end
@@ -34,20 +36,12 @@ module Users
 
       def find_user_and_token
         [
-          User.find_by_token(:change_email_reversion, change_email_reversion.token),
-          Token.find_by_token(change_email_reversion.token)
+          User.find_by_token(:change_email_reversion, change_email_reversion_edit.token),
+          Token.find_by_token(change_email_reversion_edit.token)
         ]
       end
 
       def revert_change_email(user, token)
-        if user.invalid?
-          return Result.failure(user.errors, user: user)
-        end
-
-        if token.data['email'].blank?
-          return Result.failure('Invalid token: new email address is not associated with token')
-        end
-
         begin
           ActiveRecord::Base.transaction do
             user.revert_change_email!(token.data['email'])
@@ -55,6 +49,7 @@ module Users
           end
         rescue StandardError => e
           rate_limiter.uncall
+
           raise e
         end
 

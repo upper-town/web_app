@@ -7,7 +7,7 @@ RSpec.describe Users::ChangeEmailConfirmations::Update do
     context 'when rate_limiter has been exceeded' do
       it 'returns failure' do
         user = create(:user, email: 'user@upper.town', change_email: 'user.change@upper.town')
-        token = user.generate_token!(:change_email_confirmation, 30.days, { change_email: 'user.change@upper.town' })
+        token = user.generate_token!(:change_email_confirmation, 1.hour, { change_email: 'user.change@upper.town' })
         change_email_confirmation_edit = Users::ChangeEmailConfirmationEdit.new(token: token)
         request = TestRequestHelper.build(remote_ip: '1.1.1.1')
         rate_limiter_key = 'users_change_email_confirmations_update:1.1.1.1'
@@ -25,7 +25,7 @@ RSpec.describe Users::ChangeEmailConfirmations::Update do
       describe 'non-existing token' do
         it 'returns failure' do
           user = create(:user, email: 'user@upper.town', change_email: 'user.change@upper.town')
-          _token = user.generate_token!(:change_email_confirmation, 30.days, { change_email: 'user.change@upper.town' })
+          _token = user.generate_token!(:change_email_confirmation, 1.hour, { change_email: 'user.change@upper.town' })
           change_email_confirmation_edit = Users::ChangeEmailConfirmationEdit.new(token: 'xxxxxxxx')
           request = TestRequestHelper.build(remote_ip: '1.1.1.1')
           rate_limiter_key = 'users_change_email_confirmations_update:1.1.1.1'
@@ -66,7 +66,7 @@ RSpec.describe Users::ChangeEmailConfirmations::Update do
             change_email: 'user.change@upper.town',
             change_email_confirmed_at: Time.current
           )
-          token = user.generate_token!(:change_email_confirmation, 30.days, { change_email: 'user.change@upper.town' })
+          token = user.generate_token!(:change_email_confirmation, 1.hour, { change_email: 'user.change@upper.town' })
           change_email_confirmation_edit = Users::ChangeEmailConfirmationEdit.new(token: token)
           request = TestRequestHelper.build(remote_ip: '1.1.1.1')
           rate_limiter_key = 'users_change_email_confirmations_update:1.1.1.1'
@@ -90,7 +90,7 @@ RSpec.describe Users::ChangeEmailConfirmations::Update do
             user = create(:user, email: email, change_email: change_email)
             token = user.generate_token!(
               :change_email_confirmation,
-              30.days,
+              1.hour,
               { change_email: token_data_change_email }
             )
             change_email_confirmation_edit = Users::ChangeEmailConfirmationEdit.new(token: token)
@@ -110,7 +110,7 @@ RSpec.describe Users::ChangeEmailConfirmations::Update do
       context 'when trying to confirm change_email raises an error' do
         it 'raises an error and uncalls rate_limiter' do
           user = create(:user, email: 'user@upper.town', change_email: 'user.change@upper.town')
-          token = user.generate_token!(:change_email_confirmation, 30.days, { change_email: 'user.change@upper.town' })
+          token = user.generate_token!(:change_email_confirmation, 1.hour, { change_email: 'user.change@upper.town' })
           change_email_confirmation_edit = Users::ChangeEmailConfirmationEdit.new(token: token)
           request = TestRequestHelper.build(remote_ip: '1.1.1.1')
           rate_limiter_key = 'users_change_email_confirmations_update:1.1.1.1'
@@ -129,7 +129,7 @@ RSpec.describe Users::ChangeEmailConfirmations::Update do
         it 'returns success and expires tokens' do
           freeze_time do
             user = create(:user, email: 'user@upper.town', change_email: 'user.change@upper.town')
-            token = user.generate_token!(:change_email_confirmation, 30.days, { change_email: 'user.change@upper.town' })
+            token = user.generate_token!(:change_email_confirmation, 1.hour, { change_email: 'user.change@upper.town' })
             change_email_confirmation_edit = Users::ChangeEmailConfirmationEdit.new(token: token)
             request = TestRequestHelper.build(remote_ip: '1.1.1.1')
             rate_limiter_key = 'users_change_email_confirmations_update:1.1.1.1'

@@ -3,23 +3,23 @@
 module Users
   class ChangeEmailReversionsController < ApplicationController
     def edit
-      @change_email_reversion = Users::ChangeEmailReversion.new(
+      @change_email_reversion_edit = Users::ChangeEmailReversionEdit.new(
         token: token_from_params,
         auto_click: auto_click_from_params
       )
     end
 
     def update
-      @change_email_reversion = Users::ChangeEmailReversion.new(change_email_reversion_params)
+      @change_email_reversion_edit = Users::ChangeEmailReversionEdit.new(change_email_reversion_params)
 
-      if @change_email_reversion.invalid?
-        flash.now[:alert] = @change_email_reversion.errors.full_messages
+      if @change_email_reversion_edit.invalid?
+        flash.now[:alert] = @change_email_reversion_edit.errors.full_messages
         render(:edit, status: :unprocessable_entity)
 
         return
       end
 
-      result = Users::ChangeEmailReversions::Update.new(@change_email_reversion, request).call
+      result = Users::ChangeEmailReversions::Update.new(@change_email_reversion_edit, request).call
 
       if result.success?
         redirect_to(

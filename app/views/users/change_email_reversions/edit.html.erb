@@ -3,7 +3,7 @@
 </h2>
 
 <%= form_with(
-  model: @change_email_reversion,
+  model: @change_email_reversion_edit,
   method: :put,
   url: users_change_email_reversion_path,
   data: { 'controller' => 'form-error-messages-handler' }
@@ -16,7 +16,7 @@
       class: 'btn btn-primary',
       data: {
         'turbo-submits-with' => 'Confirming...',
-        'controller' => @change_email_reversion.auto_click ? 'auto-click' : nil
+        'controller' => @change_email_reversion_edit.auto_click ? 'auto-click' : nil
       }.compact,
     ) %>
   </div>
