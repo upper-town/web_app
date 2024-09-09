@@ -11,7 +11,6 @@ module Servers
 
       server.stats.delete_all
       server.votes.delete_all
-
       server.destroy
     end
   end
