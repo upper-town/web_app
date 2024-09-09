@@ -12,7 +12,7 @@ module AdminUsers
         "admin_users_create:#{request.remote_ip}",
         2,
         5.minutes,
-        'Email confirmation has already been sent.'
+        'Too many requests'
       )
     end
 
@@ -20,12 +20,8 @@ module AdminUsers
       result = rate_limiter.call
       return result if result.failure?
 
-      result = find_or_create_admin_user
-      return result if result.failure?
-
-      admin_user = result.data[:admin_user]
-
-      schedule_email_confirmation_job(admin_user)
+      admin_user = find_or_create_admin_user
+      enqueue_email_confirmation_job(admin_user)
 
       Result.success(admin_user: admin_user)
     end
@@ -33,38 +29,38 @@ module AdminUsers
     private
 
     def find_or_create_admin_user
-      existing_admin_user = AdminUser.find_by(email: email_confirmation.email)
-      new_admin_user = AdminUser.new(
-        email: email_confirmation.email,
-        email_confirmed_at: nil
-      )
+      admin_user = existing_admin_user || build_admin_user
+      return admin_user if admin_user.persisted?
 
-      admin_user = existing_admin_user || new_admin_user
+      begin
+        ActiveRecord::Base.transaction do
+          admin_user.save!
+          admin_user.create_account!
+        end
 
-      if admin_user.persisted?
-        Result.success(admin_user: admin_user)
-      elsif admin_user.invalid?
+        admin_user
+      rescue StandardError => e
         rate_limiter.uncall
 
-        Result.failure(admin_user.errors, admin_user: admin_user)
-      else
-        begin
-          ActiveRecord::Base.transaction do
-            admin_user.save!
-            admin_user.create_account!
-          end
-
-          Result.success(admin_user: admin_user)
-        rescue StandardError => e
-          rate_limiter.uncall
-
-          raise e
-        end
+        raise e
       end
     end
 
-    def schedule_email_confirmation_job(admin_user)
-      AdminUsers::EmailConfirmations::EmailJob.set(queue: 'critical').perform_async(admin_user.id)
+    def existing_admin_user
+      AdminUser.find_by(email: email_confirmation.email)
+    end
+
+    def build_admin_user
+      AdminUser.new(
+        email: email_confirmation.email,
+        email_confirmed_at: nil
+      )
+    end
+
+    def enqueue_email_confirmation_job(admin_user)
+      AdminUsers::EmailConfirmations::EmailJob
+        .set(queue: 'critical')
+        .perform_async(admin_user.id)
     end
   end
 end
