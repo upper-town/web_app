@@ -10,16 +10,14 @@ module Servers
 
     def call
       if server.marked_for_deletion?
-        return Result.failure('Server is marked for deletion. Unmark it first and then you can unarchive it')
+        Result.failure('Server is marked for deletion. Unmark it first and then you can unarchive it')
+      elsif server.not_archived?
+        Result.failure('Server is not archived already')
+      else
+        server.update!(archived_at: nil)
+
+        Result.success
       end
-
-      if server.not_archived?
-        return Result.failure('Server is not archived already')
-      end
-
-      server.update_column(:archived_at, nil)
-
-      Result.success
     end
   end
 end

@@ -2,6 +2,8 @@
 
 module Servers
   class Archive
+    include Callable
+
     attr_reader :server
 
     def initialize(server)
@@ -10,12 +12,12 @@ module Servers
 
     def call
       if server.archived?
-        return Result.failure('Server is already archived')
+        Result.failure('Server is already archived')
+      else
+        server.update!(archived_at: Time.current)
+
+        Result.success
       end
-
-      server.update!(archived_at: Time.current)
-
-      Result.success
     end
   end
 end
