@@ -14,9 +14,9 @@ module Servers
 
     def archived_server_ids_without_votes
       Server
-        .distinct
         .archived
-        .missing(:votes)
+        .where.missing(:votes)
+        .distinct
         .pluck(:id)
     end
   end
