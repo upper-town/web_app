@@ -12,7 +12,7 @@ module Users
         "users_create:#{request.remote_ip}",
         2,
         5.minutes,
-        'Email confirmation has already been sent.'
+        'Too many requests'
       )
     end
 
@@ -20,12 +20,8 @@ module Users
       result = rate_limiter.call
       return result if result.failure?
 
-      result = find_or_create_user
-      return result if result.failure?
-
-      user = result.data[:user]
-
-      schedule_email_confirmation_job(user)
+      user = find_or_create_user
+      enqueue_email_confirmation_job(user)
 
       Result.success(user: user)
     end
@@ -33,38 +29,38 @@ module Users
     private
 
     def find_or_create_user
-      existing_user = User.find_by(email: email_confirmation.email)
-      new_user = User.new(
-        email: email_confirmation.email,
-        email_confirmed_at: nil
-      )
+      user = existing_user || build_user
+      return user if user.persisted?
 
-      user = existing_user || new_user
+      begin
+        ActiveRecord::Base.transaction do
+          user.save!
+          user.create_account!
+        end
 
-      if user.persisted?
-        Result.success(user: user)
-      elsif user.invalid?
+        user
+      rescue StandardError => e
         rate_limiter.uncall
 
-        Result.failure(user.errors, user: user)
-      else
-        begin
-          ActiveRecord::Base.transaction do
-            user.save!
-            user.create_account!
-          end
-
-          Result.success(user: user)
-        rescue StandardError => e
-          rate_limiter.uncall
-
-          raise e
-        end
+        raise e
       end
     end
 
-    def schedule_email_confirmation_job(user)
-      Users::EmailConfirmations::EmailJob.set(queue: 'critical').perform_async(user.id)
+    def existing_user
+      User.find_by(email: email_confirmation.email)
+    end
+
+    def build_user
+      User.new(
+        email: email_confirmation.email,
+        email_confirmed_at: nil
+      )
+    end
+
+    def enqueue_email_confirmation_job(user)
+      Users::EmailConfirmations::EmailJob
+        .set(queue: 'critical')
+        .perform_async(user.id)
     end
   end
 end
