@@ -48,7 +48,7 @@ RSpec.describe ServerWebhookConfig do
     it 'normalizes event_types' do
       server_webhook_config = create(
         :server_webhook_config,
-        event_types: ["\n\t server_ vote.* \n", 'Server.Updated,123', 123, nil, ' ']
+        event_types: ["\n\t [server_ vote.* \n", 'Server.Updated,123', 123, nil, ' ']
       )
 
       expect(server_webhook_config.event_types).to eq(['server_vote.*', 'server.updated'])
@@ -66,7 +66,7 @@ RSpec.describe ServerWebhookConfig do
     it 'normalizes method' do
       server_webhook_config = create(
         :server_webhook_config,
-        method: " PO \nst \t\n"
+        method: " [PO \nst \t\n"
       )
 
       expect(server_webhook_config.method).to eq('POST')
