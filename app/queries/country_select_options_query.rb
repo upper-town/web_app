@@ -1,10 +1,12 @@
 # frozen_string_literal: true
 
 class CountrySelectOptionsQuery
+  include Callable
+
   attr_reader :only_in_use, :cache_enabled, :cache_key, :cache_expires_in
 
   CACHE_KEY = 'country_select_options_query'
-  CACHE_EXPIRES_IN = 10.minutes
+  CACHE_EXPIRES_IN = 5.minutes
 
   def initialize(only_in_use: false, cache_enabled: true, cache_key: CACHE_KEY, cache_expires_in: CACHE_EXPIRES_IN)
     @only_in_use = only_in_use
@@ -26,14 +28,6 @@ class CountrySelectOptionsQuery
   end
 
   private
-
-  def with_cache_if_enabled(&)
-    if cache_enabled
-      Rails.cache.fetch(cache_key, expires_in: cache_expires_in, &)
-    else
-      yield
-    end
-  end
 
   def country_code_options
     with_cache_if_enabled do
@@ -58,8 +52,7 @@ class CountrySelectOptionsQuery
     Server
       .group(:country_code)
       .count
-      .sort_by { |_country_code, count| count }
-      .reverse
+      .sort_by { |country_code, count| [-count, country_code] }
       .map { |country_code, _count| country_code }
   end
 
@@ -68,6 +61,14 @@ class CountrySelectOptionsQuery
       country = ISO3166::Country.new(country_code)
 
       ["#{country.emoji_flag} #{country.common_name}", country_code]
+    end
+  end
+
+  def with_cache_if_enabled(&)
+    if cache_enabled
+      Rails.cache.fetch(cache_key, expires_in: cache_expires_in, &)
+    else
+      yield
     end
   end
 end
