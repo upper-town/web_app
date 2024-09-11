@@ -1,10 +1,17 @@
 # frozen_string_literal: true
 
 class GameSelectOptionsQuery
-  attr_reader :only_in_use, :cache_enabled, :cache_key, :cache_expires_in
+  include Callable
 
   CACHE_KEY = 'game_select_options_query'
-  CACHE_EXPIRES_IN = 10.minutes
+  CACHE_EXPIRES_IN = 5.minutes
+
+  attr_reader(
+    :only_in_use,
+    :cache_enabled,
+    :cache_key,
+    :cache_expires_in
+  )
 
   def initialize(only_in_use: false, cache_enabled: true, cache_key: CACHE_KEY, cache_expires_in: CACHE_EXPIRES_IN)
     @only_in_use = only_in_use
