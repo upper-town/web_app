@@ -40,5 +40,8 @@ application.register('navigate', NavigateController)
 import PeriodSelectComponentController from './period_select_component_controller'
 application.register('period-select-component', PeriodSelectComponentController)
 
+import SelectTextController from './select_text_controller'
+application.register('select-text', SelectTextController)
+
 import ServersController from './servers_controller'
 application.register('servers', ServersController)

@@ -2,115 +2,80 @@
 
 class PaginationComponent < ApplicationComponent
   DEFAULT_OPTIONS = {
-    show_prev_page:   true,
-    show_next_page:   true,
-    show_first_page:  true,
-    show_last_page:   true, # This calls pagination's total_count
-    show_page_series: true,
-    show_total_pages: true, # TODO: This calls pagination's total_count
-    show_goto_page:   true, # TODO: implement
+    show_first: true,
+    show_last:  false, # This calls pagination's total_count
+    show_goto:  true,
+
+    show_page:        false,
+    show_total_pages: false, # This calls pagination's total_count
+    show_per_page:    false,
+    show_total_count: false, # This calls pagination's total_count
+
+    first_icon: 'First',
+    last_icon:  'Last',
+    prev_icon:  'Prev',
+    next_icon:  'Next',
+    go_icon:    'Go',
   }
 
-  def render?
-    @pagination.present?
-  end
+  attr_reader :pagination, :options
 
-  def initialize(pagination:, options: {})
+  def initialize(pagination, **options)
     super()
 
     @pagination = pagination
     @options = DEFAULT_OPTIONS.merge(options)
-
-    @classes = class_names('
-      mx-0.5
-      btn
-      btn btn-secondary
-    ')
-    @current_classes = class_names('
-      mx-0.5
-      btn
-      btn-secondary--disabled
-    ')
-
-    @prev_enabled_classes = class_names('
-      mx-0.5
-      btn
-      btn-secondary
-    ')
-    @prev_disabled_classes = class_names('
-      mx-0.5
-      btn
-      btn-secondary--disabled
-    ')
-
-    @next_enabled_classes = class_names('
-      mx-0.5
-      btn
-      btn-secondary
-    ')
-    @next_disabled_classes = class_names('
-      mx-0.5
-      btn
-      btn-secondary--disabled
-    ')
-
-    @gap_classes = class_names('
-      mx-0.5
-      btn
-      btn-secondary--disabled
-    ')
   end
 
-  def generate_page_series
-    start_at = @pagination.page - 2
-    end_at   = @pagination.page + 2
+  def show_badges?
+    show_page? || show_total_pages? || show_per_page? || show_total_count?
+  end
 
-    if (1..3).cover?(@pagination.page)
-      start_at = 2
+  def show_first?
+    options[:show_first]
+  end
 
-      end_at =
-        if @options[:show_last_page]
-          start_at + 4
-        else
-          start_at + 2
-        end
-    end
+  def show_last?
+    options[:show_last]
+  end
 
-    if @options[:show_last_page]
-      if ((@pagination.last_page - 2)..@pagination.last_page).cover?(@pagination.page)
-        end_at   = @pagination.last_page - 1
-        start_at = end_at - 4
-      end
-    end
+  def show_goto?
+    options[:show_goto]
+  end
 
-    if start_at <= @pagination.first_page
-      start_at = @pagination.first_page + 1
-    end
+  def show_page?
+    options[:show_page]
+  end
 
-    if @options[:show_last_page]
-      if end_at >= @pagination.last_page
-        end_at = @pagination.last_page - 1
-      end
-    else
-      if !@pagination.next_page?
-        end_at = @pagination.page
-      end
-    end
+  def show_total_pages?
+    options[:show_total_pages]
+  end
 
-    page_series = (start_at..end_at).to_a
+  def show_per_page?
+    options[:show_per_page]
+  end
 
-    if start_at > @pagination.first_page + 1
-      page_series.unshift(nil)
-    end
+  def show_total_count?
+    options[:show_total_count]
+  end
 
-    if @options[:show_last_page]
-      if end_at < @pagination.last_page - 1
-        page_series.push(nil)
-      end
-    else
-      page_series.push(nil)
-    end
+  def first_icon
+    options[:first_icon]
+  end
 
-    page_series
+  def last_icon
+    options[:last_icon]
+  end
+
+  def prev_icon
+    options[:prev_icon]
+  end
+
+  def next_icon
+    options[:next_icon]
+  end
+
+  def go_icon
+    options[:go_icon]
   end
 end

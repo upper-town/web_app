@@ -1,37 +1,36 @@
-<div class="mb-2 sticky top-2">
-  <%=
-    form_with(
-      method: :get,
-      data: {
-        'controller' => 'servers',
-        'action' => 'change->servers#filter'
-      }
-    ) do |form| %>
-      <%= render(GameSelectComponent.new(
-        form,
-        only_in_use: true,
-        blank_name: 'All',
-        selected_value: @selected_value_game_id
-      )) %>
-      <div class="flex">
-        <%= render(PeriodSelectComponent.new(
-          form,
-          selected_value: @selected_value_period
-        )) %>
+<%= form_with(
+  method: :get,
+  data: {
+    'controller' => 'servers',
+    'action' => 'change->servers#filter'
+  },
+  class: 'mb-2'
+) do |form| %>
+  <%= render(GameSelectComponent.new(
+    form,
+    only_in_use: true,
+    blank_name: 'All',
+    selected_value: @selected_value_game_id
+  )) %>
+  <div class="flex">
+    <%= render(PeriodSelectComponent.new(
+      form,
+      selected_value: @selected_value_period
+    )) %>
+    <%= render(CountrySelectComponent.new(
+      form,
+      only_in_use: true,
+      blank_name: 'All',
+      selected_value: @selected_value_country_code
+    )) %>
+  </div>
+<% end %>
 
-        <%= render(CountrySelectComponent.new(
-          form,
-          only_in_use: true,
-          blank_name: 'All',
-          selected_value: @selected_value_country_code
-        )) %>
-      </div>
-  <% end %>
+<%= render(PaginationComponent.new(@pagination, first_icon: '1st')) %>
 
-  <%= render(PaginationComponent.new(pagination: @pagination)) %>
-</div>
-
-<% if @servers.any? %>
+<% if @servers.empty? %>
+  No results
+<% else %>
   <ul>
     <% @servers.each do |server| %>
       <li>
@@ -45,7 +44,7 @@
         %>
       </li>
     <% end %>
-  <ul>
-<% else %>
-  Not Found
+  </ul>
 <% end %>
+
+<%= render(PaginationComponent.new(@pagination, first_icon: '1st')) %>

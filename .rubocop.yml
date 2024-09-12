@@ -81,6 +81,8 @@ Metrics/PerceivedComplexity:
 # https://docs.rubocop.org/rubocop/cops_naming.html
 Naming/MethodParameterName:
   MinNameLength: 1
+Naming/PredicateName:
+  Enabled: false
 Naming/VariableNumber:
   Enabled: false
 
@@ -154,6 +156,8 @@ Style/Lambda:
 Style/ModuleFunction:
   Enabled: false
 Style/MultilineBlockChain:
+  Enabled: false
+Style/MultilineTernaryOperator:
   Enabled: false
 Style/MutableConstant:
   Enabled: false

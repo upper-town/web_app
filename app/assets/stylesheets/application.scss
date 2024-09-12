@@ -5,3 +5,20 @@
 .field_with_errors select {
   @extend .is-invalid;
 }
+
+.pagination-goto {
+  max-width: 6.5rem;
+}
+.pagination-prev-next {
+  flex-grow: 0.9;
+  @include media-breakpoint-up(sm) { flex-grow: 0.65; }
+  @include media-breakpoint-up(md) { flex-grow: 0.4; }
+  @include media-breakpoint-up(lg) { flex-grow: 0; width: 18rem; }
+}
+.pagination-prev-next li {
+  flex-grow: 1;
+}
+.pagination-prev-next li a,
+.pagination-prev-next li span {
+  text-align: center;
+}

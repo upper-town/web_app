@@ -14,11 +14,11 @@
   <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
   <%= javascript_include_tag "application", "data-turbo-track": "reload", defer: true %>
 
-  <meta name="turbo-prefetch" content="false">
+  <meta name="turbo-prefetch" content="true">
 
   <%= yield(:head) %>
 </head>
-<body data-controller="browser-time-zone">
+<body data-controller="browser-time-zone" data-turbo-prefetch="false">
   <% if Rails.env.development? && params.key?(:development_info) %>
     <%= render('shared/development_info') %>
   <% end %>
