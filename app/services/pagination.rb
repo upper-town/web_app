@@ -119,9 +119,9 @@ class Pagination
 
   def page_url(value)
     if options[:per_page_from_request]
-      @request_helper.url_with_query_params({ 'page' => value, 'per_page' => per_page })
+      @request_helper.url_with_query({ 'page' => value, 'per_page' => per_page })
     else
-      @request_helper.url_with_query_params({ 'page' => value })
+      @request_helper.url_with_query({ 'page' => value })
     end
   end
 

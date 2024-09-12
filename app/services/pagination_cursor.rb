@@ -81,9 +81,9 @@ class PaginationCursor
 
   def start_cursor_url
     if options[:per_page_from_request]
-      @request_helper.url_with_query_params({ 'per_page' => per_page }.compact, ['before', 'after'])
+      @request_helper.url_with_query({ 'per_page' => per_page }.compact, ['before', 'after'])
     else
-      @request_helper.url_with_query_params({}, ['before', 'after'])
+      @request_helper.url_with_query({}, ['before', 'after'])
     end
   end
 
@@ -102,9 +102,9 @@ class PaginationCursor
 
   def before_cursor_url
     if options[:per_page_from_request]
-      @request_helper.url_with_query_params({ 'before' => before_cursor, 'per_page' => per_page }.compact, ['after'])
+      @request_helper.url_with_query({ 'before' => before_cursor, 'per_page' => per_page }.compact, ['after'])
     else
-      @request_helper.url_with_query_params({ 'before' => before_cursor }.compact, ['after'])
+      @request_helper.url_with_query({ 'before' => before_cursor }.compact, ['after'])
     end
   end
 
@@ -123,9 +123,9 @@ class PaginationCursor
 
   def after_cursor_url
     if options[:per_page_from_request]
-      @request_helper.url_with_query_params({ 'after' => after_cursor, 'per_page' => per_page }.compact, ['before'])
+      @request_helper.url_with_query({ 'after' => after_cursor, 'per_page' => per_page }.compact, ['before'])
     else
-      @request_helper.url_with_query_params({ 'after' => after_cursor }.compact, ['before'])
+      @request_helper.url_with_query({ 'after' => after_cursor }.compact, ['before'])
     end
   end
 

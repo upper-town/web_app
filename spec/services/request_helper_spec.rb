@@ -3,8 +3,8 @@
 require 'rails_helper'
 
 RSpec.describe RequestHelper do
-  describe '#url_with_query_params' do
-    it 'returns url with query params merged/removed accordingly' do
+  describe '#url_with_query' do
+    it 'returns url with query updated accordingly' do
       [
         ['https://example.com',      {}, [], 'https://example.com/'],
         ['https://example.com:5000', {}, [], 'https://example.com:5000/'],
@@ -18,23 +18,91 @@ RSpec.describe RequestHelper do
           'http://example.com:5000/?aaa=111&bbb=test&ccc=333&ddd=444'
         ],
         [
-          'http://example.com:5000?aaa=111&bbb=test',
+          'http://example.com:5000/path?aaa=111&bbb=test',
           {},
           [:aaa, 'bbb'],
-          'http://example.com:5000/'
+          'http://example.com:5000/path'
         ],
         [
-          'http://example.com:5000?aaa=111&bbb=test',
+          'http://example.com:5000/path/?aaa=111&bbb=test',
           { ccc: '333', 'ddd' => 444 },
           [:aaa, 'bbb'],
-          'http://example.com:5000/?ccc=333&ddd=444'
+          'http://example.com:5000/path/?ccc=333&ddd=444'
         ],
       ].each do |original_url, params_merge, params_remove, updated_url|
         request = TestRequestHelper.build(url: original_url)
 
-        expect(described_class.new(request).url_with_query_params(params_merge, params_remove))
+        expect(described_class.new(request).url_with_query(params_merge, params_remove))
           .to eq(updated_url)
       end
+    end
+  end
+
+  describe '#parse_and_update_query_and_uri' do
+    it 'returns parsed_query and parsed_uri updated accordingly' do
+      [
+        ['https://example.com',      {}, [], {}, 'https://example.com/'],
+        ['https://example.com:5000', {}, [], {}, 'https://example.com:5000/'],
+        ['http://example.com',       {}, [], {}, 'http://example.com/'],
+        ['http://example.com:5000',  {}, [], {}, 'http://example.com:5000/'],
+
+        [
+          'http://example.com:5000?aaa=111&bbb=test',
+          { ccc: '333', 'ddd' => 444 },
+          [],
+          { 'aaa' => '111', 'bbb' => 'test', 'ccc' => '333', 'ddd' => 444 },
+          'http://example.com:5000/?aaa=111&bbb=test&ccc=333&ddd=444'
+        ],
+        [
+          'http://example.com:5000/path?aaa=111&bbb=test',
+          {},
+          [:aaa, 'bbb'],
+          {},
+          'http://example.com:5000/path'
+        ],
+        [
+          'http://example.com:5000/path/?aaa=111&bbb=test',
+          { ccc: '333', 'ddd' => 444 },
+          [:aaa, 'bbb'],
+          { 'ccc' => '333', 'ddd' => 444 },
+          'http://example.com:5000/path/?ccc=333&ddd=444'
+        ],
+      ].each do |original_url, params_merge, params_remove, expected_parsed_query, expected_parsed_uri_string|
+        request = TestRequestHelper.build(url: original_url)
+
+        parsed_query, parsed_uri = described_class.new(request).parse_and_update_query_and_uri(params_merge, params_remove)
+
+        expect(parsed_query).to eq(expected_parsed_query)
+        expect(parsed_uri.to_s).to eq(expected_parsed_uri_string)
+      end
+    end
+  end
+
+  describe '#parse_query_and_uri' do
+    it 'returns parsed_query and parsed_uri' do
+      request = TestRequestHelper.build(url: 'http://example.com:5000/path/?aaa=111&bbb=test&ccc=333&ddd=444')
+
+      parsed_query, parsed_uri = described_class.new(request).parse_query_and_uri
+
+      expect(parsed_query).to eq({ 'aaa' => '111', 'bbb' => 'test', 'ccc' => '333', 'ddd' => '444' })
+      expect(parsed_uri.scheme).to eq('http')
+      expect(parsed_uri.host).to eq('example.com')
+      expect(parsed_uri.port).to eq(5000)
+      expect(parsed_uri.path).to eq('/path/')
+      expect(parsed_uri.query).to eq('aaa=111&bbb=test&ccc=333&ddd=444')
+    end
+  end
+
+  describe '#hidden_fields_for_query' do
+    it 'returns HTML inputs of type hidden for query' do
+      request = TestRequestHelper.build(url: 'http://example.com:5000/path/?aaa=111&bbb=test&ccc=333&ddd=444')
+
+      hidden_fields = described_class.new(request).hidden_fields_for_query({ 'bbb' => '222' }, ['ccc'])
+
+      expect(hidden_fields.html_safe?).to be(true)
+      expect(hidden_fields).to include('<input type="hidden" name="aaa" value="111" autocomplete="off" />')
+      expect(hidden_fields).to include('<input type="hidden" name="bbb" value="222" autocomplete="off" />')
+      expect(hidden_fields).to include('<input type="hidden" name="ddd" value="444" autocomplete="off" />')
     end
   end
 
