@@ -16,6 +16,7 @@ class PaginationCursor
 
     cursor:              nil,
     cursor_column:       :id,
+    cursor_type:         :integer,
     cursor_from_request: true,
 
     total_count: nil,
@@ -38,13 +39,14 @@ class PaginationCursor
     @options = DEFAULT_OPTIONS.merge(options.compact)
 
     @order     = choose_order
-    @indicator = choose_indicator
     @per_page  = choose_per_page
+    @indicator = choose_indicator
+    @cursor    = choose_cursor
 
     @model = relation.klass
     @request_helper = RequestHelper.new(request)
 
-    @cursor, @cursor_id = choose_cursor_and_load_cursor_id
+    @cursor, @cursor_id = load_cursor_and_cursor_id
   end
 
   def results
@@ -93,7 +95,7 @@ class PaginationCursor
       if cursor_id.nil? || (indicator != 'after' && relation_plus_one.size <= per_page)
         nil
       else
-        results.first&.public_send(options[:cursor_column])
+        serialize_cursor(results.first&.public_send(options[:cursor_column]))
       end
   end
 
@@ -114,7 +116,7 @@ class PaginationCursor
       if indicator == 'after' && relation_plus_one.size <= per_page
         nil
       else
-        results.last&.public_send(options[:cursor_column])
+        serialize_cursor(results.last&.public_send(options[:cursor_column]))
       end
   end
 
@@ -140,29 +142,6 @@ class PaginationCursor
     end.to_s.downcase == 'asc' ? 'asc' : 'desc'
   end
 
-  def choose_indicator
-    if options[:indicator_from_request]
-      request.params['indicator'].presence || options[:indicator]
-    else
-      options[:indicator]
-    end.to_s.downcase == 'before' ? 'before' : 'after'
-  end
-
-  def choose_cursor_and_load_cursor_id
-    given_cursor =
-      if options[:cursor_from_request]
-        request.params['cursor'].presence || options[:cursor]
-      else
-        options[:cursor]
-      end.to_s.delete('^a-zA-Z0-9_:.-').presence
-
-    if options[:cursor_column] == :id && (given_cursor = Integer(given_cursor, exception: false))
-      @model.order(order_condition(given_cursor)).where(where_condition(given_cursor, true)).pick(:id, :id)
-    else
-      @model.where(options[:cursor_column] => given_cursor).pick(options[:cursor_column], :id)
-    end
-  end
-
   def choose_per_page
     if options[:per_page_from_request]
       request.params['per_page'].presence || options[:per_page]
@@ -171,32 +150,97 @@ class PaginationCursor
     end.to_i.clamp(1, [options[:per_page_max], HARD_MAX].min)
   end
 
+  def choose_indicator
+    if options[:indicator_from_request]
+      request.params['indicator'].presence || options[:indicator]
+    else
+      options[:indicator]
+    end.to_s.downcase == 'before' ? 'before' : 'after'
+  end
+
+  def choose_cursor
+    str = if options[:cursor_from_request]
+      request.params['cursor'].presence || options[:cursor]
+    else
+      options[:cursor]
+    end.to_s.delete('^a-zA-Z0-9_:.-')
+
+    deserialize_cursor(str)
+  end
+
+  def load_cursor_and_cursor_id
+    return [nil, nil] unless cursor
+
+    case options[:cursor_type]
+    when :integer, :date
+      @model
+        .order(order_condition(options[:cursor_column], cursor))
+        .where(where_condition(options[:cursor_column], cursor, true, 1))
+        .pick(options[:cursor_column], :id)
+    when :datetime
+      @model
+        .order(order_condition(options[:cursor_column], cursor))
+        .where(where_condition(options[:cursor_column], cursor, true, 0.000001))
+        .pick(options[:cursor_column], :id)
+    else
+      @model
+        .where(options[:cursor_column] => cursor)
+        .pick(options[:cursor_column], :id)
+    end
+  end
+
   def relation_plus_one
     @relation_plus_one ||= begin
-      rel = relation.reorder(order_condition(cursor_id)).where(where_condition(cursor_id)).limit(per_page + 1)
+      rel = relation
+        .reorder(order_condition(:id, cursor_id))
+        .where(where_condition(:id, cursor_id))
+        .limit(per_page + 1)
       rel.load
       rel
     end
   end
 
-  def order_condition(id)
-    if !id || indicator == 'after'
-      order == 'desc' ? { id: :desc } : { id: :asc  }
+  def order_condition(column, value)
+    if !value || indicator == 'after'
+      order == 'desc' ? { column => :desc } : { column => :asc  }
     else
-      order == 'desc' ? { id: :asc  } : { id: :desc }
+      order == 'desc' ? { column => :asc  } : { column => :desc }
     end
   end
 
-  def where_condition(id, inclusive = false)
-    return unless id
+  def where_condition(column, value, inclusive = false, unit = 1)
+    return unless value
 
-    backward = inclusive ? (..id)  : (...id)
-    forward  = inclusive ? (id...) : ((id + 1)...)
+    backward = inclusive ? (..value)  : (...value)
+    forward  = inclusive ? (value...) : ((value + unit)...)
 
     if indicator == 'after'
-      order == 'desc' ? { id: backward } : { id: forward  }
+      order == 'desc' ? { column => backward } : { column => forward  }
     else
-      order == 'desc' ? { id: forward  } : { id: backward }
+      order == 'desc' ? { column => forward  } : { column => backward }
+    end
+  end
+
+  def deserialize_cursor(str)
+    return if str.blank?
+
+    case options[:cursor_type]
+    when :integer  then Integer(str, exception: false)
+    when :date     then Date.iso8601(str)
+    when :datetime then Time.iso8601(str)
+    else
+      str
+    end
+  rescue TypeError, ArgumentError, Date::Error
+    nil
+  end
+
+  def serialize_cursor(value)
+    case value
+    when Date then value.iso8601
+    when Time then value.iso8601(6)
+    else
+      value
     end
   end
 end

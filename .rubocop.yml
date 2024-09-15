@@ -40,6 +40,8 @@ Layout/LineLength:
     - spec/**/*_spec.rb
     - config/routes.rb
   Max: 160
+Layout/MultilineMethodCallIndentation:
+  Enabled: false
 Layout/SpaceInsideArrayLiteralBrackets:
   Enabled: false
 Layout/SpaceInsideArrayPercentLiteral:
@@ -49,6 +51,8 @@ Layout/SpaceInsidePercentLiteralDelimiters:
 
 # https://docs.rubocop.org/rubocop/cops_lint.html
 Lint/MixedRegexpCaptureTypes:
+  Enabled: false
+Lint/ShadowedException:
   Enabled: false
 
 # https://docs.rubocop.org/rubocop/cops_metrics.html
