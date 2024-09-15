@@ -117,10 +117,10 @@ RSpec.describe PaginationCursor do
 
   describe '#cursor and #cursor_id' do
     it 'gets cursor and loads cursor_id' do
-      _dummy1 = create(:dummy, id: 1, uuid: SecureRandom.uuid, date: '2024-09-01', datetime: '2024-09-01T12:00:00.000001Z')
-      _dummy2 = create(:dummy, id: 2, uuid: SecureRandom.uuid, date: '2024-09-02', datetime: '2024-09-01T12:00:00.000002Z')
-      dummy4  = create(:dummy, id: 4, uuid: SecureRandom.uuid, date: '2024-09-04', datetime: '2024-09-01T12:00:00.000004Z')
-      _dummy5 = create(:dummy, id: 5, uuid: SecureRandom.uuid, date: '2024-09-05', datetime: '2024-09-01T12:00:00.000005Z')
+      _dummy1 = create(:dummy, id: 1, uuid: SecureRandom.uuid, date: '2024-09-01', datetime: '2024-09-01T12:00:00.000001Z', decimal: '0.000001'.to_d, float: 0.000001)
+      _dummy2 = create(:dummy, id: 2, uuid: SecureRandom.uuid, date: '2024-09-02', datetime: '2024-09-01T12:00:00.000002Z', decimal: '0.000002'.to_d, float: 0.000002)
+      dummy4  = create(:dummy, id: 4, uuid: SecureRandom.uuid, date: '2024-09-04', datetime: '2024-09-01T12:00:00.000004Z', decimal: '0.000004'.to_d, float: 0.000004)
+      _dummy5 = create(:dummy, id: 5, uuid: SecureRandom.uuid, date: '2024-09-05', datetime: '2024-09-01T12:00:00.000005Z', decimal: '0.000005'.to_d, float: 0.000005)
       relation  = Dummy.all
       [
         # integer
@@ -205,6 +205,50 @@ RSpec.describe PaginationCursor do
         [:datetime, :datetime, 'desc', 'after',  ' ',                           true, 'abcdef',                                 nil,                                   nil],
         [:datetime, :datetime, 'desc', 'after',  ' ',                           true, '2024-09-01T12:00:00.000003Z',            '2024-09-01T12:00:00.000002Z'.to_time, 2  ],
         [:datetime, :datetime, 'desc', 'after',  ' ',                           true, " 2024-09-01T12:00:00.000003Z!*[(?'\t\n", '2024-09-01T12:00:00.000002Z'.to_time, 2  ],
+
+        # decimal
+        [:decimal, :decimal, 'desc', 'after',  ' ', false, nil, nil, nil],
+        [:decimal, :decimal, 'desc', 'before', ' ', false, nil, nil, nil],
+        [:decimal, :decimal, 'asc',  'after',  ' ', false, nil, nil, nil],
+        [:decimal, :decimal, 'asc',  'before', ' ', false, nil, nil, nil],
+
+        [:decimal, :decimal, 'desc', 'after',  'abcdef', false, nil, nil, nil],
+        [:decimal, :decimal, 'desc', 'before', 'abcdef', false, nil, nil, nil],
+        [:decimal, :decimal, 'asc',  'after',  'abcdef', false, nil, nil, nil],
+        [:decimal, :decimal, 'asc',  'before', 'abcdef', false, nil, nil, nil],
+
+        [:decimal, :decimal, 'desc', 'after',  '0.000003', false, nil, 0.000002, 2],
+        [:decimal, :decimal, 'desc', 'before', '0.000003', false, nil, 0.000004, 4],
+        [:decimal, :decimal, 'asc',  'after',  '0.000003', false, nil, 0.000004, 4],
+        [:decimal, :decimal, 'asc',  'before', '0.000003', false, nil, 0.000002, 2],
+
+        [:decimal, :decimal, 'desc', 'after',  ' ',        true, ' ',                   nil,      nil],
+        [:decimal, :decimal, 'desc', 'after',  '0.000003', true, ' ',                   0.000002, 2  ],
+        [:decimal, :decimal, 'desc', 'after',  ' ',        true, 'abcdef',              nil,      nil],
+        [:decimal, :decimal, 'desc', 'after',  ' ',        true, '0.000003',            0.000002, 2  ],
+        [:decimal, :decimal, 'desc', 'after',  ' ',        true, " 0.000003!*[(?'\t\n", 0.000002, 2  ],
+
+        # float
+        [:float, :float, 'desc', 'after',  ' ', false, nil, nil, nil],
+        [:float, :float, 'desc', 'before', ' ', false, nil, nil, nil],
+        [:float, :float, 'asc',  'after',  ' ', false, nil, nil, nil],
+        [:float, :float, 'asc',  'before', ' ', false, nil, nil, nil],
+
+        [:float, :float, 'desc', 'after',  'abcdef', false, nil, nil, nil],
+        [:float, :float, 'desc', 'before', 'abcdef', false, nil, nil, nil],
+        [:float, :float, 'asc',  'after',  'abcdef', false, nil, nil, nil],
+        [:float, :float, 'asc',  'before', 'abcdef', false, nil, nil, nil],
+
+        [:float, :float, 'desc', 'after',  '0.000003', false, nil, 0.000002, 2],
+        [:float, :float, 'desc', 'before', '0.000003', false, nil, 0.000004, 4],
+        [:float, :float, 'asc',  'after',  '0.000003', false, nil, 0.000004, 4],
+        [:float, :float, 'asc',  'before', '0.000003', false, nil, 0.000002, 2],
+
+        [:float, :float, 'desc', 'after',  ' ',        true, ' ',                   nil,      nil],
+        [:float, :float, 'desc', 'after',  '0.000003', true, ' ',                   0.000002, 2  ],
+        [:float, :float, 'desc', 'after',  ' ',        true, 'abcdef',              nil,      nil],
+        [:float, :float, 'desc', 'after',  ' ',        true, '0.000003',            0.000002, 2  ],
+        [:float, :float, 'desc', 'after',  ' ',        true, " 0.000003!*[(?'\t\n", 0.000002, 2  ],
       ].each do |cursor_column, cursor_type, order, indicator, cursor, cursor_from_request, request_cursor_param, expected_cursor, expected_cursor_id|
         request = TestRequestHelper.build(params: { 'cursor' => request_cursor_param })
         pagination_cursor = described_class.new(
@@ -486,7 +530,7 @@ RSpec.describe PaginationCursor do
     describe 'with many records' do
       it 'returns accordingly' do
         dummies = create_list(:dummy, 10)
-        relation = Dummy.order(id: :asc)
+        relation = Dummy.order(id: :desc)
         request = TestRequestHelper.build(url: 'http://test.upper.town/servers')
 
         pagination_cursor = described_class.new(relation, request, order: 'asc', per_page: 3, indicator: 'after')
@@ -628,6 +672,90 @@ RSpec.describe PaginationCursor do
         expect(pagination_cursor.after_cursor).to eq(dummies[8].id)
         expect(pagination_cursor.has_after_cursor?).to be(true)
         expect(pagination_cursor.after_cursor_url).to eq("http://test.upper.town/servers?order=asc&indicator=after&cursor=#{dummies[8].id}&per_page=3")
+      end
+
+      describe 'string, date, datetime, decimal, float column_type' do
+        it 'returns accordingly' do
+          dummies = [
+            create(:dummy, uuid: SecureRandom.uuid, date: '2024-09-01', datetime: '2024-09-01T12:00:00.000001Z', decimal: '0.000001'.to_d, float: 0.000001), # index 0
+            create(:dummy, uuid: SecureRandom.uuid, date: '2024-09-02', datetime: '2024-09-01T12:00:00.000002Z', decimal: '0.000002'.to_d, float: 0.000002), # index 1
+            create(:dummy, uuid: SecureRandom.uuid, date: '2024-09-03', datetime: '2024-09-01T12:00:00.000003Z', decimal: '0.000003'.to_d, float: 0.000003), # index 2
+            create(:dummy, uuid: SecureRandom.uuid, date: '2024-09-04', datetime: '2024-09-01T12:00:00.000004Z', decimal: '0.000004'.to_d, float: 0.000004), # index 3
+            create(:dummy, uuid: SecureRandom.uuid, date: '2024-09-05', datetime: '2024-09-01T12:00:00.000005Z', decimal: '0.000005'.to_d, float: 0.000005), # index 4
+          ]
+          relation = Dummy.order(id: :desc)
+          request = TestRequestHelper.build(url: 'http://test.upper.town/servers')
+
+          pagination_cursor = described_class.new(relation, request, order: 'asc', per_page: 2, indicator: 'after', cursor: dummies[1].uuid, cursor_type: :string, cursor_column: :uuid)
+
+          expect(pagination_cursor.start_cursor).to be_nil
+          expect(pagination_cursor.start_cursor?).to be(false)
+          expect(pagination_cursor.start_cursor_url).to eq('http://test.upper.town/servers?order=asc')
+
+          expect(pagination_cursor.before_cursor).to eq(dummies[2].uuid)
+          expect(pagination_cursor.has_before_cursor?).to be(true)
+          expect(pagination_cursor.before_cursor_url).to eq("http://test.upper.town/servers?order=asc&indicator=before&cursor=#{dummies[2].uuid}")
+
+          expect(pagination_cursor.after_cursor).to eq(dummies[3].uuid)
+          expect(pagination_cursor.has_after_cursor?).to be(true)
+          expect(pagination_cursor.after_cursor_url).to eq("http://test.upper.town/servers?order=asc&indicator=after&cursor=#{dummies[3].uuid}")
+
+          pagination_cursor = described_class.new(relation, request, order: 'asc', per_page: 2, indicator: 'after', cursor: dummies[1].date, cursor_type: :date, cursor_column: :date)
+
+          expect(pagination_cursor.start_cursor).to be_nil
+          expect(pagination_cursor.start_cursor?).to be(false)
+          expect(pagination_cursor.start_cursor_url).to eq('http://test.upper.town/servers?order=asc')
+
+          expect(pagination_cursor.before_cursor).to eq(dummies[2].date)
+          expect(pagination_cursor.has_before_cursor?).to be(true)
+          expect(pagination_cursor.before_cursor_url).to eq("http://test.upper.town/servers?order=asc&indicator=before&cursor=#{dummies[2].date.iso8601}")
+
+          expect(pagination_cursor.after_cursor).to eq(dummies[3].date)
+          expect(pagination_cursor.has_after_cursor?).to be(true)
+          expect(pagination_cursor.after_cursor_url).to eq("http://test.upper.town/servers?order=asc&indicator=after&cursor=#{dummies[3].date.iso8601}")
+
+          pagination_cursor = described_class.new(relation, request, order: 'asc', per_page: 2, indicator: 'after', cursor: dummies[1].datetime, cursor_type: :datetime, cursor_column: :datetime)
+
+          expect(pagination_cursor.start_cursor).to be_nil
+          expect(pagination_cursor.start_cursor?).to be(false)
+          expect(pagination_cursor.start_cursor_url).to eq('http://test.upper.town/servers?order=asc')
+
+          expect(pagination_cursor.before_cursor).to eq(dummies[2].datetime)
+          expect(pagination_cursor.has_before_cursor?).to be(true)
+          expect(pagination_cursor.before_cursor_url).to eq("http://test.upper.town/servers?order=asc&indicator=before&cursor=#{ERB::Util.url_encode(dummies[2].datetime.iso8601(6))}")
+
+          expect(pagination_cursor.after_cursor).to eq(dummies[3].datetime)
+          expect(pagination_cursor.has_after_cursor?).to be(true)
+          expect(pagination_cursor.after_cursor_url).to eq("http://test.upper.town/servers?order=asc&indicator=after&cursor=#{ERB::Util.url_encode(dummies[3].datetime.iso8601(6))}")
+
+          pagination_cursor = described_class.new(relation, request, order: 'asc', per_page: 2, indicator: 'after', cursor: dummies[1].decimal, cursor_type: :decimal, cursor_column: :decimal)
+
+          expect(pagination_cursor.start_cursor).to be_nil
+          expect(pagination_cursor.start_cursor?).to be(false)
+          expect(pagination_cursor.start_cursor_url).to eq('http://test.upper.town/servers?order=asc')
+
+          expect(pagination_cursor.before_cursor).to eq(dummies[2].decimal)
+          expect(pagination_cursor.has_before_cursor?).to be(true)
+          expect(pagination_cursor.before_cursor_url).to eq("http://test.upper.town/servers?order=asc&indicator=before&cursor=#{dummies[2].decimal}")
+
+          expect(pagination_cursor.after_cursor).to eq(dummies[3].decimal)
+          expect(pagination_cursor.has_after_cursor?).to be(true)
+          expect(pagination_cursor.after_cursor_url).to eq("http://test.upper.town/servers?order=asc&indicator=after&cursor=#{dummies[3].decimal}")
+
+          pagination_cursor = described_class.new(relation, request, order: 'asc', per_page: 2, indicator: 'after', cursor: dummies[1].float, cursor_type: :float, cursor_column: :float)
+
+          expect(pagination_cursor.start_cursor).to be_nil
+          expect(pagination_cursor.start_cursor?).to be(false)
+          expect(pagination_cursor.start_cursor_url).to eq('http://test.upper.town/servers?order=asc')
+
+          expect(pagination_cursor.before_cursor).to eq(dummies[2].float)
+          expect(pagination_cursor.has_before_cursor?).to be(true)
+          expect(pagination_cursor.before_cursor_url).to eq("http://test.upper.town/servers?order=asc&indicator=before&cursor=#{dummies[2].float}")
+
+          expect(pagination_cursor.after_cursor).to eq(dummies[3].float)
+          expect(pagination_cursor.has_after_cursor?).to be(true)
+          expect(pagination_cursor.after_cursor_url).to eq("http://test.upper.town/servers?order=asc&indicator=after&cursor=#{dummies[3].float}")
+        end
       end
     end
   end

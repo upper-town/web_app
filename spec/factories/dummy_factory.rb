@@ -7,6 +7,8 @@
 #  id         :bigint           not null, primary key
 #  date       :date
 #  datetime   :datetime
+#  decimal    :decimal(, )
+#  float      :float
 #  integer    :integer
 #  string     :string
 #  uuid       :uuid

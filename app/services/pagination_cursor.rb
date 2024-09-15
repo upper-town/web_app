@@ -7,7 +7,7 @@ class PaginationCursor
     order: 'desc',
     order_from_request: true,
 
-    per_page:              20,
+    per_page:              25,
     per_page_max:          100,
     per_page_from_request: false,
 
@@ -15,8 +15,8 @@ class PaginationCursor
     indicator_from_request: true,
 
     cursor:              nil,
-    cursor_column:       :id,
-    cursor_type:         :integer,
+    cursor_column:       :id, # :uuid, :created_at, etc
+    cursor_type:         :integer, # :string, :date, :datetime, :decimal, :float
     cursor_from_request: true,
 
     total_count: nil,
@@ -83,11 +83,7 @@ class PaginationCursor
   end
 
   def start_cursor_url
-    if options[:per_page_from_request]
-      @request_helper.url_with_query({ 'order' => order, 'per_page' => per_page }.compact, ['indicator', 'cursor'])
-    else
-      @request_helper.url_with_query({ 'order' => order }, ['indicator', 'cursor', 'per_page'])
-    end
+    @start_cursor_url ||= build_url({ 'order' => order }, ['indicator', 'cursor'])
   end
 
   def before_cursor
@@ -95,7 +91,7 @@ class PaginationCursor
       if cursor_id.nil? || (indicator != 'after' && relation_plus_one.size <= per_page)
         nil
       else
-        serialize_cursor(results.first&.public_send(options[:cursor_column]))
+        results.first&.public_send(options[:cursor_column])
       end
   end
 
@@ -104,11 +100,7 @@ class PaginationCursor
   end
 
   def before_cursor_url
-    if options[:per_page_from_request]
-      @request_helper.url_with_query({ 'order' => order, 'indicator' => 'before', 'cursor' => before_cursor, 'per_page' => per_page }.compact)
-    else
-      @request_helper.url_with_query({ 'order' => order, 'indicator' => 'before', 'cursor' => before_cursor }.compact, ['per_page'])
-    end
+    @before_cursor_url ||= build_url({ 'order' => order, 'indicator' => 'before', 'cursor' => serialize_cursor(before_cursor) })
   end
 
   def after_cursor
@@ -116,7 +108,7 @@ class PaginationCursor
       if indicator == 'after' && relation_plus_one.size <= per_page
         nil
       else
-        serialize_cursor(results.last&.public_send(options[:cursor_column]))
+        results.last&.public_send(options[:cursor_column])
       end
   end
 
@@ -125,11 +117,7 @@ class PaginationCursor
   end
 
   def after_cursor_url
-    if options[:per_page_from_request]
-      @request_helper.url_with_query({ 'order' => order, 'indicator' => 'after', 'cursor' => after_cursor, 'per_page' => per_page }.compact)
-    else
-      @request_helper.url_with_query({ 'order' => order, 'indicator' => 'after', 'cursor' => after_cursor }.compact, ['per_page'])
-    end
+    @after_cursor_url ||= build_url({ 'order' => order, 'indicator' => 'after', 'cursor' => serialize_cursor(after_cursor) })
   end
 
   private
@@ -159,13 +147,18 @@ class PaginationCursor
   end
 
   def choose_cursor
-    str = if options[:cursor_from_request]
+    value = if options[:cursor_from_request]
       request.params['cursor'].presence || options[:cursor]
     else
       options[:cursor]
-    end.to_s.delete('^a-zA-Z0-9_:.-')
+    end
 
-    deserialize_cursor(str)
+    case value
+    when Numeric, Date, Time, DateTime
+      value
+    when String
+      deserialize_cursor(value)
+    end
   end
 
   def load_cursor_and_cursor_id
@@ -177,7 +170,7 @@ class PaginationCursor
         .order(order_condition(options[:cursor_column], cursor))
         .where(where_condition(options[:cursor_column], cursor, true, 1))
         .pick(options[:cursor_column], :id)
-    when :datetime
+    when :datetime, :decimal, :float
       @model
         .order(order_condition(options[:cursor_column], cursor))
         .where(where_condition(options[:cursor_column], cursor, true, 0.000001))
@@ -222,25 +215,44 @@ class PaginationCursor
   end
 
   def deserialize_cursor(str)
+    str = str.delete('^a-zA-Z0-9_:.-')
     return if str.blank?
 
     case options[:cursor_type]
+    when :string   then str
     when :integer  then Integer(str, exception: false)
     when :date     then Date.iso8601(str)
     when :datetime then Time.iso8601(str)
-    else
-      str
+    when :decimal  then BigDecimal(str, exception: false)
+    when :float    then Float(str, exception: false)
     end
   rescue TypeError, ArgumentError, Date::Error
     nil
   end
 
   def serialize_cursor(value)
+    return unless value
+
     case value
-    when Date then value.iso8601
-    when Time then value.iso8601(6)
+    when String then value
+    when Date   then value.iso8601
+    when Time   then value.iso8601(6)
     else
-      value
+      value.to_s
+    end
+  end
+
+  def build_url(params_merge, params_remove = [])
+    if options[:per_page_from_request]
+      @request_helper.url_with_query(
+        params_merge.merge({ 'per_page' => per_page }).compact,
+        params_remove - ['per_page']
+      )
+    else
+      @request_helper.url_with_query(
+        params_merge.compact,
+        params_remove + ['per_page']
+      )
     end
   end
 end

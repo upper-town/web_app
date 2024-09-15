@@ -119,6 +119,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_09_15_165037) do
     t.uuid "uuid"
     t.string "string"
     t.integer "integer"
+    t.decimal "decimal"
+    t.float "float"
     t.date "date"
     t.datetime "datetime"
     t.datetime "created_at", null: false

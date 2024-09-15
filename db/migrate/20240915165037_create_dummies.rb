@@ -6,6 +6,8 @@ class CreateDummies < ActiveRecord::Migration[7.1]
       t.uuid     :uuid
       t.string   :string
       t.integer  :integer
+      t.decimal  :decimal
+      t.float    :float
       t.date     :date
       t.datetime :datetime
 
