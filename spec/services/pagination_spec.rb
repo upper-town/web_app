@@ -5,7 +5,7 @@ require 'rails_helper'
 RSpec.describe Pagination do
   describe '#page' do
     it 'gets page from options, clamps value' do
-      relation = User.order(id: :asc)
+      relation = Dummy.all
       [
         [20,   nil, false, nil, 20],
         ['20', nil, false, nil, 20],
@@ -58,7 +58,7 @@ RSpec.describe Pagination do
 
   describe '#per_page' do
     it 'gets per_page from options, clamps value' do
-      relation = User.order(id: :asc)
+      relation = Dummy.all
       [
         [20,   nil, false, nil, 20],
         ['20', nil, false, nil, 20],
@@ -111,7 +111,7 @@ RSpec.describe Pagination do
 
   describe '#offset' do
     it 'calculates offset according to per_page and page' do
-      relation = User.order(id: :asc)
+      relation = Dummy.all
       request = TestRequestHelper.build
       [
         [20, 1,  0],
@@ -134,24 +134,24 @@ RSpec.describe Pagination do
   describe '#results and #page_size' do
     describe 'order asc' do
       it 'takes per_page items from relation with offset for page' do
-        users = create_list(:user, 10)
-        relation = User.order(id: :asc)
+        dummies = create_list(:dummy, 10)
+        relation = Dummy.order(id: :asc)
         request = TestRequestHelper.build
 
         pagination = described_class.new(relation, request, per_page: 3, page: 1)
-        expect(pagination.results).to eq([users[0], users[1], users[2]])
+        expect(pagination.results).to eq([dummies[0], dummies[1], dummies[2]])
         expect(pagination.page_size).to eq(3)
 
         pagination = described_class.new(relation, request, per_page: 3, page: 2)
-        expect(pagination.results).to eq([users[3], users[4], users[5]])
+        expect(pagination.results).to eq([dummies[3], dummies[4], dummies[5]])
         expect(pagination.page_size).to eq(3)
 
         pagination = described_class.new(relation, request, per_page: 3, page: 3)
-        expect(pagination.results).to eq([users[6], users[7], users[8]])
+        expect(pagination.results).to eq([dummies[6], dummies[7], dummies[8]])
         expect(pagination.page_size).to eq(3)
 
         pagination = described_class.new(relation, request, per_page: 3, page: 4)
-        expect(pagination.results).to eq([users[9]])
+        expect(pagination.results).to eq([dummies[9]])
         expect(pagination.page_size).to eq(1)
 
         pagination = described_class.new(relation, request, per_page: 3, page: 5)
@@ -162,24 +162,24 @@ RSpec.describe Pagination do
 
     describe 'order desc' do
       it 'takes per_page items from relation with offset for page' do
-        users = create_list(:user, 10)
-        relation = User.order(id: :desc)
+        dummies = create_list(:dummy, 10)
+        relation = Dummy.order(id: :desc)
         request = TestRequestHelper.build
 
         pagination = described_class.new(relation, request, per_page: 3, page: 1)
-        expect(pagination.results).to eq([users[9], users[8], users[7]])
+        expect(pagination.results).to eq([dummies[9], dummies[8], dummies[7]])
         expect(pagination.page_size).to eq(3)
 
         pagination = described_class.new(relation, request, per_page: 3, page: 2)
-        expect(pagination.results).to eq([users[6], users[5], users[4]])
+        expect(pagination.results).to eq([dummies[6], dummies[5], dummies[4]])
         expect(pagination.page_size).to eq(3)
 
         pagination = described_class.new(relation, request, per_page: 3, page: 3)
-        expect(pagination.results).to eq([users[3], users[2], users[1]])
+        expect(pagination.results).to eq([dummies[3], dummies[2], dummies[1]])
         expect(pagination.page_size).to eq(3)
 
         pagination = described_class.new(relation, request, per_page: 3, page: 4)
-        expect(pagination.results).to eq([users[0]])
+        expect(pagination.results).to eq([dummies[0]])
         expect(pagination.page_size).to eq(1)
 
         pagination = described_class.new(relation, request, per_page: 3, page: 5)
@@ -192,8 +192,8 @@ RSpec.describe Pagination do
   describe '#total_count, #total_pages, #last_page, #last_page?' do
     context 'when it is zero' do
       it 'returns accordingly' do
-        create_list(:user, 10)
-        relation = User.order(id: :asc)
+        create_list(:dummy, 10)
+        relation = Dummy.all
         request = TestRequestHelper.build
 
         pagination = described_class.new(relation, request, total_count: 0, per_page: 3)
@@ -207,8 +207,8 @@ RSpec.describe Pagination do
 
     context 'when total_count option is given' do
       it 'returns it' do
-        create_list(:user, 10)
-        relation = User.order(id: :asc)
+        create_list(:dummy, 10)
+        relation = Dummy.all
         request = TestRequestHelper.build
 
         pagination = described_class.new(relation, request, total_count: 100, per_page: 3)
@@ -229,8 +229,8 @@ RSpec.describe Pagination do
 
     context 'when total_count option is not given' do
       it 'returns relation count' do
-        create_list(:user, 10)
-        relation = User.order(id: :asc)
+        create_list(:dummy, 10)
+        relation = Dummy.all
         request = TestRequestHelper.build
 
         pagination = described_class.new(relation, request, total_count: nil, per_page: 3, page: 1)
@@ -252,8 +252,8 @@ RSpec.describe Pagination do
 
   describe '#first_page and #first_page?' do
     it 'returns accordingly' do
-      create_list(:user, 10)
-      relation = User.order(id: :asc)
+      create_list(:dummy, 10)
+      relation = Dummy.all
       request = TestRequestHelper.build
 
       pagination = described_class.new(relation, request, per_page: 4, page: 1)
@@ -277,7 +277,7 @@ RSpec.describe Pagination do
         [ 4, 3, true],
         [10, 9, true],
       ].each do |page, expected_prev_page, expected_has_prev_page|
-        relation = User.order(id: :asc)
+        relation = Dummy.all
         request = TestRequestHelper.build
         pagination = described_class.new(relation, request, page: page)
 
@@ -290,7 +290,7 @@ RSpec.describe Pagination do
   describe '#next_page and #has_next_page?' do
     context 'when page_size is less than per_page' do
       it 'returns page' do
-        relation = User.order(id: :asc)
+        relation = Dummy.all
         request = TestRequestHelper.build
         pagination = described_class.new(relation, request, per_page: 10, page: 1)
 
@@ -301,8 +301,8 @@ RSpec.describe Pagination do
 
     context 'when relation_plus_one.size is less than per_page' do
       it 'returns page' do
-        create_list(:user, 4)
-        relation = User.order(id: :asc)
+        create_list(:dummy, 4)
+        relation = Dummy.all
         request = TestRequestHelper.build
         pagination = described_class.new(relation, request, per_page: 5, page: 1)
 
@@ -313,8 +313,8 @@ RSpec.describe Pagination do
 
     context 'when relation_plus_one.size is equal to per_page' do
       it 'returns page' do
-        create_list(:user, 5)
-        relation = User.order(id: :asc)
+        create_list(:dummy, 5)
+        relation = Dummy.all
         request = TestRequestHelper.build
         pagination = described_class.new(relation, request, per_page: 5, page: 1)
 
@@ -325,8 +325,8 @@ RSpec.describe Pagination do
 
     context 'when relation_plus_one.size is greater than per_page' do
       it 'returns page + 1 or respects page_max' do
-        create_list(:user, 6)
-        relation = User.order(id: :asc)
+        create_list(:dummy, 6)
+        relation = Dummy.all
         request = TestRequestHelper.build
 
         pagination = described_class.new(relation, request, per_page: 5, page: 1)
@@ -342,8 +342,8 @@ RSpec.describe Pagination do
 
   describe '#first_page_url, #prev_page_url, #page_url, #next_page_url, #last_page_url' do
     it 'returns accordingly' do
-      create_list(:user, 10)
-      relation = User.order(id: :asc)
+      create_list(:dummy, 10)
+      relation = Dummy.all
       request = TestRequestHelper.build(url: 'http://test.upper.town/servers')
 
       pagination = described_class.new(relation, request, per_page: 4, page: 1)
