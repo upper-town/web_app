@@ -4,7 +4,8 @@ class PaginationCursor
   HARD_MAX = 500
 
   DEFAULT_OPTIONS = {
-    order: :desc,
+    order: 'desc',
+    order_from_request: true,
 
     per_page:              20,
     per_page_max:          100,
@@ -24,8 +25,10 @@ class PaginationCursor
     :relation,
     :request,
     :options,
-    :cursor,
+    :order,
     :indicator,
+    :cursor,
+    :cursor_id,
     :per_page
   )
 
@@ -34,16 +37,14 @@ class PaginationCursor
     @request = request
     @options = DEFAULT_OPTIONS.merge(options.compact)
 
+    @order     = choose_order
     @indicator = choose_indicator
-    @cursor    = choose_cursor
     @per_page  = choose_per_page
 
     @model = relation.klass
     @request_helper = RequestHelper.new(request)
-  end
 
-  def cursor_id
-    @cursor_id ||= @model.where(options[:cursor_column] => cursor).pick(:id)
+    @cursor, @cursor_id = choose_cursor_and_load_cursor_id
   end
 
   def results
@@ -81,9 +82,9 @@ class PaginationCursor
 
   def start_cursor_url
     if options[:per_page_from_request]
-      @request_helper.url_with_query({ 'per_page' => per_page }.compact, ['before', 'after'])
+      @request_helper.url_with_query({ 'order' => order, 'per_page' => per_page }.compact, ['indicator', 'cursor'])
     else
-      @request_helper.url_with_query({}, ['before', 'after'])
+      @request_helper.url_with_query({ 'order' => order }, ['indicator', 'cursor', 'per_page'])
     end
   end
 
@@ -102,9 +103,9 @@ class PaginationCursor
 
   def before_cursor_url
     if options[:per_page_from_request]
-      @request_helper.url_with_query({ 'before' => before_cursor, 'per_page' => per_page }.compact, ['after'])
+      @request_helper.url_with_query({ 'order' => order, 'indicator' => 'before', 'cursor' => before_cursor, 'per_page' => per_page }.compact)
     else
-      @request_helper.url_with_query({ 'before' => before_cursor }.compact, ['after'])
+      @request_helper.url_with_query({ 'order' => order, 'indicator' => 'before', 'cursor' => before_cursor }.compact, ['per_page'])
     end
   end
 
@@ -123,34 +124,43 @@ class PaginationCursor
 
   def after_cursor_url
     if options[:per_page_from_request]
-      @request_helper.url_with_query({ 'after' => after_cursor, 'per_page' => per_page }.compact, ['before'])
+      @request_helper.url_with_query({ 'order' => order, 'indicator' => 'after', 'cursor' => after_cursor, 'per_page' => per_page }.compact)
     else
-      @request_helper.url_with_query({ 'after' => after_cursor }.compact, ['before'])
+      @request_helper.url_with_query({ 'order' => order, 'indicator' => 'after', 'cursor' => after_cursor }.compact, ['per_page'])
     end
   end
 
   private
 
+  def choose_order
+    if options[:order_from_request]
+      request.params['order'].presence || options[:order]
+    else
+      options[:order]
+    end.to_s.downcase == 'asc' ? 'asc' : 'desc'
+  end
+
   def choose_indicator
     if options[:indicator_from_request]
-      if request.params['after'].present?
-        'after'
-      elsif request.params['before'].present?
-        'before'
-      else
-        options[:indicator]
-      end
+      request.params['indicator'].presence || options[:indicator]
     else
       options[:indicator]
     end.to_s.downcase == 'before' ? 'before' : 'after'
   end
 
-  def choose_cursor
-    if options[:cursor_from_request]
-      request.params['after'].presence || request.params['before'].presence || options[:cursor]
+  def choose_cursor_and_load_cursor_id
+    given_cursor =
+      if options[:cursor_from_request]
+        request.params['cursor'].presence || options[:cursor]
+      else
+        options[:cursor]
+      end.to_s.delete('^a-zA-Z0-9_:.-').presence
+
+    if options[:cursor_column] == :id && (given_cursor = Integer(given_cursor, exception: false))
+      @model.order(order_condition(given_cursor)).where(where_condition(given_cursor, true)).pick(:id, :id)
     else
-      options[:cursor]
-    end.to_s.delete('^a-zA-Z0-9_-')
+      @model.where(options[:cursor_column] => given_cursor).pick(options[:cursor_column], :id)
+    end
   end
 
   def choose_per_page
@@ -163,27 +173,30 @@ class PaginationCursor
 
   def relation_plus_one
     @relation_plus_one ||= begin
-      rel = relation.reorder(order_condition).where(where_condition).limit(per_page + 1)
+      rel = relation.reorder(order_condition(cursor_id)).where(where_condition(cursor_id)).limit(per_page + 1)
       rel.load
       rel
     end
   end
 
-  def order_condition
-    if !cursor_id || indicator == 'after'
-      options[:order] == :asc ? { id: :asc  } : { id: :desc }
+  def order_condition(id)
+    if !id || indicator == 'after'
+      order == 'desc' ? { id: :desc } : { id: :asc  }
     else
-      options[:order] == :asc ? { id: :desc } : { id: :asc  }
+      order == 'desc' ? { id: :asc  } : { id: :desc }
     end
   end
 
-  def where_condition
-    return unless cursor_id
+  def where_condition(id, inclusive = false)
+    return unless id
+
+    backward = inclusive ? (..id)  : (...id)
+    forward  = inclusive ? (id...) : ((id + 1)...)
 
     if indicator == 'after'
-      options[:order] == :asc ? { id: (cursor_id + 1)... } : { id: ...cursor_id }
+      order == 'desc' ? { id: backward } : { id: forward  }
     else
-      options[:order] == :asc ? { id: ...cursor_id } : { id: (cursor_id + 1)... }
+      order == 'desc' ? { id: forward  } : { id: backward }
     end
   end
 end

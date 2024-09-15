@@ -3,7 +3,7 @@
 module Admin
   class ServersController < BaseController
     def index
-      @pagination = Pagination.new(Admin::ServersQuery.new.call, request, options: { per_page: 50 })
+      @pagination = Pagination.new(Admin::ServersQuery.new.call, request, per_page: 50)
       @servers = @pagination.results
 
       render(status: @servers.empty? ? :not_found : :ok)

@@ -7,18 +7,19 @@ RSpec.describe PaginationCursor do
     it 'gets indicator from options' do
       relation = User.order(id: :asc)
       [
-        [' ',      false, nil, nil, 'after' ],
-        ['before', false, nil, nil, 'before'],
-        ['after',  false, nil, nil, 'after'],
+        [' ',      false, nil, 'after' ],
+        ['before', false, nil, 'before'],
+        ['after',  false, nil, 'after'],
 
-        [' ',      true,  nil,      nil,   'after' ],
-        ['before', true,  nil,      nil,   'before'],
-        [' ',      true,  'before', nil,   'after' ],
-        ['before', true,  'before', nil,   'before'],
-        ['before', true,  'before', ' ',   'before'],
-        ['after',  true,  'before', '123', 'before'],
-      ].each do |indicator, indicator_from_request, request_indicator_param_key, request_indicator_param_value, expected_indicator|
-        request = TestRequestHelper.build(params: { request_indicator_param_key => request_indicator_param_value })
+        [' ',      true,  nil,      'after' ],
+        ['before', true,  nil,      'before'],
+        [' ',      true,  nil,      'after' ],
+        ['before', true,  nil,      'before'],
+        ['before', true,  ' ',      'before'],
+        ['after',  true,  '123',    'after'],
+        ['after',  true,  'before', 'before'],
+      ].each do |indicator, indicator_from_request, request_indicator_param, expected_indicator|
+        request = TestRequestHelper.build(params: { 'indicator' => request_indicator_param })
         pagination_cursor = described_class.new(
           relation,
           request,
@@ -26,65 +27,99 @@ RSpec.describe PaginationCursor do
           indicator_from_request: indicator_from_request
         )
 
-        expect(pagination_cursor.indicator).to eq(expected_indicator), "Failed for #{indicator.inspect} and #{expected_indicator.inspect}"
+        expect(pagination_cursor.indicator).to eq(expected_indicator)
       end
     end
   end
 
-  describe '#cursor' do
-    it 'gets cursor from options' do
+  describe '#order' do
+    it 'gets order from options' do
       relation = User.order(id: :asc)
       [
-        [' ', false, nil,      nil, '' ],
-        ['5', false, nil,      nil, '5'],
-        ['5', true,  nil,      nil, '5'],
-        ['5', true,  'after',  ' ', '5'],
-        ['5', true,  'after',  '7', '7'],
-        ['5', true,  'before', '7', '7'],
-        ['5', true,  'xxxxxx', '7', '5'],
+        [' ',    false, nil, 'desc' ],
+        ['desc', false, nil, 'desc' ],
+        ['xxxx', false, nil, 'desc' ],
+        ['asc',  false, nil, 'asc'  ],
 
-        [5,               false, nil,      nil,             '5'],
-        [" !*[(?'\t\n ",  false, nil,      nil,             '' ],
-        [" 5!*[(?'\t\n ", false, nil,      nil,             '5'],
-        ['5',             true,  'after',  " 7!*[(?'\t\n ", '7'],
-        ['5',             true,  'after',  7,               '7'],
-        ['5',             true,  'before', " 7!*[(?'\t\n ", '7'],
-        ['5',             true,  'before', 7,               '7'],
-      ].each do |cursor, cursor_from_request, request_cursor_param_key, request_cursor_param_value, expected_cursor|
-        request = TestRequestHelper.build(params: { request_cursor_param_key => request_cursor_param_value })
+        [' ',    true,  ' ',    'desc' ],
+        [' ',    true,  'xxxx', 'desc' ],
+        ['desc', true,  ' ',    'desc' ],
+        ['desc', true,  'xxxx', 'desc' ],
+        ['desc', true,  'asc',  'asc'  ],
+        ['asc',  true,  ' ',    'asc'  ],
+      ].each do |order, order_from_request, request_order_param, expected_order|
+        request = TestRequestHelper.build(params: { 'order' => request_order_param })
         pagination_cursor = described_class.new(
           relation,
           request,
+          order: order,
+          order_from_request: order_from_request
+        )
+
+        expect(pagination_cursor.order).to eq(expected_order)
+      end
+    end
+  end
+
+  describe '#cursor and #cursor_id' do
+    it 'gets cursor from options' do
+      _account1 = create(:account, id: 1)
+      _account2 = create(:account, id: 2)
+      account4  = create(:account, id: 4)
+      _account5 = create(:account, id: 5)
+      relation  = Account.order(id: :asc)
+      [
+        [:id, 'desc', 'after',  ' ', false, nil, nil, nil],
+        [:id, 'desc', 'before', ' ', false, nil, nil, nil],
+        [:id, 'asc',  'after',  ' ', false, nil, nil, nil],
+        [:id, 'asc',  'before', ' ', false, nil, nil, nil],
+
+        [:id, 'desc', 'after',  'abcdef', false, nil, nil, nil],
+        [:id, 'desc', 'before', 'abcdef', false, nil, nil, nil],
+        [:id, 'asc',  'after',  'abcdef', false, nil, nil, nil],
+        [:id, 'asc',  'before', 'abcdef', false, nil, nil, nil],
+
+        [:id, 'desc', 'after',  '3', false, nil, 2, 2],
+        [:id, 'desc', 'before', '3', false, nil, 4, 4],
+        [:id, 'asc',  'after',  '3', false, nil, 4, 4],
+        [:id, 'asc',  'before', '3', false, nil, 2, 2],
+
+        [:id, 'desc', 'after',  ' ', true, ' ',            nil, nil ],
+        [:id, 'desc', 'after',  '3', true, ' ',            2,   2   ],
+        [:id, 'desc', 'after',  ' ', true, 'abcdef',       nil, nil ],
+        [:id, 'desc', 'after',  ' ', true, '3',            2,   2   ],
+        [:id, 'desc', 'after',  ' ', true, " 3!*[(?'\t\n", 2,   2   ],
+
+        [:uuid, 'desc', 'after',  ' ', false, nil, nil, nil],
+        [:uuid, 'desc', 'before', ' ', false, nil, nil, nil],
+        [:uuid, 'asc',  'after',  ' ', false, nil, nil, nil],
+        [:uuid, 'asc',  'before', ' ', false, nil, nil, nil],
+
+        [:uuid, 'desc', 'after',  'abcdef', false, nil, nil, nil],
+        [:uuid, 'desc', 'before', 'abcdef', false, nil, nil, nil],
+        [:uuid, 'asc',  'after',  'abcdef', false, nil, nil, nil],
+        [:uuid, 'asc',  'before', 'abcdef', false, nil, nil, nil],
+
+        [:uuid, 'desc', 'after',  ' ',           true, ' ',                           nil,           nil],
+        [:uuid, 'desc', 'after',  account4.uuid, true, ' ',                           account4.uuid, 4  ],
+        [:uuid, 'desc', 'after',  ' ',           true, 'abcdef',                      nil,           nil],
+        [:uuid, 'desc', 'after',  ' ',           true, account4.uuid,                 account4.uuid, 4  ],
+        [:uuid, 'desc', 'after',  ' ',           true, " #{account4.uuid}!*[(?'\t\n", account4.uuid, 4  ],
+      ].each do |cursor_column, order, indicator, cursor, cursor_from_request, request_cursor_param, expected_cursor, expected_cursor_id|
+        request = TestRequestHelper.build(params: { 'cursor' => request_cursor_param })
+        pagination_cursor = described_class.new(
+          relation,
+          request,
+          cursor_column: cursor_column,
+          order: order,
+          indicator: indicator,
           cursor: cursor,
           cursor_from_request: cursor_from_request
         )
 
-        expect(pagination_cursor.cursor).to eq(expected_cursor), "Failed for #{cursor.inspect} and #{expected_cursor.inspect}"
+        expect(pagination_cursor.cursor).to eq(expected_cursor)
+        expect(pagination_cursor.cursor_id).to eq(expected_cursor_id)
       end
-    end
-  end
-
-  describe '#cursor_id' do
-    it 'picks record id based on cursor_column and cursor' do
-      account = create(:account)
-      relation = Account.order(id: :asc)
-      request = TestRequestHelper.build
-
-      pagination_cursor = described_class.new(
-        relation,
-        request,
-        cursor_column: :id,
-        cursor: account.id
-      )
-      expect(pagination_cursor.cursor_id).to eq(account.id)
-
-      pagination_cursor = described_class.new(
-        relation,
-        request,
-        cursor_column: :uuid,
-        cursor: account.uuid
-      )
-      expect(pagination_cursor.cursor_id).to eq(account.id)
     end
   end
 
@@ -148,39 +183,39 @@ RSpec.describe PaginationCursor do
         relation = User.order(id: :asc)
         request = TestRequestHelper.build
 
-        pagination_cursor = described_class.new(relation, request, indicator: 'before', cursor: '', per_page: 3, order: :asc)
+        pagination_cursor = described_class.new(relation, request, indicator: 'before', cursor: '', per_page: 3, order: 'asc')
         expect(pagination_cursor.results).to eq([users[0], users[1], users[2]])
         expect(pagination_cursor.page_size).to eq(3)
 
-        pagination_cursor = described_class.new(relation, request, indicator: 'after', cursor: '', per_page: 3, order: :asc)
+        pagination_cursor = described_class.new(relation, request, indicator: 'after', cursor: '', per_page: 3, order: 'asc')
         expect(pagination_cursor.results).to eq([users[0], users[1], users[2]])
         expect(pagination_cursor.page_size).to eq(3)
 
-        pagination_cursor = described_class.new(relation, request, indicator: 'before', cursor: users[0].id, per_page: 3, order: :asc)
+        pagination_cursor = described_class.new(relation, request, indicator: 'before', cursor: users[0].id, per_page: 3, order: 'asc')
         expect(pagination_cursor.results).to be_empty
         expect(pagination_cursor.page_size).to eq(0)
 
-        pagination_cursor = described_class.new(relation, request, indicator: 'after', cursor: users[9].id, per_page: 3, order: :asc)
+        pagination_cursor = described_class.new(relation, request, indicator: 'after', cursor: users[9].id, per_page: 3, order: 'asc')
         expect(pagination_cursor.results).to be_empty
         expect(pagination_cursor.page_size).to eq(0)
 
-        pagination_cursor = described_class.new(relation, request, indicator: 'before', cursor: users[2].id, per_page: 3, order: :asc)
+        pagination_cursor = described_class.new(relation, request, indicator: 'before', cursor: users[2].id, per_page: 3, order: 'asc')
         expect(pagination_cursor.results).to eq([users[0], users[1]])
         expect(pagination_cursor.page_size).to eq(2)
 
-        pagination_cursor = described_class.new(relation, request, indicator: 'after', cursor: users[2].id, per_page: 3, order: :asc)
+        pagination_cursor = described_class.new(relation, request, indicator: 'after', cursor: users[2].id, per_page: 3, order: 'asc')
         expect(pagination_cursor.results).to eq([users[3], users[4], users[5]])
         expect(pagination_cursor.page_size).to eq(3)
 
-        pagination_cursor = described_class.new(relation, request, indicator: 'before', cursor: users[3].id, per_page: 3, order: :asc)
+        pagination_cursor = described_class.new(relation, request, indicator: 'before', cursor: users[3].id, per_page: 3, order: 'asc')
         expect(pagination_cursor.results).to eq([users[0], users[1], users[2]])
         expect(pagination_cursor.page_size).to eq(3)
 
-        pagination_cursor = described_class.new(relation, request, indicator: 'before', cursor: users[8].id, per_page: 3, order: :asc)
+        pagination_cursor = described_class.new(relation, request, indicator: 'before', cursor: users[8].id, per_page: 3, order: 'asc')
         expect(pagination_cursor.results).to eq([users[5], users[6], users[7]])
         expect(pagination_cursor.page_size).to eq(3)
 
-        pagination_cursor = described_class.new(relation, request, indicator: 'after', cursor: users[8].id, per_page: 3, order: :asc)
+        pagination_cursor = described_class.new(relation, request, indicator: 'after', cursor: users[8].id, per_page: 3, order: 'asc')
         expect(pagination_cursor.results).to eq([users[9]])
         expect(pagination_cursor.page_size).to eq(1)
       end
@@ -192,39 +227,39 @@ RSpec.describe PaginationCursor do
         relation = User.order(id: :asc)
         request = TestRequestHelper.build
 
-        pagination_cursor = described_class.new(relation, request, indicator: 'before', cursor: '', per_page: 3, order: :desc)
+        pagination_cursor = described_class.new(relation, request, indicator: 'before', cursor: '', per_page: 3, order: 'desc')
         expect(pagination_cursor.results).to eq([users[9], users[8], users[7]])
         expect(pagination_cursor.page_size).to eq(3)
 
-        pagination_cursor = described_class.new(relation, request, indicator: 'after', cursor: '', per_page: 3, order: :desc)
+        pagination_cursor = described_class.new(relation, request, indicator: 'after', cursor: '', per_page: 3, order: 'desc')
         expect(pagination_cursor.results).to eq([users[9], users[8], users[7]])
         expect(pagination_cursor.page_size).to eq(3)
 
-        pagination_cursor = described_class.new(relation, request, indicator: 'after', cursor: users[0].id, per_page: 3, order: :desc)
+        pagination_cursor = described_class.new(relation, request, indicator: 'after', cursor: users[0].id, per_page: 3, order: 'desc')
         expect(pagination_cursor.results).to be_empty
         expect(pagination_cursor.page_size).to eq(0)
 
-        pagination_cursor = described_class.new(relation, request, indicator: 'before', cursor: users[9].id, per_page: 3, order: :desc)
+        pagination_cursor = described_class.new(relation, request, indicator: 'before', cursor: users[9].id, per_page: 3, order: 'desc')
         expect(pagination_cursor.results).to be_empty
         expect(pagination_cursor.page_size).to eq(0)
 
-        pagination_cursor = described_class.new(relation, request, indicator: 'before', cursor: users[2].id, per_page: 3, order: :desc)
+        pagination_cursor = described_class.new(relation, request, indicator: 'before', cursor: users[2].id, per_page: 3, order: 'desc')
         expect(pagination_cursor.results).to eq([users[5], users[4], users[3]])
         expect(pagination_cursor.page_size).to eq(3)
 
-        pagination_cursor = described_class.new(relation, request, indicator: 'after', cursor: users[2].id, per_page: 3, order: :desc)
+        pagination_cursor = described_class.new(relation, request, indicator: 'after', cursor: users[2].id, per_page: 3, order: 'desc')
         expect(pagination_cursor.results).to eq([users[1], users[0]])
         expect(pagination_cursor.page_size).to eq(2)
 
-        pagination_cursor = described_class.new(relation, request, indicator: 'before', cursor: users[6].id, per_page: 3, order: :desc)
+        pagination_cursor = described_class.new(relation, request, indicator: 'before', cursor: users[6].id, per_page: 3, order: 'desc')
         expect(pagination_cursor.results).to eq([users[9], users[8], users[7]])
         expect(pagination_cursor.page_size).to eq(3)
 
-        pagination_cursor = described_class.new(relation, request, indicator: 'before', cursor: users[8].id, per_page: 3, order: :desc)
+        pagination_cursor = described_class.new(relation, request, indicator: 'before', cursor: users[8].id, per_page: 3, order: 'desc')
         expect(pagination_cursor.results).to eq([users[9]])
         expect(pagination_cursor.page_size).to eq(1)
 
-        pagination_cursor = described_class.new(relation, request, indicator: 'after', cursor: users[8].id, per_page: 3, order: :desc)
+        pagination_cursor = described_class.new(relation, request, indicator: 'after', cursor: users[8].id, per_page: 3, order: 'desc')
         expect(pagination_cursor.results).to eq([users[7], users[6], users[5]])
         expect(pagination_cursor.page_size).to eq(3)
       end
@@ -278,61 +313,61 @@ RSpec.describe PaginationCursor do
         relation = User.order(id: :asc)
         request = TestRequestHelper.build(url: 'http://test.upper.town/servers')
 
-        pagination_cursor = described_class.new(relation, request, order: :asc, per_page: 3, indicator: 'after')
+        pagination_cursor = described_class.new(relation, request, order: 'asc', per_page: 3, indicator: 'after')
 
         expect(pagination_cursor.start_cursor).to be_nil
         expect(pagination_cursor.start_cursor?).to be(true)
-        expect(pagination_cursor.start_cursor_url).to eq('http://test.upper.town/servers')
+        expect(pagination_cursor.start_cursor_url).to eq('http://test.upper.town/servers?order=asc')
 
         expect(pagination_cursor.before_cursor).to be_nil
         expect(pagination_cursor.has_before_cursor?).to be(false)
-        expect(pagination_cursor.before_cursor_url).to eq('http://test.upper.town/servers')
+        expect(pagination_cursor.before_cursor_url).to eq('http://test.upper.town/servers?order=asc&indicator=before')
 
         expect(pagination_cursor.after_cursor).to be_nil
         expect(pagination_cursor.has_after_cursor?).to be(false)
-        expect(pagination_cursor.after_cursor_url).to eq('http://test.upper.town/servers')
+        expect(pagination_cursor.after_cursor_url).to eq('http://test.upper.town/servers?order=asc&indicator=after')
 
-        pagination_cursor = described_class.new(relation, request, order: :asc, per_page: 3, indicator: 'after', per_page_from_request: true)
+        pagination_cursor = described_class.new(relation, request, order: 'asc', per_page: 3, indicator: 'after', per_page_from_request: true)
 
         expect(pagination_cursor.start_cursor).to be_nil
         expect(pagination_cursor.start_cursor?).to be(true)
-        expect(pagination_cursor.start_cursor_url).to eq('http://test.upper.town/servers?per_page=3')
+        expect(pagination_cursor.start_cursor_url).to eq('http://test.upper.town/servers?order=asc&per_page=3')
 
         expect(pagination_cursor.before_cursor).to be_nil
         expect(pagination_cursor.has_before_cursor?).to be(false)
-        expect(pagination_cursor.before_cursor_url).to eq('http://test.upper.town/servers?per_page=3')
+        expect(pagination_cursor.before_cursor_url).to eq('http://test.upper.town/servers?order=asc&indicator=before&per_page=3')
 
         expect(pagination_cursor.after_cursor).to be_nil
         expect(pagination_cursor.has_after_cursor?).to be(false)
-        expect(pagination_cursor.after_cursor_url).to eq('http://test.upper.town/servers?per_page=3')
+        expect(pagination_cursor.after_cursor_url).to eq('http://test.upper.town/servers?order=asc&indicator=after&per_page=3')
 
-        pagination_cursor = described_class.new(relation, request, order: :asc, per_page: 3, indicator: 'before')
+        pagination_cursor = described_class.new(relation, request, order: 'asc', per_page: 3, indicator: 'before')
 
         expect(pagination_cursor.start_cursor).to be_nil
         expect(pagination_cursor.start_cursor?).to be(true)
-        expect(pagination_cursor.start_cursor_url).to eq('http://test.upper.town/servers')
+        expect(pagination_cursor.start_cursor_url).to eq('http://test.upper.town/servers?order=asc')
 
         expect(pagination_cursor.before_cursor).to be_nil
         expect(pagination_cursor.has_before_cursor?).to be(false)
-        expect(pagination_cursor.before_cursor_url).to eq('http://test.upper.town/servers')
+        expect(pagination_cursor.before_cursor_url).to eq('http://test.upper.town/servers?order=asc&indicator=before')
 
         expect(pagination_cursor.after_cursor).to be_nil
         expect(pagination_cursor.has_after_cursor?).to be(false)
-        expect(pagination_cursor.after_cursor_url).to eq('http://test.upper.town/servers')
+        expect(pagination_cursor.after_cursor_url).to eq('http://test.upper.town/servers?order=asc&indicator=after')
 
-        pagination_cursor = described_class.new(relation, request, order: :asc, per_page: 3, indicator: 'before', per_page_from_request: true)
+        pagination_cursor = described_class.new(relation, request, order: 'asc', per_page: 3, indicator: 'before', per_page_from_request: true)
 
         expect(pagination_cursor.start_cursor).to be_nil
         expect(pagination_cursor.start_cursor?).to be(true)
-        expect(pagination_cursor.start_cursor_url).to eq('http://test.upper.town/servers?per_page=3')
+        expect(pagination_cursor.start_cursor_url).to eq('http://test.upper.town/servers?order=asc&per_page=3')
 
         expect(pagination_cursor.before_cursor).to be_nil
         expect(pagination_cursor.has_before_cursor?).to be(false)
-        expect(pagination_cursor.before_cursor_url).to eq('http://test.upper.town/servers?per_page=3')
+        expect(pagination_cursor.before_cursor_url).to eq('http://test.upper.town/servers?order=asc&indicator=before&per_page=3')
 
         expect(pagination_cursor.after_cursor).to be_nil
         expect(pagination_cursor.has_after_cursor?).to be(false)
-        expect(pagination_cursor.after_cursor_url).to eq('http://test.upper.town/servers?per_page=3')
+        expect(pagination_cursor.after_cursor_url).to eq('http://test.upper.town/servers?order=asc&indicator=after&per_page=3')
       end
     end
 
@@ -342,61 +377,61 @@ RSpec.describe PaginationCursor do
         relation = User.order(id: :asc)
         request = TestRequestHelper.build(url: 'http://test.upper.town/servers')
 
-        pagination_cursor = described_class.new(relation, request, order: :asc, per_page: 3, indicator: 'after')
+        pagination_cursor = described_class.new(relation, request, order: 'asc', per_page: 3, indicator: 'after')
 
         expect(pagination_cursor.start_cursor).to be_nil
         expect(pagination_cursor.start_cursor?).to be(true)
-        expect(pagination_cursor.start_cursor_url).to eq('http://test.upper.town/servers')
+        expect(pagination_cursor.start_cursor_url).to eq('http://test.upper.town/servers?order=asc')
 
         expect(pagination_cursor.before_cursor).to be_nil
         expect(pagination_cursor.has_before_cursor?).to be(false)
-        expect(pagination_cursor.before_cursor_url).to eq('http://test.upper.town/servers')
+        expect(pagination_cursor.before_cursor_url).to eq('http://test.upper.town/servers?order=asc&indicator=before')
 
         expect(pagination_cursor.after_cursor).to be_nil
         expect(pagination_cursor.has_after_cursor?).to be(false)
-        expect(pagination_cursor.after_cursor_url).to eq('http://test.upper.town/servers')
+        expect(pagination_cursor.after_cursor_url).to eq('http://test.upper.town/servers?order=asc&indicator=after')
 
-        pagination_cursor = described_class.new(relation, request, order: :asc, per_page: 3, indicator: 'after', per_page_from_request: true)
+        pagination_cursor = described_class.new(relation, request, order: 'asc', per_page: 3, indicator: 'after', per_page_from_request: true)
 
         expect(pagination_cursor.start_cursor).to be_nil
         expect(pagination_cursor.start_cursor?).to be(true)
-        expect(pagination_cursor.start_cursor_url).to eq('http://test.upper.town/servers?per_page=3')
+        expect(pagination_cursor.start_cursor_url).to eq('http://test.upper.town/servers?order=asc&per_page=3')
 
         expect(pagination_cursor.before_cursor).to be_nil
         expect(pagination_cursor.has_before_cursor?).to be(false)
-        expect(pagination_cursor.before_cursor_url).to eq('http://test.upper.town/servers?per_page=3')
+        expect(pagination_cursor.before_cursor_url).to eq('http://test.upper.town/servers?order=asc&indicator=before&per_page=3')
 
         expect(pagination_cursor.after_cursor).to be_nil
         expect(pagination_cursor.has_after_cursor?).to be(false)
-        expect(pagination_cursor.after_cursor_url).to eq('http://test.upper.town/servers?per_page=3')
+        expect(pagination_cursor.after_cursor_url).to eq('http://test.upper.town/servers?order=asc&indicator=after&per_page=3')
 
-        pagination_cursor = described_class.new(relation, request, order: :asc, per_page: 3, indicator: 'before')
-
-        expect(pagination_cursor.start_cursor).to be_nil
-        expect(pagination_cursor.start_cursor?).to be(true)
-        expect(pagination_cursor.start_cursor_url).to eq('http://test.upper.town/servers')
-
-        expect(pagination_cursor.before_cursor).to be_nil
-        expect(pagination_cursor.has_before_cursor?).to be(false)
-        expect(pagination_cursor.before_cursor_url).to eq('http://test.upper.town/servers')
-
-        expect(pagination_cursor.after_cursor).to eq(user.id)
-        expect(pagination_cursor.has_after_cursor?).to be(true)
-        expect(pagination_cursor.after_cursor_url).to eq("http://test.upper.town/servers?after=#{user.id}")
-
-        pagination_cursor = described_class.new(relation, request, order: :asc, per_page: 3, indicator: 'before', per_page_from_request: true)
+        pagination_cursor = described_class.new(relation, request, order: 'asc', per_page: 3, indicator: 'before')
 
         expect(pagination_cursor.start_cursor).to be_nil
         expect(pagination_cursor.start_cursor?).to be(true)
-        expect(pagination_cursor.start_cursor_url).to eq('http://test.upper.town/servers?per_page=3')
+        expect(pagination_cursor.start_cursor_url).to eq('http://test.upper.town/servers?order=asc')
 
         expect(pagination_cursor.before_cursor).to be_nil
         expect(pagination_cursor.has_before_cursor?).to be(false)
-        expect(pagination_cursor.before_cursor_url).to eq('http://test.upper.town/servers?per_page=3')
+        expect(pagination_cursor.before_cursor_url).to eq('http://test.upper.town/servers?order=asc&indicator=before')
 
         expect(pagination_cursor.after_cursor).to eq(user.id)
         expect(pagination_cursor.has_after_cursor?).to be(true)
-        expect(pagination_cursor.after_cursor_url).to eq("http://test.upper.town/servers?after=#{user.id}&per_page=3")
+        expect(pagination_cursor.after_cursor_url).to eq("http://test.upper.town/servers?order=asc&indicator=after&cursor=#{user.id}")
+
+        pagination_cursor = described_class.new(relation, request, order: 'asc', per_page: 3, indicator: 'before', per_page_from_request: true)
+
+        expect(pagination_cursor.start_cursor).to be_nil
+        expect(pagination_cursor.start_cursor?).to be(true)
+        expect(pagination_cursor.start_cursor_url).to eq('http://test.upper.town/servers?order=asc&per_page=3')
+
+        expect(pagination_cursor.before_cursor).to be_nil
+        expect(pagination_cursor.has_before_cursor?).to be(false)
+        expect(pagination_cursor.before_cursor_url).to eq('http://test.upper.town/servers?order=asc&indicator=before&per_page=3')
+
+        expect(pagination_cursor.after_cursor).to eq(user.id)
+        expect(pagination_cursor.has_after_cursor?).to be(true)
+        expect(pagination_cursor.after_cursor_url).to eq("http://test.upper.town/servers?order=asc&indicator=after&cursor=#{user.id}&per_page=3")
       end
     end
 
@@ -406,145 +441,145 @@ RSpec.describe PaginationCursor do
         relation = User.order(id: :asc)
         request = TestRequestHelper.build(url: 'http://test.upper.town/servers')
 
-        pagination_cursor = described_class.new(relation, request, order: :asc, per_page: 3, indicator: 'after')
+        pagination_cursor = described_class.new(relation, request, order: 'asc', per_page: 3, indicator: 'after')
 
         expect(pagination_cursor.start_cursor).to be_nil
         expect(pagination_cursor.start_cursor?).to be(true)
-        expect(pagination_cursor.start_cursor_url).to eq('http://test.upper.town/servers')
+        expect(pagination_cursor.start_cursor_url).to eq('http://test.upper.town/servers?order=asc')
 
         expect(pagination_cursor.before_cursor).to be_nil
         expect(pagination_cursor.has_before_cursor?).to be(false)
-        expect(pagination_cursor.before_cursor_url).to eq('http://test.upper.town/servers')
+        expect(pagination_cursor.before_cursor_url).to eq('http://test.upper.town/servers?order=asc&indicator=before')
 
         expect(pagination_cursor.after_cursor).to eq(users[2].id)
         expect(pagination_cursor.has_after_cursor?).to be(true)
-        expect(pagination_cursor.after_cursor_url).to eq("http://test.upper.town/servers?after=#{users[2].id}")
+        expect(pagination_cursor.after_cursor_url).to eq("http://test.upper.town/servers?order=asc&indicator=after&cursor=#{users[2].id}")
 
-        pagination_cursor = described_class.new(relation, request, order: :asc, per_page: 3, indicator: 'after', per_page_from_request: true)
+        pagination_cursor = described_class.new(relation, request, order: 'asc', per_page: 3, indicator: 'after', per_page_from_request: true)
 
         expect(pagination_cursor.start_cursor).to be_nil
         expect(pagination_cursor.start_cursor?).to be(true)
-        expect(pagination_cursor.start_cursor_url).to eq('http://test.upper.town/servers?per_page=3')
+        expect(pagination_cursor.start_cursor_url).to eq('http://test.upper.town/servers?order=asc&per_page=3')
 
         expect(pagination_cursor.before_cursor).to be_nil
         expect(pagination_cursor.has_before_cursor?).to be(false)
-        expect(pagination_cursor.before_cursor_url).to eq('http://test.upper.town/servers?per_page=3')
+        expect(pagination_cursor.before_cursor_url).to eq('http://test.upper.town/servers?order=asc&indicator=before&per_page=3')
 
         expect(pagination_cursor.after_cursor).to eq(users[2].id)
         expect(pagination_cursor.has_after_cursor?).to be(true)
-        expect(pagination_cursor.after_cursor_url).to eq("http://test.upper.town/servers?after=#{users[2].id}&per_page=3")
+        expect(pagination_cursor.after_cursor_url).to eq("http://test.upper.town/servers?order=asc&indicator=after&cursor=#{users[2].id}&per_page=3")
 
-        pagination_cursor = described_class.new(relation, request, order: :asc, per_page: 3, indicator: 'before')
+        pagination_cursor = described_class.new(relation, request, order: 'asc', per_page: 3, indicator: 'before')
 
         expect(pagination_cursor.start_cursor).to be_nil
         expect(pagination_cursor.start_cursor?).to be(true)
-        expect(pagination_cursor.start_cursor_url).to eq('http://test.upper.town/servers')
+        expect(pagination_cursor.start_cursor_url).to eq('http://test.upper.town/servers?order=asc')
 
         expect(pagination_cursor.before_cursor).to be_nil
         expect(pagination_cursor.has_before_cursor?).to be(false)
-        expect(pagination_cursor.before_cursor_url).to eq('http://test.upper.town/servers')
+        expect(pagination_cursor.before_cursor_url).to eq('http://test.upper.town/servers?order=asc&indicator=before')
 
         expect(pagination_cursor.after_cursor).to eq(users[2].id)
         expect(pagination_cursor.has_after_cursor?).to be(true)
-        expect(pagination_cursor.after_cursor_url).to eq("http://test.upper.town/servers?after=#{users[2].id}")
+        expect(pagination_cursor.after_cursor_url).to eq("http://test.upper.town/servers?order=asc&indicator=after&cursor=#{users[2].id}")
 
-        pagination_cursor = described_class.new(relation, request, order: :asc, per_page: 3, indicator: 'before', per_page_from_request: true)
+        pagination_cursor = described_class.new(relation, request, order: 'asc', per_page: 3, indicator: 'before', per_page_from_request: true)
 
         expect(pagination_cursor.start_cursor).to be_nil
         expect(pagination_cursor.start_cursor?).to be(true)
-        expect(pagination_cursor.start_cursor_url).to eq('http://test.upper.town/servers?per_page=3')
+        expect(pagination_cursor.start_cursor_url).to eq('http://test.upper.town/servers?order=asc&per_page=3')
 
         expect(pagination_cursor.before_cursor).to be_nil
         expect(pagination_cursor.has_before_cursor?).to be(false)
-        expect(pagination_cursor.before_cursor_url).to eq('http://test.upper.town/servers?per_page=3')
+        expect(pagination_cursor.before_cursor_url).to eq('http://test.upper.town/servers?order=asc&indicator=before&per_page=3')
 
         expect(pagination_cursor.after_cursor).to eq(users[2].id)
         expect(pagination_cursor.has_after_cursor?).to be(true)
-        expect(pagination_cursor.after_cursor_url).to eq("http://test.upper.town/servers?after=#{users[2].id}&per_page=3")
+        expect(pagination_cursor.after_cursor_url).to eq("http://test.upper.town/servers?order=asc&indicator=after&cursor=#{users[2].id}&per_page=3")
 
-        pagination_cursor = described_class.new(relation, request, order: :asc, per_page: 3, indicator: 'after', cursor: users[2].id)
+        pagination_cursor = described_class.new(relation, request, order: 'asc', per_page: 3, indicator: 'after', cursor: users[2].id)
 
         expect(pagination_cursor.start_cursor).to be_nil
         expect(pagination_cursor.start_cursor?).to be(false)
-        expect(pagination_cursor.start_cursor_url).to eq('http://test.upper.town/servers')
+        expect(pagination_cursor.start_cursor_url).to eq('http://test.upper.town/servers?order=asc')
 
         expect(pagination_cursor.before_cursor).to eq(users[3].id)
         expect(pagination_cursor.has_before_cursor?).to be(true)
-        expect(pagination_cursor.before_cursor_url).to eq("http://test.upper.town/servers?before=#{users[3].id}")
+        expect(pagination_cursor.before_cursor_url).to eq("http://test.upper.town/servers?order=asc&indicator=before&cursor=#{users[3].id}")
 
         expect(pagination_cursor.after_cursor).to eq(users[5].id)
         expect(pagination_cursor.has_after_cursor?).to be(true)
-        expect(pagination_cursor.after_cursor_url).to eq("http://test.upper.town/servers?after=#{users[5].id}")
+        expect(pagination_cursor.after_cursor_url).to eq("http://test.upper.town/servers?order=asc&indicator=after&cursor=#{users[5].id}")
 
-        pagination_cursor = described_class.new(relation, request, order: :asc, per_page: 3, indicator: 'after', cursor: users[2].id, per_page_from_request: true)
+        pagination_cursor = described_class.new(relation, request, order: 'asc', per_page: 3, indicator: 'after', cursor: users[2].id, per_page_from_request: true)
 
         expect(pagination_cursor.start_cursor).to be_nil
         expect(pagination_cursor.start_cursor?).to be(false)
-        expect(pagination_cursor.start_cursor_url).to eq('http://test.upper.town/servers?per_page=3')
+        expect(pagination_cursor.start_cursor_url).to eq('http://test.upper.town/servers?order=asc&per_page=3')
 
         expect(pagination_cursor.before_cursor).to eq(users[3].id)
         expect(pagination_cursor.has_before_cursor?).to be(true)
-        expect(pagination_cursor.before_cursor_url).to eq("http://test.upper.town/servers?before=#{users[3].id}&per_page=3")
+        expect(pagination_cursor.before_cursor_url).to eq("http://test.upper.town/servers?order=asc&indicator=before&cursor=#{users[3].id}&per_page=3")
 
         expect(pagination_cursor.after_cursor).to eq(users[5].id)
         expect(pagination_cursor.has_after_cursor?).to be(true)
-        expect(pagination_cursor.after_cursor_url).to eq("http://test.upper.town/servers?after=#{users[5].id}&per_page=3")
+        expect(pagination_cursor.after_cursor_url).to eq("http://test.upper.town/servers?order=asc&indicator=after&cursor=#{users[5].id}&per_page=3")
 
-        pagination_cursor = described_class.new(relation, request, order: :asc, per_page: 3, indicator: 'after', cursor: users[8].id)
+        pagination_cursor = described_class.new(relation, request, order: 'asc', per_page: 3, indicator: 'after', cursor: users[8].id)
 
         expect(pagination_cursor.start_cursor).to be_nil
         expect(pagination_cursor.start_cursor?).to be(false)
-        expect(pagination_cursor.start_cursor_url).to eq('http://test.upper.town/servers')
+        expect(pagination_cursor.start_cursor_url).to eq('http://test.upper.town/servers?order=asc')
 
         expect(pagination_cursor.before_cursor).to eq(users[9].id)
         expect(pagination_cursor.has_before_cursor?).to be(true)
-        expect(pagination_cursor.before_cursor_url).to eq("http://test.upper.town/servers?before=#{users[9].id}")
+        expect(pagination_cursor.before_cursor_url).to eq("http://test.upper.town/servers?order=asc&indicator=before&cursor=#{users[9].id}")
 
         expect(pagination_cursor.after_cursor).to be_nil
         expect(pagination_cursor.has_after_cursor?).to be(false)
-        expect(pagination_cursor.after_cursor_url).to eq('http://test.upper.town/servers')
+        expect(pagination_cursor.after_cursor_url).to eq('http://test.upper.town/servers?order=asc&indicator=after')
 
-        pagination_cursor = described_class.new(relation, request, order: :asc, per_page: 3, indicator: 'after', cursor: users[8].id, per_page_from_request: true)
+        pagination_cursor = described_class.new(relation, request, order: 'asc', per_page: 3, indicator: 'after', cursor: users[8].id, per_page_from_request: true)
 
         expect(pagination_cursor.start_cursor).to be_nil
         expect(pagination_cursor.start_cursor?).to be(false)
-        expect(pagination_cursor.start_cursor_url).to eq('http://test.upper.town/servers?per_page=3')
+        expect(pagination_cursor.start_cursor_url).to eq('http://test.upper.town/servers?order=asc&per_page=3')
 
         expect(pagination_cursor.before_cursor).to eq(users[9].id)
         expect(pagination_cursor.has_before_cursor?).to be(true)
-        expect(pagination_cursor.before_cursor_url).to eq("http://test.upper.town/servers?before=#{users[9].id}&per_page=3")
+        expect(pagination_cursor.before_cursor_url).to eq("http://test.upper.town/servers?order=asc&indicator=before&cursor=#{users[9].id}&per_page=3")
 
         expect(pagination_cursor.after_cursor).to be_nil
         expect(pagination_cursor.has_after_cursor?).to be(false)
-        expect(pagination_cursor.after_cursor_url).to eq('http://test.upper.town/servers?per_page=3')
+        expect(pagination_cursor.after_cursor_url).to eq('http://test.upper.town/servers?order=asc&indicator=after&per_page=3')
 
-        pagination_cursor = described_class.new(relation, request, order: :asc, per_page: 3, indicator: 'before', cursor: users[9].id)
-
-        expect(pagination_cursor.start_cursor).to be_nil
-        expect(pagination_cursor.start_cursor?).to be(false)
-        expect(pagination_cursor.start_cursor_url).to eq('http://test.upper.town/servers')
-
-        expect(pagination_cursor.before_cursor).to eq(users[6].id)
-        expect(pagination_cursor.has_before_cursor?).to be(true)
-        expect(pagination_cursor.before_cursor_url).to eq("http://test.upper.town/servers?before=#{users[6].id}")
-
-        expect(pagination_cursor.after_cursor).to eq(users[8].id)
-        expect(pagination_cursor.has_after_cursor?).to be(true)
-        expect(pagination_cursor.after_cursor_url).to eq("http://test.upper.town/servers?after=#{users[8].id}")
-
-        pagination_cursor = described_class.new(relation, request, order: :asc, per_page: 3, indicator: 'before', cursor: users[9].id, per_page_from_request: true)
+        pagination_cursor = described_class.new(relation, request, order: 'asc', per_page: 3, indicator: 'before', cursor: users[9].id)
 
         expect(pagination_cursor.start_cursor).to be_nil
         expect(pagination_cursor.start_cursor?).to be(false)
-        expect(pagination_cursor.start_cursor_url).to eq('http://test.upper.town/servers?per_page=3')
+        expect(pagination_cursor.start_cursor_url).to eq('http://test.upper.town/servers?order=asc')
 
         expect(pagination_cursor.before_cursor).to eq(users[6].id)
         expect(pagination_cursor.has_before_cursor?).to be(true)
-        expect(pagination_cursor.before_cursor_url).to eq("http://test.upper.town/servers?before=#{users[6].id}&per_page=3")
+        expect(pagination_cursor.before_cursor_url).to eq("http://test.upper.town/servers?order=asc&indicator=before&cursor=#{users[6].id}")
 
         expect(pagination_cursor.after_cursor).to eq(users[8].id)
         expect(pagination_cursor.has_after_cursor?).to be(true)
-        expect(pagination_cursor.after_cursor_url).to eq("http://test.upper.town/servers?after=#{users[8].id}&per_page=3")
+        expect(pagination_cursor.after_cursor_url).to eq("http://test.upper.town/servers?order=asc&indicator=after&cursor=#{users[8].id}")
+
+        pagination_cursor = described_class.new(relation, request, order: 'asc', per_page: 3, indicator: 'before', cursor: users[9].id, per_page_from_request: true)
+
+        expect(pagination_cursor.start_cursor).to be_nil
+        expect(pagination_cursor.start_cursor?).to be(false)
+        expect(pagination_cursor.start_cursor_url).to eq('http://test.upper.town/servers?order=asc&per_page=3')
+
+        expect(pagination_cursor.before_cursor).to eq(users[6].id)
+        expect(pagination_cursor.has_before_cursor?).to be(true)
+        expect(pagination_cursor.before_cursor_url).to eq("http://test.upper.town/servers?order=asc&indicator=before&cursor=#{users[6].id}&per_page=3")
+
+        expect(pagination_cursor.after_cursor).to eq(users[8].id)
+        expect(pagination_cursor.has_after_cursor?).to be(true)
+        expect(pagination_cursor.after_cursor_url).to eq("http://test.upper.town/servers?order=asc&indicator=after&cursor=#{users[8].id}&per_page=3")
       end
     end
   end

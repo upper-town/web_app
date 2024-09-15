@@ -6,6 +6,7 @@
   @extend .is-invalid;
 }
 
+// Pagination
 .pagination-goto {
   max-width: 6.5rem;
 }
@@ -20,5 +21,26 @@
 }
 .pagination-prev-next li a,
 .pagination-prev-next li span {
+  text-align: center;
+}
+
+// PaginationCursor
+.pagination-cursor-goto select {
+  max-width: 6.5rem;
+}
+.pagination-cursor-goto input {
+  max-width: 12rem;
+}
+.pagination-cursor-prev-next {
+  flex-grow: 0.9;
+  @include media-breakpoint-up(sm) { flex-grow: 0.65; }
+  @include media-breakpoint-up(md) { flex-grow: 0.4; }
+  @include media-breakpoint-up(lg) { flex-grow: 0; width: 18rem; }
+}
+.pagination-cursor-prev-next li {
+  flex-grow: 1;
+}
+.pagination-cursor-prev-next li a,
+.pagination-cursor-prev-next li span {
   text-align: center;
 }

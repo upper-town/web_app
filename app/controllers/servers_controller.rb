@@ -15,16 +15,13 @@ class ServersController < ApplicationController
     @pagination = Pagination.new(
       Servers::IndexQuery.new(@game, @period, @country_code, current_time).call,
       request,
-      options: { per_page: 20 }
+      per_page: 1
     )
 
     @servers = @pagination.results
     @server_stats_hash = Servers::IndexStatsQuery.new(@servers.pluck(:id), @country_code, current_time).call
 
-    status = @pagination.page > 1 && @servers.empty? ? :not_found : :ok
-
-    render(status: status)
-
+    render(status: :ok)
   rescue InvalidQueryParamError
     @servers = []
     @server_stats_hash = {}

@@ -2,51 +2,65 @@
 
 class PaginationCursorComponent < ApplicationComponent
   DEFAULT_OPTIONS = {
-    show_restart_cursor: true,
-    show_total_pages:  true, # TODO: This calls pagination's total_count
+    show_first: true,
+    show_goto:  false,
+
+    show_total_pages: false, # This calls pagination's total_count
+    show_per_page:    false,
+    show_total_count: false, # This calls pagination's total_count
+
+    first_icon: 'First',
+    prev_icon:  'Prev',
+    next_icon:  'Next',
+    go_icon:    'Go',
   }
 
-  def render?
-    @pagination_cursor.present?
-  end
+  attr_reader :pagination_cursor, :options
 
-  def initialize(pagination_cursor:, options: {})
+  def initialize(pagination_cursor, **options)
     super()
 
     @pagination_cursor = pagination_cursor
     @options = DEFAULT_OPTIONS.merge(options)
+  end
 
-    @classes = class_names('
-      mx-0.5
-      btn
-      btn btn-secondary
-    ')
-    @current_classes = class_names('
-      mx-0.5
-      btn
-      btn-secondary--disabled
-    ')
+  def show_badges?
+    show_total_pages? || show_per_page? || show_total_count?
+  end
 
-    @prev_enabled_classes = class_names('
-      mx-0.5
-      btn
-      btn-secondary
-    ')
-    @prev_disabled_classes = class_names('
-      mx-0.5
-      btn
-      btn-secondary--disabled
-    ')
+  def show_first?
+    options[:show_first]
+  end
 
-    @next_enabled_classes = class_names('
-      mx-0.5
-      btn
-      btn-secondary
-    ')
-    @next_disabled_classes = class_names('
-      mx-0.5
-      btn
-      btn-secondary--disabled
-    ')
+  def show_goto?
+    options[:show_goto]
+  end
+
+  def show_total_pages?
+    options[:show_total_pages]
+  end
+
+  def show_per_page?
+    options[:show_per_page]
+  end
+
+  def show_total_count?
+    options[:show_total_count]
+  end
+
+  def first_icon
+    options[:first_icon]
+  end
+
+  def prev_icon
+    options[:prev_icon]
+  end
+
+  def next_icon
+    options[:next_icon]
+  end
+
+  def go_icon
+    options[:go_icon]
   end
 end

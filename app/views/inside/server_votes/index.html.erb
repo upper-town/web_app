@@ -1,4 +1,4 @@
-<%= render(PaginationCursorComponent.new(pagination_cursor: @pagination_cursor)) %>
+<%= render(PaginationCursorComponent.new(@pagination_cursor)) %>
 
 <% @server_votes.map do |server_vote| %>
   <pre>
@@ -7,4 +7,4 @@
   <br />
 <% end %>
 
-<%= render(PaginationCursorComponent.new(pagination_cursor: @pagination_cursor)) %>
+<%= render(PaginationCursorComponent.new(@pagination_cursor)) %>

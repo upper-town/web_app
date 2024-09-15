@@ -3,7 +3,7 @@
 module Admin
   class UsersController < BaseController
     def index
-      @pagination = Pagination.new(Admin::UsersQuery.new.call, request, options: { per_page: 50 })
+      @pagination = Pagination.new(Admin::UsersQuery.new.call, request, per_page: 50)
       @users = @pagination.results
 
       render(status: @users.empty? ? :not_found : :ok)
