@@ -5,7 +5,6 @@ class PaginationCursor
 
   DEFAULT_OPTIONS = {
     order: 'desc',
-    order_from_request: true,
 
     per_page:              25,
     per_page_max:          100,
@@ -121,11 +120,7 @@ class PaginationCursor
   private
 
   def choose_order
-    if options[:order_from_request]
-      request.params['order'].presence || options[:order]
-    else
-      options[:order]
-    end.to_s.downcase == 'asc' ? 'asc' : 'desc'
+    (request.params['order'].presence || options[:order]).to_s.downcase == 'asc' ? 'asc' : 'desc'
   end
 
   def choose_per_page

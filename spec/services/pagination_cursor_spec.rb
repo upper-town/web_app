@@ -8,24 +8,25 @@ RSpec.describe PaginationCursor do
     it 'gets order from options' do
       relation = Dummy.all
       [
-        [' ',    false, nil, 'desc' ],
-        ['desc', false, nil, 'desc' ],
-        ['xxxx', false, nil, 'desc' ],
-        ['asc',  false, nil, 'asc'  ],
-
-        [' ',    true,  ' ',    'desc' ],
-        [' ',    true,  'xxxx', 'desc' ],
-        ['desc', true,  ' ',    'desc' ],
-        ['desc', true,  'xxxx', 'desc' ],
-        ['desc', true,  'asc',  'asc'  ],
-        ['asc',  true,  ' ',    'asc'  ],
-      ].each do |order, order_from_request, request_order_param, expected_order|
+        [' ',    nil,    'desc'],
+        [' ',    ' ',    'desc'],
+        [' ',    'xxxx', 'desc'],
+        ['desc', nil,    'desc'],
+        ['asc',  nil,    'asc' ],
+        ['desc', ' ',    'desc'],
+        ['asc',  ' ',    'asc' ],
+        ['desc', 'xxxx', 'desc'],
+        ['asc',  'xxxx', 'desc'],
+        ['xxxx', 'asc',  'asc' ],
+        ['xxxx', 'desc', 'desc'],
+        ['desc', 'asc',  'asc' ],
+        ['asc',  'desc', 'desc'],
+      ].each do |order, request_order_param, expected_order|
         request = TestRequestHelper.build(params: { 'order' => request_order_param })
         pagination_cursor = described_class.new(
           relation,
           request,
-          order: order,
-          order_from_request: order_from_request
+          order: order
         )
 
         expect(pagination_cursor.order).to eq(expected_order)
