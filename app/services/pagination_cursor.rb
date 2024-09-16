@@ -11,8 +11,7 @@ class PaginationCursor
     per_page_max:          100,
     per_page_from_request: false,
 
-    indicator:              'after',
-    indicator_from_request: true,
+    indicator: 'after',
 
     cursor:              nil,
     cursor_column:       :id, # :uuid, :created_at, etc
@@ -139,11 +138,7 @@ class PaginationCursor
   end
 
   def choose_indicator
-    if options[:indicator_from_request]
-      request.params['indicator'].presence || options[:indicator]
-    else
-      options[:indicator]
-    end.to_s.downcase == 'before' ? 'before' : 'after'
+    (request.params['indicator'].presence || options[:indicator]).to_s.downcase == 'before' ? 'before' : 'after'
   end
 
   def choose_cursor

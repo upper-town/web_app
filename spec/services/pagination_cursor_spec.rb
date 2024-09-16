@@ -90,24 +90,21 @@ RSpec.describe PaginationCursor do
     it 'gets indicator from options' do
       relation = Dummy.all
       [
-        [' ',      false, nil, 'after' ],
-        ['before', false, nil, 'before'],
-        ['after',  false, nil, 'after' ],
-
-        [' ',      true,  nil,      'after' ],
-        ['before', true,  nil,      'before'],
-        [' ',      true,  nil,      'after' ],
-        ['before', true,  nil,      'before'],
-        ['before', true,  ' ',      'before'],
-        ['after',  true,  '123',    'after' ],
-        ['after',  true,  'before', 'before'],
-      ].each do |indicator, indicator_from_request, request_indicator_param, expected_indicator|
+        [' ',      nil,      'after' ],
+        ['before', nil,      'before'],
+        ['before', ' ',      'before'],
+        ['after',  nil,      'after' ],
+        ['after',  ' ',      'after' ],
+        ['after',  'xxx',    'after' ],
+        ['before', 'xxx',    'after' ],
+        ['after',  'before', 'before'],
+        ['before', 'after',  'after' ],
+      ].each do |indicator, request_indicator_param, expected_indicator|
         request = TestRequestHelper.build(params: { 'indicator' => request_indicator_param })
         pagination_cursor = described_class.new(
           relation,
           request,
-          indicator: indicator,
-          indicator_from_request: indicator_from_request
+          indicator: indicator
         )
 
         expect(pagination_cursor.indicator).to eq(expected_indicator)
