@@ -10,12 +10,10 @@ module Seeds
         _admin_account_ids = CreateAdminAccounts.new(admin_user_ids).call
 
         user_ids = CreateUsers.new.call
-        account_ids = CreateAccounts.new(user_ids).call
+        _account_ids = CreateAccounts.new(user_ids).call
 
         game_ids = CreateGames.new.call
-        server_ids = CreateServers.new(game_ids).call
-
-        CreateServerAccounts.new(server_ids, account_ids).call
+        _server_ids = CreateServers.new(game_ids).call
       end
     end
   end

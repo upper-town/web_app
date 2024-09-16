@@ -15,7 +15,12 @@ module Seeds
         server_ids = []
 
         game_ids.map do |game_id|
-          server_hashes = 1.upto(10).map { |n| build_attributes_for_server(game_id, n) }
+          server_hashes = 1.upto(10).map { |n| build_attributes_for_server(game_id, n, 'US') }
+          result = Server.insert_all(server_hashes)
+
+          server_ids.concat(result.rows.flatten)
+
+          server_hashes = 1.upto(5).map { |n| build_attributes_for_server(game_id, n, 'BR') }
           result = Server.insert_all(server_hashes)
 
           server_ids.concat(result.rows.flatten)
@@ -26,10 +31,9 @@ module Seeds
 
       private
 
-      def build_attributes_for_server(game_id, n)
+      def build_attributes_for_server(game_id, n, country_code)
         name = "#{Faker::Lorem.words(number: 3).join(' ').titleize}-#{n}"
-        country_code = Seeds::Common.generate_country_code
-        site_url = "https://nice-server-#{n}.example.com/"
+        site_url = "https://nice-server-#{n}.company.com/"
         # banner_image_url = Faker::Avatar.image(
         #   size: '750x150',
         #   bgset: ['bg1', 'bg2'].sample

@@ -8,8 +8,7 @@ module Seeds
       def call
         return unless Rails.env.development?
 
-        admin_user_hashes = normal_admin_user_hashes.append(super_admin_user_hash)
-        result = AdminUser.insert_all(admin_user_hashes)
+        result = AdminUser.insert_all(normal_admin_user_hashes.append(super_admin_user_hash))
 
         result.rows.flatten # admin_user_ids
       end
