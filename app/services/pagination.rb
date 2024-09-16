@@ -8,7 +8,7 @@ class Pagination
     page_max:          200,
     page_from_request: true,
 
-    per_page:              20,
+    per_page:              25,
     per_page_max:          100,
     per_page_from_request: false,
 

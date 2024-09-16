@@ -1,10 +1,16 @@
-<%= render(PaginationCursorComponent.new(@pagination_cursor)) %>
+<% pagination_cursor = PaginationCursorComponent.new(@pagination_cursor) %>
 
-<% @server_votes.map do |server_vote| %>
-  <pre>
-    <%= JSON.pretty_generate(server_vote.attributes) %>
-  </pre>
-  <br />
+<%= render(pagination_cursor) %>
+
+<% if @server_votes.empty? %>
+  No results
+<% else %>
+  <% @server_votes.map do |server_vote| %>
+    <pre>
+      <%= JSON.pretty_generate(server_vote.attributes) %>
+    </pre>
+    <br />
+  <% end %>
+
+  <%= render(pagination_cursor) %>
 <% end %>
-
-<%= render(PaginationCursorComponent.new(@pagination_cursor)) %>

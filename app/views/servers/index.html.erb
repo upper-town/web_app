@@ -26,7 +26,9 @@
   </div>
 <% end %>
 
-<%= render(PaginationComponent.new(@pagination, first_icon: '1st')) %>
+<% pagination_component = PaginationComponent.new(@pagination, first_icon: '1st') %>
+
+<%= render(pagination_component) %>
 
 <% if @servers.empty? %>
   No results
@@ -45,6 +47,6 @@
       </li>
     <% end %>
   </ul>
-<% end %>
 
-<%= render(PaginationComponent.new(@pagination, first_icon: '1st')) %>
+  <%= render(pagination_component) %>
+<% end %>
