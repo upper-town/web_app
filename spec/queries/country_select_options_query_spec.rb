@@ -15,7 +15,7 @@ RSpec.describe CountrySelectOptionsQuery do
         expected_popular_options = build_country_code_options(['BR', 'US', 'AR'])
         expected_other_options = build_country_code_options(Server::COUNTRY_CODES - ['BR', 'US', 'AR'])
 
-        query = described_class.new
+        query = described_class.new(cache_enabled: false)
 
         expect(query.call).to eq([
           expected_popular_options,
@@ -37,7 +37,7 @@ RSpec.describe CountrySelectOptionsQuery do
         expected_popular_options = build_country_code_options(['BR', 'US', 'AR'])
         expected_other_options = build_country_code_options([])
 
-        query = described_class.new(only_in_use: true)
+        query = described_class.new(only_in_use: true, cache_enabled: false)
 
         expect(query.call).to eq([
           expected_popular_options,

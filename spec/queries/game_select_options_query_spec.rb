@@ -13,7 +13,7 @@ RSpec.describe GameSelectOptionsQuery do
         game3 = create(:game, name: 'Bbb')
         create(:server, game: game3)
 
-        expect(described_class.new.call).to eq([
+        expect(described_class.new(cache_enabled: false).call).to eq([
           ['Aaa', game2.id],
           ['Bbb', game3.id],
           ['Ccc', game1.id],
@@ -30,7 +30,7 @@ RSpec.describe GameSelectOptionsQuery do
         game3 = create(:game, name: 'Bbb')
         create(:server, game: game3)
 
-        expect(described_class.new(only_in_use: true).call).to eq([
+        expect(described_class.new(only_in_use: true, cache_enabled: false).call).to eq([
           ['Bbb', game3.id],
           ['Ccc', game1.id],
         ])
