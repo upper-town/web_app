@@ -13,10 +13,9 @@ class PaginationCursor
 
     indicator: 'after',
 
-    cursor:              nil,
-    cursor_column:       :id, # :uuid, :created_at, etc
-    cursor_type:         :integer, # :string, :date, :datetime, :decimal, :float
-    cursor_from_request: true,
+    cursor:        nil,
+    cursor_column: :id, # :uuid, :created_at, etc
+    cursor_type:   :integer, # :string, :date, :datetime, :decimal, :float
 
     total_count: nil,
   }
@@ -142,11 +141,7 @@ class PaginationCursor
   end
 
   def choose_cursor
-    value = if options[:cursor_from_request]
-      request.params['cursor'].presence || options[:cursor]
-    else
-      options[:cursor]
-    end
+    value = request.params['cursor'].presence || options[:cursor]
 
     case value
     when Numeric, Date, Time, DateTime
