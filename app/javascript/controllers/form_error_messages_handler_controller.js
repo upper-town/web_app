@@ -14,10 +14,10 @@ export default class extends Controller {
       return
     }
 
-    const wrapper = event.target.closest('div.field_with_errors')
+    const wrapper = event.target.closest('div.field-with-errors')
 
     if (wrapper) {
-      wrapper.classList.remove('field_with_errors')
+      wrapper.classList.remove('field-with-errors')
       wrapper.querySelectorAll('.invalid-feedback').forEach((elem) => {
         elem.remove()
       })

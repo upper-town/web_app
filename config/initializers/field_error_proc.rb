@@ -5,7 +5,7 @@ ActionView::Base.field_error_proc = proc do |html_tag, instance|
   when ActionView::Helpers::Tags::Label
     html_tag
   else
-    tag.div(class: 'field_with_errors') do
+    tag.div(class: 'field-with-errors') do
       html_tag + tag.div(class: 'invalid-feedback') do
         if instance.error_message.one?
           instance.error_message.first.capitalize
