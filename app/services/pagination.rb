@@ -4,9 +4,8 @@ class Pagination
   HARD_MAX = 500
 
   DEFAULT_OPTIONS = {
-    page:              1,
-    page_max:          200,
-    page_from_request: true,
+    page:     1,
+    page_max: 200,
 
     per_page:              25,
     per_page_max:          100,
@@ -128,11 +127,7 @@ class Pagination
   private
 
   def choose_page
-    if options[:page_from_request]
-      request.params['page'].presence || options[:page]
-    else
-      options[:page]
-    end.to_i.clamp(1, [options[:page_max], HARD_MAX].min)
+    (request.params['page'].presence || options[:page]).to_i.clamp(1, [options[:page_max], HARD_MAX].min)
   end
 
   def choose_per_page

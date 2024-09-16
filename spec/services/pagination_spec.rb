@@ -7,51 +7,42 @@ RSpec.describe Pagination do
     it 'gets page from options, clamps value' do
       relation = Dummy.all
       [
-        [20,   nil, false, nil, 20],
-        ['20', nil, false, nil, 20],
-        [20,   nil, false, 30,  20],
-        [20,   10,  false, nil, 10],
-        [20,   nil, true, nil,  20],
-        [20,   nil, true, 25,   25],
-        [20,   nil, true, '25', 25],
-        [20,   10,  true, 25,   10],
+        [20,   nil, nil,  20],
+        ['20', nil, nil,  20],
+        [20,   10,  nil,  10],
+        [20,   nil, 25,   25],
+        [20,   nil, '25', 25],
+        [20,   10,  25,   10],
 
-        [ 1,   nil, false, nil, 1],
-        [ '1', nil, false, nil, 1],
-        [ 1,   nil, false, 5,   1],
-        [ 1,   nil, true,  nil, 1],
-        [ 1,   nil, true,  5,   5],
-        [-1,   nil, false, nil, 1],
-        ['-1', nil, false, nil, 1],
-        [-1,   nil, false, 5,   1],
-        [-1,   nil, true,  nil, 1],
-        [-1,   nil, true,  5,   5],
-        [-1,   nil, true,  '5', 5],
+        [ 1,   nil, nil, 1],
+        [ '1', nil, nil, 1],
+        [ 1,   nil, 5,   5],
+        [ 1,   nil, '5', 5],
+        [-1,   nil, nil, 1],
+        ['-1', nil, nil, 1],
+        [-1,   nil, 5,   5],
+        [-1,   nil, '5', 5],
 
-        [501, nil, false, nil,   200],
-        [501, nil, false, 300,   200],
-        [501, 300, false, nil,   300],
-        [501, 300, true,  nil,   300],
-        [501, nil, true,  300,   200],
-        [501, 300, true,  300,   300],
-        [501, 300, true,  '300', 300],
+        [501, nil, nil,   200],
+        [501, nil, 300,   200],
+        [501, 300, nil,   300],
+        [501, 300, 300,   300],
+        [501, 300, '300', 300],
 
-        [501, 1_000, false, nil,   500],
-        [501, 1_000, false, 300,   500],
-        [501, 1_000, true,  nil,   500],
-        [501, 1_000, true,  300,   300],
-        [501, 1_000, true,  '300', 300],
-      ].each do |page, page_max, page_from_request, request_page_param, expected_page|
+        [501, 1_000, nil,   500],
+        [501, 1_000, 501,   500],
+        [501, 1_000, 300,   300],
+        [501, 1_000, '300', 300],
+      ].each do |page, page_max, request_page_param, expected_page|
         request = TestRequestHelper.build(params: { 'page' => request_page_param })
         pagination = described_class.new(
           relation,
           request,
           page: page,
-          page_max: page_max,
-          page_from_request: page_from_request
+          page_max: page_max
         )
 
-        expect(pagination.page).to eq(expected_page), "Failed for #{page.inspect} and #{expected_page.inspect}"
+        expect(pagination.page).to eq(expected_page)
       end
     end
   end
