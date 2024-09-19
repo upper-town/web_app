@@ -20,8 +20,6 @@ module Servers
       process(nil, current_time)
     end
 
-    private
-
     def process(past_time, current_time)
       Periods::PERIODS.each do |period|
         Periods.loop_through(period, past_time, current_time) do |reference_date, reference_range|
@@ -30,6 +28,8 @@ module Servers
         end
       end
     end
+
+    private
 
     def upsert_server_stats_per_country_code(period, reference_date, reference_range)
       game_country_code_vote_counts = game_country_code_vote_counts_query(reference_range)

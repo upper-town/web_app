@@ -2,7 +2,9 @@
 
 module Servers
   class IndexQuery
-    attr_reader(:game, :period, :country_code, :current_time)
+    include Callable
+
+    attr_reader :game, :period, :country_code, :current_time
 
     def initialize(game = nil, period = nil, country_code = nil, current_time = nil)
       @game = game
@@ -26,7 +28,7 @@ module Servers
       <<-SQL.squish
         LEFT JOIN "server_stats" ON
               "server_stats"."server_id" = "servers"."id"
-          AND "server_stats"."game_id"    = "servers"."game_id"
+          AND "server_stats"."game_id"   = "servers"."game_id"
           AND #{sql_on_period_and_reference_date}
           AND #{sql_on_country_code}
       SQL
@@ -49,7 +51,9 @@ module Servers
 
     def sql_order
       <<-SQL.squish
-        "server_stats"."ranking_number" ASC
+        "server_stats"."ranking_number" ASC,
+        "server_stats"."vote_count"     DESC,
+        "servers"."id"                  DESC
       SQL
     end
 

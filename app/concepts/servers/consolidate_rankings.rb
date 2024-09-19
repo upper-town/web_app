@@ -20,8 +20,6 @@ module Servers
       process(nil, current_time)
     end
 
-    private
-
     def process(past_time, current_time)
       Periods::PERIODS.each do |period|
         Periods.loop_through(period, past_time, current_time) do |reference_date, _reference_range|
@@ -29,6 +27,8 @@ module Servers
         end
       end
     end
+
+    private
 
     def update_server_stats(period, reference_date)
       ordered_grouped_server_stats = ordered_grouped_server_stats_query(period, reference_date)
