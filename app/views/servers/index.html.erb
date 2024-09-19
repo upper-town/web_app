@@ -39,9 +39,9 @@
         <%=
           render(Servers::IndexResultComponent.new(
             server: server,
+            server_stats_hash: @server_stats_hash[server.id] || {},
             period: @period,
-            country_code: @country_code,
-            server_stats_hash: @server_stats_hash[server.id]
+            country_code: @country_code
           ))
         %>
       </li>

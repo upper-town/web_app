@@ -2,6 +2,17 @@
 
 module Servers
   class IndexResultComponent < ApplicationComponent
+    attr_reader(
+      :server,
+      :server_stats_hash,
+      :period,
+      :country_code,
+      :server_country_code_common_name,
+      :server_country_code_emoji_flag,
+      :ranking_country_code_common_name,
+      :ranking_country_code_emoji_flag
+    )
+
     def initialize(server:, server_stats_hash:, period:, country_code:)
       super()
 

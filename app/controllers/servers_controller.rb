@@ -19,7 +19,7 @@ class ServersController < ApplicationController
     )
 
     @servers = @pagination.results
-    @server_stats_hash = Servers::IndexStatsQuery.new(@servers.pluck(:id), @country_code, current_time).call
+    @server_stats_hash = Servers::IndexStatsQuery.new(@servers.pluck(:id), current_time).call
 
     render(status: :ok)
   rescue InvalidQueryParamError

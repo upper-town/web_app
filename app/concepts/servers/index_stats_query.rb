@@ -2,11 +2,12 @@
 
 module Servers
   class IndexStatsQuery
-    attr_reader :server_ids, :country_code, :current_time
+    include Callable
 
-    def initialize(server_ids, country_code = nil, current_time = nil)
+    attr_reader :server_ids, :current_time
+
+    def initialize(server_ids, current_time = nil)
       @server_ids   = server_ids
-      @country_code = country_code || ServerStat::ALL
       @current_time = current_time || Time.current
     end
 
@@ -24,23 +25,29 @@ module Servers
     #
     # {
     #   <#Interger (Server.id)> => {
-    #     "year"  => <#ServerStat (year))>,
-    #     "month" => <#ServerStat (month))>,
-    #     "week"  => <#ServerStat (week))>,
+    #     'US' => {
+    #       'year'  => { ranking_number: <#Interger>, vote_count: <#Interger> },
+    #       'month' => { ranking_number: <#Interger>, vote_count: <#Interger> },
+    #       'week'  => { ranking_number: <#Interger>, vote_count: <#Interger> },
+    #     },
+    #     'all' => {
+    #       'year'  => { ranking_number: <#Interger>, vote_count: <#Interger> },
+    #       'month' => { ranking_number: <#Interger>, vote_count: <#Interger> },
+    #       'week'  => { ranking_number: <#Interger>, vote_count: <#Interger> },
+    #     },
     #   },
     #   ...
     # }
     def build_server_stats_hash(servers_joined_stats)
-      servers_joined_stats.group_by(&:id).transform_values do |values|
-        values.each_with_object(Hash.new { ServerStat.new }) do |server_joined_stat, hash|
-          next if server_joined_stat.stat_period.nil?
+      servers_joined_stats.each_with_object({}) do |row, hash|
+        next unless row.stat_period
 
-          hash[server_joined_stat.stat_period] = ServerStat.new(
-            period:         server_joined_stat.stat_period,
-            ranking_number: server_joined_stat.stat_ranking_number,
-            vote_count:     server_joined_stat.stat_vote_count,
-          )
-        end
+        hash[row.id] ||= {}
+        hash[row.id][row.stat_country_code] ||= {}
+        hash[row.id][row.stat_country_code][row.stat_period] = {
+          ranking_number: row.stat_ranking_number,
+          vote_count:     row.stat_vote_count,
+        }
       end
     end
 
@@ -48,7 +55,7 @@ module Servers
       <<-SQL.squish
         LEFT JOIN "server_stats" ON
               "server_stats"."server_id" = "servers"."id"
-          AND "server_stats"."game_id"    = "servers"."game_id"
+          AND "server_stats"."game_id"   = "servers"."game_id"
           AND #{sql_on_periods_and_reference_dates}
           AND #{sql_on_country_code}
       SQL
@@ -67,15 +74,17 @@ module Servers
 
     def sql_on_country_code
       <<-SQL.squish
-        "server_stats"."country_code" = #{
-          country_code == ServerStat::ALL ? quote_for_sql(ServerStat::ALL) : '"servers"."country_code"'
-        }
+        (
+             "server_stats"."country_code" = #{quote_for_sql(ServerStat::ALL)}
+          OR "server_stats"."country_code" = "servers"."country_code"
+        )
       SQL
     end
 
     def sql_select_fields
       <<-SQL.squish
         "servers"."id",
+        "server_stats"."country_code"   AS "stat_country_code",
         "server_stats"."period"         AS "stat_period",
         "server_stats"."ranking_number" AS "stat_ranking_number",
         "server_stats"."vote_count"     AS "stat_vote_count"
