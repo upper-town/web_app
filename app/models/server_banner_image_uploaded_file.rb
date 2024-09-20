@@ -6,16 +6,10 @@ class ServerBannerImageUploadedFile < ApplicationModel
 
   attribute :uploaded_file
 
-  validate :validate_content_type
   validate :validate_byte_size
+  validate :validate_content_type
 
-  def present?
-    uploaded_file.present?
-  end
-
-  def content_type
-    Marcel::MimeType.for(blob) if blob
-  end
+  delegate :present?, :blank?, :presence, to: :uploaded_file
 
   def blob
     @blob ||= uploaded_file&.read
@@ -25,28 +19,30 @@ class ServerBannerImageUploadedFile < ApplicationModel
     blob&.size
   end
 
+  def content_type
+    Marcel::MimeType.for(blob) if blob
+  end
+
   def checksum
     Digest::SHA256.hexdigest(blob) if blob
   end
 
-  def validate_content_type
-    return unless uploaded_file
+  private
 
-    unless CONTENT_TYPES.include?(uploaded_file.content_type)
+  def validate_byte_size
+    if uploaded_file && uploaded_file.size > MAX_BYTE_SIZE
       errors.add(
-        :uploaded_file,
-        "Invalid content type. Allowed types: #{CONTENT_TYPES.join(', ')} "
+        :byte_size,
+        "File size is too large. Maximum allowed size: #{number_to_human_size(MAX_BYTE_SIZE)}"
       )
     end
   end
 
-  def validate_byte_size
-    return unless uploaded_file
-
-    if uploaded_file.size > MAX_BYTE_SIZE
+  def validate_content_type
+    if uploaded_file && CONTENT_TYPES.exclude?(content_type)
       errors.add(
-        :uploaded_file,
-        "File size is too large. Maximum allowed size: #{number_to_human_size(MAX_BYTE_SIZE)}"
+        :content_type,
+        "Invalid content type. Allowed types: #{CONTENT_TYPES.join(', ')} "
       )
     end
   end
