@@ -1,8 +1,12 @@
 # frozen_string_literal: true
 
+def str_to_boolean(str)
+  ['true', 't', '1', 'on', 'enabled'].include?(str.downcase)
+end
+
 def capybara_select_default_driver
-  headful  = StringValueHelper.to_boolean(ENV.fetch('HEADFUL', 'false'))
-  headless = StringValueHelper.to_boolean(ENV.fetch('HEADLESS', 'true'))
+  headful  = str_to_boolean(ENV.fetch('HEADFUL', 'false'))
+  headless = str_to_boolean(ENV.fetch('HEADLESS', 'true'))
 
   if headful || !headless
     :selenium

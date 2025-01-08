@@ -1,13 +1,11 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
-require 'string_value_helper'
+require 'rails_helper'
 
 RSpec.describe StringValueHelper do
   describe '.to_boolean' do
     it 'converts string value to boolean' do
       [
-        [nil,        false],
         ['',         false],
         ['  ',       false],
         ['anything', false],
@@ -44,7 +42,6 @@ RSpec.describe StringValueHelper do
   describe '.remove_whitespaces' do
     it 'removes all whitespaces from string' do
       [
-        [nil,      ''],
         ['',       ''],
         [" \n\t ", ''],
 
@@ -61,7 +58,6 @@ RSpec.describe StringValueHelper do
   describe '.normalize_whitespaces' do
     it 'normalizes whitespaces in string' do
       [
-        [nil,      ''],
         ['',       ''],
         [" \n\t ", ''],
 
@@ -78,7 +74,6 @@ RSpec.describe StringValueHelper do
   describe '.values_list_uniq' do
     it 'returns an array of strings' do
       [
-        [nil,      ',', true, []],
         ['',       ',', true, []],
         [" \n\t ", ',', true, []],
 

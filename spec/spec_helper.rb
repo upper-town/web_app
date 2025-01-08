@@ -11,8 +11,6 @@ require 'vcr'
 require 'capybara/rspec'
 require 'rspec-sidekiq'
 
-require 'string_value_helper'
-
 Dir[Pathname.getwd.join('spec', 'support', 'config', '**', '*.rb')].each do |file|
   require file
 end
