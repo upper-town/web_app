@@ -157,9 +157,17 @@ RSpec.describe FeatureFlag do
         expect(described_class.fetch_value('something')).to be_nil
       end
     end
+
+    context 'when feature flag name is blank' do
+      it 'returns nil' do
+        EnvVarHelper.with_values('FF_' => 'true') do
+          expect(described_class.fetch_value('')).to be_nil
+        end
+      end
+    end
   end
 
-  describe '.fetch_value_from_env_vars' do
+  describe '.fetch_value_from_env_var' do
     it 'fetches from env vars' do
       name = 'something'
 
@@ -172,7 +180,7 @@ RSpec.describe FeatureFlag do
         ['FF_SOMETHING', 'anything', 'anything'],
       ].each do |env_var_name, env_var_value, expected_value|
         EnvVarHelper.with_values(env_var_name => env_var_value) do
-          returned = described_class.fetch_value_from_env_vars(name)
+          returned = described_class.fetch_value_from_env_var(name)
 
           expect(returned).to(eq(expected_value), "Failed for #{env_var_name.inspect}")
         end
@@ -203,8 +211,6 @@ RSpec.describe FeatureFlag do
   describe '.parse_enabled_and_ffids' do
     it 'returns boolean and array' do
       [
-        [nil, false, []],
-
         ['',                     false, []],
         [':',                    false, []],
         [':user_1,user_2',       false, ['user_1', 'user_2']],

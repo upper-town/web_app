@@ -52,12 +52,12 @@ class FeatureFlag < ApplicationRecord
   #   FeatureFlag.enabled?(:something, user)
   #   FeatureFlag.enabled?(:something, 'user_1')
   #
-  ENV_VAR_PREFIX  = 'FF_'
-  VALUE_SEPARATOR = ':'
-  FFID_SEPARATOR  = ','
+  ENV_VAR_PREFIX    = 'FF_'
+  ENABLED_SEPARATOR = ':'
+  FFID_SEPARATOR    = ','
 
   def self.enabled?(name, record_or_ffid = nil)
-    value = fetch_value(StringValueHelper.remove_whitespaces(name))
+    value = fetch_value(StringValueHelper.remove_whitespaces(name.to_s))
     return false unless value
 
     enabled, ffids = parse_enabled_and_ffids(value)
@@ -74,14 +74,17 @@ class FeatureFlag < ApplicationRecord
   end
 
   def self.fetch_value(name)
-    value = fetch_value_from_env_vars(name)
-    return value if value
+    return if name.blank?
 
-    fetch_value_from_database(name)
+    if (value = fetch_value_from_env_var(name))
+      value
+    else
+      fetch_value_from_database(name)
+    end
   end
 
-  def self.fetch_value_from_env_vars(name)
-    env_var_name = "#{ENV_VAR_PREFIX}#{name.to_s.upcase}"
+  def self.fetch_value_from_env_var(name)
+    env_var_name = "#{ENV_VAR_PREFIX}#{name.upcase}"
 
     ENV.fetch(env_var_name, nil).presence
   end
@@ -91,11 +94,11 @@ class FeatureFlag < ApplicationRecord
   end
 
   def self.parse_enabled_and_ffids(value)
-    enabled_str, ffids_str = value.to_s.split(VALUE_SEPARATOR, 2)
+    enabled_str, ffids_str = value.split(ENABLED_SEPARATOR, 2)
 
     [
-      StringValueHelper.to_boolean(enabled_str),
-      StringValueHelper.values_list_uniq(ffids_str, FFID_SEPARATOR)
+      StringValueHelper.to_boolean(enabled_str.to_s),
+      StringValueHelper.values_list_uniq(ffids_str.to_s, FFID_SEPARATOR)
     ]
   end
 
