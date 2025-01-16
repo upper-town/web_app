@@ -4,10 +4,10 @@ module Servers
   class Create
     attr_reader :server, :server_banner_image_uploaded_file, :account
 
-    def initialize(server, server_banner_image_uploaded_file, account)
+    def initialize(server, account, server_banner_image_uploaded_file = nil)
       @server = server
-      @server_banner_image_uploaded_file = server_banner_image_uploaded_file
       @account = account
+      @server_banner_image_uploaded_file = server_banner_image_uploaded_file
     end
 
     def call
@@ -15,7 +15,7 @@ module Servers
         return Result.failure(server.errors)
       end
 
-      if server_banner_image_uploaded_file.invalid?
+      if server_banner_image_uploaded_file&.invalid?
         return Result.failure(server_banner_image_uploaded_file.errors)
       end
 

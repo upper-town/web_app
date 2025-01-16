@@ -32,7 +32,9 @@ module Inside
       end
 
       if server_banner_image_uploaded_file.invalid?
-        @server.errors.merge(server_banner_image_uploaded_file.errors)
+        server_banner_image_uploaded_file.errors.each do |error|
+          @server.errors.add(:banner_image, error)
+        end
         render(:new, status: :unprocessable_entity)
 
         return
@@ -40,8 +42,8 @@ module Inside
 
       result = Servers::Create.new(
         @server,
-        server_banner_image_uploaded_file,
-        current_account
+        current_account,
+        server_banner_image_uploaded_file
       ).call
 
       if result.success?
