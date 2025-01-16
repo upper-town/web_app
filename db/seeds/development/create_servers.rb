@@ -43,7 +43,7 @@ module Seeds
           Faker::Lorem.paragraphs(number: 10).join(' '),
           Faker::Lorem.paragraphs(number: 15).join(' '),
           Faker::Lorem.paragraphs(number: 10).join(' '),
-        ].join("\n\n")
+        ].join("\n\n").truncate(1_000)
 
         {
           game_id:          game_id,

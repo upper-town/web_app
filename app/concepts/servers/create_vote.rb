@@ -50,7 +50,7 @@ module Servers
     private
 
     def enqueue_consolidate_vote_counts
-      ConsolidateVoteCountsJob.set(queue: 'critical').perform_async(server_vote.server_id, 'current', true)
+      ConsolidateVoteCountsJob.set(queue: 'critical').perform_async(server_vote.server_id, 'current')
     end
 
     def enqueue_server_webhook_event_create

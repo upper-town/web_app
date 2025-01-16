@@ -101,7 +101,7 @@ RSpec.describe Servers::CreateVote do
         expect(RateLimiting.redis.get(rate_limiter_key)).to eq('1')
 
         expect(Servers::ConsolidateVoteCountsJob)
-          .to have_enqueued_sidekiq_job(server.id, 'current', true)
+          .to have_enqueued_sidekiq_job(server.id, 'current')
           .on('critical')
         expect(ServerWebhooks::CreateEvents::ServerVoteCreatedJob)
           .to have_enqueued_sidekiq_job(result.data[:server_vote].id)
