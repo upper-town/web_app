@@ -32,17 +32,14 @@ module Seeds
       private
 
       def build_attributes_for_server(game_id, n, country_code)
-        name = "#{Faker::Lorem.words(number: 3).join(' ').titleize}-#{n}"
+        name = "Server-#{n}"
         site_url = "https://nice-server-#{n}.company.com/"
-        # banner_image_url = Faker::Avatar.image(
-        #   size: '750x150',
-        #   bgset: ['bg1', 'bg2'].sample
-        # )
-        description = Faker::Lorem.sentence(word_count: 30)
+        # TODO: banner_image_url
+        description = "Zzz Zzz Zzz"
         info = [
-          Faker::Lorem.paragraphs(number: 10).join(' '),
-          Faker::Lorem.paragraphs(number: 15).join(' '),
-          Faker::Lorem.paragraphs(number: 10).join(' '),
+          "Aaa Bbb Ccc",
+          "Aaa Bbb Ccc",
+          "Aaa Bbb Ccc",
         ].join("\n\n").truncate(1_000)
 
         {

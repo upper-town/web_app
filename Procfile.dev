@@ -1,7 +1,4 @@
 web: bin/rails server --port ${APP_PORT}
-worker: bundle exec sidekiq --environment ${RAILS_ENV}
-
-js: yarn run build --watch
-css: yarn run watch:css
+worker: echo "TODO: worker server"
 
 mailcatcher: gem install mailcatcher && mailcatcher --foreground --verbose

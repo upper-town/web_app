@@ -1,6 +1,6 @@
 # upper.town
 
-Repository for a web app with features for the game community.
+Repository for a web app with features for the gaming community.
 
 ## Info
 
@@ -15,8 +15,8 @@ Current domains in use by this app:
 
 Also,
 
-- **Observability**: https://upperstatus.town/observe
 - **Status Page**: https://upperstatus.town
+- **Observability**: https://upperstatus.town/observe
 
 Current email addresses in use by this app:
 
@@ -30,8 +30,8 @@ Current email addresses in use by this app:
 Git repositories:
 
 - https://gitlab.com/upper_town/web_app
-- https://gitlab.com/upper_town/observability
 - https://gitlab.com/upper_town/status_page
+- https://gitlab.com/upper_town/observability
 
 ## Development setup
 
@@ -53,25 +53,24 @@ Read more about how to install and use it.
 
 [`asdf`]: https://asdf-vm.com/guide/getting-started.html
 
-### Postgres, Redis, and Node.js
+### Postgres and SQLite
 
-The app relies on Postgres as database and Redis as cache and job queue.
-Node.js is used to bundle JS and CSS files. For development and test, you can
-install and run them manually on your computer the way it works best for you.
+The app relies on Postgres as main database and SQLite as support databases for
+cache, job queues, and rate limiting.
 
 ### Environment variables
 
 The [`dotenv-rails`] gem is available in development and test environments only,
-and it reads and sets env vars from the `.env.development` and `.env.test` files.
+and it reads and sets env vars from the `.env` and `.env.test` files.
 
 [`dotenv-rails`]: https://rubygems.org/gems/dotenv-rails
 
-To override env vars values, create files named `.env.development.local` and
+To override env vars values, create files named `.env.local` and
 `.env.test.local` on your local repository and set any variables you'd like to
 override.
 
 In production and staging, env vars should be properly set in the app settings
-in the cloud hosting service, and not from env files using `dotenv-rails`.
+in the cloud hosting service, and not from env files.
 
 ### Running the app in development
 
@@ -80,8 +79,8 @@ use [`foreman`] or [`overmind`] to run them all at once. Overmind is suggested
 in the [`bin/dev`] script.
 
 You can also run processes separately, each one in a terminal window.
-In this case, make sure to run `source .env.development` and
-`source .env.development.local` before running the processes.
+In this case, make sure to run `source .env` and `source .env.local` before
+running the processes.
 
 [`foreman`]: https://rubygems.org/gems/foreman
 [`overmind`]: https://github.com/DarthSim/overmind/
@@ -126,8 +125,7 @@ It should set instance variables to be used by views.
 ### Rails Views
 
 A view template should only contain presentation layer code, rendering view
-partials or `ViewComponent` with data received from controllers and it can
-use presenters.
+partials with data received from controllers and it can use presenters.
 
 ### Rails Models
 
@@ -170,20 +168,16 @@ or `SQL`:
 
 ### Jobs
 
-Jobs can perform an action asynchronously. [Sidekiq] is the background job
+Jobs can perform an action asynchronously. [Solid Queue] is the background job
 framework in use:
 
 - Create a job class in `app/jobs/`
 - Use a descriptive name for the job class and add a `Job` suffix to it
-- Add `include Sidekiq::Job` to it
-- Define a `perform` method with the args you need. Remember to use primitive
-  types for args because when a job is scheduled, its args are serialized as
-  JSON and persisted to a Redis queue. Later, a worker process picks up the job
-  from the queue, deserializes the args and performs it
-- Follow the [Sidekiq best practices]
+- Inherit from `ApplicationJob` and use the Active Job interface
 
-[sidekiq]: https://rubygems.org/gems/sidekiq
-[sidekiq best practices]: https://github.com/mperham/sidekiq/wiki/Best-Practices
+[Solid Queue]: https://github.com/rails/solid_queue
+
+https://github.com/rails/solid_queue
 
 ### Policies
 
@@ -212,9 +206,7 @@ be Ruby classes or inherit from a Rails validator class:
 
 ### Presenters
 
-Presenters deal with presentation logic. If there is already a component
-framework in place, like [`ViewComponent`], that could be a replacement for
-your presenter logic:
+Presenters deal with presentation logic.
 
 - Create a presenter in `app/presenters/`
 - Use a descriptive name for the presenter class and add a `Presenter`
@@ -222,15 +214,13 @@ your presenter logic:
 - Use descriptive names for the presenter methods
 - Return primitive values that can be directly used in views
 
-[`viewcomponent`]: https://rubygems.org/gems/view_component
-
 ### Concepts
 
 If you notice a set of services, queries, jobs etc composes a concept in your
 domain, feel free to group them together under a more descriptive concept name.
 
 For example, if a set of business logic relates to a concept called
-"My New Concept", you can create a `app/concepts/my_new_concept/` folder and
+"My New Concept", you can create a `app/domain/my_new_concept/` folder and
 place files there namespaced with a `MyNewConcept` module.
 
 Inside a concept folder, keep the same class naming convention for services,
@@ -246,14 +236,15 @@ Vans.
 Embracing Rails, we can think of a layered architecture as:
 
 - **Application layer**: Rails Controllers, Routes
-- **Infrastructure layer**: Rails ApplicationRecord, API clients, Sidekiq, and other gems
-- **Presentation layter**: Rails Views, Helpers, Presenters, ViewComponents
+- **Infrastructure layer**: Rails ApplicationRecord, API clients, SolidQueue,
+  SolidCache, and other gems
+- **Presentation layter**: Rails Views, Helpers, Presenters
 - **Domain layer**: models, services, jobs, queries, concepts
 
 ## Tests
 
-To run the test suite, simply run `bundle exec rspec` or
-`bin/test` and `bin/test_system`
+To run the test suite, simply run `bundle exec rspec` or `bin/test` and
+`bin/test_system`
 
 For a given feature, there are different types of tests we can run: unit tests,
 request tests, and system tests. In terms of time to write and compute time to
@@ -275,7 +266,7 @@ During tests, external HTTP requests are blocked. To allow requests to be sent,
 we need to either stub them with [WebMock] or set [VCR] to record them.
 
 [WebMock]: https://rubygems.org/gems/webmock
-[vcr]: https://rubygems.org/gems/vcr
+[VCR]: https://rubygems.org/gems/vcr
 
 #### Using WebMock
 

@@ -30,9 +30,9 @@
 /app/assets/builds/*
 !/app/assets/builds/.keep
 
-# Ignore env files, except .env.development and .env.test
+# Ignore env files, except .env and .env.test
 .env*
-!.env.development
+!.env
 !.env.test
 
 # Ignore coverage result from the simplecov gem
