@@ -35,7 +35,7 @@ module Users
     private
 
     def change_email_confirmation_edit_params
-      params.require(:users_change_email_confirmation_edit).permit(:token)
+      params.expect(users_change_email_confirmation_edit: [:token])
     end
 
     def token_from_params

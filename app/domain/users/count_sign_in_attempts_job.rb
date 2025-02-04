@@ -1,10 +1,9 @@
 # frozen_string_literal: true
 
 module Users
-  class CountSignInAttemptsJob
-    include Sidekiq::Job
-
-    sidekiq_options(lock: :while_executing, on_conflict: :reschedule)
+  class CountSignInAttemptsJob < ApplicationJob
+    queue_as 'low'
+    # TODO: rewrite lock: :while_executing, on_conflict: :reschedule)
 
     def perform(user_email, succeeded)
       user = User.find_by(email: user_email)

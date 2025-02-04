@@ -1,0 +1,6 @@
+<div data-turbo-cache="false">
+  <%= render(
+    partial: 'shared/flash_item',
+    collection: flash.map { |flash_item| FlashItemPresenter.new(flash_item) }
+  ) %>
+</div>

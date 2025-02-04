@@ -1,14 +1,10 @@
 # frozen_string_literal: true
 
 module Servers
-  class ConsolidateVoteCountsJob
-    include Sidekiq::Job
+  class ConsolidateVoteCountsJob < ApplicationJob
+    # TODO: rewrite lock: :while_executing)
 
-    sidekiq_options(lock: :while_executing)
-
-    def perform(server_id, method = 'current')
-      server = Server.find(server_id)
-
+    def perform(server, method = 'current')
       case method
       when 'current'
         ConsolidateVoteCounts.new(server).process_current

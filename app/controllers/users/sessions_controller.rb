@@ -37,6 +37,7 @@ module Users
       end
 
       if @session.invalid?
+        flash.now[:alert] = @session.errors.full_messages
         render(:new, status: :unprocessable_entity)
 
         return
@@ -74,13 +75,11 @@ module Users
     private
 
     def session_params
-      params
-        .require(:users_session)
-        .permit(
-          :email,
-          :password,
-          :remember_me
-        )
+      params.expect(users_session: [
+        :email,
+        :password,
+        :remember_me
+      ])
     end
   end
 end

@@ -58,9 +58,7 @@ module Users
     end
 
     def enqueue_email_confirmation_job(user)
-      Users::EmailConfirmations::EmailJob
-        .set(queue: 'critical')
-        .perform_async(user.id)
+      Users::EmailConfirmations::EmailJob.perform_later(user)
     end
   end
 end

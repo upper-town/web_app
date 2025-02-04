@@ -36,7 +36,7 @@ module Users
       end
 
       def enqueue_email_job(user)
-        Users::PasswordResets::EmailJob.perform_async(user.id)
+        Users::PasswordResets::EmailJob.perform_later(user)
       end
     end
   end

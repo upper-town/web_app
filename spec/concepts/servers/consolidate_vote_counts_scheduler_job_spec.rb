@@ -11,8 +11,8 @@ RSpec.describe Servers::ConsolidateVoteCountsSchedulerJob do
 
         described_class.new.perform('current')
 
-        expect(Servers::ConsolidateVoteCountsJob).to have_enqueued_sidekiq_job(server1.id, 'current')
-        expect(Servers::ConsolidateVoteCountsJob).to have_enqueued_sidekiq_job(server2.id, 'current')
+        expect(Servers::ConsolidateVoteCountsJob).to have_been_enqueued.with(server1, 'current')
+        expect(Servers::ConsolidateVoteCountsJob).to have_been_enqueued.with(server2, 'current')
       end
     end
 
@@ -23,8 +23,8 @@ RSpec.describe Servers::ConsolidateVoteCountsSchedulerJob do
 
         described_class.new.perform('all')
 
-        expect(Servers::ConsolidateVoteCountsJob).to have_enqueued_sidekiq_job(server1.id, 'all')
-        expect(Servers::ConsolidateVoteCountsJob).to have_enqueued_sidekiq_job(server2.id, 'all')
+        expect(Servers::ConsolidateVoteCountsJob).to have_been_enqueued.with(server1, 'all')
+        expect(Servers::ConsolidateVoteCountsJob).to have_been_enqueued.with(server2, 'all')
       end
     end
 

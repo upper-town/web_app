@@ -18,7 +18,7 @@ module Admin
         link_to: ["I'm button", '#']
       }
 
-      # AlertComponent scheme
+      # Alert scheme
 
       flash.now[:info] = {
         subject: 'Subject here',

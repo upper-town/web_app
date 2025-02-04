@@ -10,14 +10,14 @@ RSpec.describe AdminUsers::AuthenticateSession do
         session = AdminUsers::Session.new(email: 'admin.user@upper.town', password: 'testpass')
         request = TestRequestHelper.build(remote_ip: '1.1.1.1')
         rate_limiter_key = 'admin_users_authenticate_session:1.1.1.1'
-        RateLimiting.redis.set(rate_limiter_key, '3')
+        Rails.cache.write(rate_limiter_key, 3)
 
         result = described_class.new(session, request).call
 
         expect(result.failure?).to be(true)
         expect(result.errors[:base]).to include(/Too many attempts/)
-        expect(AdminUsers::CountSignInAttemptsJob).not_to have_enqueued_sidekiq_job
-        expect(RateLimiting.redis.get(rate_limiter_key)).to eq('4')
+        expect(AdminUsers::CountSignInAttemptsJob).not_to have_been_enqueued
+        expect(Rails.cache.read(rate_limiter_key)).to eq(4)
       end
     end
 
@@ -26,14 +26,14 @@ RSpec.describe AdminUsers::AuthenticateSession do
         session = AdminUsers::Session.new(email: 'admin.user@upper.town', password: 'testpass')
         request = TestRequestHelper.build(remote_ip: '1.1.1.1')
         rate_limiter_key = 'admin_users_authenticate_session:1.1.1.1'
-        RateLimiting.redis.set(rate_limiter_key, '0')
+        Rails.cache.write(rate_limiter_key, 0)
 
         result = described_class.new(session, request).call
 
         expect(result.failure?).to be(true)
         expect(result.errors[:base]).to include(/Incorrect password or email/)
-        expect(AdminUsers::CountSignInAttemptsJob).not_to have_enqueued_sidekiq_job
-        expect(RateLimiting.redis.get(rate_limiter_key)).to eq('1')
+        expect(AdminUsers::CountSignInAttemptsJob).not_to have_been_enqueued
+        expect(Rails.cache.read(rate_limiter_key)).to eq(1)
       end
     end
 
@@ -44,14 +44,14 @@ RSpec.describe AdminUsers::AuthenticateSession do
           session = AdminUsers::Session.new(email: 'admin.user@upper.town', password: 'xxxxxxxx')
           request = TestRequestHelper.build(remote_ip: '1.1.1.1')
           rate_limiter_key = 'admin_users_authenticate_session:1.1.1.1'
-          RateLimiting.redis.set(rate_limiter_key, '0')
+          Rails.cache.write(rate_limiter_key, 0)
 
           result = described_class.new(session, request).call
 
           expect(result.failure?).to be(true)
           expect(result.errors[:base]).to include(/Incorrect password or email/)
-          expect(AdminUsers::CountSignInAttemptsJob).to have_enqueued_sidekiq_job('admin.user@upper.town', false)
-          expect(RateLimiting.redis.get(rate_limiter_key)).to eq('1')
+          expect(AdminUsers::CountSignInAttemptsJob).to have_been_enqueued.with('admin.user@upper.town', false)
+          expect(Rails.cache.read(rate_limiter_key)).to eq(1)
         end
       end
 
@@ -61,14 +61,16 @@ RSpec.describe AdminUsers::AuthenticateSession do
           session = AdminUsers::Session.new(email: 'admin.user@upper.town', password: 'testpass')
           request = TestRequestHelper.build(remote_ip: '1.1.1.1')
           rate_limiter_key = 'admin_users_authenticate_session:1.1.1.1'
-          RateLimiting.redis.set(rate_limiter_key, '0')
+          Rails.cache.write(rate_limiter_key, 0)
 
           result = described_class.new(session, request).call
 
           expect(result.success?).to be(true)
           expect(result.data[:admin_user]).to eq(admin_user)
-          expect(AdminUsers::CountSignInAttemptsJob).to have_enqueued_sidekiq_job('admin.user@upper.town', true)
-          expect(RateLimiting.redis.get(rate_limiter_key)).to eq('1')
+          expect(AdminUsers::CountSignInAttemptsJob)
+            .to have_been_enqueued
+            .with('admin.user@upper.town', true)
+          expect(Rails.cache.read(rate_limiter_key)).to eq(1)
         end
       end
     end

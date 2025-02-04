@@ -10,8 +10,8 @@ Current domains in use by this app:
 | ----------- | ---------------------------------- | ------------- | ---------------------------- |
 | production  | https://upper.town                 | `production`  | `production`                 |
 | sandbox     | https://sandbox.upper.town         | `sandbox`     | `production` / `development` |
-| development | http://development.upper.town:5000 | `development` | `development`                |
-| test        | http://test.upper.town:5000        | `test`        | `test`                       |
+| development | http://development.upper.town:3000 | `development` | `development`                |
+| test        | http://test.upper.town:3000        | `test`        | `test`                       |
 
 Also,
 
@@ -53,10 +53,10 @@ Read more about how to install and use it.
 
 [`asdf`]: https://asdf-vm.com/guide/getting-started.html
 
-### Postgres and SQLite
+### Postgres
 
-The app relies on Postgres as main database and SQLite as support databases for
-cache, job queues, and rate limiting.
+The app relies on Postgres for primary database and for cache, queues,
+and rate limiting.
 
 ### Environment variables
 
@@ -74,17 +74,15 @@ in the cloud hosting service, and not from env files.
 
 ### Running the app in development
 
-`Procfile.dev` has the list of processes needed for development. You can
-use [`foreman`] or [`overmind`] to run them all at once. Overmind is suggested
-in the [`bin/dev`] script.
+`Procfile.dev` has the list of processes needed for development. The [`bin/dev`]
+script runs them with [`foreman`].
 
 You can also run processes separately, each one in a terminal window.
 In this case, make sure to run `source .env` and `source .env.local` before
 running the processes.
 
-[`foreman`]: https://rubygems.org/gems/foreman
-[`overmind`]: https://github.com/DarthSim/overmind/
 [`bin/dev`]: bin/dev
+[`foreman`]: https://rubygems.org/gems/foreman
 
 ### FactoryBot
 

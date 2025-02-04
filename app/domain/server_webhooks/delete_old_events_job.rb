@@ -1,10 +1,9 @@
 # frozen_string_literal: true
 
 module ServerWebhooks
-  class DeleteOldEventsJob
-    include Sidekiq::Job
-
-    sidekiq_options(lock: :while_executing)
+  class DeleteOldEventsJob < ApplicationJob
+    queue_as 'low'
+    # TODO: rewrite lock: :while_executing)
 
     def perform
       old_server_webhook_events_query.delete_all

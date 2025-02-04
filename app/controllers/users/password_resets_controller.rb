@@ -81,11 +81,11 @@ module Users
     end
 
     def password_reset_params
-      params.require(:users_password_reset).permit(:email)
+      params.expect(users_password_reset: [:email])
     end
 
     def password_reset_edit_params
-      params.require(:users_password_reset_edit).permit(:token, :password)
+      params.expect(users_password_reset_edit: [:token, :password])
     end
   end
 end

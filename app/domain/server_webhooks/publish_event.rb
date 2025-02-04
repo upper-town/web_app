@@ -64,7 +64,7 @@ module ServerWebhooks
 
       send_request(build_connection(headers), body)
 
-      UpdateDeliveredEventJob.perform_async(server_webhook_event.id)
+      UpdateDeliveredEventJob.perform_later(server_webhook_event)
 
       Result.success
     rescue Faraday::ClientError, Faraday::ServerError => e

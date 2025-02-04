@@ -48,7 +48,9 @@ module Users
           raise e
         end
 
-        Users::ChangeEmailConfirmations::EmailJob.perform_in(30.seconds, user.id)
+        Users::ChangeEmailConfirmations::EmailJob
+          .set(wait: 30.seconds)
+          .perform_later(user)
 
         Result.success(user: user)
       end

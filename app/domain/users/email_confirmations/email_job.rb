@@ -2,14 +2,11 @@
 
 module Users
   module EmailConfirmations
-    class EmailJob
-      include Sidekiq::Job
+    class EmailJob < ApplicationJob
+      queue_as 'critical'
+      # TODO: rewrite lock: :while_executing)
 
-      sidekiq_options(lock: :while_executing)
-
-      def perform(user_id)
-        user = User.find(user_id)
-
+      def perform(user)
         email_confirmation_token = user.generate_token!(:email_confirmation)
         user.update!(email_confirmation_sent_at: Time.current)
 

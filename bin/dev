@@ -1,3 +1,3 @@
 #!/usr/bin/env sh
 
-OVERMIND_ENV=.env,.env.local exec overmind start -N -f Procfile.dev "$@"
+exec dotenv -i -f ".env.local,.env" foreman start -f Procfile.dev --env /dev/null "$@"

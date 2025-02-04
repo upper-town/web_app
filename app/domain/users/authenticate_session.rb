@@ -51,7 +51,7 @@ module Users
     end
 
     def count_attempt(succeeded)
-      Users::CountSignInAttemptsJob.perform_async(session.email, succeeded)
+      Users::CountSignInAttemptsJob.perform_later(session.email, succeeded)
     end
   end
 end

@@ -1,10 +1,11 @@
-<%= render(PaginationComponent.new(pagination: @pagination)) %>
+<%= render(partial: 'shared/pagination', object: PaginationPresenter.new(@pagination)) %>
 
 <% if @users.empty? %>
   No results
 <% else %>
   <%=
-    render(Admin::TableComponent.new(
+    # TODO: Fix this
+    render(Admin::TablePresenter.new(
       collection: @users,
       columns: [
         ['ID',      :id],
@@ -15,4 +16,4 @@
   %>
 <% end %>
 
-<%= render(PaginationComponent.new(@pagination)) %>
+<%= render(partial: 'shared/pagination', object: PaginationPresenter.new(@pagination)) %>

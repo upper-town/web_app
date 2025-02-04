@@ -120,16 +120,14 @@ module Inside
     end
 
     def server_params
-      params
-        .require(:server)
-        .permit(
-          :game_id,
-          :country_code,
-          :name,
-          :site_url,
-          :description,
-          :info
-        )
+      params.expect(server: [
+        :game_id,
+        :country_code,
+        :name,
+        :site_url,
+        :description,
+        :info
+      ])
     end
 
     def max_verified_servers_per_account

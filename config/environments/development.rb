@@ -2,84 +2,104 @@
 
 require 'active_support/core_ext/integer/time'
 
-Rails.application.routes.default_url_options = { host: ENV.fetch('APP_HOST'), port: ENV.fetch('APP_PORT') }
+Rails.application.routes.default_url_options = {
+  host: ENV.fetch('APP_HOST'),
+  port: ENV.fetch('APP_PORT')
+}
 
 Rails.application.configure do
-  # Settings specified here will take precedence over those in config/application.rb.
+  config.hosts << ENV.fetch('APP_HOST')
 
-  # In the development environment your application's code is reloaded any time
-  # it changes. This slows down response time but is perfect for development
-  # since you don't have to restart the web server when you make code changes.
-  config.enable_reloading = true
-
-  # Do not eager load code on boot.
   config.eager_load = false
-
-  # Show full error reports.
+  config.enable_reloading = true
   config.consider_all_requests_local = true
-
-  # Enable server timing
   config.server_timing = true
+  config.force_ssl = false
+  config.log_level = :debug
+  config.log_tags = [:request_id]
 
-  # Enable/disable caching. By default caching is disabled.
-  # Run rails dev:cache to toggle caching.
+  # cache_store
+
+  config.cache_store = :solid_cache_store
+
+  # public_file_server
+
+  config.public_file_server.enabled = true
+  config.public_file_server.headers = {
+    'cache-control' => 'public, max-age=5'
+  }
+
+  # action_controller
+
+  config.action_controller.raise_on_missing_callback_actions = true
+  config.action_controller.default_url_options = {
+    host: ENV.fetch('APP_HOST'),
+    port: ENV.fetch('APP_PORT')
+  }
   if Rails.root.join('tmp/caching-dev.txt').exist?
     config.action_controller.perform_caching = true
     config.action_controller.enable_fragment_cache_logging = true
-
-    config.cache_store = [
-      :redis_cache_store,
-      { url: "redis://#{ENV.fetch('REDIS_HOST')}:#{ENV.fetch('REDIS_PORT')}/#{ENV.fetch('REDIS_CACHE_DB')}" }
-    ]
     config.public_file_server.headers = {
-      'Cache-Control' => "public, max-age=#{2.days.to_i}"
+      'cache-control' => "public, max-age=#{2.days.to_i}"
     }
   else
     config.action_controller.perform_caching = false
-
-    config.cache_store = :null_store
   end
 
-  # Print deprecation notices to the Rails logger.
-  config.active_support.deprecation = :log
+  # action_dispatch
 
-  # Raise exceptions for disallowed deprecations.
-  config.active_support.disallowed_deprecation = :raise
+  config.action_dispatch.show_exceptions = :all
 
-  # Tell Active Support which deprecation messages to disallow.
-  config.active_support.disallowed_deprecation_warnings = []
+  # action_view
 
-  # Raise an error on page load if there are pending migrations.
+  config.action_view.annotate_rendered_view_with_filenames = true
+
+  # active_record
+
+  config.active_record.query_log_tags_enabled = true
+  config.active_record.verbose_query_logs = true
+  config.active_record.dump_schema_after_migration = true
   config.active_record.migration_error = :page_load
 
-  # Highlight code that triggered database queries in logs.
-  config.active_record.verbose_query_logs = true
+  # active_storage
 
-  # Suppress logger output for asset requests.
-  config.assets.quiet = true
+  config.active_storage.service = :local
 
-  config.assets.debug = true
-  config.assets.compile = true
+  # active_job
 
-  # Raises error for missing translations.
-  # config.i18n.raise_on_missing_translations = true
+  config.active_job.queue_adapter = :solid_queue
+  config.active_job.verbose_enqueue_logs = true
 
-  # Annotate rendered view with file names.
-  # config.action_view.annotate_rendered_view_with_filenames = true
+  # solid_queue
 
-  # Uncomment if you wish to allow Action Cable access from any origin.
-  # config.action_cable.disable_request_forgery_protection = true
+  config.solid_queue.connects_to = { database: { writing: :queue } }
+  config.solid_queue.shutdown_timeout = 15
 
-  config.hosts << ENV.fetch('APP_HOST')
+  # mission_control
 
-  # Raise error when a before_action's only/except options reference missing actions
-  config.action_controller.raise_on_missing_callback_actions = true
+  config.mission_control.jobs.http_basic_auth_enabled = false
 
-  config.action_controller.default_url_options = { host: ENV.fetch('APP_HOST'), port: ENV.fetch('APP_PORT') }
+  # i18n
 
-  config.action_mailer.default_url_options = { host: ENV.fetch('APP_HOST'), port: ENV.fetch('APP_PORT') }
+  config.i18n.raise_on_missing_translations = true
+
+  # active_support
+
+  config.active_support.deprecation = :log
+  config.active_support.disallowed_deprecation = :raise
+  config.active_support.disallowed_deprecation_warnings = []
+
+  # action_mailer
+
+  config.action_mailer.default_url_options = {
+    host: ENV.fetch('APP_HOST'),
+    port: ENV.fetch('APP_PORT')
+  }
   config.action_mailer.perform_caching = false
   config.action_mailer.raise_delivery_errors = true
   config.action_mailer.delivery_method = :smtp
-  config.action_mailer.smtp_settings = { :address => 'localhost', :port => 1025 }
+  config.action_mailer.smtp_settings = {
+    :address => 'localhost',
+    :port => 1025
+  }
 end

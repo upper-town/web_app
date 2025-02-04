@@ -1,80 +1,95 @@
 # frozen_string_literal: true
 
-require 'active_support/core_ext/integer/time'
-
 # The test environment is used exclusively to run your application's
 # test suite. You never need to work with it otherwise. Remember that
 # your test database is "scratch space" for the test suite and is wiped
 # and recreated between test runs. Don't rely on the data there!
 
+require 'active_support/core_ext/integer/time'
+
 ActiveSupport.on_load(:active_record_postgresqladapter) do
   self.create_unlogged_tables = true
 end
 
-Rails.application.routes.default_url_options = { host: ENV.fetch('APP_HOST'), port: ENV.fetch('APP_PORT') }
+Rails.application.routes.default_url_options = {
+  host: ENV.fetch('APP_HOST'),
+  port: ENV.fetch('APP_PORT')
+}
 
 Rails.application.configure do
-  # Settings specified here will take precedence over those in config/application.rb.
-
-  # Turn true under Spring and add config.action_view.cache_template_loading = true.
-  config.enable_reloading = false
-
-  # Eager loading loads your whole application. When running a single test locally,
-  # this probably isn't necessary. It's a good idea to do in a continuous integration
-  # system, or in some way before deploying your code.
-  config.eager_load = ENV['CI'].present?
-
-  # Configure public file server for tests with Cache-Control for performance.
-  config.public_file_server.enabled = true
-  config.public_file_server.headers = {
-    'Cache-Control' => "public, max-age=#{1.hour.to_i}"
-  }
-
-  # Show full error reports and disable caching.
-  config.consider_all_requests_local       = true
-  config.action_controller.perform_caching = false
-  config.cache_store = :null_store
-
-  # Raise exceptions instead of rendering exception templates.
-  config.action_dispatch.show_exceptions = false
-
-  # Disable request forgery protection in test environment.
-  config.action_controller.allow_forgery_protection = false
-
-  # Print deprecation notices to the stderr.
-  config.active_support.deprecation = :stderr
-
-  # Raise exceptions for disallowed deprecations.
-  config.active_support.disallowed_deprecation = :raise
-
-  # Tell Active Support which deprecation messages to disallow.
-  config.active_support.disallowed_deprecation_warnings = []
-
-  # Raises error for missing translations.
-  # config.i18n.raise_on_missing_translations = true
-
-  # Annotate rendered view with file names.
-  # config.action_view.annotate_rendered_view_with_filenames = true
-
   config.hosts << ENV.fetch('APP_HOST')
 
-  # Raise error when a before_action's only/except options reference missing actions
+  config.eager_load = ENV['CI'].present?
+  config.enable_reloading = false
+  config.consider_all_requests_local = true
+  config.server_timing = false
+  config.force_ssl = false
+  config.log_level = :debug
+  config.log_tags = [:request_id]
+
+  # cache_store
+
+  config.cache_store = :memory_store
+
+  # public_file_server
+
+  config.public_file_server.enabled = true
+  config.public_file_server.headers = {
+    'cache-control' => "public, max-age=#{1.hour.to_i}"
+  }
+
+  # action_controller
+
   config.action_controller.raise_on_missing_callback_actions = true
+  config.action_controller.default_url_options = {
+    host: ENV.fetch('APP_HOST'),
+    port: ENV.fetch('APP_PORT')
+  }
+  config.action_controller.perform_caching = false
+  config.action_controller.allow_forgery_protection = false
 
-  config.action_controller.default_url_options = { host: ENV.fetch('APP_HOST'), port: ENV.fetch('APP_PORT') }
+  # action_dispatch
 
-  # Tell Action Mailer not to deliver emails to the real world.
-  # The :test delivery method accumulates sent emails in the
-  # ActionMailer::Base.deliveries array.
-  config.action_mailer.delivery_method = :test
+  config.action_dispatch.show_exceptions = false
 
-  config.action_mailer.default_url_options = { host: ENV.fetch('APP_HOST'), port: ENV.fetch('APP_PORT') }
+  # action_view
 
+  config.action_view.annotate_rendered_view_with_filenames = true
+
+  # active_record
+
+  config.active_record.query_log_tags_enabled = false
+  config.active_record.verbose_query_logs = false
+  config.active_record.dump_schema_after_migration = true
+  config.active_record.migration_error = :page_load
+
+  # active_storage
+
+  config.active_storage.service = :local
+
+  # active_job
+
+  # solid_queue
+
+  # mission_control
+
+  # i18n
+
+  config.i18n.raise_on_missing_translations = true
+
+  # active_support
+
+  config.active_support.deprecation = :stderr
+  config.active_support.disallowed_deprecation = :raise
+  config.active_support.disallowed_deprecation_warnings = []
+
+  # action_mailer
+
+  config.action_mailer.default_url_options = {
+    host: ENV.fetch('APP_HOST'),
+    port: ENV.fetch('APP_PORT')
+  }
   config.action_mailer.perform_caching = false
-
-  # Suppress logger output for asset requests.
-  config.assets.quiet = true
-
-  config.assets.debug = true
-  config.assets.compile = true
+  config.action_mailer.raise_delivery_errors = true
+  config.action_mailer.delivery_method = :test
 end

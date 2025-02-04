@@ -4,7 +4,7 @@ module RateLimiting
   class BasicRateLimiter
     attr_reader :key, :max_count, :expires_in, :error_message
 
-    def initialize(key, max_count, expires_in, error_message = '')
+    def initialize(key, max_count, expires_in, error_message = nil)
       @key = key
       @max_count = max_count
       @expires_in = expires_in.to_i
@@ -12,46 +12,33 @@ module RateLimiting
     end
 
     def call
-      replies = RateLimiting.redis.multi do |transaction|
-        transaction.incr(key)
-        transaction.expire(key, expires_in, nx: true)
-        transaction.ttl(key)
-      end
+      count = Rails.cache.increment(key, 1, expires_in: expires_in)
 
-      if replies[0] <= max_count
-        Result.success
+      if count && count > max_count
+        Result.failure(build_error_message)
       else
-        Result.failure(build_error_message(replies[2]))
+        Result.success
       end
     end
 
     def uncall
-      RateLimiting.redis.multi do |transaction|
-        transaction.decr(key)
-        transaction.expire(key, expires_in, nx: true)
-      end
+      Rails.cache.decrement(key, 1, expires_in: expires_in)
 
       Result.success
     end
 
     private
 
-    def build_error_message(ttl_seconds)
+    def build_error_message
+      try_again_message = 'Please try again later'
+
       if error_message.blank?
-        try_again_message(ttl_seconds)
+        try_again_message
       else
-        separator = error_message.end_with?('.', '!', '?') ? ' ' : '. '
+        separator = error_message.end_with?('.', '!', '?', ';') ? ' ' : '. '
 
-        "#{error_message}#{separator}#{try_again_message(ttl_seconds)}"
+        "#{error_message}#{separator}#{try_again_message}"
       end
-    end
-
-    def try_again_message(ttl_seconds)
-      "Please try again in #{ttl_to_sentence(ttl_seconds)}"
-    end
-
-    def ttl_to_sentence(seconds)
-      ActiveSupport::Duration.build(seconds).inspect
     end
   end
 end

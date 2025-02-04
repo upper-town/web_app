@@ -35,11 +35,11 @@ module Seeds
         name = "Server-#{n}"
         site_url = "https://nice-server-#{n}.company.com/"
         # TODO: banner_image_url
-        description = "Zzz Zzz Zzz"
+        description = 'Zzz Zzz Zzz'
         info = [
-          "Aaa Bbb Ccc",
-          "Aaa Bbb Ccc",
-          "Aaa Bbb Ccc",
+          'Aaa Bbb Ccc',
+          'Aaa Bbb Ccc',
+          'Aaa Bbb Ccc',
         ].join("\n\n").truncate(1_000)
 
         {

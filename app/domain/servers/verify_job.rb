@@ -1,14 +1,10 @@
 # frozen_string_literal: true
 
 module Servers
-  class VerifyJob
-    include Sidekiq::Job
+  class VerifyJob < ApplicationJob
+    # TODO: rewrite lock: :while_executing)
 
-    sidekiq_options(lock: :while_executing)
-
-    def perform(server_id)
-      server = Server.find(server_id)
-
+    def perform(server)
       Verify.new(server).call
     end
   end

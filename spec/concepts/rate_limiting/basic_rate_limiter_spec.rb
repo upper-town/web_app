@@ -9,33 +9,33 @@ RSpec.describe RateLimiting::BasicRateLimiter do
 
       result = rate_limiter.call
       expect(result.success?).to be(true)
-      expect(RateLimiting.redis.get('some_specific_key')).to eq('1')
+      expect(Rails.cache.read('some_specific_key')).to eq(1)
 
       result = rate_limiter.call
       expect(result.success?).to be(true)
-      expect(RateLimiting.redis.get('some_specific_key')).to eq('2')
-
-      result = rate_limiter.call
-      expect(result.failure?).to be(true)
-      expect(result.errors[:base]).to include(/Some error message\. Please try again in .+/)
-      expect(RateLimiting.redis.get('some_specific_key')).to eq('3')
-
-      result = rate_limiter.uncall
-      expect(result.success?).to be(true)
-      expect(RateLimiting.redis.get('some_specific_key')).to eq('2')
-
-      result = rate_limiter.uncall
-      expect(result.success?).to be(true)
-      expect(RateLimiting.redis.get('some_specific_key')).to eq('1')
-
-      result = rate_limiter.call
-      expect(result.success?).to be(true)
-      expect(RateLimiting.redis.get('some_specific_key')).to eq('2')
+      expect(Rails.cache.read('some_specific_key')).to eq(2)
 
       result = rate_limiter.call
       expect(result.failure?).to be(true)
-      expect(result.errors[:base]).to include(/Some error message\. Please try again in .+/)
-      expect(RateLimiting.redis.get('some_specific_key')).to eq('3')
+      expect(result.errors[:base]).to include(/Some error message\. Please try again .+/)
+      expect(Rails.cache.read('some_specific_key')).to eq(3)
+
+      result = rate_limiter.uncall
+      expect(result.success?).to be(true)
+      expect(Rails.cache.read('some_specific_key')).to eq(2)
+
+      result = rate_limiter.uncall
+      expect(result.success?).to be(true)
+      expect(Rails.cache.read('some_specific_key')).to eq(1)
+
+      result = rate_limiter.call
+      expect(result.success?).to be(true)
+      expect(Rails.cache.read('some_specific_key')).to eq(2)
+
+      result = rate_limiter.call
+      expect(result.failure?).to be(true)
+      expect(result.errors[:base]).to include(/Some error message\. Please try again .+/)
+      expect(Rails.cache.read('some_specific_key')).to eq(3)
     end
   end
 end

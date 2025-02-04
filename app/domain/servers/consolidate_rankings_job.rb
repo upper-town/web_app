@@ -1,14 +1,10 @@
 # frozen_string_literal: true
 
 module Servers
-  class ConsolidateRankingsJob
-    include Sidekiq::Job
+  class ConsolidateRankingsJob < ApplicationJob
+    # TODO: rewrite lock: :while_executing)
 
-    sidekiq_options(lock: :while_executing)
-
-    def perform(game_id, method = 'current')
-      game = Game.find(game_id)
-
+    def perform(game, method = 'current')
       case method
       when 'current'
         ConsolidateRankings.new(game).process_current

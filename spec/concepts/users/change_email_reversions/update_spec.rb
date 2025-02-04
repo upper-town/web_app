@@ -11,13 +11,13 @@ RSpec.describe Users::ChangeEmailReversions::Update do
         change_email_reversion_edit = Users::ChangeEmailReversionEdit.new(token: token)
         request = TestRequestHelper.build(remote_ip: '1.1.1.1')
         rate_limiter_key = 'users_change_email_reversions_update:1.1.1.1'
-        RateLimiting.redis.set(rate_limiter_key, '3')
+        Rails.cache.write(rate_limiter_key, 3)
 
         result = described_class.new(change_email_reversion_edit, request).call
 
         expect(result.failure?).to be(true)
         expect(result.errors[:base]).to include(/Too many attempts/)
-        expect(RateLimiting.redis.get(rate_limiter_key)).to eq('4')
+        expect(Rails.cache.read(rate_limiter_key)).to eq(4)
       end
     end
 
@@ -29,13 +29,13 @@ RSpec.describe Users::ChangeEmailReversions::Update do
           change_email_reversion_edit = Users::ChangeEmailReversionEdit.new(token: 'xxxxxxxx')
           request = TestRequestHelper.build(remote_ip: '1.1.1.1')
           rate_limiter_key = 'users_change_email_reversions_update:1.1.1.1'
-          RateLimiting.redis.set(rate_limiter_key, '0')
+          Rails.cache.write(rate_limiter_key, 0)
 
           result = described_class.new(change_email_reversion_edit, request).call
 
           expect(result.failure?).to be(true)
           expect(result.errors[:base]).to include(/Invalid or expired token/)
-          expect(RateLimiting.redis.get(rate_limiter_key)).to eq('1')
+          expect(Rails.cache.read(rate_limiter_key)).to eq(1)
         end
       end
 
@@ -46,13 +46,13 @@ RSpec.describe Users::ChangeEmailReversions::Update do
           change_email_reversion_edit = Users::ChangeEmailReversionEdit.new(token: token)
           request = TestRequestHelper.build(remote_ip: '1.1.1.1')
           rate_limiter_key = 'users_change_email_reversions_update:1.1.1.1'
-          RateLimiting.redis.set(rate_limiter_key, '0')
+          Rails.cache.write(rate_limiter_key, 0)
 
           result = described_class.new(change_email_reversion_edit, request).call
 
           expect(result.failure?).to be(true)
           expect(result.errors[:base]).to include(/Invalid or expired token/)
-          expect(RateLimiting.redis.get(rate_limiter_key)).to eq('1')
+          expect(Rails.cache.read(rate_limiter_key)).to eq(1)
         end
       end
     end
@@ -65,13 +65,13 @@ RSpec.describe Users::ChangeEmailReversions::Update do
           change_email_reversion_edit = Users::ChangeEmailReversionEdit.new(token: token)
           request = TestRequestHelper.build(remote_ip: '1.1.1.1')
           rate_limiter_key = 'users_change_email_reversions_update:1.1.1.1'
-          RateLimiting.redis.set(rate_limiter_key, '0')
+          Rails.cache.write(rate_limiter_key, 0)
 
           result = described_class.new(change_email_reversion_edit, request).call
 
           expect(result.failure?).to be(true)
           expect(result.errors[:base]).to include(/Invalid token: old email address is not associated with token/)
-          expect(RateLimiting.redis.get(rate_limiter_key)).to eq('1')
+          expect(Rails.cache.read(rate_limiter_key)).to eq(1)
         end
       end
 
@@ -82,14 +82,14 @@ RSpec.describe Users::ChangeEmailReversions::Update do
           change_email_reversion_edit = Users::ChangeEmailReversionEdit.new(token: token)
           request = TestRequestHelper.build(remote_ip: '1.1.1.1')
           rate_limiter_key = 'users_change_email_reversions_update:1.1.1.1'
-          RateLimiting.redis.set(rate_limiter_key, '0')
+          Rails.cache.write(rate_limiter_key, 0)
           allow_any_instance_of(User).to receive(:revert_change_email!).and_raise(ActiveRecord::ActiveRecordError)
 
           expect do
             described_class.new(change_email_reversion_edit, request).call
           end.to raise_error(ActiveRecord::ActiveRecordError)
 
-          expect(RateLimiting.redis.get(rate_limiter_key)).to eq('0')
+          expect(Rails.cache.read(rate_limiter_key)).to eq(0)
         end
       end
 
@@ -101,7 +101,7 @@ RSpec.describe Users::ChangeEmailReversions::Update do
             change_email_reversion_edit = Users::ChangeEmailReversionEdit.new(token: token)
             request = TestRequestHelper.build(remote_ip: '1.1.1.1')
             rate_limiter_key = 'users_change_email_reversions_update:1.1.1.1'
-            RateLimiting.redis.set(rate_limiter_key, '0')
+            Rails.cache.write(rate_limiter_key, 0)
 
             result = described_class.new(change_email_reversion_edit, request).call
 
@@ -111,7 +111,7 @@ RSpec.describe Users::ChangeEmailReversions::Update do
             expect(result.data[:user].change_email).to be_nil
             expect(result.data[:user].change_email_confirmed_at).to be_nil
             expect(result.data[:user].change_email_reverted_at).to eq(Time.current)
-            expect(RateLimiting.redis.get(rate_limiter_key)).to eq('1')
+            expect(Rails.cache.read(rate_limiter_key)).to eq(1)
             expect(User.find_by_token(:change_email_reversion, token)).to be_nil
           end
         end

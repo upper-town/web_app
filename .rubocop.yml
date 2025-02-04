@@ -187,6 +187,10 @@ Style/SoleNestedConditional:
   Enabled: false
 Style/StringConcatenation:
   Enabled: false
+Style/StringLiterals:
+  Exclude:
+    - "*"
+    - "config/**/*"
 Style/SymbolArray:
   Enabled: false
 Style/TernaryParentheses:

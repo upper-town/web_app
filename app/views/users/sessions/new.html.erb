@@ -18,13 +18,19 @@
       :email,
       autofocus: true,
       autocomplete: 'email',
-      class: 'form-control'
+      class: 'form-control',
+      required: true
     ) %>
   </div>
 
   <div class="mb-3">
     <%= form.label(:password, 'Password', class: 'form-label') %>
-    <%= form.password_field(:password, autocomplete: 'current-password', class: 'form-control') %>
+    <%= form.password_field(
+      :password,
+      autocomplete: 'current-password',
+      class: 'form-control',
+      required: true
+    ) %>
   </div>
 
   <div class="mb-3 form-check">

@@ -1,5 +1,5 @@
 import { Controller } from '@hotwired/stimulus'
-import Navigate from '../lib/navigate'
+import Navigate from 'lib/navigate'
 
 const TURBO_VISIT = 'turbo_visit'
 const TURBO_STREAM = 'turbo_stream'

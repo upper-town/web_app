@@ -1,26 +1,29 @@
 <!doctype html>
 <html lang="en" data-bs-theme="light">
 <head>
+  <title>Admin | <%= yield(:title).presence || default_title %></title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-
-  <title>WebApp | Admin</title>
-
+  <meta name="apple-mobile-web-app-capable" content="no">
+  <meta name="mobile-web-app-capable" content="no">
   <%= csrf_meta_tags %>
   <%= csp_meta_tag %>
 
+  <%= yield(:head) %>
+
+  <%# Includes all stylesheet files in app/assets/stylesheets %>
+  <%= stylesheet_link_tag "bootstrap.min" %>
+  <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
   <%= stylesheet_link_tag "admin", "data-turbo-track": "reload" %>
-  <%= javascript_include_tag "admin", "data-turbo-track": "reload", defer: true %>
+  <%= javascript_importmap_tags %>
 
   <meta name="turbo-prefetch" content="false">
-
-  <%= yield(:head) %>
 </head>
 <body data-controller="browser-time-zone">
   <%= render('shared/noscript') %>
-  <%= render('shared/admin/header') %>
-  <%= render('shared/admin/nav') %>
-  <%= render('shared/admin/main') %>
-  <%= render('shared/admin/footer') %>
+  <%= render('admin/shared/header') %>
+  <%= render('admin/shared/nav') %>
+  <%= render('admin/shared/main') %>
+  <%= render('admin/shared/footer') %>
 </body>
 </html>

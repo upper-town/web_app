@@ -1,18 +1,16 @@
 # frozen_string_literal: true
 
 module Servers
-  class ConsolidateVoteCountsSchedulerJob
-    include Sidekiq::Job
+  class ConsolidateVoteCountsSchedulerJob < ApplicationJob
+    # TODO: rewrite lock: :while_executing)
 
     METHODS = ['current', 'all']
-
-    sidekiq_options(lock: :while_executing)
 
     def perform(method = 'current')
       raise 'Invalid method for Servers::ConsolidateVoteCountsSchedulerJob' unless METHODS.include?(method)
 
-      Server.ids.each do |server_id|
-        ConsolidateVoteCountsJob.perform_async(server_id, method)
+      Server.select(:id).find_each do |server|
+        ConsolidateVoteCountsJob.perform_later(server, method)
       end
     end
   end

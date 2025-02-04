@@ -6,18 +6,18 @@
   },
   class: 'mb-2'
 ) do |form| %>
-  <%= render(GameSelectComponent.new(
+  <%= render(partial: 'shared/game_select', object: GameSelectPresenter.new(
     form,
     only_in_use: true,
     blank_name: 'All',
     selected_value: @selected_value_game_id
   )) %>
   <div class="flex">
-    <%= render(PeriodSelectComponent.new(
+    <%= render(partial: 'period_select', object: PeriodSelectPresenter.new(
       form,
       selected_value: @selected_value_period
     )) %>
-    <%= render(CountrySelectComponent.new(
+    <%= render(partial: 'country_select', object: CountrySelectPresenter.new(
       form,
       only_in_use: true,
       blank_name: 'All',
@@ -26,9 +26,7 @@
   </div>
 <% end %>
 
-<% pagination_component = PaginationComponent.new(@pagination, first_icon: '1st') %>
-
-<%= render(pagination_component) %>
+<%= render(partial: 'shared/pagination', object: PaginationPresenter.new(@pagination, first_icon: '1st')) %>
 
 <% if @servers.empty? %>
   No results
@@ -37,7 +35,7 @@
     <% @servers.each do |server| %>
       <li>
         <%=
-          render(Servers::IndexResultComponent.new(
+          render(partial: 'index_result', object: Servers::IndexResultPresenter.new(
             server: server,
             server_stats_hash: @server_stats_hash[server.id] || {},
             period: @period,

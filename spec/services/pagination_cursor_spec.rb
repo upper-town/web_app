@@ -2,7 +2,6 @@
 
 require 'rails_helper'
 
-# rubocop:disable Rails/TimeZone
 RSpec.describe PaginationCursor do
   describe '#order' do
     it 'gets order from options' do
@@ -757,4 +756,3 @@ RSpec.describe PaginationCursor do
     end
   end
 end
-# rubocop:enable Rails/TimeZone

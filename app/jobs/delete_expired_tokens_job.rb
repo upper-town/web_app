@@ -1,9 +1,7 @@
 # frozen_string_literal: true
 
-class DeleteExpiredTokensJob
-  include Sidekiq::Job
-
-  sidekiq_options(lock: :while_executing)
+class DeleteExpiredTokensJob < ApplicationJob
+  # TODO: rewrite lock: :while_executing)
 
   def perform
     Token.expired.delete_all

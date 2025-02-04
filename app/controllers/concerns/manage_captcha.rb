@@ -61,7 +61,7 @@ module ManageCaptcha
     token = TokenGenerator.generate(26).first
     captcha_skip = CaptchaSkip.new(token: token, paths: paths)
 
-    Caching.redis.set(captcha_skip.key, limit, ex: 1.hour)
+    Rails.cache.write(captcha_skip.key, limit, expires_in: 1.hour)
 
     write_json_cookie(CAPTCHA_SKIP_NAME, captcha_skip)
   end
@@ -89,14 +89,14 @@ module ManageCaptcha
       return false unless valid?
       return false unless paths.include?(path)
 
-      count = Caching.redis.get(key)
+      count = Rails.cache.read(key)
       return false unless count
 
       count.to_i.positive?
     end
 
     def consume
-      Caching.redis.decr(key)
+      Rails.cache.decrement(key)
     end
   end
 end

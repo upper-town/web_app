@@ -27,7 +27,7 @@ RSpec.describe ServerWebhooks::PublishEvent do
         result = described_class.new(server_webhook_event).call
 
         expect(publish_event_request).not_to have_been_requested
-        expect(ServerWebhooks::UpdateDeliveredEventJob).not_to have_enqueued_sidekiq_job
+        expect(ServerWebhooks::UpdateDeliveredEventJob).not_to have_been_enqueued
 
         expect(result.failure?).to be(true)
         expect(result.errors[:base]).to include(/Could not retry event: it has been retried and failed multiple times/)
@@ -57,7 +57,7 @@ RSpec.describe ServerWebhooks::PublishEvent do
         result = described_class.new(server_webhook_event).call
 
         expect(publish_event_request).not_to have_been_requested
-        expect(ServerWebhooks::UpdateDeliveredEventJob).not_to have_enqueued_sidekiq_job
+        expect(ServerWebhooks::UpdateDeliveredEventJob).not_to have_been_enqueued
 
         expect(result.failure?).to be(true)
         expect(result.errors[:base]).to include(/Cannot retry event: it has been delivered already/)
@@ -87,7 +87,7 @@ RSpec.describe ServerWebhooks::PublishEvent do
         result = described_class.new(server_webhook_event).call
 
         expect(publish_event_request).not_to have_been_requested
-        expect(ServerWebhooks::UpdateDeliveredEventJob).not_to have_enqueued_sidekiq_job
+        expect(ServerWebhooks::UpdateDeliveredEventJob).not_to have_been_enqueued
 
         server_webhook_event.reload
         expect(server_webhook_event.failed_attempts).to eq(1)
@@ -123,7 +123,7 @@ RSpec.describe ServerWebhooks::PublishEvent do
         result = described_class.new(server_webhook_event).call
 
         expect(publish_event_request).not_to have_been_requested
-        expect(ServerWebhooks::UpdateDeliveredEventJob).not_to have_enqueued_sidekiq_job
+        expect(ServerWebhooks::UpdateDeliveredEventJob).not_to have_been_enqueued
 
         server_webhook_event.reload
         expect(server_webhook_event.failed_attempts).to eq(1)
@@ -159,7 +159,7 @@ RSpec.describe ServerWebhooks::PublishEvent do
         result = described_class.new(server_webhook_event).call
 
         expect(publish_event_request).not_to have_been_requested
-        expect(ServerWebhooks::UpdateDeliveredEventJob).not_to have_enqueued_sidekiq_job
+        expect(ServerWebhooks::UpdateDeliveredEventJob).not_to have_been_enqueued
 
         server_webhook_event.reload
         expect(server_webhook_event.failed_attempts).to eq(1)
@@ -217,7 +217,7 @@ RSpec.describe ServerWebhooks::PublishEvent do
             result = described_class.new(server_webhook_event).call
 
             expect(publish_event_request).to have_been_requested
-            expect(ServerWebhooks::UpdateDeliveredEventJob).not_to have_enqueued_sidekiq_job
+            expect(ServerWebhooks::UpdateDeliveredEventJob).not_to have_been_enqueued
 
             server_webhook_event.reload
             expect(server_webhook_event.status).to eq('retry')
@@ -276,7 +276,7 @@ RSpec.describe ServerWebhooks::PublishEvent do
             result = described_class.new(server_webhook_event).call
 
             expect(publish_event_request).to have_been_requested
-            expect(ServerWebhooks::UpdateDeliveredEventJob).not_to have_enqueued_sidekiq_job
+            expect(ServerWebhooks::UpdateDeliveredEventJob).not_to have_been_enqueued
 
             server_webhook_event.reload
             expect(server_webhook_event.status).to eq('retry')
@@ -335,7 +335,7 @@ RSpec.describe ServerWebhooks::PublishEvent do
             result = described_class.new(server_webhook_event).call
 
             expect(publish_event_request).to have_been_requested
-            expect(ServerWebhooks::UpdateDeliveredEventJob).not_to have_enqueued_sidekiq_job
+            expect(ServerWebhooks::UpdateDeliveredEventJob).not_to have_been_enqueued
 
             server_webhook_event.reload
             expect(server_webhook_event.status).to eq('retry')
@@ -394,7 +394,7 @@ RSpec.describe ServerWebhooks::PublishEvent do
             result = described_class.new(server_webhook_event).call
 
             expect(publish_event_request).to have_been_requested
-            expect(ServerWebhooks::UpdateDeliveredEventJob).not_to have_enqueued_sidekiq_job
+            expect(ServerWebhooks::UpdateDeliveredEventJob).not_to have_been_enqueued
 
             server_webhook_event.reload
             expect(server_webhook_event.status).to eq('failed')
@@ -453,7 +453,9 @@ RSpec.describe ServerWebhooks::PublishEvent do
             result = described_class.new(server_webhook_event).call
 
             expect(publish_event_request).to have_been_requested
-            expect(ServerWebhooks::UpdateDeliveredEventJob).to have_enqueued_sidekiq_job(server_webhook_event.id)
+            expect(ServerWebhooks::UpdateDeliveredEventJob)
+              .to have_been_enqueued
+              .with(server_webhook_event)
 
             server_webhook_event.reload
             expect(server_webhook_event.status).to eq('pending')
@@ -509,7 +511,9 @@ RSpec.describe ServerWebhooks::PublishEvent do
               result = described_class.new(server_webhook_event).call
 
               expect(publish_event_request).to have_been_requested
-              expect(ServerWebhooks::UpdateDeliveredEventJob).to have_enqueued_sidekiq_job(server_webhook_event.id)
+              expect(ServerWebhooks::UpdateDeliveredEventJob)
+                .to have_been_enqueued
+                .with(server_webhook_event)
 
               server_webhook_event.reload
               expect(server_webhook_event.status).to eq('pending')
@@ -564,7 +568,9 @@ RSpec.describe ServerWebhooks::PublishEvent do
               result = described_class.new(server_webhook_event).call
 
               expect(publish_event_request).to have_been_requested
-              expect(ServerWebhooks::UpdateDeliveredEventJob).to have_enqueued_sidekiq_job(server_webhook_event.id)
+              expect(ServerWebhooks::UpdateDeliveredEventJob)
+                .to have_been_enqueued
+                .with(server_webhook_event)
 
               server_webhook_event.reload
               expect(server_webhook_event.status).to eq('pending')

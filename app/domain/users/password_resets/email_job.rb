@@ -2,14 +2,11 @@
 
 module Users
   module PasswordResets
-    class EmailJob
-      include Sidekiq::Job
+    class EmailJob < ApplicationJob
+      queue_as 'critical'
+      # TODO: rewrite lock: :while_executing)
 
-      sidekiq_options(lock: :while_executing)
-
-      def perform(user_id)
-        user = User.find(user_id)
-
+      def perform(user)
         password_reset_token = user.generate_token!(:password_reset)
         user.update!(password_reset_sent_at: Time.current)
 

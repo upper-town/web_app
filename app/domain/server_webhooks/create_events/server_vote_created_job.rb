@@ -2,20 +2,16 @@
 
 module ServerWebhooks
   module CreateEvents
-    class ServerVoteCreatedJob
-      include Sidekiq::Job
+    class ServerVoteCreatedJob < ApplicationJob
+      # TODO: rewrite lock: :while_executing)
 
       EVENT_TYPE = 'server_vote.created'
 
-      sidekiq_options(lock: :while_executing)
-
-      def perform(server_vote_id)
-        server_vote = ServerVote.find(server_vote_id)
-
+      def perform(server_vote)
         server_webhook_events = create_server_webhook_events(server_vote)
 
         server_webhook_events.each do |server_webhook_event|
-          PublishEventJob.perform_async(server_webhook_event.id)
+          PublishEventJob.perform_later(server_webhook_event)
         end
       end
 

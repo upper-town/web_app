@@ -81,13 +81,11 @@ module AdminUsers
     private
 
     def session_params
-      params
-        .require(:admin_users_session)
-        .permit(
-          :email,
-          :password,
-          :remember_me
-        )
+      params.expect(admin_users_session: [
+        :email,
+        :password,
+        :remember_me
+      ])
     end
   end
 end

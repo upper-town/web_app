@@ -9,7 +9,6 @@ Dotenv.load('.env.test.local', '.env.test')
 require 'webmock/rspec'
 require 'vcr'
 require 'capybara/rspec'
-require 'rspec-sidekiq'
 
 Dir[Pathname.getwd.join('spec', 'support', 'config', '**', '*.rb')].each do |file|
   require file

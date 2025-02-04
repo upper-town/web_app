@@ -1,23 +1,22 @@
 # frozen_string_literal: true
 
 module Servers
-  class DeleteArchivedWithoutVotesJob
-    include Sidekiq::Job
-
-    sidekiq_options(lock: :while_executing)
+  class DeleteArchivedWithoutVotesJob < ApplicationJob
+    queue_as 'low'
+    # TODO: rewrite lock: :while_executing)
 
     def perform
-      archived_server_ids_without_votes.each do |server_id|
-        DestroyJob.perform_async(server_id)
+      archived_servers_without_votes.each do |server|
+        DestroyJob.perform_later(server)
       end
     end
 
-    def archived_server_ids_without_votes
+    def archived_servers_without_votes
       Server
+        .select(:id)
         .archived
         .where.missing(:votes)
         .distinct
-        .pluck(:id)
     end
   end
 end

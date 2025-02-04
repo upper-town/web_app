@@ -16,9 +16,9 @@ RSpec.describe Servers::DeleteArchivedWithoutVotesJob do
 
       described_class.new.perform
 
-      expect(Servers::DestroyJob).to have_enqueued_sidekiq_job.exactly(2).times
-      expect(Servers::DestroyJob).to have_enqueued_sidekiq_job(server1.id)
-      expect(Servers::DestroyJob).to have_enqueued_sidekiq_job(server3.id)
+      expect(Servers::DestroyJob).to have_been_enqueued.exactly(2).times
+      expect(Servers::DestroyJob).to have_been_enqueued.with(server1)
+      expect(Servers::DestroyJob).to have_been_enqueued.with(server3)
     end
   end
 end

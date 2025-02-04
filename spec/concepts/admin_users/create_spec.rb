@@ -9,14 +9,14 @@ RSpec.describe AdminUsers::Create do
         email_confirmation = AdminUsers::EmailConfirmation.new(email: 'admin.user@upper.town')
         request = TestRequestHelper.build(remote_ip: '1.1.1.1')
         rate_limiter_key = 'admin_users_create:1.1.1.1'
-        RateLimiting.redis.set(rate_limiter_key, '3')
+        Rails.cache.write(rate_limiter_key, 3)
 
         result = described_class.new(email_confirmation, request).call
 
         expect(result.failure?).to be(true)
         expect(result.errors[:base]).to include(/Too many requests/)
-        expect(RateLimiting.redis.get(rate_limiter_key)).to eq('4')
-        expect(AdminUsers::EmailConfirmations::EmailJob).not_to have_enqueued_sidekiq_job
+        expect(Rails.cache.read(rate_limiter_key)).to eq(4)
+        expect(AdminUsers::EmailConfirmations::EmailJob).not_to have_been_enqueued
       end
     end
 
@@ -25,7 +25,7 @@ RSpec.describe AdminUsers::Create do
         email_confirmation = AdminUsers::EmailConfirmation.new(email: 'admin.user@upper.town')
         request = TestRequestHelper.build(remote_ip: '1.1.1.1')
         rate_limiter_key = 'admin_users_create:1.1.1.1'
-        RateLimiting.redis.set(rate_limiter_key, '0')
+        Rails.cache.write(rate_limiter_key, 0)
 
         result = nil
         expect do
@@ -44,10 +44,10 @@ RSpec.describe AdminUsers::Create do
         expect(admin_user.email_confirmed_at).to be_blank
 
         expect(result.success?).to be(true)
-        expect(RateLimiting.redis.get(rate_limiter_key)).to eq('1')
+        expect(Rails.cache.read(rate_limiter_key)).to eq(1)
         expect(AdminUsers::EmailConfirmations::EmailJob)
-          .to have_enqueued_sidekiq_job(admin_user.id)
-          .on('critical')
+          .to have_been_enqueued
+          .with(admin_user)
       end
 
       context 'when an error is raised trying to create admin_user' do
@@ -55,15 +55,15 @@ RSpec.describe AdminUsers::Create do
           email_confirmation = AdminUsers::EmailConfirmation.new(email: 'admin.user@upper.town')
           request = TestRequestHelper.build(remote_ip: '1.1.1.1')
           rate_limiter_key = 'admin_users_create:1.1.1.1'
-          RateLimiting.redis.set(rate_limiter_key, '0')
+          Rails.cache.write(rate_limiter_key, 0)
           allow_any_instance_of(AdminUser).to receive(:save!).and_raise(ActiveRecord::ActiveRecordError)
 
           expect do
             described_class.new(email_confirmation, request).call
           end.to raise_error(ActiveRecord::ActiveRecordError)
 
-          expect(RateLimiting.redis.get(rate_limiter_key)).to eq('0')
-          expect(AdminUsers::EmailConfirmations::EmailJob).not_to have_enqueued_sidekiq_job
+          expect(Rails.cache.read(rate_limiter_key)).to eq(0)
+          expect(AdminUsers::EmailConfirmations::EmailJob).not_to have_been_enqueued
         end
       end
     end
@@ -74,7 +74,7 @@ RSpec.describe AdminUsers::Create do
         email_confirmation = AdminUsers::EmailConfirmation.new(email: 'admin.user@upper.town')
         request = TestRequestHelper.build(remote_ip: '1.1.1.1')
         rate_limiter_key = 'admin_users_create:1.1.1.1'
-        RateLimiting.redis.set(rate_limiter_key, '0')
+        Rails.cache.write(rate_limiter_key, 0)
 
         result = nil
         expect do
@@ -86,10 +86,10 @@ RSpec.describe AdminUsers::Create do
         )
 
         expect(result.success?).to be(true)
-        expect(RateLimiting.redis.get(rate_limiter_key)).to eq('1')
+        expect(Rails.cache.read(rate_limiter_key)).to eq(1)
         expect(AdminUsers::EmailConfirmations::EmailJob)
-          .to have_enqueued_sidekiq_job(admin_user.id)
-          .on('critical')
+          .to have_been_enqueued
+          .with(admin_user)
       end
     end
   end

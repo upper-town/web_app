@@ -1,21 +1,19 @@
 # frozen_string_literal: true
 
 module ServerWebhooks
-  class PublishEventJob
-    include Sidekiq::Job
+  class PublishEventJob < ApplicationJob
+    # TODO: rewrite lock: :while_executing)
 
-    sidekiq_options(lock: :while_executing)
-
-    def perform(server_webhook_event_id)
-      server_webhook_event = ServerWebhookEvent.find(server_webhook_event_id)
-
+    def perform(server_webhook_event)
       result = PublishEvent.call(server_webhook_event)
 
       if result.failure?
-        Rails.logger.info "[ServerWebhooks::PublishEventJob] failure: #{result.errors.to_hash}"
+        Rails.logger.info do
+          "[ServerWebhooks::PublishEventJob] failure: #{result.errors.to_hash}"
+        end
 
         if result.data[:retry_in].present?
-          PublishEventJob.perform_in(result.data[:retry_in], server_webhook_event.id)
+          PublishEventJob.set(wait: result.data[:retry_in]).perform_later(server_webhook_event)
         end
       end
     end

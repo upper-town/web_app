@@ -1,19 +1,18 @@
 # frozen_string_literal: true
 
 module Servers
-  class DeleteMarkedForDeletionJob
-    include Sidekiq::Job
-
-    sidekiq_options(lock: :while_executing)
+  class DeleteMarkedForDeletionJob < ApplicationJob
+    queue_as 'low'
+    # TODO: rewrite lock: :while_executing)
 
     def perform
-      marked_for_deletion_server_ids.each do |server_id|
-        DestroyJob.perform_async(server_id)
+      marked_for_deletion_servers.each do |server|
+        DestroyJob.perform_later(server)
       end
     end
 
-    def marked_for_deletion_server_ids
-      Server.marked_for_deletion.pluck(:id)
+    def marked_for_deletion_servers
+      Server.select(:id).marked_for_deletion
     end
   end
 end

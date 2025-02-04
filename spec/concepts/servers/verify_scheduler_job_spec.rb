@@ -11,9 +11,9 @@ RSpec.describe Servers::VerifySchedulerJob do
 
       described_class.new.perform
 
-      expect(Servers::VerifyJob).to have_enqueued_sidekiq_job.exactly(2).times
-      expect(Servers::VerifyJob).to have_enqueued_sidekiq_job(server1.id)
-      expect(Servers::VerifyJob).to have_enqueued_sidekiq_job(server3.id)
+      expect(Servers::VerifyJob).to have_been_enqueued.exactly(2).times
+      expect(Servers::VerifyJob).to have_been_enqueued.with(server1)
+      expect(Servers::VerifyJob).to have_been_enqueued.with(server3)
     end
   end
 end

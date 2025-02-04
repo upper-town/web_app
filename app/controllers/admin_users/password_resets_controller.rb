@@ -83,11 +83,11 @@ module AdminUsers
     end
 
     def password_reset_params
-      params.require(:admin_users_password_reset).permit(:email)
+      params.expect(admin_users_password_reset: [:email])
     end
 
     def password_reset_edit_params
-      params.require(:admin_users_password_reset_edit).permit(:token, :password)
+      params.expect(admin_users_password_reset_edit: [:token, :password])
     end
   end
 end

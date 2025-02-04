@@ -35,7 +35,7 @@ module Users
     private
 
     def change_email_reversion_params
-      params.require(:users_change_email_reversion).permit(:token)
+      params.expect(users_change_email_reversion: [:token])
     end
 
     def token_from_params

@@ -14,14 +14,14 @@ RSpec.describe Users::ChangeEmailConfirmations::Create do
         )
         request = TestRequestHelper.build(remote_ip: '1.1.1.1')
         rate_limiter_key = 'users_change_email_confirmations_create:1.1.1.1'
-        RateLimiting.redis.set(rate_limiter_key, '3')
+        Rails.cache.write(rate_limiter_key, 3)
 
         result = described_class.new(change_email_confirmation, user.email, request).call
 
         expect(result.failure?).to be(true)
         expect(result.errors[:base]).to include(/Too many attempts/)
-        expect(RateLimiting.redis.get(rate_limiter_key)).to eq('4')
-        expect(Users::ChangeEmailConfirmations::EmailJob).not_to have_enqueued_sidekiq_job
+        expect(Rails.cache.read(rate_limiter_key)).to eq(4)
+        expect(Users::ChangeEmailConfirmations::EmailJob).not_to have_been_enqueued
       end
     end
 
@@ -35,14 +35,14 @@ RSpec.describe Users::ChangeEmailConfirmations::Create do
         )
         request = TestRequestHelper.build(remote_ip: '1.1.1.1')
         rate_limiter_key = 'users_change_email_confirmations_create:1.1.1.1'
-        RateLimiting.redis.set(rate_limiter_key, '0')
+        Rails.cache.write(rate_limiter_key, 0)
 
         result = described_class.new(change_email_confirmation, 'someone.else@upper.town', request).call
 
         expect(result.failure?).to be(true)
         expect(result.errors[:base]).to include(/Incorrect current email address/)
-        expect(RateLimiting.redis.get(rate_limiter_key)).to eq('1')
-        expect(Users::ChangeEmailConfirmations::EmailJob).not_to have_enqueued_sidekiq_job
+        expect(Rails.cache.read(rate_limiter_key)).to eq(1)
+        expect(Users::ChangeEmailConfirmations::EmailJob).not_to have_been_enqueued
       end
     end
 
@@ -56,14 +56,14 @@ RSpec.describe Users::ChangeEmailConfirmations::Create do
         )
         request = TestRequestHelper.build(remote_ip: '1.1.1.1')
         rate_limiter_key = 'users_change_email_confirmations_create:1.1.1.1'
-        RateLimiting.redis.set(rate_limiter_key, '0')
+        Rails.cache.write(rate_limiter_key, 0)
 
         result = described_class.new(change_email_confirmation, user.email, request).call
 
         expect(result.failure?).to be(true)
         expect(result.errors[:base]).to include(/Incorrect password/)
-        expect(RateLimiting.redis.get(rate_limiter_key)).to eq('1')
-        expect(Users::ChangeEmailConfirmations::EmailJob).not_to have_enqueued_sidekiq_job
+        expect(Rails.cache.read(rate_limiter_key)).to eq(1)
+        expect(Users::ChangeEmailConfirmations::EmailJob).not_to have_been_enqueued
       end
     end
 
@@ -77,15 +77,15 @@ RSpec.describe Users::ChangeEmailConfirmations::Create do
         )
         request = TestRequestHelper.build(remote_ip: '1.1.1.1')
         rate_limiter_key = 'users_change_email_confirmations_create:1.1.1.1'
-        RateLimiting.redis.set(rate_limiter_key, '0')
+        Rails.cache.write(rate_limiter_key, 0)
         allow_any_instance_of(User).to receive(:update!).and_raise(ActiveRecord::ActiveRecordError)
 
         expect do
           described_class.new(change_email_confirmation, user.email, request).call
         end.to raise_error(ActiveRecord::ActiveRecordError)
 
-        expect(RateLimiting.redis.get(rate_limiter_key)).to eq('0')
-        expect(Users::ChangeEmailConfirmations::EmailJob).not_to have_enqueued_sidekiq_job
+        expect(Rails.cache.read(rate_limiter_key)).to eq(0)
+        expect(Users::ChangeEmailConfirmations::EmailJob).not_to have_been_enqueued
       end
     end
 
@@ -100,15 +100,18 @@ RSpec.describe Users::ChangeEmailConfirmations::Create do
           )
           request = TestRequestHelper.build(remote_ip: '1.1.1.1')
           rate_limiter_key = 'users_change_email_confirmations_create:1.1.1.1'
-          RateLimiting.redis.set(rate_limiter_key, '0')
+          Rails.cache.write(rate_limiter_key, 0)
 
           result = described_class.new(change_email_confirmation, user.email, request).call
 
           expect(result.success?).to be(true)
           expect(result.data[:user].change_email).to eq('user.change@upper.town')
           expect(result.data[:user].change_email_confirmed_at).to be_nil
-          expect(RateLimiting.redis.get(rate_limiter_key)).to eq('1')
-          expect(Users::ChangeEmailConfirmations::EmailJob).to have_enqueued_sidekiq_job(user.id).in(30.seconds)
+          expect(Rails.cache.read(rate_limiter_key)).to eq(1)
+          expect(Users::ChangeEmailConfirmations::EmailJob)
+            .to have_been_enqueued
+            .with(user)
+            .at(30.seconds.from_now)
         end
       end
     end

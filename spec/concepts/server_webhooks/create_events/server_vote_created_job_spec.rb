@@ -4,14 +4,6 @@ require 'rails_helper'
 
 RSpec.describe ServerWebhooks::CreateEvents::ServerVoteCreatedJob do
   describe '#perform' do
-    context 'when a ServerVote is not found' do
-      it 'raises an error' do
-        expect do
-          described_class.new.perform(0)
-        end.to raise_error(ActiveRecord::RecordNotFound)
-      end
-    end
-
     context 'when server does not have enabled configs that subscribe to the event_type' do
       it 'does not create ServerWebhookEvent records and does not publish' do
         server = create(:server, country_code: 'US')
@@ -30,10 +22,10 @@ RSpec.describe ServerWebhooks::CreateEvents::ServerVoteCreatedJob do
         )
 
         expect do
-          described_class.new.perform(server_vote.id)
+          described_class.new.perform(server_vote)
         end.not_to change(ServerWebhookEvent, :count)
 
-        expect(ServerWebhooks::PublishEventJob).not_to have_enqueued_sidekiq_job
+        expect(ServerWebhooks::PublishEventJob).not_to have_been_enqueued
       end
     end
 
@@ -56,7 +48,7 @@ RSpec.describe ServerWebhooks::CreateEvents::ServerVoteCreatedJob do
         )
 
         expect do
-          described_class.new.perform(server_vote.id)
+          described_class.new.perform(server_vote)
         end.to change(ServerWebhookEvent, :count).by(2)
 
         server_webhook_event1 = ServerWebhookEvent.find_by!(config: server_webhook_config1)
@@ -83,8 +75,8 @@ RSpec.describe ServerWebhooks::CreateEvents::ServerVoteCreatedJob do
         expect(server_webhook_event2.status).to eq('pending')
         expect(server_webhook_event2.server_id).to eq(server_vote.server_id)
 
-        expect(ServerWebhooks::PublishEventJob).to have_enqueued_sidekiq_job(server_webhook_event1.id)
-        expect(ServerWebhooks::PublishEventJob).to have_enqueued_sidekiq_job(server_webhook_event2.id)
+        expect(ServerWebhooks::PublishEventJob).to have_been_enqueued.with(server_webhook_event1)
+        expect(ServerWebhooks::PublishEventJob).to have_been_enqueued.with(server_webhook_event2)
       end
 
       context 'when an error is raised during creation of ServerWebhookEvent' do
@@ -107,7 +99,7 @@ RSpec.describe ServerWebhooks::CreateEvents::ServerVoteCreatedJob do
           allow(ServerWebhookEvent).to receive(:create!).and_raise(ActiveRecord::ActiveRecordError)
 
           expect do
-            described_class.new.perform(server_vote.id)
+            described_class.new.perform(server_vote)
           end.to(
             raise_error(ActiveRecord::ActiveRecordError).and(
               change(ServerWebhookEvent, :count).by(0)
@@ -115,7 +107,7 @@ RSpec.describe ServerWebhooks::CreateEvents::ServerVoteCreatedJob do
           )
           expect(ServerWebhookEvent).to have_received(:create!)
 
-          expect(ServerWebhooks::PublishEventJob).not_to have_enqueued_sidekiq_job
+          expect(ServerWebhooks::PublishEventJob).not_to have_been_enqueued
         end
       end
     end

@@ -16,8 +16,8 @@ module ActionDispatch
             resources :admin_users
             resources :servers, only: [:index, :show, :new, :create, :edit, :update]
 
-            constraints(Admin::SidekiqConstraint.new) do
-              mount Sidekiq::Web => '/sidekiq', as: :sidekiq_web
+            constraints(Admin::JobsConstraint.new) do
+              mount MissionControl::Jobs::Engine, at: '/jobs'
             end
           end
         end

@@ -1,0 +1,110 @@
+<div class="d-flex flex-row gap-2 justify-content-center" data-turbo-prefetch="true">
+  <% if pagination.show_first? || pagination.show_last? %>
+    <nav role="navigation">
+      <ul class="pagination">
+        <% if pagination.show_first? %>
+          <% if pagination.first_page? %>
+            <li class="page-item disabled">
+              <span class="page-link"><%= pagination.first_icon %></span>
+            </li>
+          <% else %>
+            <li class="page-item">
+              <%= link_to(pagination.first_icon, pagination.first_page_url, class: 'page-link') %>
+            </li>
+          <% end %>
+        <% end %>
+
+        <% if pagination.show_last? %>
+          <% if pagination.last_page? %>
+            <li class="page-item disabled">
+              <span class="page-link"><%= pagination.last_icon %></span>
+            </li>
+          <% else %>
+            <li class="page-item">
+              <%= link_to(pagination.last_icon, pagination.last_page_url, class: 'page-link') %>
+            </li>
+          <% end %>
+        <% end %>
+      </ul>
+    </nav>
+  <% end %>
+
+  <nav role="navigation" class="pagination-prev-next">
+    <ul class="pagination">
+      <% if pagination.has_prev_page? %>
+        <li class="page-item">
+          <%= link_to(pagination.prev_icon, pagination.prev_page_url, class: 'page-link') %>
+        </li>
+      <% else %>
+        <li class="page-item disabled">
+          <span class="page-link">
+            <%= pagination.prev_icon %>
+          </span>
+        </li>
+      <% end %>
+
+      <% if pagination.has_next_page? %>
+        <li class="page-item">
+          <%= link_to(pagination.next_icon, pagination.next_page_url, class: 'page-link') %>
+        </li>
+      <% else %>
+        <li class="page-item disabled">
+          <span class="page-link">
+            <%= pagination.next_icon %>
+          </span>
+        </li>
+      <% end %>
+    </ul>
+  </nav>
+
+  <% if pagination.show_goto? %>
+    <nav role="navigation">
+      <ul class="pagination">
+        <li class="page-item pagination-goto">
+          <%= form_with(method: :get, url: request.path) do |form| %>
+            <%= RequestHelper.new(request).hidden_fields_for_query({}, ['page']) %>
+            <div class="input-group">
+              <input
+                type="text"
+                class="form-control"
+                name="page"
+                value="<%= pagination.page %>"
+                data-controller="select-text"
+                data-action="focus->select-text#all"
+              >
+              <button type="submit" class="page-link" type="button"><%= pagination.go_icon %></button>
+            </div>
+          <% end %>
+        </li>
+      </ul>
+    </nav>
+  <% end %>
+</div>
+
+<% if pagination.show_badges? %>
+  <div class="d-flex flex-row gap-1 justify-content-center mb-2">
+    <% if pagination.show_page? %>
+      <span class="badge text-bg-secondary">
+        page <%= pagination.page %>
+      </span>
+    <% end %>
+
+    <% if pagination.show_total_pages? %>
+      <span class="badge text-bg-secondary">
+        total_pages <%= pagination.total_pages %>
+      </span>
+    <% end %>
+
+    <% if pagination.show_per_page? %>
+      <span class="badge text-bg-secondary">
+        per_page <%= pagination.per_page %>
+      </span>
+    <% end %>
+
+    <% if pagination.show_total_count? %>
+      <span class="badge text-bg-secondary">
+        total_count <%= pagination.total_count %>
+      </span>
+    <% end %>
+  </div>
+<% end %>

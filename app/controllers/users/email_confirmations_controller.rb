@@ -93,11 +93,11 @@ module Users
     private
 
     def email_confirmation_params
-      params.require(:users_email_confirmation).permit(:email)
+      params.expect(users_email_confirmation: [:email])
     end
 
     def email_confirmation_edit_params
-      params.require(:users_email_confirmation_edit).permit(:token)
+      params.expect(users_email_confirmation_edit: [:token])
     end
 
     def email_from_params

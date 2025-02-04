@@ -58,9 +58,7 @@ module AdminUsers
     end
 
     def enqueue_email_confirmation_job(admin_user)
-      AdminUsers::EmailConfirmations::EmailJob
-        .set(queue: 'critical')
-        .perform_async(admin_user.id)
+      AdminUsers::EmailConfirmations::EmailJob.perform_later(admin_user)
     end
   end
 end

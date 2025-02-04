@@ -2,14 +2,11 @@
 
 module Users
   module ChangeEmailConfirmations
-    class EmailJob
-      include Sidekiq::Job
+    class EmailJob < ApplicationJob
+      queue_as 'critical'
+      # TODO: rewrite lock: :while_executing)
 
-      sidekiq_options(lock: :while_executing)
-
-      def perform(user_id)
-        user = User.find(user_id)
-
+      def perform(user)
         change_email_reversion_token, change_email_confirmation_token = update_and_generate_tokens(user)
 
         UsersMailer

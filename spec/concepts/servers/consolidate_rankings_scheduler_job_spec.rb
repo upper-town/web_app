@@ -11,8 +11,8 @@ RSpec.describe Servers::ConsolidateRankingsSchedulerJob do
 
         described_class.new.perform('current')
 
-        expect(Servers::ConsolidateRankingsJob).to have_enqueued_sidekiq_job(game1.id, 'current')
-        expect(Servers::ConsolidateRankingsJob).to have_enqueued_sidekiq_job(game2.id, 'current')
+        expect(Servers::ConsolidateRankingsJob).to have_been_enqueued.with(game1, 'current')
+        expect(Servers::ConsolidateRankingsJob).to have_been_enqueued.with(game2, 'current')
       end
     end
 
@@ -23,8 +23,8 @@ RSpec.describe Servers::ConsolidateRankingsSchedulerJob do
 
         described_class.new.perform('all')
 
-        expect(Servers::ConsolidateRankingsJob).to have_enqueued_sidekiq_job(game1.id, 'all')
-        expect(Servers::ConsolidateRankingsJob).to have_enqueued_sidekiq_job(game2.id, 'all')
+        expect(Servers::ConsolidateRankingsJob).to have_been_enqueued.with(game1, 'all')
+        expect(Servers::ConsolidateRankingsJob).to have_been_enqueued.with(game2, 'all')
       end
     end
 

@@ -53,6 +53,6 @@ class ServerVotesController < ApplicationController
   end
 
   def server_vote_params
-    params.require(:server_vote).permit(:reference)
+    params.expect(server_vote: [:reference])
   end
 end

@@ -46,13 +46,11 @@ module Inside
       private
 
       def change_email_confirmation_params
-        params
-          .require(:users_change_email_confirmation)
-          .permit(
-            :email,
-            :change_email,
-            :password
-          )
+        params.expect(users_change_email_confirmation: [
+          :email,
+          :change_email,
+          :password
+        ])
       end
     end
   end

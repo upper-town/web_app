@@ -1,20 +1,5 @@
 # frozen_string_literal: true
 
-# == Schema Information
-#
-# Table name: feature_flags
-#
-#  id         :bigint           not null, primary key
-#  comment    :string           default(""), not null
-#  name       :string           not null
-#  value      :string           not null
-#  created_at :datetime         not null
-#  updated_at :datetime         not null
-#
-# Indexes
-#
-#  index_feature_flags_on_name  (name) UNIQUE
-#
 class FeatureFlag < ApplicationRecord
   # This is a simple feature flag implementation that reads from the database
   # or from env vars. An env var feature flag takes precedence over a database
