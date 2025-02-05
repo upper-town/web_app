@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class PaginationCursorPresenter
+class PaginationComponent < ViewComponent::Base
   DEFAULT_OPTIONS = {
     show_first: true,
     show_goto:  false,
@@ -18,6 +18,8 @@ class PaginationCursorPresenter
   attr_reader :pagination_cursor, :options
 
   def initialize(pagination_cursor, **options)
+    super()
+
     @pagination_cursor = pagination_cursor
     @options = DEFAULT_OPTIONS.merge(options)
   end

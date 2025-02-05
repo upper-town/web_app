@@ -1,8 +1,10 @@
 # frozen_string_literal: true
 
 module Admin
-  class TablePresenter
+  class TableComponent < ViewComponent::Base
     def initialize(collection: [], columns: [])
+      super()
+
       @collection = collection
       @columns = columns
     end

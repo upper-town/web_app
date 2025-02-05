@@ -1,6 +1,5 @@
 <div data-turbo-cache="false">
-  <%= render(
-    partial: 'shared/flash_item',
-    collection: flash.map { |flash_item| FlashItemPresenter.new(flash_item) }
-  ) %>
+  <% flash.each do |flash_item| %>
+    <%= render(FlashItemComponent.new(flash_item)) %>
+  <% end %>
 </div>

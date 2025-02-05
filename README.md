@@ -6,12 +6,12 @@ Repository for a web app with features for the gaming community.
 
 Current domains in use by this app:
 
-| Environment | Domain/site                        | `APP_ENV`     | `RAILS_ENV `                 |
-| ----------- | ---------------------------------- | ------------- | ---------------------------- |
-| production  | https://upper.town                 | `production`  | `production`                 |
-| sandbox     | https://sandbox.upper.town         | `sandbox`     | `production` / `development` |
-| development | http://development.upper.town:3000 | `development` | `development`                |
-| test        | http://test.upper.town:3000        | `test`        | `test`                       |
+| Environment | Domain/site                        | `APP_ENV`     | `RAILS_ENV `  |
+| ----------- | ---------------------------------- | ------------- | ------------- |
+| production  | https://upper.town                 | `production`  | `production`  |
+| sandbox     | https://sandbox.upper.town         | `sandbox`     | `production`  |
+| development | http://development.upper.town:3000 | `development` | `development` |
+| test        | http://test.upper.town:3000        | `test`        | `test`        |
 
 Also,
 
@@ -123,7 +123,8 @@ It should set instance variables to be used by views.
 ### Rails Views
 
 A view template should only contain presentation layer code, rendering view
-partials with data received from controllers and it can use presenters.
+partials or `ViewComponent` with data received from controllers and it can
+use presenters.
 
 ### Rails Models
 
@@ -175,8 +176,6 @@ framework in use:
 
 [Solid Queue]: https://github.com/rails/solid_queue
 
-https://github.com/rails/solid_queue
-
 ### Policies
 
 Policies are service/query objects specialized in checking if a user meets
@@ -204,13 +203,17 @@ be Ruby classes or inherit from a Rails validator class:
 
 ### Presenters
 
-Presenters deal with presentation logic.
+Presenters deal with presentation logic. If there is already a component
+framework in place, like [`ViewComponent`], that could be a replacement for
+your presenter logic:
 
 - Create a presenter in `app/presenters/`
 - Use a descriptive name for the presenter class and add a `Presenter`
   suffix to it
 - Use descriptive names for the presenter methods
 - Return primitive values that can be directly used in views
+
+[`viewcomponent`]: https://rubygems.org/gems/view_component
 
 ### Concepts
 
@@ -236,7 +239,7 @@ Embracing Rails, we can think of a layered architecture as:
 - **Application layer**: Rails Controllers, Routes
 - **Infrastructure layer**: Rails ApplicationRecord, API clients, SolidQueue,
   SolidCache, and other gems
-- **Presentation layter**: Rails Views, Helpers, Presenters
+- **Presentation layter**: Rails Views, Helpers, Presenters, ViewComponents
 - **Domain layer**: models, services, jobs, queries, concepts
 
 ## Tests

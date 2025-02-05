@@ -1,0 +1,14 @@
+<%= form.select(
+  :country_code,
+  (
+    options_for_select([blank_option], selected_value) +
+    options_for_select(popular_options, selected_value) +
+    tag.hr +
+    options_for_select(other_options, selected_value)
+  ),
+  {},
+  {
+    class: 'form-select mb-2',
+    data: { 'controller' => 'country-select' }
+  }
+) %>

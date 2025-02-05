@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class FlashItemPresenter
+class FlashItemComponent < ViewComponent::Base
   attr_reader(
     :flash_item,
     :key,
@@ -11,6 +11,8 @@ class FlashItemPresenter
   )
 
   def initialize(flash_item)
+    super()
+
     @flash_item = flash_item
 
     @key = parse_key

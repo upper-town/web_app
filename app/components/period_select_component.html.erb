@@ -1,0 +1,9 @@
+<%= form.select(
+  :period,
+  options_for_select(options, selected_value),
+  {},
+  {
+    class: 'form-select mb-2',
+    data: { 'controller' => 'period-select' }
+  }
+) %>

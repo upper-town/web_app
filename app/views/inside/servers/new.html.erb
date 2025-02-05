@@ -6,7 +6,7 @@
 ) do |form| %>
   <div class="mb-3">
     <%= form.label(:game_id, 'Game', class: 'form-label') %>
-    <%= render(partial: 'shared/game_select', object: GameSelectPresenter.new(
+    <%= render(GameSelectComponent.new(
       form,
       only_in_use: false,
       blank_name: nil,
@@ -16,7 +16,7 @@
 
   <div class="mb-3">
     <%= form.label(:country_code, 'Country', class: 'form-label') %>
-    <%= render(partial: 'shared/country_select', object: CountrySelectPresenter.new(
+    <%= render(CountrySelectComponent.new(
       form,
       only_in_use: false,
       blank_name: nil,

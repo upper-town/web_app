@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class GameSelectPresenter
+class GameSelectComponent < ViewComponent::Base
   attr_reader(
     :form,
     :only_in_use,
@@ -10,6 +10,8 @@ class GameSelectPresenter
   )
 
   def initialize(form, only_in_use: false, default_value: nil, selected_value: nil, blank_name: 'All')
+    super()
+
     @form = form
     @only_in_use = only_in_use
     @default_value = default_value

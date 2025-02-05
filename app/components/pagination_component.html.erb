@@ -1,27 +1,27 @@
 <div class="d-flex flex-row gap-2 justify-content-center" data-turbo-prefetch="true">
-  <% if pagination.show_first? || pagination.show_last? %>
+  <% if show_first? || show_last? %>
     <nav role="navigation">
       <ul class="pagination">
-        <% if pagination.show_first? %>
+        <% if show_first? %>
           <% if pagination.first_page? %>
             <li class="page-item disabled">
-              <span class="page-link"><%= pagination.first_icon %></span>
+              <span class="page-link"><%= first_icon %></span>
             </li>
           <% else %>
             <li class="page-item">
-              <%= link_to(pagination.first_icon, pagination.first_page_url, class: 'page-link') %>
+              <%= link_to(first_icon, pagination.first_page_url, class: 'page-link') %>
             </li>
           <% end %>
         <% end %>
 
-        <% if pagination.show_last? %>
-          <% if pagination.last_page? %>
+        <% if show_last? %>
+          <% if last_page? %>
             <li class="page-item disabled">
-              <span class="page-link"><%= pagination.last_icon %></span>
+              <span class="page-link"><%= last_icon %></span>
             </li>
           <% else %>
             <li class="page-item">
-              <%= link_to(pagination.last_icon, pagination.last_page_url, class: 'page-link') %>
+              <%= link_to(last_icon, pagination.last_page_url, class: 'page-link') %>
             </li>
           <% end %>
         <% end %>
@@ -33,31 +33,31 @@
     <ul class="pagination">
       <% if pagination.has_prev_page? %>
         <li class="page-item">
-          <%= link_to(pagination.prev_icon, pagination.prev_page_url, class: 'page-link') %>
+          <%= link_to(prev_icon, pagination.prev_page_url, class: 'page-link') %>
         </li>
       <% else %>
         <li class="page-item disabled">
           <span class="page-link">
-            <%= pagination.prev_icon %>
+            <%= prev_icon %>
           </span>
         </li>
       <% end %>
 
       <% if pagination.has_next_page? %>
         <li class="page-item">
-          <%= link_to(pagination.next_icon, pagination.next_page_url, class: 'page-link') %>
+          <%= link_to(next_icon, pagination.next_page_url, class: 'page-link') %>
         </li>
       <% else %>
         <li class="page-item disabled">
           <span class="page-link">
-            <%= pagination.next_icon %>
+            <%= next_icon %>
           </span>
         </li>
       <% end %>
     </ul>
   </nav>
 
-  <% if pagination.show_goto? %>
+  <% if show_goto? %>
     <nav role="navigation">
       <ul class="pagination">
         <li class="page-item pagination-goto">
@@ -72,7 +72,7 @@
                 data-controller="select-text"
                 data-action="focus->select-text#all"
               >
-              <button type="submit" class="page-link" type="button"><%= pagination.go_icon %></button>
+              <button type="submit" class="page-link" type="button"><%= go_icon %></button>
             </div>
           <% end %>
         </li>
@@ -81,27 +81,27 @@
   <% end %>
 </div>
 
-<% if pagination.show_badges? %>
+<% if show_badges? %>
   <div class="d-flex flex-row gap-1 justify-content-center mb-2">
-    <% if pagination.show_page? %>
+    <% if show_page? %>
       <span class="badge text-bg-secondary">
         page <%= pagination.page %>
       </span>
     <% end %>
 
-    <% if pagination.show_total_pages? %>
+    <% if show_total_pages? %>
       <span class="badge text-bg-secondary">
         total_pages <%= pagination.total_pages %>
       </span>
     <% end %>
 
-    <% if pagination.show_per_page? %>
+    <% if show_per_page? %>
       <span class="badge text-bg-secondary">
         per_page <%= pagination.per_page %>
       </span>
     <% end %>
 
-    <% if pagination.show_total_count? %>
+    <% if show_total_count? %>
       <span class="badge text-bg-secondary">
         total_count <%= pagination.total_count %>
       </span>

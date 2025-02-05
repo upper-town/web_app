@@ -1,0 +1,23 @@
+<%= render(AlertComponent.new(**alert_options)) do %>
+  <% if content.size > 1 %>
+
+    <ul class="mb-0 ps-4">
+      <% content.each do |content| %>
+        <li>
+          <% if html_safe %>
+            <%= content.html_safe %>
+          <% else %>
+            <%= content %>
+          <% end %>
+        </li>
+      <% end %>
+    </ul>
+
+  <% else %>
+    <% if html_safe %>
+      <%= content.first.html_safe %>
+    <% else %>
+      <%= content.first %>
+    <% end %>
+  <% end %>
+<% end %>

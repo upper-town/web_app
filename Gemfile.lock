@@ -196,6 +196,7 @@ GEM
       thin (~> 1.8)
     marcel (1.0.4)
     matrix (0.4.2)
+    method_source (1.1.0)
     mini_magick (4.13.2)
     mini_mime (1.1.5)
     mini_portile2 (2.8.8)
@@ -430,6 +431,10 @@ GEM
     useragent (0.16.11)
     vcr (6.3.1)
       base64
+    view_component (3.21.0)
+      activesupport (>= 5.2.0, < 8.1)
+      concurrent-ruby (~> 1.0)
+      method_source (~> 1.0)
     web-console (4.2.1)
       actionview (>= 6.0.0)
       activemodel (>= 6.0.0)
@@ -497,6 +502,7 @@ DEPENDENCIES
   turbo-rails (~> 2.0, >= 2.0.11)
   tzinfo-data
   vcr (~> 6.3, >= 6.3.1)
+  view_component (~> 3.8)
   web-console (~> 4.2, >= 4.2.1)
   webmock (~> 3.24)
 

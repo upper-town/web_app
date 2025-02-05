@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Servers
-  class IndexResultPresenter
+  class IndexResultComponent < ViewComponent::Base
     attr_reader(
       :server,
       :server_stats_hash,
@@ -14,6 +14,8 @@ module Servers
     )
 
     def initialize(server:, server_stats_hash:, period:, country_code:)
+      super()
+
       @server = server
       @server_stats_hash = server_stats_hash
       @period = period
