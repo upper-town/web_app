@@ -2,12 +2,15 @@
 
 class CorsHeadersMiddleware
   OPTIONS_PATHS = ['*', '/']
-  ALLOW_ORIGIN  = ENV.fetch('APP_HOST')
   ALLOW_METHODS = 'HEAD, OPTIONS, GET, POST, PUT, PATCH, DELETE'
   MAX_AGE       = '7200'
 
+  attr_reader :allow_origin
+
   def initialize(app)
     @app = app
+
+    @allow_origin = web_app_host
   end
 
   def call(env)
@@ -16,7 +19,7 @@ class CorsHeadersMiddleware
     if request.options? && OPTIONS_PATHS.include?(request.path)
       response = Rack::Response.new
 
-      response.set_header('Access-Control-Allow-Origin',  ALLOW_ORIGIN)
+      response.set_header('Access-Control-Allow-Origin',  allow_origin)
       response.set_header('Access-Control-Allow-Methods', ALLOW_METHODS)
       response.set_header('Access-Control-Max-Age',       MAX_AGE)
 
@@ -24,7 +27,7 @@ class CorsHeadersMiddleware
     else
       status, headers, body = @app.call(request.env)
 
-      headers['Access-Control-Allow-Origin']  = ALLOW_ORIGIN
+      headers['Access-Control-Allow-Origin']  = allow_origin
       headers['Access-Control-Allow-Methods'] = ALLOW_METHODS
       headers['Access-Control-Max-Age']       = MAX_AGE
 

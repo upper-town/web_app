@@ -64,7 +64,7 @@ module Captcha
   private
 
   def captcha_disabled?
-    StringValueHelper.to_boolean(ENV.fetch('CAPTCHA_DISABLED', 'false'))
+    Rails.env.development? && StringValueHelper.to_boolean(ENV.fetch('CAPTCHA_DISABLED', 'false'))
   end
 
   def extract_values(request)

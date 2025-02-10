@@ -191,7 +191,8 @@ RSpec.describe Servers::VerifyAccounts::Perform do
         result = described_class.new(server).call
 
         expect(result).to be_failure
-        expect(result.errors.of_kind?(:base, "Invalid JSON file: unexpected token at '{\"\"}'")).to be(true)
+        expect(result.errors).to have_key(:base)
+        expect(result.errors.full_messages).to include(/Invalid JSON file/)
 
         expect(json_file_head_request).to have_been_requested
         expect(json_file_get_request).to have_been_requested

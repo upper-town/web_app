@@ -4,7 +4,7 @@ require 'simplecov'
 SimpleCov.start 'rails'
 
 require 'dotenv'
-Dotenv.load('.env.test.local', '.env.test')
+Dotenv.load('.env.test.local', '.env.local', '.env.test', '.env')
 
 require 'webmock/rspec'
 require 'vcr'

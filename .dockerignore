@@ -1,7 +1,8 @@
 # See https://docs.docker.com/engine/reference/builder/#dockerignore-file for more about ignoring files.
 
-# Ignore git directory.
+# Ignore git directory and files.
 /.git/
+/.gitattributes
 /.gitignore
 
 # Ignore bundler config.
@@ -55,3 +56,14 @@
 
 # Ignore coverage result from the simplecov gem
 /coverage
+
+# CI files and cache path
+/.gitlab-ci.yml
+/ci-cache
+
+# Files for development and test only
+/.prettierrc.json
+/.rspec
+/.rubocop.yml
+/.tool-versions
+/Procfile.dev

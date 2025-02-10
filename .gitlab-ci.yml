@@ -1,0 +1,47 @@
+stages:
+  - test
+  - deploy
+
+default:
+  image: $CI_REGISTRY/upper_town/web_app/ci
+  cache:
+    paths:
+      - ci-cache
+  before_script:
+    - export GEM_HOME="$(pwd)/ci-cache/bundle"
+    - export BUNDLE_WITHOUT="development"
+    - bundle install --jobs $(nproc)
+
+test_job:
+  stage: test
+  services:
+    - name: postgres:17.2
+      variables:
+        POSTGRES_PASSWORD: postgres
+  variables:
+    CI: "true"
+    POSTGRES_HOST: postgres
+    POSTGRES_PORT: 5432
+    RAILS_ENV: test
+  script:
+    - bin/rails db:prepare
+    - bin/test
+    - bin/test-system
+
+deploy_sandbox_job:
+  stage: deploy
+  environment: sandbox
+  when: manual
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
+  script:
+    - bin/deploy sandbox
+
+deploy_production_job:
+  stage: deploy
+  environment: production
+  when: manual
+  rules:
+    - if: $CI_COMMIT_BRANCH == "production"
+  script:
+    - bin/deploy production

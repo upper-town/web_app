@@ -1,15 +1,24 @@
+inherit_mode:
+  merge:
+    - Exclude
+
 require:
   - rubocop-capybara
   - rubocop-factory_bot
   - rubocop-performance
   - rubocop-rails
+  - rubocop-rake
   - rubocop-rspec
   - rubocop-rspec_rails
   - rubocop-thread_safety
 
 AllCops:
-  TargetRubyVersion: 3.2.0
-  NewCops: enable
+  TargetRubyVersion: 3.4.1
+  NewCops: disable
+  Exclude:
+    - vendor/**/*
+    - ci-cache/**/*
+    - db/*schema.rb
 
 Bundler/OrderedGems:
   Enabled: false
@@ -64,7 +73,6 @@ Metrics/AbcSize:
   Max: 50
 Metrics/BlockLength:
   Exclude:
-    - db/schema.rb
     - config/routes.rb
     - spec/**/*.rb
   Max: 60

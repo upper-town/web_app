@@ -4,6 +4,24 @@ require_relative 'boot'
 
 require 'rails/all'
 
+# Helper methods
+
+def running_assets_precompile?
+  ENV.fetch('SECRET_KEY_BASE_DUMMY', nil) == '1'
+end
+
+def view_active_record_log
+  ActiveRecord::Base.logger = Logger.new($stdout)
+end
+
+def web_app_host
+  ENV.fetch('APP_HOST', 'upper.town')
+end
+
+def web_app_port
+  ENV.fetch('APP_PORT', '3000')
+end
+
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
@@ -31,12 +49,14 @@ module WebApp
     config.generators.system_tests = nil
     config.action_controller.include_all_helpers = true
 
-    config.active_record.encryption.primary_key =
-      ENV.fetch('ACTIVE_RECORD_ENCRYPTION_PRIMARY_KEY').split(',')
-    config.active_record.encryption.deterministic_key =
-      ENV.fetch('ACTIVE_RECORD_ENCRYPTION_DETERMINISTIC_KEY').split(',')
-    config.active_record.encryption.key_derivation_salt =
-      ENV.fetch('ACTIVE_RECORD_ENCRYPTION_KEY_DERIVATION_SALT')
+    unless running_assets_precompile?
+      config.active_record.encryption.primary_key =
+        ENV.fetch('ACTIVE_RECORD_ENCRYPTION_PRIMARY_KEY').split(',')
+      config.active_record.encryption.deterministic_key =
+        ENV.fetch('ACTIVE_RECORD_ENCRYPTION_DETERMINISTIC_KEY').split(',')
+      config.active_record.encryption.key_derivation_salt =
+        ENV.fetch('ACTIVE_RECORD_ENCRYPTION_KEY_DERIVATION_SALT')
+    end
 
     ActiveSupport.on_load(:active_record_postgresqladapter) do
       self.datetime_type = :timestamptz

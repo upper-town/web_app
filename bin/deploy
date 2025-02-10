@@ -1,0 +1,120 @@
+#!/usr/bin/env sh
+
+set -e
+
+environment=""
+action=""
+
+validate_arguments() {
+  if [ $# -eq 0 ]; then
+    echo "usage: $(basename "$0") <sandbox|production> [deploy|setup]"
+    echo ""
+    echo "Environment variables required:"
+    echo "  BWS_PROJECT_ID"
+    echo "  BWS_ACCESS_TOKEN"
+    echo "  CI_REGISTRY_USER"
+    echo "  CI_REGISTRY_PASSWORD"
+    echo "  WEB_HOST"
+    echo "  APP_SSH_PUBLIC_KEY_BASE64"
+    echo "  APP_SSH_PRIVATE_KEY_BASE64"
+    exit 1
+  fi
+
+  environment="$1"
+  action="$2"
+
+  if [ "$environment" != "sandbox" ] && [ "$environment" != "production" ]; then
+    echo "error: first argument must be 'sandbox' or 'production'"
+    exit 1
+  fi
+
+  if [ -z "$action" ]; then
+    action="deploy"
+  fi
+
+  if [ "$action" != "deploy" ] && [ "$action" != "setup" ]; then
+    echo "error: second argument must be 'deploy' (default) or 'setup'"
+    exit 1
+  fi
+
+  if [ -z "$BWS_PROJECT_ID" ]; then
+    echo "error: BWS_PROJECT_ID environment variable must be set"
+    exit 1
+  fi
+
+  if [ -z "$BWS_ACCESS_TOKEN" ]; then
+    echo "error: BWS_ACCESS_TOKEN environment variable must be set"
+    exit 1
+  fi
+
+  if [ -z "$CI_REGISTRY_USER" ]; then
+    echo "error: CI_REGISTRY_USER environment variable must be set"
+    exit 1
+  fi
+
+  if [ -z "$CI_REGISTRY_PASSWORD" ]; then
+    echo "error: CI_REGISTRY_PASSWORD environment variable must be set"
+    exit 1
+  fi
+
+  if [ -z "$WEB_HOST" ]; then
+    echo "error: WEB_HOST environment variable must be set"
+    exit 1
+  fi
+
+  if [ -z "$APP_SSH_PUBLIC_KEY_BASE64" ]; then
+    echo "error: APP_SSH_PUBLIC_KEY_BASE64 environment variable must be set"
+    exit 1
+  fi
+
+  if [ -z "$APP_SSH_PRIVATE_KEY_BASE64" ]; then
+    echo "error: APP_SSH_PRIVATE_KEY_BASE64 environment variable must be set"
+    exit 1
+  fi
+}
+
+add_ssh_private_key() {
+  mkdir -p ~/.ssh
+  chmod 700 ~/.ssh
+
+  echo "$APP_SSH_PUBLIC_KEY_BASE64" | base64 -d > ~/.ssh/app_ssh_key.pub
+  echo "$APP_SSH_PRIVATE_KEY_BASE64" | base64 -d > ~/.ssh/app_ssh_key
+  ssh-keygen -F "$WEB_HOST" || \
+    echo "$WEB_HOST $(cat ~/.ssh/app_ssh_key.pub)" >> ~/.ssh/known_hosts
+  chmod 600 ~/.ssh/*
+
+  eval "$(ssh-agent -s)"
+  ssh-add ~/.ssh/app_ssh_key
+}
+
+remove_ssh_private_key() {
+  # ssh-add -d ~/.ssh/app_ssh_key
+  ssh-keygen -R "$WEB_HOST"
+  rm -f ~/.ssh/app_ssh_key.pub
+  rm -f ~/.ssh/app_ssh_key
+}
+
+deploy() {
+  if [ "$environment" = "production" ]; then
+    bin/kamal "$action" -d production
+  else
+    bin/kamal "$action"
+  fi
+}
+
+cleanup() {
+  set +e
+  remove_ssh_private_key
+}
+
+validate_arguments "$@"
+
+trap 'last_exit_status=$? ; cleanup ; exit $last_exit_status' \
+  INT TERM QUIT EXIT
+
+add_ssh_private_key
+
+deploy
+deploy_exit_status=$?
+
+exit "$deploy_exit_status"

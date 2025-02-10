@@ -35,7 +35,7 @@ environment ENV.fetch('RAILS_ENV', 'development')
 worker_timeout 3600 if ENV.fetch('RAILS_ENV', 'development') == 'development'
 
 # Specifies the `port` that Puma will listen on to receive requests; default is 3000.
-port ENV.fetch('APP_PORT', 3000)
+port ENV.fetch('APP_PORT')
 
 # Allow puma to be restarted by `bin/rails restart` command.
 plugin :tmp_restart

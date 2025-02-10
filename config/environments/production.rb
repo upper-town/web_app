@@ -2,18 +2,17 @@
 
 require 'active_support/core_ext/integer/time'
 
-Rails.application.routes.default_url_options = {
-  host: ENV.fetch('APP_HOST'),
-  port: ENV.fetch('APP_PORT')
-}
+Rails.application.routes.default_url_options = { host: web_app_host }
 
 Rails.application.configure do
-  config.hosts << ENV.fetch('APP_HOST')
+  config.hosts << web_app_host
+  config.host_authorization = { exclude: ->(request) { request.path == "/up" } }
 
   config.eager_load = true
   config.enable_reloading = false
   config.consider_all_requests_local = false
   config.server_timing = false
+  config.assume_ssl = true
   config.force_ssl = true
   config.log_level = :info
   config.log_tags = [:request_id]
@@ -78,10 +77,7 @@ Rails.application.configure do
 
   # action_mailer
 
-  config.action_mailer.default_url_options = {
-    host: ENV.fetch('APP_HOST'),
-    port: ENV.fetch('APP_PORT')
-  }
+  config.action_mailer.default_url_options = { host: web_app_host }
   config.action_mailer.perform_caching = true
   config.action_mailer.raise_delivery_errors = true
   config.action_mailer.delivery_method = :smtp

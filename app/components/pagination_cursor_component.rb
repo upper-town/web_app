@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class PaginationComponent < ViewComponent::Base
+class PaginationCursorComponent < ViewComponent::Base
   DEFAULT_OPTIONS = {
     show_first: true,
     show_goto:  false,

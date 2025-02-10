@@ -45,21 +45,23 @@ RSpec.describe Captcha do
   describe 'call' do
     context 'when development-only env var CAPTCHA_DISABLED is true' do
       it 'returns success and does not send request to verify captcha' do
-        EnvVarHelper.with_values('CAPTCHA_DISABLED' => 'true') do
-          request = TestRequestHelper.build(
-            params: { 'h-captcha-response' => 'abcdef123456' },
-            remote_ip: '8.8.8.8'
-          )
-          captcha_verify_request = stub_captcha_verify_request(
-            body: { 'response' => 'abcdef123456', 'remoteip' => '8.8.8.8' },
-            response_status: 200,
-            response_body: { 'success' => false }
-          )
+        RailsEnvHelper.with_env('development') do
+          EnvVarHelper.with_values('CAPTCHA_DISABLED' => 'true') do
+            request = TestRequestHelper.build(
+              params: { 'h-captcha-response' => 'abcdef123456' },
+              remote_ip: '8.8.8.8'
+            )
+            captcha_verify_request = stub_captcha_verify_request(
+              body: { 'response' => 'abcdef123456', 'remoteip' => '8.8.8.8' },
+              response_status: 200,
+              response_body: { 'success' => false }
+            )
 
-          result = described_class.call(request)
-          expect(result).to be_success
+            result = described_class.call(request)
+            expect(result).to be_success
 
-          expect(captcha_verify_request).not_to have_been_requested
+            expect(captcha_verify_request).not_to have_been_requested
+          end
         end
       end
     end

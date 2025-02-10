@@ -6,6 +6,7 @@ module ServerWebhooks
 
     attr_reader :server_webhook_event
 
+    # TODO: Add arg n = 1 max number of events to fetch from database and send
     def initialize(server_webhook_event)
       @server_webhook_event = server_webhook_event
     end
@@ -20,7 +21,13 @@ module ServerWebhooks
       result = check_config
       return result if result.failure?
 
-      try_publish!
+      # TODO: select from database and send array of send array of webhook_events
+      # instead of one event at a time
+      try_publish
+
+      # TODO: remove server_ prefix from webhook tables
+      # TODO: create webhook_config_events and associate an event with a config and move delivered_at there
+      # TODO: when publish a job, take a config arg
     end
 
     private
@@ -58,12 +65,14 @@ module ServerWebhooks
       end
     end
 
-    def try_publish!
+    def try_publish
       server_webhook_event.update!(last_published_at: Time.current)
       headers, body = BuildEventRequestHeadersAndBody.call(server_webhook_event)
 
       send_request(build_connection(headers), body)
 
+      # TODO: for sending array of webhook events, make this inline and within a
+      # transaction so it rolls back if the delivery fails
       UpdateDeliveredEventJob.perform_later(server_webhook_event)
 
       Result.success

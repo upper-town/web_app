@@ -3,6 +3,8 @@
 source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
+ruby '3.4.1'
+
 gem 'dotenv-rails', '~> 3.1', groups: [:development, :test]
 
 gem 'rails', '~> 8.0', '>= 8.0.1'
@@ -10,7 +12,7 @@ gem 'rails', '~> 8.0', '>= 8.0.1'
 gem 'bootsnap', '~> 1.18', '>= 1.18.4', require: false
 gem 'puma', '~> 6.6'
 
-gem 'kamal', '~> 2.4', require: false
+gem 'kamal', '~> 2.5', '>= 2.5.2', require: false
 gem 'thruster', '~> 0.1.10', require: false
 
 gem 'bcrypt', '~> 3.1', '>= 3.1.20'
@@ -52,6 +54,7 @@ group :development, :test do
   gem 'rubocop-factory_bot', '~> 2.26', '>= 2.26.1'
   gem 'rubocop-performance', '~> 1.23', '>= 1.23.1', require: false
   gem 'rubocop-rails', '~> 2.29', '>= 2.29.1', require: false
+  gem 'rubocop-rake', '~> 0.6.0', require: false
   gem 'rubocop-rspec_rails', '~> 2.30', require: false
   gem 'rubocop-rspec', '~> 3.4', require: false
   gem 'rubocop-thread_safety', '~> 0.6.0', require: false

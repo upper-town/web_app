@@ -7,6 +7,7 @@
 # See the ActiveSupport::ParameterFilter documentation for supported notations and behaviors.
 Rails.application.config.filter_parameters += [
   :_key,
+  :_salt,
   :blob,
   :certificate,
   :crypt,

@@ -1,0 +1,6 @@
+#!/usr/bin/env sh
+
+export CI="true"
+
+bundle exec rspec \
+  --pattern "spec/system/**/*_spec.rb"

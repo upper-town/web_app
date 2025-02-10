@@ -1,0 +1,5 @@
+#!/usr/bin/env sh
+
+export CI="true"
+
+bundle exec rubocop

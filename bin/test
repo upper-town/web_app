@@ -1,6 +1,7 @@
 #!/usr/bin/env sh
 
-bundle exec rubocop && \
-  bundle exec rspec \
-    --pattern "spec/**/*_spec.rb" \
-    --exclude-pattern "spec/system/**/*_spec.rb"
+export CI="true"
+
+bundle exec rspec \
+  --pattern "spec/**/*_spec.rb" \
+  --exclude-pattern "spec/system/**/*_spec.rb"

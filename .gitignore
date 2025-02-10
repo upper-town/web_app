@@ -46,3 +46,6 @@ coverage/
 /app/assets/builds/*
 !/app/assets/builds/.keep
 /node_modules
+
+# Cache path to be used by CI
+/ci-cache

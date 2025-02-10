@@ -3,17 +3,19 @@
 require 'active_support/core_ext/integer/time'
 
 Rails.application.routes.default_url_options = {
-  host: ENV.fetch('APP_HOST'),
-  port: ENV.fetch('APP_PORT')
+  host: web_app_host,
+  port: web_app_port
 }
 
 Rails.application.configure do
-  config.hosts << ENV.fetch('APP_HOST')
+  config.hosts << web_app_host
+  config.host_authorization = { exclude: ->(request) { request.path == "/up" } }
 
   config.eager_load = false
   config.enable_reloading = true
   config.consider_all_requests_local = true
   config.server_timing = true
+  config.assume_ssl = false
   config.force_ssl = false
   config.log_level = :debug
   config.log_tags = [:request_id]
@@ -33,8 +35,8 @@ Rails.application.configure do
 
   config.action_controller.raise_on_missing_callback_actions = true
   config.action_controller.default_url_options = {
-    host: ENV.fetch('APP_HOST'),
-    port: ENV.fetch('APP_PORT')
+    host: web_app_host,
+    port: web_app_port
   }
   if Rails.root.join('tmp/caching-dev.txt').exist?
     config.action_controller.perform_caching = true
@@ -92,8 +94,8 @@ Rails.application.configure do
   # action_mailer
 
   config.action_mailer.default_url_options = {
-    host: ENV.fetch('APP_HOST'),
-    port: ENV.fetch('APP_PORT')
+    host: web_app_host,
+    port: web_app_port
   }
   config.action_mailer.perform_caching = false
   config.action_mailer.raise_delivery_errors = true
