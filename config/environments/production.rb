@@ -2,6 +2,8 @@
 
 require 'active_support/core_ext/integer/time'
 
+BCrypt::Engine.cost = BCrypt::Engine::DEFAULT_COST
+
 Rails.application.routes.default_url_options = { host: web_app_host }
 
 Rails.application.configure do
@@ -14,6 +16,7 @@ Rails.application.configure do
   config.server_timing = false
   config.assume_ssl = true
   config.force_ssl = true
+
   config.log_level = :info
   config.log_tags = [:request_id]
 

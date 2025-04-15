@@ -3,6 +3,7 @@
 module Servers
   module VerifyAccounts
     class Perform
+      # TODO: Add domain hash or ID to the filename
       JSON_FILE_PATH = '/upper_town.json'
 
       attr_reader :server

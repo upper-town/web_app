@@ -11,6 +11,8 @@ ActiveSupport.on_load(:active_record_postgresqladapter) do
   self.create_unlogged_tables = true
 end
 
+BCrypt::Engine.cost = BCrypt::Engine::MIN_COST
+
 Rails.application.routes.default_url_options = {
   host: web_app_host,
   port: web_app_port
@@ -26,8 +28,15 @@ Rails.application.configure do
   config.server_timing = false
   config.assume_ssl = false
   config.force_ssl = false
-  config.log_level = :debug
+
   config.log_tags = [:request_id]
+
+  if ENV['TEST_LOGGER'] == true
+    config.log_level = :debug
+  else
+    config.logger = Logger.new(nil)
+    config.log_level = :fatal
+  end
 
   # cache_store
 
