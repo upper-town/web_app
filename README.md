@@ -9,29 +9,13 @@ Current domains in use by this app:
 | Environment | Domain/site                        | `APP_ENV`     | `RAILS_ENV `  |
 | ----------- | ---------------------------------- | ------------- | ------------- |
 | production  | https://upper.town                 | `production`  | `production`  |
-| sandbox     | https://sandbox.upper.town         | `sandbox`     | `production`  |
 | development | http://development.upper.town:3000 | `development` | `development` |
 | test        | http://test.upper.town:3000        | `test`        | `test`        |
 
 Also,
 
 - **Status Page**: https://upperstatus.town
-- **Observability**: https://upperstatus.town/observe
-
-Current email addresses in use by this app:
-
-| Environment | Email                              |
-| ----------- | ---------------------------------- |
-| production  | upper.town@outlook.com             |
-| sandbox     | upper.town.sandbox@outlook.com     |
-| development | upper.town.development@outlook.com |
-| test        | upper.town.test@outlook.com        |
-
-Git repositories:
-
-- https://gitlab.com/upper_town/web_app
-- https://gitlab.com/upper_town/status_page
-- https://gitlab.com/upper_town/observability
+- **Monitoring**: https://upperstatus.town/monitoring
 
 ## Development setup
 
