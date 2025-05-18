@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module HasTokens
   TOKEN_EXPIRATION = 1.hour
 
@@ -28,7 +30,7 @@ module HasTokens
       expires_at: expires_in.from_now,
       data: data,
       token_digest: token_digest,
-      token_last_four: token_last_four,
+      token_last_four: token_last_four
     )
 
     token

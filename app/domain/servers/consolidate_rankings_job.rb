@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Servers
   class ConsolidateRankingsJob < ApplicationJob
     # TODO: rewrite lock: :while_executing)

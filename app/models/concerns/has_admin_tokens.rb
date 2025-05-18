@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module HasAdminTokens
   TOKEN_EXPIRATION = 30.minutes
 

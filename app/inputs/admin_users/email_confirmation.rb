@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module AdminUsers
   class EmailConfirmation < ApplicationModel
     attribute :email, :string, default: nil

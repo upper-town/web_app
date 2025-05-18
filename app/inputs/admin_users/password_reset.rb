@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module AdminUsers
   class PasswordReset < ApplicationModel
     attribute :email, :string, default: nil

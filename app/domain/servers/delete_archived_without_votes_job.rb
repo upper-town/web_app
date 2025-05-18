@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Servers
   class DeleteArchivedWithoutVotesJob < ApplicationJob
     queue_as "low"

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "active_support/core_ext/integer/time"
 
 BCrypt::Engine.cost = BCrypt::Engine::DEFAULT_COST
@@ -19,7 +21,7 @@ Rails.application.configure do
   config.force_ssl = false
 
   config.log_level = :debug
-  config.log_tags = [ :request_id ]
+  config.log_tags = [:request_id]
 
   # cache_store
 

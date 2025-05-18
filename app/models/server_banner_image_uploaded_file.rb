@@ -1,5 +1,7 @@
+# frozen_string_literal: true
+
 class ServerBannerImageUploadedFile < ApplicationModel
-  CONTENT_TYPES = [ "image/png", "image/jpeg" ]
+  CONTENT_TYPES = ["image/png", "image/jpeg"]
   MAX_BYTE_SIZE = 512 * 1024
 
   attribute :uploaded_file
@@ -40,7 +42,7 @@ class ServerBannerImageUploadedFile < ApplicationModel
     if uploaded_file && CONTENT_TYPES.exclude?(content_type)
       errors.add(
         :content_type,
-        "Invalid content type. Allowed types: #{CONTENT_TYPES.join(', ')} "
+        "Invalid content type. Allowed types: #{CONTENT_TYPES.join(', ')}"
       )
     end
   end

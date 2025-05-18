@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class PaginationComponent < ViewComponent::Base
   DEFAULT_OPTIONS = {
     show_first: true,

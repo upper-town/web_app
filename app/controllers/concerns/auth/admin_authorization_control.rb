@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Auth
   module AdminAuthorizationControl
     class NotAuthorizedError < StandardError; end

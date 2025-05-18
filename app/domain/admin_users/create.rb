@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module AdminUsers
   class Create
     attr_reader :email_confirmation, :request, :rate_limiter

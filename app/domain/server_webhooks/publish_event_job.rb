@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ServerWebhooks
   class PublishEventJob < ApplicationJob
     # TODO: rewrite lock: :while_executing)

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module AdminUsers
   class ChangeEmailConfirmationEdit < ApplicationModel
     attribute :token, :string, default: nil

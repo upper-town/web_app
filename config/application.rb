@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative "boot"
 
 require "rails/all"
@@ -5,7 +7,7 @@ require "rails/all"
 # Helper methods
 
 def running_assets_precompile?
-  [ "true", "1" ].include?(ENV.fetch("SECRET_KEY_BASE_DUMMY", nil))
+  ["true", "1"].include?(ENV.fetch("SECRET_KEY_BASE_DUMMY", nil))
 end
 
 def show_active_record_log

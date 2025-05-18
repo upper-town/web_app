@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module JsonCookie
   def json_cookie_jar
     Rails.env.production? ? request.cookie_jar.encrypted : request.cookie_jar

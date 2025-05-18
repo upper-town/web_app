@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Servers
   module VerifyAccounts
     class Perform
@@ -63,7 +65,7 @@ module Servers
                   verified_at: current_time
                 }
               end,
-              unique_by: [ :account_id, :server_id ]
+              unique_by: [:account_id, :server_id]
             )
           end
 

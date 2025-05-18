@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class FeatureFlag < ApplicationRecord
   # This is a simple feature flag implementation that reads from the database
   # or from env vars. An env var feature flag takes precedence over a database

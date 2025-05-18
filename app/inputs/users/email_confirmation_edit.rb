@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Users
   class EmailConfirmationEdit < ApplicationModel
     attribute :token, :string, default: nil

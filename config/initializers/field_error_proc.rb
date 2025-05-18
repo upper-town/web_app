@@ -1,4 +1,6 @@
-ActionView::Base.field_error_proc = proc do |html_tag, instance|
+# frozen_string_literal: true
+
+ActionView::Base.field_error_proc = ->(html_tag, instance) do
   case instance
   when ActionView::Helpers::Tags::Label
     html_tag

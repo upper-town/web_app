@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module AdminUsers
   class CountSignInAttemptsJob < ApplicationJob
     queue_as "low"

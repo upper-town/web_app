@@ -1,8 +1,187 @@
-# Omakase Ruby styling for Rails
-inherit_gem: { rubocop-rails-omakase: rubocop.yml }
+inherit_mode:
+  merge:
+    - Exclude
 
-# Overwrite or add rules to create your own house style
-#
-# # Use `[a, [b, c]]` not `[ a, [ b, c ] ]`
-# Layout/SpaceInsideArrayLiteralBrackets:
-#   Enabled: false
+plugins:
+  - rubocop-capybara
+  # - rubocop-i18n
+  - rubocop-md
+  - rubocop-minitest
+  - rubocop-performance
+  - rubocop-rails
+  - rubocop-rake
+  - rubocop-thread_safety
+
+AllCops:
+  TargetRubyVersion: 3.4.4
+  # NewCops: disable
+  Exclude:
+    - vendor/**/*
+    - db/*schema.rb
+
+Bundler/DuplicatedGroup:
+  Enabled: false
+Bundler/OrderedGems:
+  Enabled: false
+Layout/ArgumentAlignment:
+  Enabled: false
+Layout/ArrayAlignment:
+  Enabled: false
+Layout/ElseAlignment:
+  Enabled: false
+Layout/EmptyLinesAroundExceptionHandlingKeywords:
+  Enabled: false
+Layout/EndAlignment:
+  Enabled: false
+Layout/ExtraSpacing:
+  Enabled: false
+Layout/FirstArrayElementIndentation:
+  Enabled: false
+Layout/FirstHashElementIndentation:
+  Enabled: false
+Layout/HashAlignment:
+  Enabled: false
+Layout/IndentationWidth:
+  Enabled: false
+Layout/LineEndStringConcatenationIndentation:
+  Enabled: false
+Layout/LineLength:
+  Exclude:
+    - config/routes.rb
+    - test/**/*_test.rb
+    - test/**/*_test_helper.rb
+  Max: 120
+Layout/MultilineMethodCallIndentation:
+  Enabled: false
+Layout/SpaceBeforeSemicolon:
+  Enabled: false
+Layout/SpaceInsideArrayLiteralBrackets:
+  Enabled: false
+Layout/SpaceInsideArrayPercentLiteral:
+  Enabled: false
+Layout/SpaceInsidePercentLiteralDelimiters:
+  Enabled: false
+Lint/MixedRegexpCaptureTypes:
+  Enabled: false
+Metrics/AbcSize:
+  Exclude:
+    - db/migrate/*.rb
+  Max: 50
+Metrics/BlockLength:
+  Exclude:
+    - test/**/*_test.rb
+  Max: 100
+Metrics/BlockNesting:
+  Max: 6
+Metrics/ClassLength:
+  Exclude:
+    - test/**/*_test.rb
+  Max: 300
+Metrics/CyclomaticComplexity:
+  Max: 20
+Metrics/MethodLength:
+  Exclude:
+    - test/**/*_test.rb
+  Max: 100
+Metrics/ModuleLength:
+  Exclude:
+    - test/**/*_test.rb
+  Max: 300
+Metrics/ParameterLists:
+  Max: 10
+  MaxOptionalParameters: 10
+Metrics/PerceivedComplexity:
+  Max: 25
+Minitest/AssertEmptyLiteral:
+  Enabled: false
+Minitest/AssertEqual:
+  Enabled: false
+Naming/MethodParameterName:
+  MinNameLength: 1
+Naming/PredicateName:
+  Enabled: false
+Naming/VariableNumber:
+  Enabled: false
+Performance/TimesMap:
+  Enabled: false
+Rails/ActionOrder:
+  ExpectedOrder:
+    - index
+    - show
+    - new
+    - create
+    - edit
+    - update
+    - destroy
+Rails/ApplicationController:
+  Enabled: false
+Rails/Delegate:
+  Enabled: false
+Rails/DynamicFindBy:
+  Enabled: false
+Rails/RedundantPresenceValidationOnBelongsTo:
+  Enabled: false
+Rails/SkipsModelValidations:
+  Enabled: false
+Style/ClassAndModuleChildren:
+  Enabled: false
+Style/Documentation:
+  Enabled: false
+Style/EmptyMethod:
+  EnforcedStyle: expanded
+Style/GuardClause:
+  Enabled: false
+Style/HashEachMethods:
+  Enabled: false
+Style/HashTransformValues:
+  Enabled: false
+Style/IfInsideElse:
+  Enabled: false
+Style/IfUnlessModifier:
+  Enabled: false
+Style/Lambda:
+  Enabled: false
+Style/ModuleFunction:
+  EnforcedStyle: extend_self
+Style/MultilineBlockChain:
+  Enabled: false
+Style/MultilineTernaryOperator:
+  Enabled: false
+Style/MutableConstant:
+  Enabled: false
+Style/NegatedIf:
+  Enabled: false
+Style/NegatedIfElseCondition:
+  Enabled: false
+Style/NumericLiterals:
+  Enabled: false
+Style/OptionalBooleanParameter:
+  Enabled: false
+Style/ParenthesesAroundCondition:
+  Enabled: false
+Style/RedundantParentheses:
+  Enabled: false
+Style/RegexpLiteral:
+  Enabled: false
+Style/SafeNavigation:
+  Enabled: false
+Style/Semicolon:
+  AllowAsExpressionSeparator: true
+Style/SoleNestedConditional:
+  Enabled: false
+Style/StringConcatenation:
+  Enabled: false
+Style/StringLiterals:
+  EnforcedStyle: double_quotes
+Style/SymbolArray:
+  Enabled: false
+Style/SymbolProc:
+  Enabled: false
+Style/TernaryParentheses:
+  Enabled: false
+Style/TrailingCommaInArguments:
+  Enabled: true
+Style/TrailingUnderscoreVariable:
+  Enabled: false
+Style/WordArray:
+  Enabled: false

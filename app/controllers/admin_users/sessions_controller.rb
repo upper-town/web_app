@@ -1,6 +1,8 @@
+# frozen_string_literal: true
+
 module AdminUsers
   class SessionsController < ApplicationAdminController
-    before_action :authenticate_admin_user!, only: [ :destroy, :destroy_all ]
+    before_action :authenticate_admin_user!, only: [:destroy, :destroy_all]
 
     def new
       if signed_in_admin_user?

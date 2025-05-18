@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # The test environment is used exclusively to run your application's
 # test suite. You never need to work with it otherwise. Remember that
 # your test database is "scratch space" for the test suite and is wiped
@@ -20,14 +22,14 @@ Rails.application.configure do
   config.hosts << web_app_host
   config.host_authorization = { exclude: ->(request) { request.path == "/up" } }
 
-  config.eager_load = [ "true", "1" ].include?(ENV.fetch("CI", nil))
+  config.eager_load = ["true", "1"].include?(ENV.fetch("CI", nil))
   config.enable_reloading = false
   config.consider_all_requests_local = true
   config.server_timing = false
   config.assume_ssl = false
   config.force_ssl = false
 
-  config.log_tags = [ :request_id ]
+  config.log_tags = [:request_id]
 
   if ENV["TEST_LOGGER"] == true
     config.log_level = :debug

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Servers
   class ConsolidateRankings
     attr_reader :game
@@ -38,7 +40,7 @@ module Servers
             .where(id: id)
             .update_all(
               ranking_number: index,
-              ranking_number_consolidated_at: ranking_number_consolidated_at,
+              ranking_number_consolidated_at: ranking_number_consolidated_at
             )
         end
       end

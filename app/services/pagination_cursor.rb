@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class PaginationCursor
   HARD_MAX = 500
 
@@ -61,7 +63,7 @@ class PaginationCursor
   #   you call it
   #   you call total_pages
   def total_count
-    @total_count ||= [ options[:total_count] || relation.count, 0 ].max
+    @total_count ||= [options[:total_count] || relation.count, 0].max
   end
 
   # total_pages depends on total_count
@@ -78,7 +80,7 @@ class PaginationCursor
   end
 
   def start_cursor_url
-    @start_cursor_url ||= build_url({ "order" => order }, [ "indicator", "cursor" ])
+    @start_cursor_url ||= build_url({ "order" => order }, ["indicator", "cursor"])
   end
 
   def before_cursor
@@ -95,7 +97,9 @@ class PaginationCursor
   end
 
   def before_cursor_url
-    @before_cursor_url ||= build_url({ "order" => order, "indicator" => "before", "cursor" => serialize_cursor(before_cursor) })
+    @before_cursor_url ||= build_url(
+      { "order" => order, "indicator" => "before", "cursor" => serialize_cursor(before_cursor) }
+    )
   end
 
   def after_cursor
@@ -112,7 +116,9 @@ class PaginationCursor
   end
 
   def after_cursor_url
-    @after_cursor_url ||= build_url({ "order" => order, "indicator" => "after", "cursor" => serialize_cursor(after_cursor) })
+    @after_cursor_url ||= build_url(
+      { "order" => order, "indicator" => "after", "cursor" => serialize_cursor(after_cursor) }
+    )
   end
 
   private
@@ -126,7 +132,7 @@ class PaginationCursor
       request.params["per_page"].presence || options[:per_page]
     else
       options[:per_page]
-    end.to_i.clamp(1, [ options[:per_page_max], HARD_MAX ].min)
+    end.to_i.clamp(1, [options[:per_page_max], HARD_MAX].min)
   end
 
   def choose_indicator
@@ -145,7 +151,7 @@ class PaginationCursor
   end
 
   def load_cursor_and_cursor_id
-    return [ nil, nil ] unless cursor
+    return [nil, nil] unless cursor
 
     case options[:cursor_type]
     when :integer, :date
@@ -209,7 +215,7 @@ class PaginationCursor
     when :decimal  then BigDecimal(str, exception: false)
     when :float    then Float(str, exception: false)
     end
-  rescue TypeError, ArgumentError, Date::Error
+  rescue ArgumentError, TypeError
     nil
   end
 
@@ -229,12 +235,12 @@ class PaginationCursor
     if options[:per_page_from_request]
       @request_helper.url_with_query(
         params_merge.merge({ "per_page" => per_page }).compact,
-        params_remove - [ "per_page" ]
+        params_remove - ["per_page"]
       )
     else
       @request_helper.url_with_query(
         params_merge.compact,
-        params_remove + [ "per_page" ]
+        params_remove + ["per_page"]
       )
     end
   end

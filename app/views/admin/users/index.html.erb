@@ -9,7 +9,7 @@
       columns: [
         ['ID',      :id],
         ['email',   :email],
-        ['Actions', proc { |user| render(partial: 'edit_actions_index', locals: { user: user }) }],
+        ['Actions', ->(user) { render(partial: 'edit_actions_index', locals: { user: user }) }],
       ],
     ))
   %>

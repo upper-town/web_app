@@ -1,7 +1,9 @@
+# frozen_string_literal: true
+
 class ServerWebhookConfig < ApplicationRecord
   belongs_to :server
 
-  METHODS = [ "POST", "GET", "PUT", "PATCH" ]
+  METHODS = ["POST", "GET", "PUT", "PATCH"]
 
   has_many :events, class_name: "ServerWebhookEvent", dependent: :nullify
 

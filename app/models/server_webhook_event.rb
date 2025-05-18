@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ServerWebhookEvent < ApplicationRecord
   MAX_FAILED_ATTEMPTS = 25
 

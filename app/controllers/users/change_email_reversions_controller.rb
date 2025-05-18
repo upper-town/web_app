@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Users
   class ChangeEmailReversionsController < ApplicationController
     def edit
@@ -33,7 +35,7 @@ module Users
     private
 
     def change_email_reversion_params
-      params.expect(users_change_email_reversion: [ :token ])
+      params.expect(users_change_email_reversion: [:token])
     end
 
     def token_from_params

@@ -1,8 +1,10 @@
+# frozen_string_literal: true
+
 module Servers
   class ConsolidateVoteCountsSchedulerJob < ApplicationJob
     # TODO: rewrite lock: :while_executing)
 
-    METHODS = [ "current", "all" ]
+    METHODS = ["current", "all"]
 
     def perform(method = "current")
       raise "Invalid method for Servers::ConsolidateVoteCountsSchedulerJob" unless METHODS.include?(method)

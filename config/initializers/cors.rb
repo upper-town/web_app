@@ -1,5 +1,7 @@
+# frozen_string_literal: true
+
 class CorsHeadersMiddleware
-  OPTIONS_PATHS = [ "*", "/" ]
+  OPTIONS_PATHS = ["*", "/"]
   ALLOW_METHODS = "HEAD, OPTIONS, GET, POST, PUT, PATCH, DELETE"
   MAX_AGE       = "7200"
 
@@ -29,7 +31,7 @@ class CorsHeadersMiddleware
       headers["Access-Control-Allow-Methods"] = ALLOW_METHODS
       headers["Access-Control-Max-Age"]       = MAX_AGE
 
-      [ status, headers, body ]
+      [status, headers, body]
     end
   end
 end

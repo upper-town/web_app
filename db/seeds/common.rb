@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Seeds
   module Common
     def self.encrypt_password(unencrypted_password)

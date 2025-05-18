@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ServerBannerImageCacheStoreCleanUpJob < ApplicationJob
   # TODO: rewrite lock: :while_executing)
 

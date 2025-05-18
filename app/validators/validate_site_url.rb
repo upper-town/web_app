@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ValidateSiteUrl
   PATTERN = %r{
     \A
@@ -35,7 +37,7 @@ class ValidateSiteUrl
 
   def initialize(site_url)
     @site_url = site_url.to_s
-    @errors = [ :not_validated_yet ]
+    @errors = [:not_validated_yet]
   end
 
   def valid?

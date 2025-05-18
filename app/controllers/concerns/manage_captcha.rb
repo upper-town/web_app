@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ManageCaptcha
   extend ActiveSupport::Concern
 
@@ -8,7 +10,7 @@ module ManageCaptcha
   included do
     helper_method(
       :captcha_script_tag,
-      :captcha_widget_tag,
+      :captcha_widget_tag
     )
   end
 

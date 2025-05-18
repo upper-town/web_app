@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ServerBannerImagePolicy
   include Auth::ManageAdminSession
   include Auth::ManageSession

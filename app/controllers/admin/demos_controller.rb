@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Admin
   class DemosController < BaseController
     def show
@@ -7,13 +9,13 @@ module Admin
         subject: "Subject here",
         content: "Some Rails notice message",
         dismissible: true,
-        link_to: [ "I'm button", "#" ]
+        link_to: ["I'm button", "#"]
       }
       flash.now[:alert] = {
         subject: "Subject here",
         content: "Some Rails alert message",
         dismissible: true,
-        link_to: [ "I'm button", "#" ]
+        link_to: ["I'm button", "#"]
       }
 
       # Alert scheme
@@ -22,7 +24,7 @@ module Admin
         subject: "Subject here",
         content: "Some info message",
         dismissible: true,
-        link_to: [ "I'm button", "#" ]
+        link_to: ["I'm button", "#"]
       }
       flash.now[:danger] = {
         subject: "Subject here",
@@ -33,7 +35,7 @@ module Admin
         subject: "Subject here",
         content: "Some warning message",
         dismissible: true,
-        link_to: [ "I'm button", "#" ]
+        link_to: ["I'm button", "#"]
       }
 
       flash.now[:success] = "Some success message"

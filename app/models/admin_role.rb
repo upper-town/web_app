@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AdminRole < ApplicationRecord
   has_many :admin_account_roles, dependent: :destroy
   has_many :admin_role_permissions, dependent: :destroy

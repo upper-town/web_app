@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module HasLock
   extend ActiveSupport::Concern
 
@@ -21,7 +23,7 @@ module HasLock
     update!(
       locked_reason:  nil,
       locked_comment: nil,
-      locked_at:      nil,
+      locked_at:      nil
     )
   end
 end

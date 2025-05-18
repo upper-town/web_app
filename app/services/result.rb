@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Result
   extend ActiveModel::Naming # Required dependency for ActiveModel::Errors
 
@@ -64,7 +66,7 @@ class Result
   end
 
   def self.lookup_ancestors
-    [ self ]
+    [self]
   end
 
   private

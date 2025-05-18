@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ValidateEmail
   PATTERN = %r{
     \A
@@ -41,7 +43,7 @@ class ValidateEmail
 
   def initialize(email)
     @email = email.to_s
-    @errors = [ :not_validated_yet ]
+    @errors = [:not_validated_yet]
   end
 
   def valid?

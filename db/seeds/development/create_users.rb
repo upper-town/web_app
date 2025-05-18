@@ -1,7 +1,9 @@
+# frozen_string_literal: true
+
 module Seeds
   module Development
     class CreateUsers
-      PASSWORD = 'testpass'
+      PASSWORD = "testpass"
 
       def call
         return unless Rails.env.development?

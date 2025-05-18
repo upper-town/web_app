@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module AdminUsers
   class PasswordResetsController < ApplicationAdminController
     before_action :authenticate_admin_user!
@@ -81,11 +83,11 @@ module AdminUsers
     end
 
     def password_reset_params
-      params.expect(admin_users_password_reset: [ :email ])
+      params.expect(admin_users_password_reset: [:email])
     end
 
     def password_reset_edit_params
-      params.expect(admin_users_password_reset_edit: [ :token, :password ])
+      params.expect(admin_users_password_reset_edit: [:token, :password])
     end
   end
 end

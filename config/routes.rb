@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative "routes/auth_routes"
 require_relative "routes/admin_auth_routes"
 require_relative "routes/admin_routes"
@@ -26,27 +28,27 @@ Rails.application.routes.draw do
 
   root to: "home#index"
 
-  resources :servers, only: [ :index, :show ] do
-    resources :server_votes, as: "votes", path: "votes", only: [ :index, :new, :create ]
+  resources :servers, only: [:index, :show] do
+    resources :server_votes, as: "votes", path: "votes", only: [:index, :new, :create]
   end
-  resources :server_votes, only: [ :show ]
-  resources :server_banner_images, only: [ :show ]
+  resources :server_votes, only: [:show]
+  resources :server_banner_images, only: [:show]
 
   # /u/
 
-  resources :accounts, path: "u", only: [ :show ]
+  resources :accounts, path: "u", only: [:show]
 
   # /i/
 
   namespace :inside, path: "i" do
     root to: "dashboards#show"
 
-    resource :dashboard, only: [ :show ]
-    resource :account, only: [ :show ]
+    resource :dashboard, only: [:show]
+    resource :account, only: [:show]
     resource :user, module: :users do
-      resource :change_email_confirmation, only: [ :new, :create ]
+      resource :change_email_confirmation, only: [:new, :create]
     end
-    resources :servers, only: [ :index, :new, :create, :edit, :update ] do
+    resources :servers, only: [:index, :new, :create, :edit, :update] do
       member do
         post :archive
         post :unarchive
@@ -54,6 +56,6 @@ Rails.application.routes.draw do
         post :unmark_for_deletion
       end
     end
-    resources :server_votes, only: [ :index ]
+    resources :server_votes, only: [:index]
   end
 end

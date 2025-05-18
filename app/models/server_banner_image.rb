@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ServerBannerImage < ApplicationRecord
   CACHE_EXPIRES_IN = 10.minutes
 

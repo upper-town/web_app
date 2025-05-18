@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module RateLimiting
   class BasicRateLimiter
     attr_reader :key, :max_count, :expires_in, :error_message

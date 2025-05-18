@@ -1,6 +1,8 @@
+# frozen_string_literal: true
+
 module Users
   class SessionsController < ApplicationController
-    before_action :authenticate_user!, only: [ :destroy, :destroy_all ]
+    before_action :authenticate_user!, only: [:destroy, :destroy_all]
 
     def new
       if signed_in_user?
@@ -25,7 +27,7 @@ module Users
 
       @session = Users::Session.new(session_params)
 
-      result = captcha_check(if_success_skip_paths: [ users_sign_in_path, users_sessions_path ])
+      result = captcha_check(if_success_skip_paths: [users_sign_in_path, users_sessions_path])
 
       if result.failure?
         flash.now[:alert] = result.errors.full_messages

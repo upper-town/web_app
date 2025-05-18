@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CountrySelectOptionsQuery
   include Callable
 
@@ -50,7 +52,7 @@ class CountrySelectOptionsQuery
     Server
       .group(:country_code)
       .count
-      .sort_by { |country_code, count| [ -count, country_code ] }
+      .sort_by { |country_code, count| [-count, country_code] }
       .map { |country_code, _count| country_code }
   end
 
@@ -58,7 +60,7 @@ class CountrySelectOptionsQuery
     country_codes.map do |country_code|
       country = ISO3166::Country.new(country_code)
 
-      [ "#{country.emoji_flag} #{country.common_name}", country_code ]
+      ["#{country.emoji_flag} #{country.common_name}", country_code]
     end
   end
 

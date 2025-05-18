@@ -1,9 +1,11 @@
+# frozen_string_literal: true
+
 class ValidatePhoneNumber
   attr_reader :phone_number, :errors
 
   def initialize(phone_number)
     @phone_number = phone_number.to_s
-    @errors = [ :not_validated_yet ]
+    @errors = [:not_validated_yet]
   end
 
   def valid?

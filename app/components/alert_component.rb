@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AlertComponent < ViewComponent::Base
   DEFAULT_VARIANT = :info
   VARIANTS = [

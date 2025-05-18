@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Servers
   class CreateVote
     attr_reader :server, :server_vote, :request, :account, :rate_limiter

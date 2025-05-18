@@ -1,6 +1,12 @@
+# frozen_string_literal: true
+
 source "https://rubygems.org"
 
-gem "dotenv-rails", groups: [ :development, :test ]
+gem "dotenv-rails", groups: [:development, :test]
+
+# ------------------------------------------------------------------------------
+# Gemfile from running:
+#     rails new web_app --database=postgresql --skip-rubocop
 
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
 gem "rails", "~> 8.0.2"
@@ -23,7 +29,7 @@ gem "jbuilder"
 gem "bcrypt", "~> 3.1.7"
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
-gem "tzinfo-data", platforms: %i[ windows jruby ]
+gem "tzinfo-data", platforms: %i[windows jruby]
 
 # Use the database-backed adapters for Rails.cache, Active Job, and Action Cable
 gem "solid_cache"
@@ -44,13 +50,10 @@ gem "image_processing", "~> 1.2"
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
-  gem "debug", platforms: %i[ mri windows ], require: "debug/prelude"
+  gem "debug", platforms: %i[mri windows], require: "debug/prelude"
 
   # Static analysis for security vulnerabilities [https://brakemanscanner.org/]
   gem "brakeman", require: false
-
-  # Omakase Ruby styling [https://github.com/rails/rubocop-rails-omakase/]
-  gem "rubocop-rails-omakase", require: false
 end
 
 group :development do
@@ -75,6 +78,16 @@ gem "phonelib"
 
 group :development, :test do
   gem "simplecov", require: false
+
+  gem "rubocop", require: false
+  gem "rubocop-capybara", require: false
+  # gem "rubocop-i18n", require: false
+  gem "rubocop-md", require: false
+  gem "rubocop-minitest", require: false
+  gem "rubocop-performance", require: false
+  gem "rubocop-rails", require: false
+  gem "rubocop-rake", require: false
+  gem "rubocop-thread_safety", require: false
 end
 
 group :development do
@@ -83,5 +96,7 @@ group :development do
 end
 
 group :test do
+  gem "minitest-rails"
+  gem "vcr"
   gem "webmock"
 end

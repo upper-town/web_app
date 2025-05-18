@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Seeds
   module Development
     class CreateGames
@@ -14,18 +16,18 @@ module Seeds
       def game_hashes
         [
           {
-            slug:        'minecraft',
-            name:        'Minecraft',
-            site_url:    'https://www.minecraft.net/',
-            description: '',
-            info:        ''
+            slug:        "minecraft",
+            name:        "Minecraft",
+            site_url:    "https://www.minecraft.net/",
+            description: "",
+            info:        ""
           },
           {
-            slug:        'perfect-world-international',
-            name:        'Perfect World International (PWI)',
-            site_url:    'https://www.arcgames.com/en/games/pwi',
-            description: '',
-            info:        ''
+            slug:        "perfect-world-international",
+            name:        "Perfect World International (PWI)",
+            site_url:    "https://www.arcgames.com/en/games/pwi",
+            description: "",
+            info:        ""
           }
         ]
       end

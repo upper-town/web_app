@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Inside
   module Users
     class ChangeEmailConfirmationsController < BaseController
@@ -28,7 +30,8 @@ module Inside
           return
         end
 
-        result = ::Users::ChangeEmailConfirmations::Create.new(@change_email_confirmation, current_user.email, request).call
+        result = ::Users::ChangeEmailConfirmations::Create
+          .new(@change_email_confirmation, current_user.email, request).call
 
         if result.success?
           redirect_to(

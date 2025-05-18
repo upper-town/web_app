@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Users
   class EmailConfirmationsController < ApplicationController
     def new
@@ -91,11 +93,11 @@ module Users
     private
 
     def email_confirmation_params
-      params.expect(users_email_confirmation: [ :email ])
+      params.expect(users_email_confirmation: [:email])
     end
 
     def email_confirmation_edit_params
-      params.expect(users_email_confirmation_edit: [ :token ])
+      params.expect(users_email_confirmation_edit: [:token])
     end
 
     def email_from_params

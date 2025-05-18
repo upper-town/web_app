@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Servers
   module VerifyAccounts
     class ValidateJsonFile
@@ -23,7 +25,7 @@ module Servers
 
       def initialize(data)
         @data = data
-        @errors = [ :not_validated_yet ]
+        @errors = [:not_validated_yet]
       end
 
       def valid?

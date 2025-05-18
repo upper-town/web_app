@@ -1,7 +1,0 @@
-#!/usr/bin/env sh
-
-export CI="true"
-
-bundle exec rspec \
-  --pattern "spec/**/*_spec.rb" \
-  --exclude-pattern "spec/system/**/*_spec.rb"

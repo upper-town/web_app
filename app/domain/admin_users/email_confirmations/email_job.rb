@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module AdminUsers
   module EmailConfirmations
     class EmailJob < ApplicationJob

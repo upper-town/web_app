@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CreateServerStats < ActiveRecord::Migration[7.1]
   def change
     create_table :server_stats do |t|
@@ -18,9 +20,9 @@ class CreateServerStats < ActiveRecord::Migration[7.1]
 
     add_index(
       :server_stats,
-      [ :period, :reference_date, :game_id, :country_code, :server_id ],
+      [:period, :reference_date, :game_id, :country_code, :server_id],
       unique: true,
-      name: 'index_server_stats_on_period_reference_app_country_server'
+      name: "index_server_stats_on_period_reference_app_country_server"
     )
     add_index :server_stats, :server_id
   end

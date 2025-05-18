@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ServerWebhooks
   module CreateEvents
     class ServerVoteCreatedJob < ApplicationJob

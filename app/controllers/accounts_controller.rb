@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AccountsController < ApplicationController
   def show
     @account_server_votes_total = account_server_votes_total_query

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Auth
   module AdminAuthenticationControl
     class NotAuthenticatedError < StandardError; end
@@ -31,7 +33,7 @@ module Auth
     end
 
     def ignored_return_to_paths
-      [ admin_users_sign_out_path ]
+      [admin_users_sign_out_path]
     end
 
     def authenticate_admin_user!

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ServerWebhooks
   class BuildEventRequestHeadersAndBody
     include Callable
@@ -12,7 +14,7 @@ module ServerWebhooks
       request_body = build_request_body
       request_headers = build_request_headers(build_request_signature(request_body))
 
-      [ request_headers, request_body ]
+      [request_headers, request_body]
     end
 
     private

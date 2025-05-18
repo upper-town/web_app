@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Inside
   class ServersController < BaseController
     MAX_VERIFIED_SERVERS_PER_ACCOUNT = 10
@@ -6,7 +8,7 @@ module Inside
     before_action(
       :max_verified_servers_per_account,
       :max_not_verified_servers_per_account,
-      only: [ :new, :create ]
+      only: [:new, :create]
     )
 
     def index

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Auth
   module ManageAdminSession
     ADMIN_SESSION_NAME = "admin_session"

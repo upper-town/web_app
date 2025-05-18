@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Users
   class ChangeEmailConfirmationsController < ApplicationController
     def edit
@@ -33,7 +35,7 @@ module Users
     private
 
     def change_email_confirmation_edit_params
-      params.expect(users_change_email_confirmation_edit: [ :token ])
+      params.expect(users_change_email_confirmation_edit: [:token])
     end
 
     def token_from_params

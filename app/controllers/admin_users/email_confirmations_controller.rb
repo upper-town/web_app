@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module AdminUsers
   class EmailConfirmationsController < ApplicationAdminController
     before_action :authenticate_admin_user!
@@ -90,11 +92,11 @@ module AdminUsers
     private
 
     def email_confirmation_params
-      params.expect(admin_users_email_confirmation: [ :email ])
+      params.expect(admin_users_email_confirmation: [:email])
     end
 
     def email_confirmation_edit_params
-      params.expect(admin_users_email_confirmation: [ :token ])
+      params.expect(admin_users_email_confirmation: [:token])
     end
 
     def email_from_params

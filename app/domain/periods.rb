@@ -1,13 +1,15 @@
+# frozen_string_literal: true
+
 module Periods
   YEAR  = "year"
   MONTH = "month"
   WEEK  = "week"
 
-  PERIODS = [ YEAR, MONTH, WEEK ]
+  PERIODS = [YEAR, MONTH, WEEK]
   PERIOD_OPTIONS = [
-    [ "Year",  YEAR ],
-    [ "Month", MONTH ],
-    [ "Week",  WEEK ]
+    ["Year",  YEAR],
+    ["Month", MONTH],
+    ["Week",  WEEK]
   ]
 
   extend self

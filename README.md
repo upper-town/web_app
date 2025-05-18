@@ -68,25 +68,23 @@ running the processes.
 [`bin/dev`]: bin/dev
 [`foreman`]: https://rubygems.org/gems/foreman
 
-### FactoryBot
+### ActiveRecord Factories for Tests
 
-FactoryBot factories are defined in `spec/factories/`
+Factories are defined in `test/support/active_record_factory_test_helper.rb`
 
 Factories should represent minimum-valid records, so you can skip setting
-attributes that are optional. Check FactoryBot docs and examples at
-https://github.com/thoughtbot/factory_bot/blob/master/GETTING_STARTED.md
+attributes that are optional.
 
-In tests, use FactoryBot's factories to create/build records for test cases.
-Set the attributes that are important for your test case, and let FactoryBot
-take care of the other attributes for you.
+In tests, use factories to create/build records for test cases. Set the
+attributes that are important for your test case, and let the factory take
+care of the other attributes for you.
 
-As FactoryBot helper methods are included in RSpec through
-`spec/rails_helper.rb` and `spec/support/factory_bot_config`, you can call them
-directly in tests cases. For example:
+Factory helper methods are included in Minitest through `spec/test_helper.rb`,
+so you can call them directly in tests cases. For example:
 
 ```rb
-it "tests something" do
-  user = create(:user)
+test "something" do
+  user = create_user
 
   # ...
 end
@@ -269,7 +267,7 @@ case, and it replays them the next time the same test is run.
 To use VCR, you can wrap your code in a block with
 
 ```rb
-VCR.use_cassette('name_the/request_file_here') do
+VCR.use_cassette("name_the/request_file_here") do
   # HTTP requests are allowed within this block. Requests will be recorded
   # and replayed during future test runs.
 end
@@ -281,16 +279,12 @@ and the request YAML file and path will be named based on the descriptions:
 [`:vcr` tag]: https://relishapp.com/vcr/vcr/v/6-1-0/docs/test-frameworks/usage-with-rspec-metadata
 
 ```rb
-RSpec.describe SomeClass do
-  describe '#some_method' do
-    context 'when user is present' do
-      it 'does something', :vcr do
-        # HTTP requests are allowed within this block. Requests will be recorded
-        # and replayed during future test runs.
-        #
-        # File: spec/cassettes/SomeClass/_some_method/when_user_is_present/does_something.yml
-      end
-    end
+class SomeClass < ActiveSupport::TestCase
+  test "something", :vcr do
+    # HTTP requests are allowed within this block. Requests will be recorded
+    # and replayed during future test runs.
+    #
+    # File: test/cassettes/SomeClass/test_something.yml
   end
 end
 ```
@@ -298,7 +292,7 @@ end
 And to force VCR to re-record requests when running a test instead of replaying
 existing records, just delete the specific YAML files, or set `VCR_RECORD_ALL`
 to `true` while running the test command. For example,
-`VCR_RECORD_ALL=true bundle exec rspec spec/services/some_class_spec.rb`.
+`VCR_RECORD_ALL=true bundle exec rspec test/services/some_class_test.rb`.
 
 This feature is provided by setting [`default_cassette_options`] `:record`
 to `:all` in VCR configuration when `ENV["VCR_RECORD_ALL"]` is set to `"true"`

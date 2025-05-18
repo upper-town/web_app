@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Servers
   class Verify
     attr_reader :server
@@ -21,7 +23,7 @@ module Servers
     def update_as_verified(current_time)
       server.update!(
         verified_at: current_time,
-        verified_notice: "",
+        verified_notice: ""
       )
     end
 
@@ -30,7 +32,7 @@ module Servers
 
       server.update!(
         verified_at: nil,
-        verified_notice: notice,
+        verified_notice: notice
       )
     end
   end

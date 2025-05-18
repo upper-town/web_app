@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ServerBannerImagesController < ActionController::API
   before_action :ensure_app_host_referer
 

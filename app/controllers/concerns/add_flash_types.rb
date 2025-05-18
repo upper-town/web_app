@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module AddFlashTypes
   extend ActiveSupport::Concern
 
@@ -11,7 +13,7 @@ module AddFlashTypes
       :warning,
       :info,
       :light,
-      :dark,
+      :dark
     )
   end
 end
