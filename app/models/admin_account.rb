@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class AdminAccount < ApplicationRecord
   belongs_to :admin_user
 
@@ -10,6 +8,6 @@ class AdminAccount < ApplicationRecord
 
   # Super Admin status can only be granted through env var.
   def super_admin?
-    StringValueHelper.values_list_uniq(ENV.fetch('SUPER_ADMIN_ACCOUNT_IDS', '')).include?(id.to_s)
+    StringValueHelper.values_list_uniq(ENV.fetch("SUPER_ADMIN_ACCOUNT_IDS", "")).include?(id.to_s)
   end
 end

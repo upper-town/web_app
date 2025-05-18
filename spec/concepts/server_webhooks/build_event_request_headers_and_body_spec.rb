@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require 'rails_helper'
 
 RSpec.describe ServerWebhooks::BuildEventRequestHeadersAndBody do
@@ -32,7 +30,7 @@ RSpec.describe ServerWebhooks::BuildEventRequestHeadersAndBody do
           'type'              => 'test.event',
           'payload'           => { 'server_vote' => { 'uuid' => '11111111-1111-1111-1111-111111111111' } },
           'last_published_at' => '2024-09-02T12:00:01Z',
-          'failed_attempts'   => 1,
+          'failed_attempts'   => 1
         }
       }.to_json)
     end

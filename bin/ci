@@ -1,0 +1,8 @@
+#!/usr/bin/env sh
+
+export CI="true"
+
+bin/rubocop && \
+  bin/brakeman --no-pager && \
+  bin/importmap audit && \
+  bin/rails db:test:prepare test test:system

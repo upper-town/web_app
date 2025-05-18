@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class AdminUsersMailer < ApplicationMailer
   def email_confirmation
     @email = params[:email]
@@ -7,7 +5,7 @@ class AdminUsersMailer < ApplicationMailer
 
     mail(
       to: @email,
-      subject: 'Upper Town: Email confirmation link'
+      subject: "Upper Town: Email confirmation link"
     )
   end
 
@@ -17,7 +15,7 @@ class AdminUsersMailer < ApplicationMailer
 
     mail(
       to: @email,
-      subject: 'Upper Town: Password Reset Email'
+      subject: "Upper Town: Password Reset Email"
     )
   end
 end

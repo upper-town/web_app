@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module Servers
   class Archive
     include Callable
@@ -12,7 +10,7 @@ module Servers
 
     def call
       if server.archived?
-        Result.failure('Server is already archived')
+        Result.failure("Server is already archived")
       else
         server.update!(archived_at: Time.current)
 

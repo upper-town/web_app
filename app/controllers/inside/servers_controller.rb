@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module Inside
   class ServersController < BaseController
     MAX_VERIFIED_SERVERS_PER_ACCOUNT = 10
@@ -8,7 +6,7 @@ module Inside
     before_action(
       :max_verified_servers_per_account,
       :max_not_verified_servers_per_account,
-      only: [:new, :create]
+      only: [ :new, :create ]
     )
 
     def index
@@ -47,7 +45,7 @@ module Inside
       ).call
 
       if result.success?
-        redirect_to(inside_servers_path, success: 'Your server has been added.')
+        redirect_to(inside_servers_path, success: "Your server has been added.")
       else
         flash.now[:alert] = result.errors.full_messages
         render(:new, status: :unprocessable_entity)
@@ -65,8 +63,8 @@ module Inside
       result = Servers::Archive.new(server).call
 
       if result.success?
-        flash[:success] = 'Server has been archived. ' \
-          'Servers that are archived and without votes will be deleted soon automatically.'
+        flash[:success] = "Server has been archived. " \
+          "Servers that are archived and without votes will be deleted soon automatically."
       else
         flash[:alert] = result.errors.full_messages
       end
@@ -79,7 +77,7 @@ module Inside
       result = Servers::Unarchive.new(server).call
 
       if result.success?
-        flash[:success] = 'Server has been unarchived.'
+        flash[:success] = "Server has been unarchived."
       else
         flash[:alert] = result.errors.full_messages
       end
@@ -92,7 +90,7 @@ module Inside
       result = Servers::MarkForDeletion.new(server).call
 
       if result.success?
-        flash[:success] = 'Server has been marked to be deleted.'
+        flash[:success] = "Server has been marked to be deleted."
       else
         flash[:alert] = result.errors.full_messages
       end
@@ -105,7 +103,7 @@ module Inside
       result = Servers::UnmarkForDeletion.new(server).call
 
       if result.success?
-        flash[:success] = 'Server has been unmarked for deletion.'
+        flash[:success] = "Server has been unmarked for deletion."
       else
         flash[:alert] = result.errors.full_messages
       end
@@ -136,7 +134,7 @@ module Inside
       if count >= MAX_VERIFIED_SERVERS_PER_ACCOUNT
         redirect_to(
           inside_servers_path,
-          warning: 'You already have too many verified servers associated with your account.'
+          warning: "You already have too many verified servers associated with your account."
         )
       end
     end
@@ -147,7 +145,7 @@ module Inside
       if count >= MAX_NOT_VERIFIED_SERVERS_PER_ACCOUNT
         redirect_to(
           inside_servers_path,
-          warning: 'You have many servers pending verification. Please verify them first before adding more servers.'
+          warning: "You have many servers pending verification. Please verify them first before adding more servers."
         )
       end
     end

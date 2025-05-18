@@ -1,10 +1,8 @@
-# frozen_string_literal: true
-
 class ServerStat < ApplicationRecord
-  ALL = 'all'
-  ALL_EMOJI_FLAG = '🌐'
+  ALL = "all"
+  ALL_EMOJI_FLAG = "🌐"
 
-  COUNTRY_CODES = [ALL, *Server::COUNTRY_CODES]
+  COUNTRY_CODES = [ ALL, *Server::COUNTRY_CODES ]
 
   belongs_to :server
   belongs_to :game

@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module Inside
   class AccountsController < BaseController
     def show

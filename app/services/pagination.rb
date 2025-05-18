@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class Pagination
   HARD_MAX = 500
 
@@ -11,7 +9,7 @@ class Pagination
     per_page_max:          100,
     per_page_from_request: false,
 
-    total_count: nil,
+    total_count: nil
   }
 
   attr_reader(
@@ -51,7 +49,7 @@ class Pagination
   #   you call last_page?
   #   you call last_page_url
   def total_count
-    @total_count ||= [options[:total_count] || relation.count, 0].max
+    @total_count ||= [ options[:total_count] || relation.count, 0 ].max
   end
 
   # total_pages depends on total_count
@@ -89,7 +87,7 @@ class Pagination
   end
 
   def prev_page
-    @prev_page ||= [page - 1, 1].max
+    @prev_page ||= [ page - 1, 1 ].max
   end
 
   def has_prev_page?
@@ -104,7 +102,7 @@ class Pagination
     @next_page ||= if page_size < per_page || relation_plus_one.size <= per_page
       page
     else
-      [page + 1, options[:page_max], HARD_MAX].min
+      [ page + 1, options[:page_max], HARD_MAX ].min
     end
   end
 
@@ -118,24 +116,24 @@ class Pagination
 
   def page_url(value)
     if options[:per_page_from_request]
-      @request_helper.url_with_query({ 'page' => value, 'per_page' => per_page }.compact)
+      @request_helper.url_with_query({ "page" => value, "per_page" => per_page }.compact)
     else
-      @request_helper.url_with_query({ 'page' => value }.compact, ['per_page'])
+      @request_helper.url_with_query({ "page" => value }.compact, [ "per_page" ])
     end
   end
 
   private
 
   def choose_page
-    (request.params['page'].presence || options[:page]).to_i.clamp(1, [options[:page_max], HARD_MAX].min)
+    (request.params["page"].presence || options[:page]).to_i.clamp(1, [ options[:page_max], HARD_MAX ].min)
   end
 
   def choose_per_page
     if options[:per_page_from_request]
-      request.params['per_page'].presence || options[:per_page]
+      request.params["per_page"].presence || options[:per_page]
     else
       options[:per_page]
-    end.to_i.clamp(1, [options[:per_page_max], HARD_MAX].min)
+    end.to_i.clamp(1, [ options[:per_page_max], HARD_MAX ].min)
   end
 
   def calc_offset

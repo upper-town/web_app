@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class ServerVotesController < ApplicationController
   def show
     @server_vote = server_vote_from_params
@@ -30,7 +28,7 @@ class ServerVotesController < ApplicationController
     if result.success?
       redirect_to(
         server_vote_path(result.data[:server_vote]),
-        success: 'Your vote has been saved!'
+        success: "Your vote has been saved!"
       )
     else
       flash.now[:alert] = result.errors.full_messages
@@ -53,6 +51,6 @@ class ServerVotesController < ApplicationController
   end
 
   def server_vote_params
-    params.expect(server_vote: [:reference])
+    params.expect(server_vote: [ :reference ])
   end
 end

@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require 'rails_helper'
 
 RSpec.describe ServerWebhooks::EventPayloads::ServerVoteCreated do
@@ -30,7 +28,7 @@ RSpec.describe ServerWebhooks::EventPayloads::ServerVoteCreated do
             'reference'    => 'anything123456',
             'remote_ip'    => '1.1.1.1',
             'account_uuid' => nil,
-            'created_at'   => '2024-09-02T12:00:01Z',
+            'created_at'   => '2024-09-02T12:00:01Z'
           }
         }
       )
@@ -58,7 +56,7 @@ RSpec.describe ServerWebhooks::EventPayloads::ServerVoteCreated do
             'reference'    => 'anything123456',
             'remote_ip'    => '1.1.1.1',
             'account_uuid' => account.uuid,
-            'created_at'   => '2024-09-02T12:00:01Z',
+            'created_at'   => '2024-09-02T12:00:01Z'
           }
         }
       )

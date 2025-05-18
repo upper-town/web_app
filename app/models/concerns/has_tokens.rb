@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module HasTokens
   TOKEN_EXPIRATION = 1.hour
 
@@ -15,7 +13,7 @@ module HasTokens
 
       joins(:tokens)
         .where(tokens: { purpose: purpose, token_digest: token_generator.digest(token) })
-        .where('tokens.expires_at > ?', Time.current)
+        .where("tokens.expires_at > ?", Time.current)
         .first
     end
   end

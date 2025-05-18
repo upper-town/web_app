@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module Auth
   module AuthenticationControl
     class NotAuthenticatedError < StandardError; end
@@ -33,7 +31,7 @@ module Auth
     end
 
     def ignored_return_to_paths
-      [users_sign_out_path]
+      [ users_sign_out_path ]
     end
 
     def authenticate_user!
@@ -61,7 +59,7 @@ module Auth
 
       redirect_to(
         users_sign_in_path,
-        info: 'You need to sign in to access this page.'
+        info: "You need to sign in to access this page."
       )
     end
 
@@ -70,21 +68,21 @@ module Auth
 
       redirect_to(
         users_sign_in_path,
-        info: 'Your session has expired. Please sign in again.'
+        info: "Your session has expired. Please sign in again."
       )
     end
 
     def handle_user_unconfirmed_email
       redirect_to(
         users_sign_up_path(email: current_user.email),
-        info: 'You need to confirm your email address.'
+        info: "You need to confirm your email address."
       )
     end
 
     def handle_user_locked
       redirect_to(
         root_path,
-        info: 'Your account has been locked.'
+        info: "Your account has been locked."
       )
     end
   end

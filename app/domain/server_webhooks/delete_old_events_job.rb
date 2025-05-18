@@ -1,8 +1,6 @@
-# frozen_string_literal: true
-
 module ServerWebhooks
   class DeleteOldEventsJob < ApplicationJob
-    queue_as 'low'
+    queue_as "low"
     # TODO: rewrite lock: :while_executing)
 
     def perform
@@ -15,7 +13,7 @@ module ServerWebhooks
       ServerWebhookEvent.where(
         status: [
           ServerWebhookEvent::FAILED,
-          ServerWebhookEvent::DELIVERED,
+          ServerWebhookEvent::DELIVERED
         ],
         updated_at: ..(3.months.ago)
       )

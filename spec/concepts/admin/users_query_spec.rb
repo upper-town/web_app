@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require 'rails_helper'
 
 RSpec.describe Admin::UsersQuery do
@@ -12,7 +10,7 @@ RSpec.describe Admin::UsersQuery do
       expect(described_class.new.call).to eq([
         user3,
         user2,
-        user1,
+        user1
       ])
     end
   end

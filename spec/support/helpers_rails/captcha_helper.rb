@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module CaptchaHelper
   def check_captcha
     within('.h-captcha') do

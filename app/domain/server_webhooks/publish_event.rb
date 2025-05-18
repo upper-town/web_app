@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module ServerWebhooks
   class PublishEvent
     include Callable
@@ -34,7 +32,7 @@ module ServerWebhooks
 
     def check_failed
       if server_webhook_event.failed?
-        Result.failure('Could not retry event: it has been retried and failed multiple times')
+        Result.failure("Could not retry event: it has been retried and failed multiple times")
       else
         Result.success
       end
@@ -42,7 +40,7 @@ module ServerWebhooks
 
     def check_delivered
       if server_webhook_event.delivered?
-        Result.failure('Cannot retry event: it has been delivered already')
+        Result.failure("Cannot retry event: it has been delivered already")
       else
         Result.success
       end
@@ -51,11 +49,11 @@ module ServerWebhooks
     def check_config
       notice =
         if server_webhook_event.config.blank?
-          'Could not find config for this event type at the time of publishing it'
+          "Could not find config for this event type at the time of publishing it"
         elsif server_webhook_event.config.not_subscribed?(server_webhook_event.type)
-          'Could not find config that is subscribed to this event type at the time of publishing it'
+          "Could not find config that is subscribed to this event type at the time of publishing it"
         elsif server_webhook_event.config.disabled?
-          'Could not find an enabled config for this event type at the time of publishing it'
+          "Could not find an enabled config for this event type at the time of publishing it"
         end
 
       if notice.present?
@@ -117,11 +115,11 @@ module ServerWebhooks
 
     def send_request(connection, body)
       case server_webhook_event.config.method
-      when 'POST'  then connection.post(nil, body)
-      when 'PUT'   then connection.put(nil, body)
-      when 'PATCH' then connection.patch(nil, body)
+      when "POST"  then connection.post(nil, body)
+      when "PUT"   then connection.put(nil, body)
+      when "PATCH" then connection.patch(nil, body)
       else
-        raise 'HTTP method not supported for webhook request'
+        raise "HTTP method not supported for webhook request"
       end
     end
   end

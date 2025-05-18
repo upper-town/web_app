@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module AdminUsers
   class PasswordResetEdit < ApplicationModel
     attribute :token, :string, default: nil

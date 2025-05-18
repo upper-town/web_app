@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require 'rails_helper'
 
 RSpec.describe AdminUsers::PasswordResets::EmailJob do
@@ -21,8 +19,8 @@ RSpec.describe AdminUsers::PasswordResets::EmailJob do
         expect(admin_token.expires_at).to eq(1.hour.from_now)
 
         mail_message = ActionMailer::Base.deliveries.last
-        expect(mail_message.from).to eq(['noreply@test.upper.town'])
-        expect(mail_message.to).to eq([admin_user.email])
+        expect(mail_message.from).to eq([ 'noreply@test.upper.town' ])
+        expect(mail_message.to).to eq([ admin_user.email ])
         expect(mail_message.subject).to include('Password Reset Email')
         expect(mail_message.body).to match(%r"admin_users/password_reset/edit\?token=[ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz123456789]{48}")
 

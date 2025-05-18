@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require 'rails_helper'
 
 RSpec.describe ValidateSiteUrl do
@@ -19,7 +17,7 @@ RSpec.describe ValidateSiteUrl do
           'ftp://',
           'ftp://google',
           'ftp://google.com',
-          'https://sub1.sub2.sub3.sub4.sub5.sub6.com',
+          'https://sub1.sub2.sub3.sub4.sub5.sub6.com'
         ].each do |invalid_site_url|
           validator = described_class.new(invalid_site_url)
 
@@ -68,30 +66,30 @@ RSpec.describe ValidateSiteUrl do
             test
           ].each do |reserved_name|
             [
-              [false, "https://sub.#{reserved_name}"],
-              [false, "https://#{reserved_name}.com"],
+              [ false, "https://sub.#{reserved_name}" ],
+              [ false, "https://#{reserved_name}.com" ],
 
-              [false, "https://sub.sub.#{reserved_name}"],
-              [false, "https://sub.#{reserved_name}.com"],
-              [false, "https://#{reserved_name}.sub.com"],
+              [ false, "https://sub.sub.#{reserved_name}" ],
+              [ false, "https://sub.#{reserved_name}.com" ],
+              [ false, "https://#{reserved_name}.sub.com" ],
 
-              [false, "https://sub.sub.sub.#{reserved_name}"],
-              [false, "https://sub.sub.#{reserved_name}.com"],
-              [false, "https://sub.#{reserved_name}.sub.com"],
-              [true,  "https://#{reserved_name}.sub.sub.com"],
+              [ false, "https://sub.sub.sub.#{reserved_name}" ],
+              [ false, "https://sub.sub.#{reserved_name}.com" ],
+              [ false, "https://sub.#{reserved_name}.sub.com" ],
+              [ true,  "https://#{reserved_name}.sub.sub.com" ],
 
-              [false, "https://sub.sub.sub.sub.#{reserved_name}"],
-              [false, "https://sub.sub.sub.#{reserved_name}.com"],
-              [false, "https://sub.sub.#{reserved_name}.sub.com"],
-              [true,  "https://sub.#{reserved_name}.sub.sub.com"],
-              [true,  "https://#{reserved_name}.sub.sub.sub.com"],
+              [ false, "https://sub.sub.sub.sub.#{reserved_name}" ],
+              [ false, "https://sub.sub.sub.#{reserved_name}.com" ],
+              [ false, "https://sub.sub.#{reserved_name}.sub.com" ],
+              [ true,  "https://sub.#{reserved_name}.sub.sub.com" ],
+              [ true,  "https://#{reserved_name}.sub.sub.sub.com" ],
 
-              [false, "https://sub.sub.sub.sub.sub.#{reserved_name}"],
-              [false, "https://sub.sub.sub.sub.#{reserved_name}.com"],
-              [false, "https://sub.sub.sub.#{reserved_name}.sub.com"],
-              [true,  "https://sub.sub.#{reserved_name}.sub.sub.com"],
-              [true,  "https://sub.#{reserved_name}.sub.sub.sub.com"],
-              [true,  "https://#{reserved_name}.sub.sub.sub.sub.com"],
+              [ false, "https://sub.sub.sub.sub.sub.#{reserved_name}" ],
+              [ false, "https://sub.sub.sub.sub.#{reserved_name}.com" ],
+              [ false, "https://sub.sub.sub.#{reserved_name}.sub.com" ],
+              [ true,  "https://sub.sub.#{reserved_name}.sub.sub.com" ],
+              [ true,  "https://sub.#{reserved_name}.sub.sub.sub.com" ],
+              [ true,  "https://#{reserved_name}.sub.sub.sub.sub.com" ]
             ].each do |valid, site_url_with_reserved_domain|
               validator = described_class.new(site_url_with_reserved_domain)
 

@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module Servers
   class Unarchive
     attr_reader :server
@@ -10,9 +8,9 @@ module Servers
 
     def call
       if server.marked_for_deletion?
-        Result.failure('Server is marked for deletion. Unmark it first and then you can unarchive it')
+        Result.failure("Server is marked for deletion. Unmark it first and then you can unarchive it")
       elsif server.not_archived?
-        Result.failure('Server is not archived already')
+        Result.failure("Server is not archived already")
       else
         server.update!(archived_at: nil)
 

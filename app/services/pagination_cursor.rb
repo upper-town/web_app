@@ -1,22 +1,20 @@
-# frozen_string_literal: true
-
 class PaginationCursor
   HARD_MAX = 500
 
   DEFAULT_OPTIONS = {
-    order: 'desc',
+    order: "desc",
 
     per_page:              25,
     per_page_max:          100,
     per_page_from_request: false,
 
-    indicator: 'after',
+    indicator: "after",
 
     cursor:        nil,
     cursor_column: :id, # :uuid, :created_at, etc
     cursor_type:   :integer, # :string, :date, :datetime, :decimal, :float
 
-    total_count: nil,
+    total_count: nil
   }
 
   attr_reader(
@@ -49,7 +47,7 @@ class PaginationCursor
   def results
     @results ||= begin
       res = relation_plus_one.take(per_page)
-      res.reverse! if cursor_id && indicator != 'after'
+      res.reverse! if cursor_id && indicator != "after"
       res
     end
   end
@@ -63,7 +61,7 @@ class PaginationCursor
   #   you call it
   #   you call total_pages
   def total_count
-    @total_count ||= [options[:total_count] || relation.count, 0].max
+    @total_count ||= [ options[:total_count] || relation.count, 0 ].max
   end
 
   # total_pages depends on total_count
@@ -80,12 +78,12 @@ class PaginationCursor
   end
 
   def start_cursor_url
-    @start_cursor_url ||= build_url({ 'order' => order }, ['indicator', 'cursor'])
+    @start_cursor_url ||= build_url({ "order" => order }, [ "indicator", "cursor" ])
   end
 
   def before_cursor
     @before_cursor ||=
-      if cursor_id.nil? || (indicator != 'after' && relation_plus_one.size <= per_page)
+      if cursor_id.nil? || (indicator != "after" && relation_plus_one.size <= per_page)
         nil
       else
         results.first&.public_send(options[:cursor_column])
@@ -97,12 +95,12 @@ class PaginationCursor
   end
 
   def before_cursor_url
-    @before_cursor_url ||= build_url({ 'order' => order, 'indicator' => 'before', 'cursor' => serialize_cursor(before_cursor) })
+    @before_cursor_url ||= build_url({ "order" => order, "indicator" => "before", "cursor" => serialize_cursor(before_cursor) })
   end
 
   def after_cursor
     @after_cursor ||=
-      if indicator == 'after' && relation_plus_one.size <= per_page
+      if indicator == "after" && relation_plus_one.size <= per_page
         nil
       else
         results.last&.public_send(options[:cursor_column])
@@ -114,29 +112,29 @@ class PaginationCursor
   end
 
   def after_cursor_url
-    @after_cursor_url ||= build_url({ 'order' => order, 'indicator' => 'after', 'cursor' => serialize_cursor(after_cursor) })
+    @after_cursor_url ||= build_url({ "order" => order, "indicator" => "after", "cursor" => serialize_cursor(after_cursor) })
   end
 
   private
 
   def choose_order
-    (request.params['order'].presence || options[:order]).to_s.downcase == 'asc' ? 'asc' : 'desc'
+    (request.params["order"].presence || options[:order]).to_s.downcase == "asc" ? "asc" : "desc"
   end
 
   def choose_per_page
     if options[:per_page_from_request]
-      request.params['per_page'].presence || options[:per_page]
+      request.params["per_page"].presence || options[:per_page]
     else
       options[:per_page]
-    end.to_i.clamp(1, [options[:per_page_max], HARD_MAX].min)
+    end.to_i.clamp(1, [ options[:per_page_max], HARD_MAX ].min)
   end
 
   def choose_indicator
-    (request.params['indicator'].presence || options[:indicator]).to_s.downcase == 'before' ? 'before' : 'after'
+    (request.params["indicator"].presence || options[:indicator]).to_s.downcase == "before" ? "before" : "after"
   end
 
   def choose_cursor
-    value = request.params['cursor'].presence || options[:cursor]
+    value = request.params["cursor"].presence || options[:cursor]
 
     case value
     when Numeric, Date, Time, DateTime
@@ -147,7 +145,7 @@ class PaginationCursor
   end
 
   def load_cursor_and_cursor_id
-    return [nil, nil] unless cursor
+    return [ nil, nil ] unless cursor
 
     case options[:cursor_type]
     when :integer, :date
@@ -179,10 +177,10 @@ class PaginationCursor
   end
 
   def order_condition(column, value)
-    if !value || indicator == 'after'
-      order == 'desc' ? { column => :desc } : { column => :asc  }
+    if !value || indicator == "after"
+      order == "desc" ? { column => :desc } : { column => :asc  }
     else
-      order == 'desc' ? { column => :asc  } : { column => :desc }
+      order == "desc" ? { column => :asc  } : { column => :desc }
     end
   end
 
@@ -192,15 +190,15 @@ class PaginationCursor
     backward = inclusive ? (..value)  : (...value)
     forward  = inclusive ? (value...) : ((value + unit)...)
 
-    if indicator == 'after'
-      order == 'desc' ? { column => backward } : { column => forward  }
+    if indicator == "after"
+      order == "desc" ? { column => backward } : { column => forward  }
     else
-      order == 'desc' ? { column => forward  } : { column => backward }
+      order == "desc" ? { column => forward  } : { column => backward }
     end
   end
 
   def deserialize_cursor(str)
-    str = str.delete('^a-zA-Z0-9_:.-')
+    str = str.delete("^a-zA-Z0-9_:.-")
     return if str.blank?
 
     case options[:cursor_type]
@@ -230,13 +228,13 @@ class PaginationCursor
   def build_url(params_merge, params_remove = [])
     if options[:per_page_from_request]
       @request_helper.url_with_query(
-        params_merge.merge({ 'per_page' => per_page }).compact,
-        params_remove - ['per_page']
+        params_merge.merge({ "per_page" => per_page }).compact,
+        params_remove - [ "per_page" ]
       )
     else
       @request_helper.url_with_query(
         params_merge.compact,
-        params_remove + ['per_page']
+        params_remove + [ "per_page" ]
       )
     end
   end

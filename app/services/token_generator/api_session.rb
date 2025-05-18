@@ -1,8 +1,6 @@
-# frozen_string_literal: true
-
 module TokenGenerator
   module ApiSession
-    SECRET = Rails.application.key_generator.generate_key(ENV.fetch('TOKEN_API_SESSION_SALT'))
+    SECRET = Rails.application.key_generator.generate_key(ENV.fetch("TOKEN_API_SESSION_SALT"))
 
     extend self
 

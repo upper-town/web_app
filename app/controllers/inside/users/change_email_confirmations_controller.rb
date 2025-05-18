@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module Inside
   module Users
     class ChangeEmailConfirmationsController < BaseController
@@ -35,7 +33,7 @@ module Inside
         if result.success?
           redirect_to(
             inside_account_path,
-            success: 'Your request to change email address has been created.'
+            success: "Your request to change email address has been created."
           )
         else
           flash.now[:alert] = result.errors.full_messages

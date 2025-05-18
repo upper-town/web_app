@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require 'rails_helper'
 
 RSpec.describe ValidatePhoneNumber do
@@ -20,7 +18,7 @@ RSpec.describe ValidatePhoneNumber do
           '0',
           '000',
           '1',
-          '111',
+          '111'
         ].each do |invaild_phone_number|
           validator = described_class.new(invaild_phone_number)
 
@@ -48,7 +46,7 @@ RSpec.describe ValidatePhoneNumber do
           '+55-16-95555-9999',
           '+55 (16) 95555-9999',
           '+55(16)95555-9999',
-          '+5516955559999',
+          '+5516955559999'
         ].each do |valid_phone_number|
           validator = described_class.new(valid_phone_number)
 

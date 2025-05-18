@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module Auth
   module AuthorizationControl
     class NotAuthorizedError < StandardError; end
@@ -15,7 +13,7 @@ module Auth
     end
 
     def handle_user_not_authorized
-      render('auth/forbidden', status: :forbidden)
+      render("auth/forbidden", status: :forbidden)
     end
   end
 end

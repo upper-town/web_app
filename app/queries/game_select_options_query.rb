@@ -1,9 +1,7 @@
-# frozen_string_literal: true
-
 class GameSelectOptionsQuery
   include Callable
 
-  CACHE_KEY = 'game_select_options_query'
+  CACHE_KEY = "game_select_options_query"
   CACHE_EXPIRES_IN = 5.minutes
 
   attr_reader(

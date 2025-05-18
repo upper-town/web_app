@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require 'rails_helper'
 
 RSpec.describe Servers::VerifyAccounts::ValidateJsonFile do
@@ -8,7 +6,7 @@ RSpec.describe Servers::VerifyAccounts::ValidateJsonFile do
       {
         'accounts' => [
           '6e781bfd-353a-4e42-9077-6e5ac6cc477c',
-          'b8b22a7a-e7d4-4b5b-b0a3-01406e2d5aad',
+          'b8b22a7a-e7d4-4b5b-b0a3-01406e2d5aad'
         ]
       }
     )
@@ -25,7 +23,7 @@ RSpec.describe Servers::VerifyAccounts::ValidateJsonFile do
           { 'accounts' => ' ' },
           { 'accounts' => 123 },
           { 'accounts' => {}  },
-          { 'other'    => []  },
+          { 'other'    => []  }
         ].each do |data|
           validator = described_class.new(data)
 
@@ -50,7 +48,7 @@ RSpec.describe Servers::VerifyAccounts::ValidateJsonFile do
             'uuid-08',
             'uuid-09',
             'uuid-10',
-            'uuid-11',
+            'uuid-11'
           ]
         })
 
@@ -65,7 +63,7 @@ RSpec.describe Servers::VerifyAccounts::ValidateJsonFile do
         validator = described_class.new({
           'accounts' => [
             'uuid-01',
-            'ffaf9cfd-72e0-461f-ba12-42c2d080c2c3',
+            'ffaf9cfd-72e0-461f-ba12-42c2d080c2c3'
           ]
         })
 
@@ -81,7 +79,7 @@ RSpec.describe Servers::VerifyAccounts::ValidateJsonFile do
           'accounts' => [
             'ffaf9cfd-72e0-461f-ba12-42c2d080c2c3',
             'ffaf9cfd-72e0-461f-ba12-42c2d080c2c3',
-            '2aaeecfc-be65-4c45-9797-1db4a8a9fa5e',
+            '2aaeecfc-be65-4c45-9797-1db4a8a9fa5e'
           ]
         })
 
@@ -110,7 +108,7 @@ RSpec.describe Servers::VerifyAccounts::ValidateJsonFile do
             '9acfa883-2554-4547-9eba-86736e05e036',
             '353b2e46-d352-4ed7-80a5-1486ba3e8d56',
             'd8a577de-1620-4229-878c-75db1fb626b1',
-            '241d30ea-6d19-48f5-889d-ff565cdac7e5',
+            '241d30ea-6d19-48f5-889d-ff565cdac7e5'
           ]
         })
 

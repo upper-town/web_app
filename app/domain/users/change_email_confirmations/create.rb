@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module Users
   module ChangeEmailConfirmations
     class Create
@@ -16,7 +14,7 @@ module Users
           "users_change_email_confirmations_create:#{@request.remote_ip}",
           3,
           2.minutes,
-          'Too many attempts'
+          "Too many attempts"
         )
       end
 
@@ -25,7 +23,7 @@ module Users
         return result if result.failure?
 
         if current_user_email != change_email_confirmation.email
-          Result.failure('Incorrect current email address')
+          Result.failure("Incorrect current email address")
         else
           authenticate_and_change_user_email
         end
@@ -35,7 +33,7 @@ module Users
 
       def authenticate_and_change_user_email
         user = User.authenticate_by(email: current_user_email, password: change_email_confirmation.password)
-        return Result.failure('Incorrect password') unless user
+        return Result.failure("Incorrect password") unless user
 
         begin
           ActiveRecord::Base.transaction do

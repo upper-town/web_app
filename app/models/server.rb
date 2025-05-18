@@ -1,14 +1,12 @@
-# frozen_string_literal: true
-
 class Server < ApplicationRecord
   COUNTRY_CODES = ISO3166::Country.codes
 
   belongs_to :game
 
-  has_one :banner_image, class_name: 'ServerBannerImage', dependent: :destroy
+  has_one :banner_image, class_name: "ServerBannerImage", dependent: :destroy
 
-  has_many :votes, class_name: 'ServerVote', dependent: :destroy
-  has_many :stats, class_name: 'ServerStat', dependent: :destroy
+  has_many :votes, class_name: "ServerVote", dependent: :destroy
+  has_many :stats, class_name: "ServerStat", dependent: :destroy
 
   has_many :server_accounts, dependent: :destroy
   has_many :accounts, through: :server_accounts
@@ -17,8 +15,8 @@ class Server < ApplicationRecord
     through: :server_accounts,
     source: :account
 
-  has_many :webhook_configs, class_name: 'ServerWebhookConfig', dependent: :destroy
-  has_many :webhook_events,  class_name: 'ServerWebhookEvent',  dependent: :destroy
+  has_many :webhook_configs, class_name: "ServerWebhookConfig", dependent: :destroy
+  has_many :webhook_events,  class_name: "ServerWebhookEvent",  dependent: :destroy
 
   normalizes :name, with: ->(str) { str.squish }
   normalizes :description, with: ->(str) { str.squish }

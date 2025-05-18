@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require 'rails_helper'
 
 RSpec.describe PaginationCursor do
@@ -7,19 +5,19 @@ RSpec.describe PaginationCursor do
     it 'gets order from options' do
       relation = Dummy.all
       [
-        [' ',    nil,    'desc'],
-        [' ',    ' ',    'desc'],
-        [' ',    'xxxx', 'desc'],
-        ['desc', nil,    'desc'],
-        ['asc',  nil,    'asc' ],
-        ['desc', ' ',    'desc'],
-        ['asc',  ' ',    'asc' ],
-        ['desc', 'xxxx', 'desc'],
-        ['asc',  'xxxx', 'desc'],
-        ['xxxx', 'asc',  'asc' ],
-        ['xxxx', 'desc', 'desc'],
-        ['desc', 'asc',  'asc' ],
-        ['asc',  'desc', 'desc'],
+        [ ' ',    nil,    'desc' ],
+        [ ' ',    ' ',    'desc' ],
+        [ ' ',    'xxxx', 'desc' ],
+        [ 'desc', nil,    'desc' ],
+        [ 'asc',  nil,    'asc' ],
+        [ 'desc', ' ',    'desc' ],
+        [ 'asc',  ' ',    'asc' ],
+        [ 'desc', 'xxxx', 'desc' ],
+        [ 'asc',  'xxxx', 'desc' ],
+        [ 'xxxx', 'asc',  'asc' ],
+        [ 'xxxx', 'desc', 'desc' ],
+        [ 'desc', 'asc',  'asc' ],
+        [ 'asc',  'desc', 'desc' ]
       ].each do |order, request_order_param, expected_order|
         request = TestRequestHelper.build(params: { 'order' => request_order_param })
         pagination_cursor = described_class.new(
@@ -37,40 +35,40 @@ RSpec.describe PaginationCursor do
     it 'gets per_page from options, clamps value' do
       relation = Dummy.all
       [
-        [20,   nil, false, nil, 20],
-        ['20', nil, false, nil, 20],
-        [20,   nil, false, 30,  20],
-        [20,   10,  false, nil, 10],
-        [20,   nil, true, nil,  20],
-        [20,   nil, true, 25,   25],
-        [20,   nil, true, '25', 25],
-        [20,   10,  true, 25,   10],
+        [ 20,   nil, false, nil, 20 ],
+        [ '20', nil, false, nil, 20 ],
+        [ 20,   nil, false, 30,  20 ],
+        [ 20,   10,  false, nil, 10 ],
+        [ 20,   nil, true, nil,  20 ],
+        [ 20,   nil, true, 25,   25 ],
+        [ 20,   nil, true, '25', 25 ],
+        [ 20,   10,  true, 25,   10 ],
 
-        [ 1,   nil, false, nil, 1],
-        [ '1', nil, false, nil, 1],
-        [ 1,   nil, false, 5,   1],
-        [ 1,   nil, true,  nil, 1],
-        [ 1,   nil, true,  5,   5],
-        [-1,   nil, false, nil, 1],
-        ['-1', nil, false, nil, 1],
-        [-1,   nil, false, 5,   1],
-        [-1,   nil, true,  nil, 1],
-        [-1,   nil, true,  5,   5],
-        [-1,   nil, true,  '5', 5],
+        [ 1,   nil, false, nil, 1 ],
+        [ '1', nil, false, nil, 1 ],
+        [ 1,   nil, false, 5,   1 ],
+        [ 1,   nil, true,  nil, 1 ],
+        [ 1,   nil, true,  5,   5 ],
+        [ -1,   nil, false, nil, 1 ],
+        [ '-1', nil, false, nil, 1 ],
+        [ -1,   nil, false, 5,   1 ],
+        [ -1,   nil, true,  nil, 1 ],
+        [ -1,   nil, true,  5,   5 ],
+        [ -1,   nil, true,  '5', 5 ],
 
-        [501, nil, false, nil,   100],
-        [501, nil, false, 300,   100],
-        [501, 300, false, nil,   300],
-        [501, 300, true,  nil,   300],
-        [501, nil, true,  300,   100],
-        [501, 300, true,  300,   300],
-        [501, 300, true,  '300', 300],
+        [ 501, nil, false, nil,   100 ],
+        [ 501, nil, false, 300,   100 ],
+        [ 501, 300, false, nil,   300 ],
+        [ 501, 300, true,  nil,   300 ],
+        [ 501, nil, true,  300,   100 ],
+        [ 501, 300, true,  300,   300 ],
+        [ 501, 300, true,  '300', 300 ],
 
-        [501, 1_000, false, nil,   500],
-        [501, 1_000, false, 300,   500],
-        [501, 1_000, true,  nil,   500],
-        [501, 1_000, true,  300,   300],
-        [501, 1_000, true,  '300', 300],
+        [ 501, 1_000, false, nil,   500 ],
+        [ 501, 1_000, false, 300,   500 ],
+        [ 501, 1_000, true,  nil,   500 ],
+        [ 501, 1_000, true,  300,   300 ],
+        [ 501, 1_000, true,  '300', 300 ]
       ].each do |per_page, per_page_max, per_page_from_request, request_per_page_param, expected_per_page|
         request = TestRequestHelper.build(params: { 'per_page' => request_per_page_param })
         pagination_cursor = described_class.new(
@@ -90,15 +88,15 @@ RSpec.describe PaginationCursor do
     it 'gets indicator from options' do
       relation = Dummy.all
       [
-        [' ',      nil,      'after' ],
-        ['before', nil,      'before'],
-        ['before', ' ',      'before'],
-        ['after',  nil,      'after' ],
-        ['after',  ' ',      'after' ],
-        ['after',  'xxx',    'after' ],
-        ['before', 'xxx',    'after' ],
-        ['after',  'before', 'before'],
-        ['before', 'after',  'after' ],
+        [ ' ',      nil,      'after' ],
+        [ 'before', nil,      'before' ],
+        [ 'before', ' ',      'before' ],
+        [ 'after',  nil,      'after' ],
+        [ 'after',  ' ',      'after' ],
+        [ 'after',  'xxx',    'after' ],
+        [ 'before', 'xxx',    'after' ],
+        [ 'after',  'before', 'before' ],
+        [ 'before', 'after',  'after' ]
       ].each do |indicator, request_indicator_param, expected_indicator|
         request = TestRequestHelper.build(params: { 'indicator' => request_indicator_param })
         pagination_cursor = described_class.new(
@@ -121,131 +119,131 @@ RSpec.describe PaginationCursor do
       relation  = Dummy.all
       [
         # integer
-        [:id, :integer, 'desc', 'after',  ' ', nil, nil, nil],
-        [:id, :integer, 'desc', 'before', ' ', nil, nil, nil],
-        [:id, :integer, 'asc',  'after',  ' ', nil, nil, nil],
-        [:id, :integer, 'asc',  'before', ' ', nil, nil, nil],
+        [ :id, :integer, 'desc', 'after',  ' ', nil, nil, nil ],
+        [ :id, :integer, 'desc', 'before', ' ', nil, nil, nil ],
+        [ :id, :integer, 'asc',  'after',  ' ', nil, nil, nil ],
+        [ :id, :integer, 'asc',  'before', ' ', nil, nil, nil ],
 
-        [:id, :integer, 'desc', 'after',  'abcdef', nil, nil, nil],
-        [:id, :integer, 'desc', 'before', 'abcdef', nil, nil, nil],
-        [:id, :integer, 'asc',  'after',  'abcdef', nil, nil, nil],
-        [:id, :integer, 'asc',  'before', 'abcdef', nil, nil, nil],
+        [ :id, :integer, 'desc', 'after',  'abcdef', nil, nil, nil ],
+        [ :id, :integer, 'desc', 'before', 'abcdef', nil, nil, nil ],
+        [ :id, :integer, 'asc',  'after',  'abcdef', nil, nil, nil ],
+        [ :id, :integer, 'asc',  'before', 'abcdef', nil, nil, nil ],
 
-        [:id, :integer, 'desc', 'after',  '3', nil, 2, 2],
-        [:id, :integer, 'desc', 'before', '3', nil, 4, 4],
-        [:id, :integer, 'asc',  'after',  '3', nil, 4, 4],
-        [:id, :integer, 'asc',  'before', '3', nil, 2, 2],
+        [ :id, :integer, 'desc', 'after',  '3', nil, 2, 2 ],
+        [ :id, :integer, 'desc', 'before', '3', nil, 4, 4 ],
+        [ :id, :integer, 'asc',  'after',  '3', nil, 4, 4 ],
+        [ :id, :integer, 'asc',  'before', '3', nil, 2, 2 ],
 
-        [:id, :integer, 'desc', 'after',  ' ', ' ',            nil, nil],
-        [:id, :integer, 'desc', 'after',  '3', ' ',            2,   2  ],
-        [:id, :integer, 'desc', 'after',  ' ', 'abcdef',       nil, nil],
-        [:id, :integer, 'desc', 'after',  ' ', '3',            2,   2  ],
-        [:id, :integer, 'desc', 'after',  ' ', " 3!*[(?'\t\n", 2,   2  ],
+        [ :id, :integer, 'desc', 'after',  ' ', ' ',            nil, nil ],
+        [ :id, :integer, 'desc', 'after',  '3', ' ',            2,   2  ],
+        [ :id, :integer, 'desc', 'after',  ' ', 'abcdef',       nil, nil ],
+        [ :id, :integer, 'desc', 'after',  ' ', '3',            2,   2  ],
+        [ :id, :integer, 'desc', 'after',  ' ', " 3!*[(?'\t\n", 2,   2  ],
 
         # string
-        [:uuid, :string, 'desc', 'after',  ' ', nil, nil, nil],
-        [:uuid, :string, 'desc', 'before', ' ', nil, nil, nil],
-        [:uuid, :string, 'asc',  'after',  ' ', nil, nil, nil],
-        [:uuid, :string, 'asc',  'before', ' ', nil, nil, nil],
+        [ :uuid, :string, 'desc', 'after',  ' ', nil, nil, nil ],
+        [ :uuid, :string, 'desc', 'before', ' ', nil, nil, nil ],
+        [ :uuid, :string, 'asc',  'after',  ' ', nil, nil, nil ],
+        [ :uuid, :string, 'asc',  'before', ' ', nil, nil, nil ],
 
-        [:uuid, :string, 'desc', 'after',  'abcdef', nil, nil, nil],
-        [:uuid, :string, 'desc', 'before', 'abcdef', nil, nil, nil],
-        [:uuid, :string, 'asc',  'after',  'abcdef', nil, nil, nil],
-        [:uuid, :string, 'asc',  'before', 'abcdef', nil, nil, nil],
+        [ :uuid, :string, 'desc', 'after',  'abcdef', nil, nil, nil ],
+        [ :uuid, :string, 'desc', 'before', 'abcdef', nil, nil, nil ],
+        [ :uuid, :string, 'asc',  'after',  'abcdef', nil, nil, nil ],
+        [ :uuid, :string, 'asc',  'before', 'abcdef', nil, nil, nil ],
 
-        [:uuid, :string, 'desc', 'after',  ' ',         ' ',                         nil,         nil],
-        [:uuid, :string, 'desc', 'after',  dummy4.uuid, ' ',                         dummy4.uuid, 4  ],
-        [:uuid, :string, 'desc', 'after',  ' ',         'abcdef',                    nil,         nil],
-        [:uuid, :string, 'desc', 'after',  ' ',         dummy4.uuid,                 dummy4.uuid, 4  ],
-        [:uuid, :string, 'desc', 'after',  ' ',         " #{dummy4.uuid}!*[(?'\t\n", dummy4.uuid, 4  ],
+        [ :uuid, :string, 'desc', 'after',  ' ',         ' ',                         nil,         nil ],
+        [ :uuid, :string, 'desc', 'after',  dummy4.uuid, ' ',                         dummy4.uuid, 4  ],
+        [ :uuid, :string, 'desc', 'after',  ' ',         'abcdef',                    nil,         nil ],
+        [ :uuid, :string, 'desc', 'after',  ' ',         dummy4.uuid,                 dummy4.uuid, 4  ],
+        [ :uuid, :string, 'desc', 'after',  ' ',         " #{dummy4.uuid}!*[(?'\t\n", dummy4.uuid, 4  ],
 
         # date
-        [:date, :date, 'desc', 'after',  ' ', nil, nil, nil],
-        [:date, :date, 'desc', 'before', ' ', nil, nil, nil],
-        [:date, :date, 'asc',  'after',  ' ', nil, nil, nil],
-        [:date, :date, 'asc',  'before', ' ', nil, nil, nil],
+        [ :date, :date, 'desc', 'after',  ' ', nil, nil, nil ],
+        [ :date, :date, 'desc', 'before', ' ', nil, nil, nil ],
+        [ :date, :date, 'asc',  'after',  ' ', nil, nil, nil ],
+        [ :date, :date, 'asc',  'before', ' ', nil, nil, nil ],
 
-        [:date, :date, 'desc', 'after',  'abcdef', nil, nil, nil],
-        [:date, :date, 'desc', 'before', 'abcdef', nil, nil, nil],
-        [:date, :date, 'asc',  'after',  'abcdef', nil, nil, nil],
-        [:date, :date, 'asc',  'before', 'abcdef', nil, nil, nil],
+        [ :date, :date, 'desc', 'after',  'abcdef', nil, nil, nil ],
+        [ :date, :date, 'desc', 'before', 'abcdef', nil, nil, nil ],
+        [ :date, :date, 'asc',  'after',  'abcdef', nil, nil, nil ],
+        [ :date, :date, 'asc',  'before', 'abcdef', nil, nil, nil ],
 
-        [:date, :date, 'desc', 'after',  '2024-09-03', nil, '2024-09-02'.to_date, 2],
-        [:date, :date, 'desc', 'before', '2024-09-03', nil, '2024-09-04'.to_date, 4],
-        [:date, :date, 'asc',  'after',  '2024-09-03', nil, '2024-09-04'.to_date, 4],
-        [:date, :date, 'asc',  'before', '2024-09-03', nil, '2024-09-02'.to_date, 2],
+        [ :date, :date, 'desc', 'after',  '2024-09-03', nil, '2024-09-02'.to_date, 2 ],
+        [ :date, :date, 'desc', 'before', '2024-09-03', nil, '2024-09-04'.to_date, 4 ],
+        [ :date, :date, 'asc',  'after',  '2024-09-03', nil, '2024-09-04'.to_date, 4 ],
+        [ :date, :date, 'asc',  'before', '2024-09-03', nil, '2024-09-02'.to_date, 2 ],
 
-        [:date, :date, 'desc', 'after',  ' ',          ' ',                     nil,                  nil],
-        [:date, :date, 'desc', 'after',  '2024-09-03', ' ',                     '2024-09-02'.to_date, 2  ],
-        [:date, :date, 'desc', 'after',  ' ',          'abcdef',                nil,                  nil],
-        [:date, :date, 'desc', 'after',  ' ',          '2024-09-03',            '2024-09-02'.to_date, 2  ],
-        [:date, :date, 'desc', 'after',  ' ',          " 2024-09-03!*[(?'\t\n", '2024-09-02'.to_date, 2  ],
+        [ :date, :date, 'desc', 'after',  ' ',          ' ',                     nil,                  nil ],
+        [ :date, :date, 'desc', 'after',  '2024-09-03', ' ',                     '2024-09-02'.to_date, 2  ],
+        [ :date, :date, 'desc', 'after',  ' ',          'abcdef',                nil,                  nil ],
+        [ :date, :date, 'desc', 'after',  ' ',          '2024-09-03',            '2024-09-02'.to_date, 2  ],
+        [ :date, :date, 'desc', 'after',  ' ',          " 2024-09-03!*[(?'\t\n", '2024-09-02'.to_date, 2  ],
 
         # datetime
-        [:datetime, :datetime, 'desc', 'after',  ' ', nil, nil, nil],
-        [:datetime, :datetime, 'desc', 'before', ' ', nil, nil, nil],
-        [:datetime, :datetime, 'asc',  'after',  ' ', nil, nil, nil],
-        [:datetime, :datetime, 'asc',  'before', ' ', nil, nil, nil],
+        [ :datetime, :datetime, 'desc', 'after',  ' ', nil, nil, nil ],
+        [ :datetime, :datetime, 'desc', 'before', ' ', nil, nil, nil ],
+        [ :datetime, :datetime, 'asc',  'after',  ' ', nil, nil, nil ],
+        [ :datetime, :datetime, 'asc',  'before', ' ', nil, nil, nil ],
 
-        [:datetime, :datetime, 'desc', 'after',  'abcdef', nil, nil, nil],
-        [:datetime, :datetime, 'desc', 'before', 'abcdef', nil, nil, nil],
-        [:datetime, :datetime, 'asc',  'after',  'abcdef', nil, nil, nil],
-        [:datetime, :datetime, 'asc',  'before', 'abcdef', nil, nil, nil],
+        [ :datetime, :datetime, 'desc', 'after',  'abcdef', nil, nil, nil ],
+        [ :datetime, :datetime, 'desc', 'before', 'abcdef', nil, nil, nil ],
+        [ :datetime, :datetime, 'asc',  'after',  'abcdef', nil, nil, nil ],
+        [ :datetime, :datetime, 'asc',  'before', 'abcdef', nil, nil, nil ],
 
-        [:datetime, :datetime, 'desc', 'after',  '2024-09-01T12:00:00.000003Z', nil, '2024-09-01T12:00:00.000002Z'.to_time, 2],
-        [:datetime, :datetime, 'desc', 'before', '2024-09-01T12:00:00.000003Z', nil, '2024-09-01T12:00:00.000004Z'.to_time, 4],
-        [:datetime, :datetime, 'asc',  'after',  '2024-09-01T12:00:00.000003Z', nil, '2024-09-01T12:00:00.000004Z'.to_time, 4],
-        [:datetime, :datetime, 'asc',  'before', '2024-09-01T12:00:00.000003Z', nil, '2024-09-01T12:00:00.000002Z'.to_time, 2],
+        [ :datetime, :datetime, 'desc', 'after',  '2024-09-01T12:00:00.000003Z', nil, '2024-09-01T12:00:00.000002Z'.to_time, 2 ],
+        [ :datetime, :datetime, 'desc', 'before', '2024-09-01T12:00:00.000003Z', nil, '2024-09-01T12:00:00.000004Z'.to_time, 4 ],
+        [ :datetime, :datetime, 'asc',  'after',  '2024-09-01T12:00:00.000003Z', nil, '2024-09-01T12:00:00.000004Z'.to_time, 4 ],
+        [ :datetime, :datetime, 'asc',  'before', '2024-09-01T12:00:00.000003Z', nil, '2024-09-01T12:00:00.000002Z'.to_time, 2 ],
 
-        [:datetime, :datetime, 'desc', 'after',  ' ',                           ' ',                                      nil,                                   nil],
-        [:datetime, :datetime, 'desc', 'after',  '2024-09-01T12:00:00.000003Z', ' ',                                      '2024-09-01T12:00:00.000002Z'.to_time, 2  ],
-        [:datetime, :datetime, 'desc', 'after',  ' ',                           'abcdef',                                 nil,                                   nil],
-        [:datetime, :datetime, 'desc', 'after',  ' ',                           '2024-09-01T12:00:00.000003Z',            '2024-09-01T12:00:00.000002Z'.to_time, 2  ],
-        [:datetime, :datetime, 'desc', 'after',  ' ',                           " 2024-09-01T12:00:00.000003Z!*[(?'\t\n", '2024-09-01T12:00:00.000002Z'.to_time, 2  ],
+        [ :datetime, :datetime, 'desc', 'after',  ' ',                           ' ',                                      nil,                                   nil ],
+        [ :datetime, :datetime, 'desc', 'after',  '2024-09-01T12:00:00.000003Z', ' ',                                      '2024-09-01T12:00:00.000002Z'.to_time, 2  ],
+        [ :datetime, :datetime, 'desc', 'after',  ' ',                           'abcdef',                                 nil,                                   nil ],
+        [ :datetime, :datetime, 'desc', 'after',  ' ',                           '2024-09-01T12:00:00.000003Z',            '2024-09-01T12:00:00.000002Z'.to_time, 2  ],
+        [ :datetime, :datetime, 'desc', 'after',  ' ',                           " 2024-09-01T12:00:00.000003Z!*[(?'\t\n", '2024-09-01T12:00:00.000002Z'.to_time, 2  ],
 
         # decimal
-        [:decimal, :decimal, 'desc', 'after',  ' ', nil, nil, nil],
-        [:decimal, :decimal, 'desc', 'before', ' ', nil, nil, nil],
-        [:decimal, :decimal, 'asc',  'after',  ' ', nil, nil, nil],
-        [:decimal, :decimal, 'asc',  'before', ' ', nil, nil, nil],
+        [ :decimal, :decimal, 'desc', 'after',  ' ', nil, nil, nil ],
+        [ :decimal, :decimal, 'desc', 'before', ' ', nil, nil, nil ],
+        [ :decimal, :decimal, 'asc',  'after',  ' ', nil, nil, nil ],
+        [ :decimal, :decimal, 'asc',  'before', ' ', nil, nil, nil ],
 
-        [:decimal, :decimal, 'desc', 'after',  'abcdef', nil, nil, nil],
-        [:decimal, :decimal, 'desc', 'before', 'abcdef', nil, nil, nil],
-        [:decimal, :decimal, 'asc',  'after',  'abcdef', nil, nil, nil],
-        [:decimal, :decimal, 'asc',  'before', 'abcdef', nil, nil, nil],
+        [ :decimal, :decimal, 'desc', 'after',  'abcdef', nil, nil, nil ],
+        [ :decimal, :decimal, 'desc', 'before', 'abcdef', nil, nil, nil ],
+        [ :decimal, :decimal, 'asc',  'after',  'abcdef', nil, nil, nil ],
+        [ :decimal, :decimal, 'asc',  'before', 'abcdef', nil, nil, nil ],
 
-        [:decimal, :decimal, 'desc', 'after',  '0.000003', nil, 0.000002, 2],
-        [:decimal, :decimal, 'desc', 'before', '0.000003', nil, 0.000004, 4],
-        [:decimal, :decimal, 'asc',  'after',  '0.000003', nil, 0.000004, 4],
-        [:decimal, :decimal, 'asc',  'before', '0.000003', nil, 0.000002, 2],
+        [ :decimal, :decimal, 'desc', 'after',  '0.000003', nil, 0.000002, 2 ],
+        [ :decimal, :decimal, 'desc', 'before', '0.000003', nil, 0.000004, 4 ],
+        [ :decimal, :decimal, 'asc',  'after',  '0.000003', nil, 0.000004, 4 ],
+        [ :decimal, :decimal, 'asc',  'before', '0.000003', nil, 0.000002, 2 ],
 
-        [:decimal, :decimal, 'desc', 'after',  ' ',        ' ',                   nil,      nil],
-        [:decimal, :decimal, 'desc', 'after',  '0.000003', ' ',                   0.000002, 2  ],
-        [:decimal, :decimal, 'desc', 'after',  ' ',        'abcdef',              nil,      nil],
-        [:decimal, :decimal, 'desc', 'after',  ' ',        '0.000003',            0.000002, 2  ],
-        [:decimal, :decimal, 'desc', 'after',  ' ',        " 0.000003!*[(?'\t\n", 0.000002, 2  ],
+        [ :decimal, :decimal, 'desc', 'after',  ' ',        ' ',                   nil,      nil ],
+        [ :decimal, :decimal, 'desc', 'after',  '0.000003', ' ',                   0.000002, 2  ],
+        [ :decimal, :decimal, 'desc', 'after',  ' ',        'abcdef',              nil,      nil ],
+        [ :decimal, :decimal, 'desc', 'after',  ' ',        '0.000003',            0.000002, 2  ],
+        [ :decimal, :decimal, 'desc', 'after',  ' ',        " 0.000003!*[(?'\t\n", 0.000002, 2  ],
 
         # float
-        [:float, :float, 'desc', 'after',  ' ', nil, nil, nil],
-        [:float, :float, 'desc', 'before', ' ', nil, nil, nil],
-        [:float, :float, 'asc',  'after',  ' ', nil, nil, nil],
-        [:float, :float, 'asc',  'before', ' ', nil, nil, nil],
+        [ :float, :float, 'desc', 'after',  ' ', nil, nil, nil ],
+        [ :float, :float, 'desc', 'before', ' ', nil, nil, nil ],
+        [ :float, :float, 'asc',  'after',  ' ', nil, nil, nil ],
+        [ :float, :float, 'asc',  'before', ' ', nil, nil, nil ],
 
-        [:float, :float, 'desc', 'after',  'abcdef', nil, nil, nil],
-        [:float, :float, 'desc', 'before', 'abcdef', nil, nil, nil],
-        [:float, :float, 'asc',  'after',  'abcdef', nil, nil, nil],
-        [:float, :float, 'asc',  'before', 'abcdef', nil, nil, nil],
+        [ :float, :float, 'desc', 'after',  'abcdef', nil, nil, nil ],
+        [ :float, :float, 'desc', 'before', 'abcdef', nil, nil, nil ],
+        [ :float, :float, 'asc',  'after',  'abcdef', nil, nil, nil ],
+        [ :float, :float, 'asc',  'before', 'abcdef', nil, nil, nil ],
 
-        [:float, :float, 'desc', 'after',  '0.000003', nil, 0.000002, 2],
-        [:float, :float, 'desc', 'before', '0.000003', nil, 0.000004, 4],
-        [:float, :float, 'asc',  'after',  '0.000003', nil, 0.000004, 4],
-        [:float, :float, 'asc',  'before', '0.000003', nil, 0.000002, 2],
+        [ :float, :float, 'desc', 'after',  '0.000003', nil, 0.000002, 2 ],
+        [ :float, :float, 'desc', 'before', '0.000003', nil, 0.000004, 4 ],
+        [ :float, :float, 'asc',  'after',  '0.000003', nil, 0.000004, 4 ],
+        [ :float, :float, 'asc',  'before', '0.000003', nil, 0.000002, 2 ],
 
-        [:float, :float, 'desc', 'after',  ' ',        ' ',                   nil,      nil],
-        [:float, :float, 'desc', 'after',  '0.000003', ' ',                   0.000002, 2  ],
-        [:float, :float, 'desc', 'after',  ' ',        'abcdef',              nil,      nil],
-        [:float, :float, 'desc', 'after',  ' ',        '0.000003',            0.000002, 2  ],
-        [:float, :float, 'desc', 'after',  ' ',        " 0.000003!*[(?'\t\n", 0.000002, 2  ],
+        [ :float, :float, 'desc', 'after',  ' ',        ' ',                   nil,      nil ],
+        [ :float, :float, 'desc', 'after',  '0.000003', ' ',                   0.000002, 2  ],
+        [ :float, :float, 'desc', 'after',  ' ',        'abcdef',              nil,      nil ],
+        [ :float, :float, 'desc', 'after',  ' ',        '0.000003',            0.000002, 2  ],
+        [ :float, :float, 'desc', 'after',  ' ',        " 0.000003!*[(?'\t\n", 0.000002, 2  ]
       ].each do |cursor_column, cursor_type, order, indicator, cursor, request_cursor_param, expected_cursor, expected_cursor_id|
         request = TestRequestHelper.build(params: { 'cursor' => request_cursor_param })
         pagination_cursor = described_class.new(
@@ -272,11 +270,11 @@ RSpec.describe PaginationCursor do
         request = TestRequestHelper.build
 
         pagination_cursor = described_class.new(relation, request, indicator: 'before', cursor: '', per_page: 3, order: 'asc')
-        expect(pagination_cursor.results).to eq([dummies[0], dummies[1], dummies[2]])
+        expect(pagination_cursor.results).to eq([ dummies[0], dummies[1], dummies[2] ])
         expect(pagination_cursor.page_size).to eq(3)
 
         pagination_cursor = described_class.new(relation, request, indicator: 'after', cursor: '', per_page: 3, order: 'asc')
-        expect(pagination_cursor.results).to eq([dummies[0], dummies[1], dummies[2]])
+        expect(pagination_cursor.results).to eq([ dummies[0], dummies[1], dummies[2] ])
         expect(pagination_cursor.page_size).to eq(3)
 
         pagination_cursor = described_class.new(relation, request, indicator: 'before', cursor: dummies[0].id, per_page: 3, order: 'asc')
@@ -288,23 +286,23 @@ RSpec.describe PaginationCursor do
         expect(pagination_cursor.page_size).to eq(0)
 
         pagination_cursor = described_class.new(relation, request, indicator: 'before', cursor: dummies[2].id, per_page: 3, order: 'asc')
-        expect(pagination_cursor.results).to eq([dummies[0], dummies[1]])
+        expect(pagination_cursor.results).to eq([ dummies[0], dummies[1] ])
         expect(pagination_cursor.page_size).to eq(2)
 
         pagination_cursor = described_class.new(relation, request, indicator: 'after', cursor: dummies[2].id, per_page: 3, order: 'asc')
-        expect(pagination_cursor.results).to eq([dummies[3], dummies[4], dummies[5]])
+        expect(pagination_cursor.results).to eq([ dummies[3], dummies[4], dummies[5] ])
         expect(pagination_cursor.page_size).to eq(3)
 
         pagination_cursor = described_class.new(relation, request, indicator: 'before', cursor: dummies[3].id, per_page: 3, order: 'asc')
-        expect(pagination_cursor.results).to eq([dummies[0], dummies[1], dummies[2]])
+        expect(pagination_cursor.results).to eq([ dummies[0], dummies[1], dummies[2] ])
         expect(pagination_cursor.page_size).to eq(3)
 
         pagination_cursor = described_class.new(relation, request, indicator: 'before', cursor: dummies[8].id, per_page: 3, order: 'asc')
-        expect(pagination_cursor.results).to eq([dummies[5], dummies[6], dummies[7]])
+        expect(pagination_cursor.results).to eq([ dummies[5], dummies[6], dummies[7] ])
         expect(pagination_cursor.page_size).to eq(3)
 
         pagination_cursor = described_class.new(relation, request, indicator: 'after', cursor: dummies[8].id, per_page: 3, order: 'asc')
-        expect(pagination_cursor.results).to eq([dummies[9]])
+        expect(pagination_cursor.results).to eq([ dummies[9] ])
         expect(pagination_cursor.page_size).to eq(1)
       end
     end
@@ -316,11 +314,11 @@ RSpec.describe PaginationCursor do
         request = TestRequestHelper.build
 
         pagination_cursor = described_class.new(relation, request, indicator: 'before', cursor: '', per_page: 3, order: 'desc')
-        expect(pagination_cursor.results).to eq([dummies[9], dummies[8], dummies[7]])
+        expect(pagination_cursor.results).to eq([ dummies[9], dummies[8], dummies[7] ])
         expect(pagination_cursor.page_size).to eq(3)
 
         pagination_cursor = described_class.new(relation, request, indicator: 'after', cursor: '', per_page: 3, order: 'desc')
-        expect(pagination_cursor.results).to eq([dummies[9], dummies[8], dummies[7]])
+        expect(pagination_cursor.results).to eq([ dummies[9], dummies[8], dummies[7] ])
         expect(pagination_cursor.page_size).to eq(3)
 
         pagination_cursor = described_class.new(relation, request, indicator: 'after', cursor: dummies[0].id, per_page: 3, order: 'desc')
@@ -332,23 +330,23 @@ RSpec.describe PaginationCursor do
         expect(pagination_cursor.page_size).to eq(0)
 
         pagination_cursor = described_class.new(relation, request, indicator: 'before', cursor: dummies[2].id, per_page: 3, order: 'desc')
-        expect(pagination_cursor.results).to eq([dummies[5], dummies[4], dummies[3]])
+        expect(pagination_cursor.results).to eq([ dummies[5], dummies[4], dummies[3] ])
         expect(pagination_cursor.page_size).to eq(3)
 
         pagination_cursor = described_class.new(relation, request, indicator: 'after', cursor: dummies[2].id, per_page: 3, order: 'desc')
-        expect(pagination_cursor.results).to eq([dummies[1], dummies[0]])
+        expect(pagination_cursor.results).to eq([ dummies[1], dummies[0] ])
         expect(pagination_cursor.page_size).to eq(2)
 
         pagination_cursor = described_class.new(relation, request, indicator: 'before', cursor: dummies[6].id, per_page: 3, order: 'desc')
-        expect(pagination_cursor.results).to eq([dummies[9], dummies[8], dummies[7]])
+        expect(pagination_cursor.results).to eq([ dummies[9], dummies[8], dummies[7] ])
         expect(pagination_cursor.page_size).to eq(3)
 
         pagination_cursor = described_class.new(relation, request, indicator: 'before', cursor: dummies[8].id, per_page: 3, order: 'desc')
-        expect(pagination_cursor.results).to eq([dummies[9]])
+        expect(pagination_cursor.results).to eq([ dummies[9] ])
         expect(pagination_cursor.page_size).to eq(1)
 
         pagination_cursor = described_class.new(relation, request, indicator: 'after', cursor: dummies[8].id, per_page: 3, order: 'desc')
-        expect(pagination_cursor.results).to eq([dummies[7], dummies[6], dummies[5]])
+        expect(pagination_cursor.results).to eq([ dummies[7], dummies[6], dummies[5] ])
         expect(pagination_cursor.page_size).to eq(3)
       end
     end
@@ -677,7 +675,7 @@ RSpec.describe PaginationCursor do
             create(:dummy, uuid: SecureRandom.uuid, date: '2024-09-02', datetime: '2024-09-01T12:00:00.000002Z', decimal: '0.000002'.to_d, float: 0.000002), # index 1
             create(:dummy, uuid: SecureRandom.uuid, date: '2024-09-03', datetime: '2024-09-01T12:00:00.000003Z', decimal: '0.000003'.to_d, float: 0.000003), # index 2
             create(:dummy, uuid: SecureRandom.uuid, date: '2024-09-04', datetime: '2024-09-01T12:00:00.000004Z', decimal: '0.000004'.to_d, float: 0.000004), # index 3
-            create(:dummy, uuid: SecureRandom.uuid, date: '2024-09-05', datetime: '2024-09-01T12:00:00.000005Z', decimal: '0.000005'.to_d, float: 0.000005), # index 4
+            create(:dummy, uuid: SecureRandom.uuid, date: '2024-09-05', datetime: '2024-09-01T12:00:00.000005Z', decimal: '0.000005'.to_d, float: 0.000005) # index 4
           ]
           relation = Dummy.order(id: :desc)
           request = TestRequestHelper.build(url: 'http://test.upper.town/servers')

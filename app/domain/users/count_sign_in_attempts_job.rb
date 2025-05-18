@@ -1,8 +1,6 @@
-# frozen_string_literal: true
-
 module Users
   class CountSignInAttemptsJob < ApplicationJob
-    queue_as 'low'
+    queue_as "low"
     # TODO: rewrite lock: :while_executing, on_conflict: :reschedule)
 
     def perform(user_email, succeeded)

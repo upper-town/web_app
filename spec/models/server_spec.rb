@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require 'rails_helper'
 
 RSpec.describe Server do
@@ -386,7 +384,7 @@ RSpec.describe Server do
         server_webhook_config = create(
           :server_webhook_config,
           server: server,
-          event_types: ['test.event'],
+          event_types: [ 'test.event' ],
           disabled_at: nil
         )
 
@@ -400,14 +398,14 @@ RSpec.describe Server do
         _another_server_webhook_config = create(
           :server_webhook_config,
           server: another_server,
-          event_types: ['test.event'],
+          event_types: [ 'test.event' ],
           disabled_at: nil
         )
         server = create(:server)
         _server_webhook_config = create(
           :server_webhook_config,
           server: server,
-          event_types: ['test.event'],
+          event_types: [ 'test.event' ],
           disabled_at: Time.current
         )
 
@@ -423,7 +421,7 @@ RSpec.describe Server do
         _server_webhook_config = create(
           :server_webhook_config,
           server: server,
-          event_types: ['test.event'],
+          event_types: [ 'test.event' ],
           disabled_at: nil
         )
 
@@ -437,14 +435,14 @@ RSpec.describe Server do
         _another_server_webhook_config = create(
           :server_webhook_config,
           server: another_server,
-          event_types: ['test.event'],
+          event_types: [ 'test.event' ],
           disabled_at: nil
         )
         server = create(:server)
         _server_webhook_config = create(
           :server_webhook_config,
           server: server,
-          event_types: ['test.event'],
+          event_types: [ 'test.event' ],
           disabled_at: Time.current
         )
 
@@ -460,7 +458,7 @@ RSpec.describe Server do
         _server_webhook_config = create(
           :server_webhook_config,
           server: server,
-          event_types: ['server_vote.created'],
+          event_types: [ 'server_vote.created' ],
           disabled_at: nil
         )
 
@@ -474,14 +472,14 @@ RSpec.describe Server do
         _another_server_webhook_config = create(
           :server_webhook_config,
           server: another_server,
-          event_types: ['server_vote.created'],
+          event_types: [ 'server_vote.created' ],
           disabled_at: nil
         )
         server = create(:server)
         _server_webhook_config = create(
           :server_webhook_config,
           server: server,
-          event_types: ['server_vote.created'],
+          event_types: [ 'server_vote.created' ],
           disabled_at: Time.current
         )
 

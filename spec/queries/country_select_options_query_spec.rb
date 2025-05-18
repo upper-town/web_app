@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require 'rails_helper'
 
 RSpec.describe CountrySelectOptionsQuery do
@@ -12,8 +10,8 @@ RSpec.describe CountrySelectOptionsQuery do
         create(:server, country_code: 'BR')
         create(:server, country_code: 'AR')
 
-        expected_popular_options = build_country_code_options(['BR', 'US', 'AR'])
-        expected_other_options = build_country_code_options(Server::COUNTRY_CODES - ['BR', 'US', 'AR'])
+        expected_popular_options = build_country_code_options([ 'BR', 'US', 'AR' ])
+        expected_other_options = build_country_code_options(Server::COUNTRY_CODES - [ 'BR', 'US', 'AR' ])
 
         query = described_class.new(cache_enabled: false)
 
@@ -34,7 +32,7 @@ RSpec.describe CountrySelectOptionsQuery do
         create(:server, country_code: 'BR')
         create(:server, country_code: 'AR')
 
-        expected_popular_options = build_country_code_options(['BR', 'US', 'AR'])
+        expected_popular_options = build_country_code_options([ 'BR', 'US', 'AR' ])
         expected_other_options = build_country_code_options([])
 
         query = described_class.new(only_in_use: true, cache_enabled: false)
@@ -61,9 +59,9 @@ RSpec.describe CountrySelectOptionsQuery do
         create(:server, country_code: 'UY')
 
         expected_popular_options = build_country_code_options(
-          ['AR', 'BE', 'BR', 'CA', 'ES', 'FR', 'GB', 'MX', 'PT', 'US']
+          [ 'AR', 'BE', 'BR', 'CA', 'ES', 'FR', 'GB', 'MX', 'PT', 'US' ]
         )
-        expected_other_options = build_country_code_options(['UY'])
+        expected_other_options = build_country_code_options([ 'UY' ])
 
         query = described_class.new(only_in_use: true)
 
@@ -92,8 +90,8 @@ RSpec.describe CountrySelectOptionsQuery do
           .to have_received(:fetch)
           .with('country_select_options_query:only_in_use', expires_in: 5.minutes) do |&block|
             expect(block.call).to eq([
-              build_country_code_options(['BR', 'US', 'AR']),
-              build_country_code_options([]),
+              build_country_code_options([ 'BR', 'US', 'AR' ]),
+              build_country_code_options([])
             ])
           end
 
@@ -103,8 +101,8 @@ RSpec.describe CountrySelectOptionsQuery do
           .to have_received(:fetch)
           .with('country_select_options_query', expires_in: 5.minutes) do |&block|
             expect(block.call).to eq([
-              build_country_code_options(['BR', 'US', 'AR']),
-              build_country_code_options(Server::COUNTRY_CODES - ['BR', 'US', 'AR']),
+              build_country_code_options([ 'BR', 'US', 'AR' ]),
+              build_country_code_options(Server::COUNTRY_CODES - [ 'BR', 'US', 'AR' ])
             ])
           end
       end
@@ -115,7 +113,7 @@ RSpec.describe CountrySelectOptionsQuery do
     country_codes.map do |country_code|
       country = ISO3166::Country.new(country_code)
 
-      ["#{country.emoji_flag} #{country.common_name}", country_code]
+      [ "#{country.emoji_flag} #{country.common_name}", country_code ]
     end
   end
 end

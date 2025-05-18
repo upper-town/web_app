@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module Users
   class PasswordResetsController < ApplicationController
     def new
@@ -35,7 +33,7 @@ module Users
       if result.success?
         redirect_to(
           root_path,
-          info: 'Password reset link has been sent to your email.'
+          info: "Password reset link has been sent to your email."
         )
       else
         flash.now[:info] = result.errors.full_messages
@@ -62,7 +60,7 @@ module Users
       if result.success?
         redirect_to(
           signed_in_user? ? inside_dashboard_path : users_sign_in_path,
-          success: 'Your password has been set.'
+          success: "Your password has been set."
         )
       else
         flash.now[:alert] = result.errors.full_messages
@@ -81,11 +79,11 @@ module Users
     end
 
     def password_reset_params
-      params.expect(users_password_reset: [:email])
+      params.expect(users_password_reset: [ :email ])
     end
 
     def password_reset_edit_params
-      params.expect(users_password_reset_edit: [:token, :password])
+      params.expect(users_password_reset_edit: [ :token, :password ])
     end
   end
 end

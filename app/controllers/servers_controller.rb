@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class ServersController < ApplicationController
   def index
     current_time = Time.current

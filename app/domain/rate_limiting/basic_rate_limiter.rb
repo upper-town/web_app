@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module RateLimiting
   class BasicRateLimiter
     attr_reader :key, :max_count, :expires_in, :error_message
@@ -30,12 +28,12 @@ module RateLimiting
     private
 
     def build_error_message
-      try_again_message = 'Please try again later'
+      try_again_message = "Please try again later"
 
       if error_message.blank?
         try_again_message
       else
-        separator = error_message.end_with?('.', '!', '?', ';') ? ' ' : '. '
+        separator = error_message.end_with?(".", "!", "?", ";") ? " " : ". "
 
         "#{error_message}#{separator}#{try_again_message}"
       end

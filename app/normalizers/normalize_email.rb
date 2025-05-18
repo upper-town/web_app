@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class NormalizeEmail
   include Callable
 
@@ -11,8 +9,8 @@ class NormalizeEmail
 
   def call
     return if email.nil?
-    return '' if email.blank?
+    return "" if email.blank?
 
-    email.gsub(/[[:space:]]/, '').downcase
+    email.gsub(/[[:space:]]/, "").downcase
   end
 end

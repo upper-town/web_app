@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class CreateServerVotes < ActiveRecord::Migration[7.1]
   def change
     create_table :server_votes do |t|
@@ -18,7 +16,7 @@ class CreateServerVotes < ActiveRecord::Migration[7.1]
     end
 
     add_index :server_votes, :account_id
-    add_index :server_votes, [:game_id, :country_code]
+    add_index :server_votes, [ :game_id, :country_code ]
     add_index :server_votes, :server_id
     add_index :server_votes, :created_at
     add_index :server_votes, :uuid, unique: true

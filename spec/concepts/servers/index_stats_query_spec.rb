@@ -1,11 +1,9 @@
-# frozen_string_literal: true
-
 require 'rails_helper'
 
 RSpec.describe Servers::IndexStatsQuery do
   describe '#server_ids' do
     it 'returns server_ids' do
-      expect(described_class.new([1, 2, 3]).server_ids).to eq([1, 2, 3])
+      expect(described_class.new([ 1, 2, 3 ]).server_ids).to eq([ 1, 2, 3 ])
     end
   end
 
@@ -26,22 +24,22 @@ RSpec.describe Servers::IndexStatsQuery do
         Time.iso8601('2024-12-31T12:00:00Z'),
         [
           # Game A, US
-          ['Game A', 'Server 1',  'US',  3,  30, 300],
-          ['Game A', 'Server 2',  'US', 10, 150, 160],
-          ['Game A', 'Server 3',  'US', 75, 100, 175],
-          ['Game A', 'Server 4',  'US',  5,   5,  30],
-          ['Game A', 'Server 5',  'US',  0,  10,  20],
-          ['Game A', 'Server 6',  'US',  0,   0,  10],
-          ['Game A', 'Server 7',  'US',  0,   0,   0],
+          [ 'Game A', 'Server 1',  'US',  3,  30, 300 ],
+          [ 'Game A', 'Server 2',  'US', 10, 150, 160 ],
+          [ 'Game A', 'Server 3',  'US', 75, 100, 175 ],
+          [ 'Game A', 'Server 4',  'US',  5,   5,  30 ],
+          [ 'Game A', 'Server 5',  'US',  0,  10,  20 ],
+          [ 'Game A', 'Server 6',  'US',  0,   0,  10 ],
+          [ 'Game A', 'Server 7',  'US',  0,   0,   0 ],
           # Game A, BR
-          ['Game A', 'Server 8',  'BR',  1,  20, 200],
-          ['Game A', 'Server 9',  'BR', 60, 100, 170],
-          ['Game A', 'Server 10', 'BR', 80,  80,  80],
+          [ 'Game A', 'Server 8',  'BR',  1,  20, 200 ],
+          [ 'Game A', 'Server 9',  'BR', 60, 100, 170 ],
+          [ 'Game A', 'Server 10', 'BR', 80,  80,  80 ],
 
           # Game B, US
-          ['Game B', 'Server 11', 'US',  2,  25, 220],
-          ['Game B', 'Server 12', 'US', 40, 110, 190],
-          ['Game B', 'Server 13', 'US', 50,  50,  50],
+          [ 'Game B', 'Server 11', 'US',  2,  25, 220 ],
+          [ 'Game B', 'Server 12', 'US', 40, 110, 190 ],
+          [ 'Game B', 'Server 13', 'US', 50,  50,  50 ]
         ]
       )
 
@@ -52,66 +50,66 @@ RSpec.describe Servers::IndexStatsQuery do
             'US' => {
               'year'  => { ranking_number: 1, vote_count: 300 },
               'month' => { ranking_number: 3, vote_count:  30 },
-              'week'  => { ranking_number: 4, vote_count:   3 },
+              'week'  => { ranking_number: 4, vote_count:   3 }
             },
             'all' => {
               'year'  => { ranking_number: 1, vote_count: 300 },
               'month' => { ranking_number: 5, vote_count:  30 },
-              'week'  => { ranking_number: 6, vote_count:   3 },
+              'week'  => { ranking_number: 6, vote_count:   3 }
             }
           },
           Server.find_by!(name: 'Server 2').id => {
             'US' => {
               'year'  => { ranking_number: 3, vote_count: 160 },
               'month' => { ranking_number: 1, vote_count: 150 },
-              'week'  => { ranking_number: 2, vote_count:  10 },
+              'week'  => { ranking_number: 2, vote_count:  10 }
             },
             'all' => {
               'year'  => { ranking_number: 5, vote_count: 160 },
               'month' => { ranking_number: 1, vote_count: 150 },
-              'week'  => { ranking_number: 4, vote_count:  10 },
+              'week'  => { ranking_number: 4, vote_count:  10 }
             }
           },
           Server.find_by!(name: 'Server 3').id => {
             'US' => {
               'year'  => { ranking_number: 2, vote_count: 175 },
               'month' => { ranking_number: 2, vote_count: 100 },
-              'week'  => { ranking_number: 1, vote_count:  75 },
+              'week'  => { ranking_number: 1, vote_count:  75 }
             },
             'all' => {
               'year'  => { ranking_number: 3, vote_count: 175 },
               'month' => { ranking_number: 3, vote_count: 100 },
-              'week'  => { ranking_number: 2, vote_count:  75 },
+              'week'  => { ranking_number: 2, vote_count:  75 }
             }
           },
           Server.find_by!(name: 'Server 4').id => {
             'US' => {
               'year'  => { ranking_number: 4, vote_count: 30 },
               'month' => { ranking_number: 5, vote_count:  5 },
-              'week'  => { ranking_number: 3, vote_count:  5 },
+              'week'  => { ranking_number: 3, vote_count:  5 }
             },
             'all' => {
               'year'  => { ranking_number: 7, vote_count: 30 },
               'month' => { ranking_number: 8, vote_count:  5 },
-              'week'  => { ranking_number: 5, vote_count:  5 },
+              'week'  => { ranking_number: 5, vote_count:  5 }
             }
           },
           Server.find_by!(name: 'Server 5').id => {
             'US' => {
               'year'  => { ranking_number: 5, vote_count: 20 },
-              'month' => { ranking_number: 4, vote_count: 10 },
+              'month' => { ranking_number: 4, vote_count: 10 }
             },
             'all' => {
               'year'  => { ranking_number: 8, vote_count: 20 },
-              'month' => { ranking_number: 7, vote_count: 10 },
+              'month' => { ranking_number: 7, vote_count: 10 }
             }
           },
           Server.find_by!(name: 'Server 6').id => {
             'US' => {
-              'year'  => { ranking_number: 6, vote_count: 10 },
+              'year'  => { ranking_number: 6, vote_count: 10 }
             },
             'all' => {
-              'year'  => { ranking_number: 9, vote_count: 10 },
+              'year'  => { ranking_number: 9, vote_count: 10 }
             }
           },
           # Server.find_by!(name: 'Server 7').id => {},
@@ -119,74 +117,74 @@ RSpec.describe Servers::IndexStatsQuery do
             'BR' => {
               'year'  => { ranking_number: 1, vote_count: 200 },
               'month' => { ranking_number: 3, vote_count:  20 },
-              'week'  => { ranking_number: 3, vote_count:  1 },
+              'week'  => { ranking_number: 3, vote_count:  1 }
             },
             'all' => {
               'year'  => { ranking_number: 2, vote_count: 200 },
               'month' => { ranking_number: 6, vote_count:  20 },
-              'week'  => { ranking_number: 7, vote_count:   1 },
+              'week'  => { ranking_number: 7, vote_count:   1 }
             }
           },
           Server.find_by!(name: 'Server 9').id => {
             'BR' => {
               'year'  => { ranking_number: 2, vote_count: 170 },
               'month' => { ranking_number: 1, vote_count: 100 },
-              'week'  => { ranking_number: 2, vote_count:  60 },
+              'week'  => { ranking_number: 2, vote_count:  60 }
             },
             'all' => {
               'year'  => { ranking_number: 4, vote_count: 170 },
               'month' => { ranking_number: 2, vote_count: 100 },
-              'week'  => { ranking_number: 3, vote_count:  60 },
+              'week'  => { ranking_number: 3, vote_count:  60 }
             }
           },
           Server.find_by!(name: 'Server 10').id => {
             'BR' => {
               'year'  => { ranking_number: 3, vote_count: 80 },
               'month' => { ranking_number: 2, vote_count: 80 },
-              'week'  => { ranking_number: 1, vote_count: 80 },
+              'week'  => { ranking_number: 1, vote_count: 80 }
             },
             'all' => {
               'year'  => { ranking_number: 6, vote_count: 80 },
               'month' => { ranking_number: 4, vote_count: 80 },
-              'week'  => { ranking_number: 1, vote_count: 80 },
+              'week'  => { ranking_number: 1, vote_count: 80 }
             }
           },
           Server.find_by!(name: 'Server 11').id => {
             'US' => {
               'year'  => { ranking_number: 1, vote_count: 220 },
               'month' => { ranking_number: 3, vote_count:  25 },
-              'week'  => { ranking_number: 3, vote_count:   2 },
+              'week'  => { ranking_number: 3, vote_count:   2 }
             },
             'all' => {
               'year'  => { ranking_number: 1, vote_count: 220 },
               'month' => { ranking_number: 3, vote_count:  25 },
-              'week'  => { ranking_number: 3, vote_count:   2 },
+              'week'  => { ranking_number: 3, vote_count:   2 }
             }
           },
           Server.find_by!(name: 'Server 12').id => {
             'US' => {
               'year'  => { ranking_number: 2, vote_count: 190 },
               'month' => { ranking_number: 1, vote_count: 110 },
-              'week'  => { ranking_number: 2, vote_count:  40 },
+              'week'  => { ranking_number: 2, vote_count:  40 }
             },
             'all' => {
               'year'  => { ranking_number: 2, vote_count: 190 },
               'month' => { ranking_number: 1, vote_count: 110 },
-              'week'  => { ranking_number: 2, vote_count:  40 },
+              'week'  => { ranking_number: 2, vote_count:  40 }
             }
           },
           Server.find_by!(name: 'Server 13').id => {
             'US' => {
               'year'  => { ranking_number: 3, vote_count: 50 },
               'month' => { ranking_number: 2, vote_count: 50 },
-              'week'  => { ranking_number: 1, vote_count: 50 },
+              'week'  => { ranking_number: 1, vote_count: 50 }
             },
             'all' => {
               'year'  => { ranking_number: 3, vote_count: 50 },
               'month' => { ranking_number: 2, vote_count: 50 },
-              'week'  => { ranking_number: 1, vote_count: 50 },
+              'week'  => { ranking_number: 1, vote_count: 50 }
             }
-          },
+          }
         })
       end
     end

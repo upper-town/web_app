@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module Servers
   class VerifyJob < ApplicationJob
     # TODO: rewrite lock: :while_executing)

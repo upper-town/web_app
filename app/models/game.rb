@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class Game < ApplicationRecord
   has_many :servers, dependent: :destroy
   has_many :server_votes, dependent: :destroy

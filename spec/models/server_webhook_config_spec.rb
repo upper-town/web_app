@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require 'rails_helper'
 
 RSpec.describe ServerWebhookConfig do
@@ -25,10 +23,10 @@ RSpec.describe ServerWebhookConfig do
     it 'normalizes event_types' do
       server_webhook_config = create(
         :server_webhook_config,
-        event_types: ["\n\t [server_ vote.* \n", 'Server.Updated,123', 123, nil, ' ']
+        event_types: [ "\n\t [server_ vote.* \n", 'Server.Updated,123', 123, nil, ' ' ]
       )
 
-      expect(server_webhook_config.event_types).to eq(['server_vote.*', 'server.updated'])
+      expect(server_webhook_config.event_types).to eq([ 'server_vote.*', 'server.updated' ])
     end
 
     it 'normalizes secret' do
@@ -91,31 +89,31 @@ RSpec.describe ServerWebhookConfig do
       server_webhook_config1 = create(
         :server_webhook_config,
         server: server,
-        event_types: ['server_vote.created'],
+        event_types: [ 'server_vote.created' ],
         disabled_at: nil
       )
       _server_webhook_config2 = create(
         :server_webhook_config,
         server: other_server,
-        event_types: ['server_vote.created'],
+        event_types: [ 'server_vote.created' ],
         disabled_at: nil
       )
       _server_webhook_config3 = create(
         :server_webhook_config,
         server: server,
-        event_types: ['server_vote.created'],
+        event_types: [ 'server_vote.created' ],
         disabled_at: Time.current
       )
       _server_webhook_config4 = create(
         :server_webhook_config,
         server: server,
-        event_types: ['test.event'],
+        event_types: [ 'test.event' ],
         disabled_at: nil
       )
       server_webhook_config5 = create(
         :server_webhook_config,
         server: server,
-        event_types: ['server_vote.*'],
+        event_types: [ 'server_vote.*' ],
         disabled_at: nil
       )
 
@@ -165,13 +163,13 @@ RSpec.describe ServerWebhookConfig do
   describe '#subscribed? and #not_subscribed?' do
     it 'glob matches event_types with given string' do
       [
-        [true,  'server_vote.created', ['*']],
-        [true,  'server_vote.created', ['server_vote.created']],
-        [true,  'server_vote.created', ['server*']],
-        [true,  'server_vote.created', ['server_vote.*']],
-        [true,  'server_vote.created', ['*created']],
-        [true,  'server_vote.created', ['aaaa', 'server_vote.*']],
-        [false, 'server_vote.created', ['server_vote']],
+        [ true,  'server_vote.created', [ '*' ] ],
+        [ true,  'server_vote.created', [ 'server_vote.created' ] ],
+        [ true,  'server_vote.created', [ 'server*' ] ],
+        [ true,  'server_vote.created', [ 'server_vote.*' ] ],
+        [ true,  'server_vote.created', [ '*created' ] ],
+        [ true,  'server_vote.created', [ 'aaaa', 'server_vote.*' ] ],
+        [ false, 'server_vote.created', [ 'server_vote' ] ]
       ].each do |should_match, str, event_types|
         server_webhook_config = build(:server_webhook_config, event_types: event_types)
 

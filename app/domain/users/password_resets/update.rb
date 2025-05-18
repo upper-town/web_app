@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module Users
   module PasswordResets
     class Update
@@ -13,7 +11,7 @@ module Users
           "users_password_resets_update:#{request.remote_ip}",
           2,
           5.minutes,
-          'Too many requests'
+          "Too many requests"
         )
       end
 
@@ -26,7 +24,7 @@ module Users
         if user
           reset_password(user)
         else
-          Result.failure('Invalid or expired token')
+          Result.failure("Invalid or expired token")
         end
       end
 

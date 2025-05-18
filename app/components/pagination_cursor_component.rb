@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class PaginationCursorComponent < ViewComponent::Base
   DEFAULT_OPTIONS = {
     show_first: true,
@@ -9,10 +7,10 @@ class PaginationCursorComponent < ViewComponent::Base
     show_per_page:    false,
     show_total_count: false, # This calls pagination's total_count
 
-    first_icon: 'First',
-    prev_icon:  'Prev',
-    next_icon:  'Next',
-    go_icon:    'Go',
+    first_icon: "First",
+    prev_icon:  "Prev",
+    next_icon:  "Next",
+    go_icon:    "Go"
   }
 
   attr_reader :pagination_cursor, :options

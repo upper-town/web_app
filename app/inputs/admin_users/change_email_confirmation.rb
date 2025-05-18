@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module AdminUsers
   class ChangeEmailConfirmation < ApplicationModel
     attribute :email, :string, default: nil

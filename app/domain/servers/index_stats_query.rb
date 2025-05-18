@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module Servers
   class IndexStatsQuery
     include Callable
@@ -46,7 +44,7 @@ module Servers
         hash[row.id][row.stat_country_code] ||= {}
         hash[row.id][row.stat_country_code][row.stat_period] = {
           ranking_number: row.stat_ranking_number,
-          vote_count:     row.stat_vote_count,
+          vote_count:     row.stat_vote_count
         }
       end
     end

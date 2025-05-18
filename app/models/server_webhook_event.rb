@@ -1,12 +1,10 @@
-# frozen_string_literal: true
-
 class ServerWebhookEvent < ApplicationRecord
   MAX_FAILED_ATTEMPTS = 25
 
-  PENDING   = 'pending'
-  RETRY     = 'retry'
-  DELIVERED = 'delivered'
-  FAILED    = 'failed'
+  PENDING   = "pending"
+  RETRY     = "retry"
+  DELIVERED = "delivered"
+  FAILED    = "failed"
 
   STATUSES = [
     PENDING,
@@ -15,16 +13,16 @@ class ServerWebhookEvent < ApplicationRecord
     FAILED
   ]
 
-  SERVER_VOTE_CREATED = 'server_vote.created'
+  SERVER_VOTE_CREATED = "server_vote.created"
 
   TYPES = [
-    SERVER_VOTE_CREATED,
+    SERVER_VOTE_CREATED
   ]
 
   belongs_to :server
   belongs_to(
     :config,
-    class_name: 'ServerWebhookConfig',
+    class_name: "ServerWebhookConfig",
     foreign_key: :server_webhook_config_id,
     inverse_of: :events,
     optional: true

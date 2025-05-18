@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require 'rails_helper'
 
 RSpec.describe Users::ChangeEmailConfirmations::Update do
@@ -83,9 +81,9 @@ RSpec.describe Users::ChangeEmailConfirmations::Update do
       context 'when token data does not have the expected change_email' do
         it 'returns failure' do
           [
-            ['user1@upper.town', 'user.change1@upper.town', ' '],
-            ['user2@upper.town', 'user.change2@upper.town', 'something.else@upper.town'],
-            ['user3@upper.town', ' ',                       'user.change3@upper.town'],
+            [ 'user1@upper.town', 'user.change1@upper.town', ' ' ],
+            [ 'user2@upper.town', 'user.change2@upper.town', 'something.else@upper.town' ],
+            [ 'user3@upper.town', ' ',                       'user.change3@upper.town' ]
           ].each do |email, change_email, token_data_change_email|
             user = create(:user, email: email, change_email: change_email)
             token = user.generate_token!(

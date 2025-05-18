@@ -1,11 +1,9 @@
-# frozen_string_literal: true
-
 module ManageCaptcha
   extend ActiveSupport::Concern
 
   include JsonCookie
 
-  CAPTCHA_SKIP_NAME = 'captcha_skip'
+  CAPTCHA_SKIP_NAME = "captcha_skip"
 
   included do
     helper_method(
@@ -71,7 +69,7 @@ module ManageCaptcha
   end
 
   class CaptchaSkip < ApplicationModel
-    attribute :token, :string, default: ''
+    attribute :token, :string, default: ""
     attribute :paths, array: true, default: []
 
     validates :token, presence: true

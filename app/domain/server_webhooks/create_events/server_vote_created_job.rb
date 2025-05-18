@@ -1,11 +1,9 @@
-# frozen_string_literal: true
-
 module ServerWebhooks
   module CreateEvents
     class ServerVoteCreatedJob < ApplicationJob
       # TODO: rewrite lock: :while_executing)
 
-      EVENT_TYPE = 'server_vote.created'
+      EVENT_TYPE = "server_vote.created"
 
       def perform(server_vote)
         server_webhook_events = create_server_webhook_events(server_vote)

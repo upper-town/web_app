@@ -1,14 +1,12 @@
-# frozen_string_literal: true
-
 module Users
   class SessionsController < ApplicationController
-    before_action :authenticate_user!, only: [:destroy, :destroy_all]
+    before_action :authenticate_user!, only: [ :destroy, :destroy_all ]
 
     def new
       if signed_in_user?
         redirect_to(
           inside_dashboard_path,
-          notice: 'You are logged in already.'
+          notice: "You are logged in already."
         )
         return
       end
@@ -20,14 +18,14 @@ module Users
       if signed_in_user?
         redirect_to(
           inside_dashboard_path,
-          notice: 'You are logged in already.'
+          notice: "You are logged in already."
         )
         return
       end
 
       @session = Users::Session.new(session_params)
 
-      result = captcha_check(if_success_skip_paths: [users_sign_in_path, users_sessions_path])
+      result = captcha_check(if_success_skip_paths: [ users_sign_in_path, users_sessions_path ])
 
       if result.failure?
         flash.now[:alert] = result.errors.full_messages
@@ -51,7 +49,7 @@ module Users
 
         redirect_to(
           return_to_url || inside_dashboard_path,
-          success: 'You are logged in.'
+          success: "You are logged in."
         )
       else
         flash.now[:info] = result.errors.full_messages
@@ -64,7 +62,7 @@ module Users
 
       redirect_to(
         root_path,
-        info: 'Your have been logged out.'
+        info: "Your have been logged out."
       )
     end
 

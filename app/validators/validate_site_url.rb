@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class ValidateSiteUrl
   PATTERN = %r{
     \A
@@ -37,7 +35,7 @@ class ValidateSiteUrl
 
   def initialize(site_url)
     @site_url = site_url.to_s
-    @errors = [:not_validated_yet]
+    @errors = [ :not_validated_yet ]
   end
 
   def valid?
@@ -74,7 +72,7 @@ class ValidateSiteUrl
   end
 
   def host_has_reserved_name?(host)
-    parts = host.split('.')
+    parts = host.split(".")
 
     parts.last(3).any? { |part| RESERVED_NAMES.include?(part) }
   end

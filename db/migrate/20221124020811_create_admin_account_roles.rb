@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class CreateAdminAccountRoles < ActiveRecord::Migration[7.1]
   def change
     create_table :admin_account_roles do |t|
@@ -11,7 +9,7 @@ class CreateAdminAccountRoles < ActiveRecord::Migration[7.1]
 
     add_index(
       :admin_account_roles,
-      [:admin_account_id, :admin_role_id],
+      [ :admin_account_id, :admin_role_id ],
       unique: true
     )
     add_index :admin_account_roles, :admin_role_id

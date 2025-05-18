@@ -1,19 +1,17 @@
-# frozen_string_literal: true
-
 class ServerWebhookConfig < ApplicationRecord
   belongs_to :server
 
-  METHODS = ['POST', 'GET', 'PUT', 'PATCH']
+  METHODS = [ "POST", "GET", "PUT", "PATCH" ]
 
-  has_many :events, class_name: 'ServerWebhookEvent', dependent: :nullify
+  has_many :events, class_name: "ServerWebhookEvent", dependent: :nullify
 
   encrypts :secret
 
   normalizes :event_types, with: ->(list) do
-    list.map { |str| str.downcase.delete('^a-z_.*') if str }.compact_blank
+    list.map { |str| str.downcase.delete("^a-z_.*") if str }.compact_blank
   end
-  normalizes :secret, with: ->(str) { str.gsub(/[[:space:]]/, '') }
-  normalizes :method, with: ->(str) { str.upcase.delete('^A-Z') }
+  normalizes :secret, with: ->(str) { str.gsub(/[[:space:]]/, "") }
+  normalizes :method, with: ->(str) { str.upcase.delete("^A-Z") }
 
   validates :method, inclusion: { in: METHODS }, presence: true
 

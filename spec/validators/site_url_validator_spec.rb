@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require 'rails_helper'
 
 RSpec.describe SiteUrlValidator do
@@ -8,7 +6,7 @@ RSpec.describe SiteUrlValidator do
       it 'sets record.errors' do
         record = generic_model_class.new(site_url: 'abcdef')
 
-        validator = described_class.new(attributes: [:site_url])
+        validator = described_class.new(attributes: [ :site_url ])
         validator.validate(record)
 
         expect(record.errors.of_kind?(:site_url, :format_is_not_valid)).to be(true)
@@ -19,7 +17,7 @@ RSpec.describe SiteUrlValidator do
       it 'does not record.errors' do
         record = generic_model_class.new(site_url: ' ')
 
-        validator = described_class.new(attributes: [:site_url])
+        validator = described_class.new(attributes: [ :site_url ])
         validator.validate(record)
 
         expect(record.errors.of_kind?(:site_url)).to be(false)
@@ -30,7 +28,7 @@ RSpec.describe SiteUrlValidator do
       it 'does not set errors' do
         record = generic_model_class.new(site_url: 'https://example.com/')
 
-        validator = described_class.new(attributes: [:site_url])
+        validator = described_class.new(attributes: [ :site_url ])
         validator.validate(record)
 
         expect(record.errors.of_kind?(:site_url)).to be(false)

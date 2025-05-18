@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require 'rails_helper'
 
 RSpec.describe Admin::JobsConstraint do
@@ -8,7 +6,7 @@ RSpec.describe Admin::JobsConstraint do
       context 'when admin_account has the jobs_access permission' do
         it 'returns true' do
           admin_account = create(:admin_account)
-          admin_role = create(:admin_role, permissions: [create(:admin_permission, key: 'jobs_access')])
+          admin_role = create(:admin_role, permissions: [ create(:admin_permission, key: 'jobs_access') ])
           create(:admin_account_role, admin_account: admin_account, admin_role: admin_role)
           request = build_request(admin_account.admin_user, signed_in: true)
 
@@ -29,7 +27,7 @@ RSpec.describe Admin::JobsConstraint do
     context 'when admin_user is not signed_in' do
       it 'returns false' do
         admin_account = create(:admin_account)
-        admin_role = create(:admin_role, permissions: [create(:admin_permission, key: 'jobs_access')])
+        admin_role = create(:admin_role, permissions: [ create(:admin_permission, key: 'jobs_access') ])
         create(:admin_account_role, admin_account: admin_account, admin_role: admin_role)
         request = build_request(admin_account.admin_user, signed_in: false)
 

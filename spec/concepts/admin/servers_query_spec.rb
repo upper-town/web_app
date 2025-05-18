@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require 'rails_helper'
 
 RSpec.describe Admin::ServersQuery do
@@ -12,7 +10,7 @@ RSpec.describe Admin::ServersQuery do
       expect(described_class.new.call).to eq([
         server3,
         server2,
-        server1,
+        server1
       ])
     end
   end

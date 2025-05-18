@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require 'rails_helper'
 
 RSpec.describe ValidateEmail do
@@ -73,23 +71,23 @@ RSpec.describe ValidateEmail do
             test
           ].each do |reserved_name|
             [
-              [false, "user@sub.#{reserved_name}"],
-              [false, "user@#{reserved_name}.com"],
+              [ false, "user@sub.#{reserved_name}" ],
+              [ false, "user@#{reserved_name}.com" ],
 
-              [false, "user@sub.sub.#{reserved_name}"],
-              [false, "user@sub.#{reserved_name}.com"],
-              [false, "user@#{reserved_name}.sub.com"],
+              [ false, "user@sub.sub.#{reserved_name}" ],
+              [ false, "user@sub.#{reserved_name}.com" ],
+              [ false, "user@#{reserved_name}.sub.com" ],
 
-              [false, "user@sub.sub.sub.#{reserved_name}"],
-              [false, "user@sub.sub.#{reserved_name}.com"],
-              [false, "user@sub.#{reserved_name}.sub.com"],
-              [true,  "user@#{reserved_name}.sub.sub.com"],
+              [ false, "user@sub.sub.sub.#{reserved_name}" ],
+              [ false, "user@sub.sub.#{reserved_name}.com" ],
+              [ false, "user@sub.#{reserved_name}.sub.com" ],
+              [ true,  "user@#{reserved_name}.sub.sub.com" ],
 
-              [false, "user@sub.sub.sub.sub.#{reserved_name}"],
-              [false, "user@sub.sub.sub.#{reserved_name}.com"],
-              [false, "user@sub.sub.#{reserved_name}.sub.com"],
-              [true,  "user@sub.#{reserved_name}.sub.sub.com"],
-              [true,  "user@#{reserved_name}.sub.sub.sub.com"],
+              [ false, "user@sub.sub.sub.sub.#{reserved_name}" ],
+              [ false, "user@sub.sub.sub.#{reserved_name}.com" ],
+              [ false, "user@sub.sub.#{reserved_name}.sub.com" ],
+              [ true,  "user@sub.#{reserved_name}.sub.sub.com" ],
+              [ true,  "user@#{reserved_name}.sub.sub.sub.com" ]
             ].each do |valid, email_with_reserved_domain|
               validator = described_class.new(email_with_reserved_domain)
 
@@ -141,7 +139,7 @@ RSpec.describe ValidateEmail do
             'gmailxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.' \
             'com1xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.' \
             'com2xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.' \
-            'com3xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
+            'com3xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
         ].each do |valid_email|
           validator = described_class.new(valid_email)
 

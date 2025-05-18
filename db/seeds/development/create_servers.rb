@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module Seeds
   module Development
     class CreateServers
@@ -39,7 +37,7 @@ module Seeds
         info = [
           'Aaa Bbb Ccc',
           'Aaa Bbb Ccc',
-          'Aaa Bbb Ccc',
+          'Aaa Bbb Ccc'
         ].join("\n\n").truncate(1_000)
 
         {
@@ -49,7 +47,7 @@ module Seeds
           site_url:         site_url,
           # banner_image_url: banner_image_url,
           description:      description,
-          info:             info,
+          info:             info
         }
       end
     end

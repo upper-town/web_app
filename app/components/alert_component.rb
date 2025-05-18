@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class AlertComponent < ViewComponent::Base
   DEFAULT_VARIANT = :info
   VARIANTS = [
@@ -10,7 +8,7 @@ class AlertComponent < ViewComponent::Base
     :warning,
     :info,
     :light,
-    :dark,
+    :dark
   ]
 
   attr_reader :variant, :dismissible

@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require 'rails_helper'
 
 RSpec.describe AdminUsers::EmailConfirmations::EmailJob do
@@ -21,8 +19,8 @@ RSpec.describe AdminUsers::EmailConfirmations::EmailJob do
         expect(admin_token.expires_at).to eq(1.hour.from_now)
 
         mail_message = ActionMailer::Base.deliveries.last
-        expect(mail_message.from).to eq(['noreply@test.upper.town'])
-        expect(mail_message.to).to eq([admin_user.email])
+        expect(mail_message.from).to eq([ 'noreply@test.upper.town' ])
+        expect(mail_message.to).to eq([ admin_user.email ])
         expect(mail_message.subject).to include('Email confirmation link')
         expect(mail_message.body).to match(%r"admin_users/email_confirmation/edit\?auto_click=true&amp;token=[ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz123456789]{48}")
 

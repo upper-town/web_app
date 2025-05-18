@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require 'rails_helper'
 
 RSpec.describe ApplicationModel do
@@ -29,7 +27,7 @@ RSpec.describe ApplicationModel do
     expect(instance.attributes).to eq({
       'name' => 'John',
       'age' => 42,
-      'amount' => 10.99,
+      'amount' => 10.99
     })
   end
 

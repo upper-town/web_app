@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class ApplicationModel
   include ActiveModel::Model
   include ActiveModel::Attributes
@@ -16,7 +14,7 @@ class ApplicationModel
 
   def equal_id(other)
     equal_class(other) &&
-      other.attributes['id'].present? && attributes['id'].present? &&
+      other.attributes["id"].present? && attributes["id"].present? &&
       other.id == id
   end
 

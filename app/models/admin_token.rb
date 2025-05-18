@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class AdminToken < ApplicationRecord
   belongs_to :admin_user
 
@@ -18,7 +16,7 @@ class AdminToken < ApplicationRecord
   end
 
   def self.not_expired
-    where('expires_at > ?', Time.current)
+    where("expires_at > ?", Time.current)
   end
 
   def expired?

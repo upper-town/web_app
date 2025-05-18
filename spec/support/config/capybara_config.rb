@@ -1,7 +1,5 @@
-# frozen_string_literal: true
-
 def str_to_boolean(str)
-  ['true', 't', '1', 'on', 'enabled'].include?(str.downcase)
+  [ 'true', 't', '1', 'on', 'enabled' ].include?(str.downcase)
 end
 
 def capybara_select_default_driver

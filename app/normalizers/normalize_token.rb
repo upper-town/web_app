@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class NormalizeToken
   include Callable
 
@@ -11,8 +9,8 @@ class NormalizeToken
 
   def call
     return if token.nil?
-    return '' if token.blank?
+    return "" if token.blank?
 
-    token.gsub(/[[:space:]]/, '')
+    token.gsub(/[[:space:]]/, "")
   end
 end

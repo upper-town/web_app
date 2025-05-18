@@ -1,11 +1,9 @@
-# frozen_string_literal: true
-
 # The test environment is used exclusively to run your application's
 # test suite. You never need to work with it otherwise. Remember that
 # your test database is "scratch space" for the test suite and is wiped
 # and recreated between test runs. Don't rely on the data there!
 
-require 'active_support/core_ext/integer/time'
+require "active_support/core_ext/integer/time"
 
 ActiveSupport.on_load(:active_record_postgresqladapter) do
   self.create_unlogged_tables = true
@@ -22,16 +20,16 @@ Rails.application.configure do
   config.hosts << web_app_host
   config.host_authorization = { exclude: ->(request) { request.path == "/up" } }
 
-  config.eager_load = ['true', '1'].include?(ENV.fetch('CI', nil))
+  config.eager_load = [ "true", "1" ].include?(ENV.fetch("CI", nil))
   config.enable_reloading = false
   config.consider_all_requests_local = true
   config.server_timing = false
   config.assume_ssl = false
   config.force_ssl = false
 
-  config.log_tags = [:request_id]
+  config.log_tags = [ :request_id ]
 
-  if ENV['TEST_LOGGER'] == true
+  if ENV["TEST_LOGGER"] == true
     config.log_level = :debug
   else
     config.logger = Logger.new(nil)
@@ -45,9 +43,7 @@ Rails.application.configure do
   # public_file_server
 
   config.public_file_server.enabled = true
-  config.public_file_server.headers = {
-    'cache-control' => "public, max-age=#{1.hour.to_i}"
-  }
+  config.public_file_server.headers = { "cache-control" => "public, max-age=#{1.hour.to_i}" }
 
   # action_controller
 
@@ -61,7 +57,7 @@ Rails.application.configure do
 
   # action_dispatch
 
-  config.action_dispatch.show_exceptions = false
+  config.action_dispatch.show_exceptions = :rescuable
 
   # action_view
 
@@ -76,7 +72,7 @@ Rails.application.configure do
 
   # active_storage
 
-  config.active_storage.service = :local
+  config.active_storage.service = :test
 
   # active_job
 

@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class ApplicationAdminController < ActionController::Base
   include Auth::AdminAuthenticationControl
   include Auth::AdminAuthorizationControl
@@ -9,5 +7,5 @@ class ApplicationAdminController < ActionController::Base
 
   class InvalidQueryParamError < StandardError; end
 
-  layout 'admin'
+  layout "admin"
 end

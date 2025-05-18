@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module Servers
   class Verify
     attr_reader :server
@@ -23,12 +21,12 @@ module Servers
     def update_as_verified(current_time)
       server.update!(
         verified_at: current_time,
-        verified_notice: '',
+        verified_notice: "",
       )
     end
 
     def update_as_not_verified(result)
-      notice = result.errors.full_messages.join('; ')
+      notice = result.errors.full_messages.join("; ")
 
       server.update!(
         verified_at: nil,

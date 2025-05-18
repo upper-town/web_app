@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module Users
   class EmailConfirmationsController < ApplicationController
     def new
@@ -35,7 +33,7 @@ module Users
       if result.success?
         redirect_to(
           root_path,
-          info: 'Email confirmation link has been sent to your email.'
+          info: "Email confirmation link has been sent to your email."
         )
       else
         flash.now[:alert] = result.errors.full_messages
@@ -68,20 +66,20 @@ module Users
         if signed_in_user?
           redirect_to(
             inside_dashboard_path,
-            success: 'Email address has been confirmed.'
+            success: "Email address has been confirmed."
           )
         elsif user.password_digest.present?
           redirect_to(
             users_sign_in_path,
-            success: 'Email address has been confirmed.'
+            success: "Email address has been confirmed."
           )
         else
           password_reset_token = user.generate_token!(:password_reset)
 
           redirect_to(
             edit_users_password_reset_path(token: password_reset_token),
-            success: 'Email address has been confirmed.',
-            notice: 'Set a password for your account.'
+            success: "Email address has been confirmed.",
+            notice: "Set a password for your account."
           )
         end
       else
@@ -93,11 +91,11 @@ module Users
     private
 
     def email_confirmation_params
-      params.expect(users_email_confirmation: [:email])
+      params.expect(users_email_confirmation: [ :email ])
     end
 
     def email_confirmation_edit_params
-      params.expect(users_email_confirmation_edit: [:token])
+      params.expect(users_email_confirmation_edit: [ :token ])
     end
 
     def email_from_params

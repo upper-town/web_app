@@ -1,15 +1,13 @@
-# frozen_string_literal: true
-
 require 'rails_helper'
 
 RSpec.describe RequestHelper do
   describe '#url_with_query' do
     it 'returns url with query updated accordingly' do
       [
-        ['https://example.com',      {}, [], 'https://example.com/'],
-        ['https://example.com:3000', {}, [], 'https://example.com:3000/'],
-        ['http://example.com',       {}, [], 'http://example.com/'],
-        ['http://example.com:3000',  {}, [], 'http://example.com:3000/'],
+        [ 'https://example.com',      {}, [], 'https://example.com/' ],
+        [ 'https://example.com:3000', {}, [], 'https://example.com:3000/' ],
+        [ 'http://example.com',       {}, [], 'http://example.com/' ],
+        [ 'http://example.com:3000',  {}, [], 'http://example.com:3000/' ],
 
         [
           'http://example.com:3000?aaa=111&bbb=test',
@@ -20,15 +18,15 @@ RSpec.describe RequestHelper do
         [
           'http://example.com:3000/path?aaa=111&bbb=test',
           {},
-          [:aaa, 'bbb'],
+          [ :aaa, 'bbb' ],
           'http://example.com:3000/path'
         ],
         [
           'http://example.com:3000/path/?aaa=111&bbb=test',
           { ccc: '333', 'ddd' => 444 },
-          [:aaa, 'bbb'],
+          [ :aaa, 'bbb' ],
           'http://example.com:3000/path/?ccc=333&ddd=444'
-        ],
+        ]
       ].each do |original_url, params_merge, params_remove, updated_url|
         request = TestRequestHelper.build(url: original_url)
 
@@ -41,10 +39,10 @@ RSpec.describe RequestHelper do
   describe '#parse_and_update_query_and_uri' do
     it 'returns parsed_query and parsed_uri updated accordingly' do
       [
-        ['https://example.com',      {}, [], {}, 'https://example.com/'],
-        ['https://example.com:3000', {}, [], {}, 'https://example.com:3000/'],
-        ['http://example.com',       {}, [], {}, 'http://example.com/'],
-        ['http://example.com:3000',  {}, [], {}, 'http://example.com:3000/'],
+        [ 'https://example.com',      {}, [], {}, 'https://example.com/' ],
+        [ 'https://example.com:3000', {}, [], {}, 'https://example.com:3000/' ],
+        [ 'http://example.com',       {}, [], {}, 'http://example.com/' ],
+        [ 'http://example.com:3000',  {}, [], {}, 'http://example.com:3000/' ],
 
         [
           'http://example.com:3000?aaa=111&bbb=test',
@@ -56,17 +54,17 @@ RSpec.describe RequestHelper do
         [
           'http://example.com:3000/path?aaa=111&bbb=test',
           {},
-          [:aaa, 'bbb'],
+          [ :aaa, 'bbb' ],
           {},
           'http://example.com:3000/path'
         ],
         [
           'http://example.com:3000/path/?aaa=111&bbb=test',
           { ccc: '333', 'ddd' => 444 },
-          [:aaa, 'bbb'],
+          [ :aaa, 'bbb' ],
           { 'ccc' => '333', 'ddd' => 444 },
           'http://example.com:3000/path/?ccc=333&ddd=444'
-        ],
+        ]
       ].each do |original_url, params_merge, params_remove, expected_parsed_query, expected_parsed_uri_string|
         request = TestRequestHelper.build(url: original_url)
 
@@ -97,7 +95,7 @@ RSpec.describe RequestHelper do
     it 'returns HTML inputs of type hidden for query' do
       request = TestRequestHelper.build(url: 'http://example.com:3000/path/?aaa=111&bbb=test&ccc=333&ddd=444')
 
-      hidden_fields = described_class.new(request).hidden_fields_for_query({ 'bbb' => '222' }, ['ccc'])
+      hidden_fields = described_class.new(request).hidden_fields_for_query({ 'bbb' => '222' }, [ 'ccc' ])
 
       expect(hidden_fields.html_safe?).to be(true)
       expect(hidden_fields).to include('<input type="hidden" name="aaa" value="111" autocomplete="off" />')
@@ -128,7 +126,7 @@ RSpec.describe RequestHelper do
         it 'returns false' do
           [
             'https://example.com',
-            'http://example.com',
+            'http://example.com'
           ].each do |referer|
             request = TestRequestHelper.build(referer: referer)
 
@@ -142,7 +140,7 @@ RSpec.describe RequestHelper do
           [
             'https://test.upper.town',
             'http://test.upper.town/',
-            'http://test.upper.town:3000',
+            'http://test.upper.town:3000'
           ].each do |referer|
             request = TestRequestHelper.build(referer: referer)
 

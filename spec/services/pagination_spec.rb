@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require 'rails_helper'
 
 RSpec.describe Pagination do
@@ -7,32 +5,32 @@ RSpec.describe Pagination do
     it 'gets page from options, clamps value' do
       relation = Dummy.all
       [
-        [20,   nil, nil,  20],
-        ['20', nil, nil,  20],
-        [20,   10,  nil,  10],
-        [20,   nil, 25,   25],
-        [20,   nil, '25', 25],
-        [20,   10,  25,   10],
+        [ 20,   nil, nil,  20 ],
+        [ '20', nil, nil,  20 ],
+        [ 20,   10,  nil,  10 ],
+        [ 20,   nil, 25,   25 ],
+        [ 20,   nil, '25', 25 ],
+        [ 20,   10,  25,   10 ],
 
-        [ 1,   nil, nil, 1],
-        [ '1', nil, nil, 1],
-        [ 1,   nil, 5,   5],
-        [ 1,   nil, '5', 5],
-        [-1,   nil, nil, 1],
-        ['-1', nil, nil, 1],
-        [-1,   nil, 5,   5],
-        [-1,   nil, '5', 5],
+        [ 1,   nil, nil, 1 ],
+        [ '1', nil, nil, 1 ],
+        [ 1,   nil, 5,   5 ],
+        [ 1,   nil, '5', 5 ],
+        [ -1,   nil, nil, 1 ],
+        [ '-1', nil, nil, 1 ],
+        [ -1,   nil, 5,   5 ],
+        [ -1,   nil, '5', 5 ],
 
-        [501, nil, nil,   200],
-        [501, nil, 300,   200],
-        [501, 300, nil,   300],
-        [501, 300, 300,   300],
-        [501, 300, '300', 300],
+        [ 501, nil, nil,   200 ],
+        [ 501, nil, 300,   200 ],
+        [ 501, 300, nil,   300 ],
+        [ 501, 300, 300,   300 ],
+        [ 501, 300, '300', 300 ],
 
-        [501, 1_000, nil,   500],
-        [501, 1_000, 501,   500],
-        [501, 1_000, 300,   300],
-        [501, 1_000, '300', 300],
+        [ 501, 1_000, nil,   500 ],
+        [ 501, 1_000, 501,   500 ],
+        [ 501, 1_000, 300,   300 ],
+        [ 501, 1_000, '300', 300 ]
       ].each do |page, page_max, request_page_param, expected_page|
         request = TestRequestHelper.build(params: { 'page' => request_page_param })
         pagination = described_class.new(
@@ -51,40 +49,40 @@ RSpec.describe Pagination do
     it 'gets per_page from options, clamps value' do
       relation = Dummy.all
       [
-        [20,   nil, false, nil, 20],
-        ['20', nil, false, nil, 20],
-        [20,   nil, false, 30,  20],
-        [20,   10,  false, nil, 10],
-        [20,   nil, true, nil,  20],
-        [20,   nil, true, 25,   25],
-        [20,   nil, true, '25', 25],
-        [20,   10,  true, 25,   10],
+        [ 20,   nil, false, nil, 20 ],
+        [ '20', nil, false, nil, 20 ],
+        [ 20,   nil, false, 30,  20 ],
+        [ 20,   10,  false, nil, 10 ],
+        [ 20,   nil, true, nil,  20 ],
+        [ 20,   nil, true, 25,   25 ],
+        [ 20,   nil, true, '25', 25 ],
+        [ 20,   10,  true, 25,   10 ],
 
-        [ 1,   nil, false, nil, 1],
-        [ '1', nil, false, nil, 1],
-        [ 1,   nil, false, 5,   1],
-        [ 1,   nil, true,  nil, 1],
-        [ 1,   nil, true,  5,   5],
-        [-1,   nil, false, nil, 1],
-        ['-1', nil, false, nil, 1],
-        [-1,   nil, false, 5,   1],
-        [-1,   nil, true,  nil, 1],
-        [-1,   nil, true,  5,   5],
-        [-1,   nil, true,  '5', 5],
+        [ 1,   nil, false, nil, 1 ],
+        [ '1', nil, false, nil, 1 ],
+        [ 1,   nil, false, 5,   1 ],
+        [ 1,   nil, true,  nil, 1 ],
+        [ 1,   nil, true,  5,   5 ],
+        [ -1,   nil, false, nil, 1 ],
+        [ '-1', nil, false, nil, 1 ],
+        [ -1,   nil, false, 5,   1 ],
+        [ -1,   nil, true,  nil, 1 ],
+        [ -1,   nil, true,  5,   5 ],
+        [ -1,   nil, true,  '5', 5 ],
 
-        [501, nil, false, nil,   100],
-        [501, nil, false, 300,   100],
-        [501, 300, false, nil,   300],
-        [501, 300, true,  nil,   300],
-        [501, nil, true,  300,   100],
-        [501, 300, true,  300,   300],
-        [501, 300, true,  '300', 300],
+        [ 501, nil, false, nil,   100 ],
+        [ 501, nil, false, 300,   100 ],
+        [ 501, 300, false, nil,   300 ],
+        [ 501, 300, true,  nil,   300 ],
+        [ 501, nil, true,  300,   100 ],
+        [ 501, 300, true,  300,   300 ],
+        [ 501, 300, true,  '300', 300 ],
 
-        [501, 1_000, false, nil,   500],
-        [501, 1_000, false, 300,   500],
-        [501, 1_000, true,  nil,   500],
-        [501, 1_000, true,  300,   300],
-        [501, 1_000, true,  '300', 300],
+        [ 501, 1_000, false, nil,   500 ],
+        [ 501, 1_000, false, 300,   500 ],
+        [ 501, 1_000, true,  nil,   500 ],
+        [ 501, 1_000, true,  300,   300 ],
+        [ 501, 1_000, true,  '300', 300 ]
       ].each do |per_page, per_page_max, per_page_from_request, request_per_page_param, expected_per_page|
         request = TestRequestHelper.build(params: { 'per_page' => request_per_page_param })
         pagination = described_class.new(
@@ -105,10 +103,10 @@ RSpec.describe Pagination do
       relation = Dummy.all
       request = TestRequestHelper.build
       [
-        [20, 1,  0],
-        [20, 2, 20],
-        [20, 3, 40],
-        [20, 4, 60],
+        [ 20, 1,  0 ],
+        [ 20, 2, 20 ],
+        [ 20, 3, 40 ],
+        [ 20, 4, 60 ]
       ].each do |per_page, page, expected_offset|
         pagination = described_class.new(
           relation,
@@ -130,19 +128,19 @@ RSpec.describe Pagination do
         request = TestRequestHelper.build
 
         pagination = described_class.new(relation, request, per_page: 3, page: 1)
-        expect(pagination.results).to eq([dummies[0], dummies[1], dummies[2]])
+        expect(pagination.results).to eq([ dummies[0], dummies[1], dummies[2] ])
         expect(pagination.page_size).to eq(3)
 
         pagination = described_class.new(relation, request, per_page: 3, page: 2)
-        expect(pagination.results).to eq([dummies[3], dummies[4], dummies[5]])
+        expect(pagination.results).to eq([ dummies[3], dummies[4], dummies[5] ])
         expect(pagination.page_size).to eq(3)
 
         pagination = described_class.new(relation, request, per_page: 3, page: 3)
-        expect(pagination.results).to eq([dummies[6], dummies[7], dummies[8]])
+        expect(pagination.results).to eq([ dummies[6], dummies[7], dummies[8] ])
         expect(pagination.page_size).to eq(3)
 
         pagination = described_class.new(relation, request, per_page: 3, page: 4)
-        expect(pagination.results).to eq([dummies[9]])
+        expect(pagination.results).to eq([ dummies[9] ])
         expect(pagination.page_size).to eq(1)
 
         pagination = described_class.new(relation, request, per_page: 3, page: 5)
@@ -158,19 +156,19 @@ RSpec.describe Pagination do
         request = TestRequestHelper.build
 
         pagination = described_class.new(relation, request, per_page: 3, page: 1)
-        expect(pagination.results).to eq([dummies[9], dummies[8], dummies[7]])
+        expect(pagination.results).to eq([ dummies[9], dummies[8], dummies[7] ])
         expect(pagination.page_size).to eq(3)
 
         pagination = described_class.new(relation, request, per_page: 3, page: 2)
-        expect(pagination.results).to eq([dummies[6], dummies[5], dummies[4]])
+        expect(pagination.results).to eq([ dummies[6], dummies[5], dummies[4] ])
         expect(pagination.page_size).to eq(3)
 
         pagination = described_class.new(relation, request, per_page: 3, page: 3)
-        expect(pagination.results).to eq([dummies[3], dummies[2], dummies[1]])
+        expect(pagination.results).to eq([ dummies[3], dummies[2], dummies[1] ])
         expect(pagination.page_size).to eq(3)
 
         pagination = described_class.new(relation, request, per_page: 3, page: 4)
-        expect(pagination.results).to eq([dummies[0]])
+        expect(pagination.results).to eq([ dummies[0] ])
         expect(pagination.page_size).to eq(1)
 
         pagination = described_class.new(relation, request, per_page: 3, page: 5)
@@ -260,13 +258,13 @@ RSpec.describe Pagination do
   describe '#prev_page and #has_prev_page?' do
     it 'returns accordingly' do
       [
-        [-1, 1, false],
-        [ 0, 1, false],
-        [ 1, 1, false],
-        [ 2, 1, true],
-        [ 3, 2, true],
-        [ 4, 3, true],
-        [10, 9, true],
+        [ -1, 1, false ],
+        [ 0, 1, false ],
+        [ 1, 1, false ],
+        [ 2, 1, true ],
+        [ 3, 2, true ],
+        [ 4, 3, true ],
+        [ 10, 9, true ]
       ].each do |page, expected_prev_page, expected_has_prev_page|
         relation = Dummy.all
         request = TestRequestHelper.build

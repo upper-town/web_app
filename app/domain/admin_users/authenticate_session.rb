@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module AdminUsers
   class AuthenticateSession
     include Callable
@@ -14,7 +12,7 @@ module AdminUsers
         "admin_users_authenticate_session:#{request.remote_ip}",
         3,
         2.minutes,
-        'Too many attempts'
+        "Too many attempts"
       )
     end
 
@@ -34,7 +32,7 @@ module AdminUsers
       if AdminUser.exists?(email: session.email)
         Result.success
       else
-        Result.failure('Incorrect password or email')
+        Result.failure("Incorrect password or email")
       end
     end
 
@@ -46,7 +44,7 @@ module AdminUsers
         Result.success(admin_user: admin_user)
       else
         count_attempt(false)
-        Result.failure('Incorrect password or email')
+        Result.failure("Incorrect password or email")
       end
     end
 

@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module Seeds
   module Development
     class CreateGames
@@ -20,14 +18,14 @@ module Seeds
             name:        'Minecraft',
             site_url:    'https://www.minecraft.net/',
             description: '',
-            info:        '',
+            info:        ''
           },
           {
             slug:        'perfect-world-international',
             name:        'Perfect World International (PWI)',
             site_url:    'https://www.arcgames.com/en/games/pwi',
             description: '',
-            info:        '',
+            info:        ''
           }
         ]
       end

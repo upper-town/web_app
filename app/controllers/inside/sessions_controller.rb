@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module Inside
   class SessionsController < BaseController
     def index

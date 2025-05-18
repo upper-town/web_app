@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class ApplicationController < ActionController::Base
   include Auth::AuthenticationControl
   include Auth::AuthorizationControl

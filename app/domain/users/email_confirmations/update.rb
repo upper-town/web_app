@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module Users
   module EmailConfirmations
     class Update
@@ -15,7 +13,7 @@ module Users
           "users_email_confirmation_update:#{request.remote_ip}",
           2,
           5.minutes,
-          'Too many attempts'
+          "Too many attempts"
         )
       end
 
@@ -26,9 +24,9 @@ module Users
         user = find_user
 
         if !user
-          Result.failure('Invalid or expired token')
+          Result.failure("Invalid or expired token")
         elsif user.confirmed_email?
-          Result.failure('Email address has already been confirmed', user: user)
+          Result.failure("Email address has already been confirmed", user: user)
         else
           confirm_email(user)
         end

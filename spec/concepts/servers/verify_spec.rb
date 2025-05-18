@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require 'rails_helper'
 
 RSpec.describe Servers::Verify do
@@ -41,7 +39,7 @@ RSpec.describe Servers::Verify do
           .and_return(verify_accounts_perform)
         allow(verify_accounts_perform)
           .to receive(:call)
-          .and_return(Result.failure(['an error', 'another error']))
+          .and_return(Result.failure([ 'an error', 'another error' ]))
 
         described_class.new(server).call
 

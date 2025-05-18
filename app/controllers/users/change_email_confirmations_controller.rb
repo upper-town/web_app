@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module Users
   class ChangeEmailConfirmationsController < ApplicationController
     def edit
@@ -24,7 +22,7 @@ module Users
       if result.success?
         redirect_to(
           signed_in_user? ? inside_dashboard_path : root_path,
-          success: 'Email address has been changed.'
+          success: "Email address has been changed."
         )
       else
         flash.now[:alert] = result.errors.full_messages
@@ -35,7 +33,7 @@ module Users
     private
 
     def change_email_confirmation_edit_params
-      params.expect(users_change_email_confirmation_edit: [:token])
+      params.expect(users_change_email_confirmation_edit: [ :token ])
     end
 
     def token_from_params

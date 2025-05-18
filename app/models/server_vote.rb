@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class ServerVote < ApplicationRecord
   belongs_to :server
   belongs_to :game
@@ -12,9 +10,9 @@ class ServerVote < ApplicationRecord
 
   def server_available
     if server.archived?
-      errors.add(:server, 'cannot be archived')
+      errors.add(:server, "cannot be archived")
     elsif server.marked_for_deletion?
-      errors.add(:server, 'cannot be marked_for_deletion')
+      errors.add(:server, "cannot be marked_for_deletion")
     end
   end
 end

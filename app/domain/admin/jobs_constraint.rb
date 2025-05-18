@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module Admin
   class JobsConstraint
     include Auth::ManageAdminSession

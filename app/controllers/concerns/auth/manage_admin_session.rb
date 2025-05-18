@@ -1,8 +1,6 @@
-# frozen_string_literal: true
-
 module Auth
   module ManageAdminSession
-    ADMIN_SESSION_NAME = 'admin_session'
+    ADMIN_SESSION_NAME = "admin_session"
     ADMIN_SESSION_REMEMBER_ME_DURATION = 4.months
 
     extend ActiveSupport::Concern
@@ -79,7 +77,7 @@ module Auth
     end
 
     class AdminSessionValue < ApplicationModel
-      attribute :token, :string, default: ''
+      attribute :token, :string, default: ""
 
       validates :token, presence: true
     end

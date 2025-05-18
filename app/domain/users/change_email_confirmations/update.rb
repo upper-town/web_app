@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module Users
   module ChangeEmailConfirmations
     class Update
@@ -15,7 +13,7 @@ module Users
           "users_change_email_confirmations_update:#{request.remote_ip}",
           3,
           2.minutes,
-          'Too many attempts'
+          "Too many attempts"
         )
       end
 
@@ -26,11 +24,11 @@ module Users
         user, token = find_user_and_token
 
         if !user || !token
-          Result.failure('Invalid or expired token')
+          Result.failure("Invalid or expired token")
         elsif user.confirmed_change_email?
-          Result.failure('New Email address has already been confirmed')
-        elsif token.data['change_email'].blank? || token.data['change_email'] != user.change_email
-          Result.failure('Invalid token: new email address is not associated with token')
+          Result.failure("New Email address has already been confirmed")
+        elsif token.data["change_email"].blank? || token.data["change_email"] != user.change_email
+          Result.failure("Invalid token: new email address is not associated with token")
         else
           confirm_change_email(user, token)
         end
@@ -49,7 +47,7 @@ module Users
         begin
           ActiveRecord::Base.transaction do
             user.update!(
-              email: token.data['change_email'],
+              email: token.data["change_email"],
               change_email: nil
             )
             user.confirm_change_email!

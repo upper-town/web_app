@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module Servers
   module VerifyAccounts
     class CheckJsonFileMetadata
@@ -18,10 +16,10 @@ module Servers
       def call
         response = connection.head(json_file_path)
 
-        if response.headers['Content-Length'].to_i > JSON_FILE_MAX_SIZE
+        if response.headers["Content-Length"].to_i > JSON_FILE_MAX_SIZE
           Result.failure("JSON file size must not be greater than #{JSON_FILE_MAX_SIZE} bytes")
-        elsif !response.headers['Content-Type'].match?(JSON_FILE_CONTENT_TYPE_PATTERN)
-          Result.failure('JSON file Content-Type must be application/json')
+        elsif !response.headers["Content-Type"].match?(JSON_FILE_CONTENT_TYPE_PATTERN)
+          Result.failure("JSON file Content-Type must be application/json")
         else
           Result.success
         end

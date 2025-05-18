@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class CreateServerAccounts < ActiveRecord::Migration[7.1]
   def change
     create_table :server_accounts do |t|
@@ -12,6 +10,6 @@ class CreateServerAccounts < ActiveRecord::Migration[7.1]
     end
 
     add_index(:server_accounts, :server_id)
-    add_index(:server_accounts, [:account_id, :server_id], unique: true)
+    add_index(:server_accounts, [ :account_id, :server_id ], unique: true)
   end
 end

@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class ServerAccount < ApplicationRecord
   belongs_to :server
   belongs_to :account

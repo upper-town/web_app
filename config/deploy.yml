@@ -4,7 +4,7 @@ service: web_app
 
 servers:
   web:
-    - sandbox.upper.town
+    - upper.town
 
 ssh:
   user: app
@@ -13,11 +13,11 @@ ssh:
   keys_only: true
   keys:
     - "~/.ssh/app_ssh_key"
-    - "~/.ssh/app-upper_town-sandbox"
+    - "~/.ssh/app-upper_town-production"
 
 proxy:
   ssl: true
-  host: sandbox.upper.town
+  host: upper.town
   response_timeout: 60
   healthcheck:
     interval: 5
@@ -33,10 +33,10 @@ registry:
 
 env:
   clear:
-    APP_ENV: sandbox
-    APP_HOST: sandbox.upper.town
+    APP_ENV: production
+    APP_HOST: upper.town
     APP_PORT: 3000
-    NOREPLY_EMAIL: noreply@sandbox.upper.town
+    NOREPLY_EMAIL: noreply@upper.town
     PERIODS_MIN_PAST_TIME: '2024-01-01T00:00:00Z'
     POSTGRES_HOST: web_app-postgres
     RAILS_ENV: production
@@ -73,12 +73,12 @@ asset_path: /rails/public/assets
 builder:
   arch: amd64
   local: false
-  remote: ssh://app@sandbox.upper.town
+  remote: ssh://app@upper.town
 
 accessories:
   postgres:
     image: postgres:17.2
-    host: sandbox.upper.town
+    host: upper.town
     port: '127.0.0.1:5432:5432' # POSTGRES_PORT
     env:
       secret:

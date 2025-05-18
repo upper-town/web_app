@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require 'rails_helper'
 
 RSpec.describe PhoneNumberValidator do
@@ -8,7 +6,7 @@ RSpec.describe PhoneNumberValidator do
       it 'sets record.errors' do
         record = generic_model_class.new(phone_number: 'abcdef')
 
-        validator = described_class.new(attributes: [:phone_number])
+        validator = described_class.new(attributes: [ :phone_number ])
         validator.validate(record)
 
         expect(record.errors.of_kind?(:phone_number, :not_valid)).to be(true)
@@ -19,7 +17,7 @@ RSpec.describe PhoneNumberValidator do
       it 'does not set errors' do
         record = generic_model_class.new(phone_number: ' ')
 
-        validator = described_class.new(attributes: [:phone_number])
+        validator = described_class.new(attributes: [ :phone_number ])
         validator.validate(record)
 
         expect(record.errors.key?(:phone_number)).to be(false)
@@ -30,7 +28,7 @@ RSpec.describe PhoneNumberValidator do
       it 'does not set errors' do
         record = generic_model_class.new(phone_number: '+1 (202) 555-9999')
 
-        validator = described_class.new(attributes: [:phone_number])
+        validator = described_class.new(attributes: [ :phone_number ])
         validator.validate(record)
 
         expect(record.errors.key?(:phone_number)).to be(false)

@@ -1,6 +1,4 @@
-# frozen_string_literal: true
-
-require 'active_support/core_ext/integer/time'
+require "active_support/core_ext/integer/time"
 
 BCrypt::Engine.cost = BCrypt::Engine::DEFAULT_COST
 
@@ -21,7 +19,7 @@ Rails.application.configure do
   config.force_ssl = false
 
   config.log_level = :debug
-  config.log_tags = [:request_id]
+  config.log_tags = [ :request_id ]
 
   # cache_store
 
@@ -30,9 +28,7 @@ Rails.application.configure do
   # public_file_server
 
   config.public_file_server.enabled = true
-  config.public_file_server.headers = {
-    'cache-control' => 'public, max-age=5'
-  }
+  config.public_file_server.headers = { "cache-control" => "public, max-age=5" }
 
   # action_controller
 
@@ -41,11 +37,11 @@ Rails.application.configure do
     host: web_app_host,
     port: web_app_port
   }
-  if Rails.root.join('tmp/caching-dev.txt').exist?
+  if Rails.root.join("tmp/caching-dev.txt").exist?
     config.action_controller.perform_caching = true
     config.action_controller.enable_fragment_cache_logging = true
     config.public_file_server.headers = {
-      'cache-control' => "public, max-age=#{2.days.to_i}"
+      "cache-control" => "public, max-age=#{2.days.to_i}"
     }
   else
     config.action_controller.perform_caching = false
@@ -104,7 +100,7 @@ Rails.application.configure do
   config.action_mailer.raise_delivery_errors = true
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.smtp_settings = {
-    :address => 'localhost',
-    :port => 1025
+    address: "localhost",
+    port: 1025
   }
 end

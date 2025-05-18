@@ -1,20 +1,18 @@
-# frozen_string_literal: true
-
 module Servers
   module VerifyAccounts
     class ValidateJsonFile
       JSON_FILE_MAX_ACCOUNTS_SIZE = 10
       JSON_FILE_SCHEMA = {
-        'id' => '/upper_town.json',
-        'type' => 'object',
-        'required' => [
-          'accounts'
+        "id" => "/upper_town.json",
+        "type" => "object",
+        "required" => [
+          "accounts"
         ],
-        'properties' => {
-          'accounts' => {
-            'type' => 'array',
-            'items' => {
-              'type' => 'string'
+        "properties" => {
+          "accounts" => {
+            "type" => "array",
+            "items" => {
+              "type" => "string"
             }
           }
         }
@@ -25,7 +23,7 @@ module Servers
 
       def initialize(data)
         @data = data
-        @errors = [:not_validated_yet]
+        @errors = [ :not_validated_yet ]
       end
 
       def valid?
@@ -54,20 +52,20 @@ module Servers
       end
 
       def validate_accounts_size
-        if data['accounts'].size > JSON_FILE_MAX_ACCOUNTS_SIZE
+        if data["accounts"].size > JSON_FILE_MAX_ACCOUNTS_SIZE
           @errors << "must be an array with max size of #{JSON_FILE_MAX_ACCOUNTS_SIZE}"
         end
       end
 
       def validate_accounts_format
-        if data['accounts'].any? { |str| !str.match?(UUID_PATTERN) }
-          @errors << 'must contain valid Account UUIDs'
+        if data["accounts"].any? { |str| !str.match?(UUID_PATTERN) }
+          @errors << "must contain valid Account UUIDs"
         end
       end
 
       def validate_accounts_uniq
-        if data['accounts'].size != data['accounts'].uniq.size
-          @errors << 'must be an array with non-duplicated Account UUIDs'
+        if data["accounts"].size != data["accounts"].uniq.size
+          @errors << "must be an array with non-duplicated Account UUIDs"
         end
       end
     end

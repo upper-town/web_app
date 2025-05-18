@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class ServerBannerImage < ApplicationRecord
   CACHE_EXPIRES_IN = 10.minutes
 
@@ -14,7 +12,7 @@ class ServerBannerImage < ApplicationRecord
   end
 
   def self.build_cache_store
-    ActiveSupport::Cache::FileStore.new('/tmp/cache/server_banner_images')
+    ActiveSupport::Cache::FileStore.new("/tmp/cache/server_banner_images")
   end
 
   def approved?

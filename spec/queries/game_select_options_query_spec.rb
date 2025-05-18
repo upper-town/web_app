@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require 'rails_helper'
 
 RSpec.describe GameSelectOptionsQuery do
@@ -14,9 +12,9 @@ RSpec.describe GameSelectOptionsQuery do
         create(:server, game: game3)
 
         expect(described_class.new(cache_enabled: false).call).to eq([
-          ['Aaa', game2.id],
-          ['Bbb', game3.id],
-          ['Ccc', game1.id],
+          [ 'Aaa', game2.id ],
+          [ 'Bbb', game3.id ],
+          [ 'Ccc', game1.id ]
         ])
       end
     end
@@ -31,8 +29,8 @@ RSpec.describe GameSelectOptionsQuery do
         create(:server, game: game3)
 
         expect(described_class.new(only_in_use: true, cache_enabled: false).call).to eq([
-          ['Bbb', game3.id],
-          ['Ccc', game1.id],
+          [ 'Bbb', game3.id ],
+          [ 'Ccc', game1.id ]
         ])
       end
     end
@@ -54,8 +52,8 @@ RSpec.describe GameSelectOptionsQuery do
           .to have_received(:fetch)
           .with('game_select_options_query:only_in_use', expires_in: 5.minutes) do |&block|
             expect(block.call).to eq([
-              ['Bbb', game3.id],
-              ['Ccc', game1.id],
+              [ 'Bbb', game3.id ],
+              [ 'Ccc', game1.id ]
             ])
           end
 
@@ -65,9 +63,9 @@ RSpec.describe GameSelectOptionsQuery do
           .to have_received(:fetch)
           .with('game_select_options_query', expires_in: 5.minutes) do |&block|
             expect(block.call).to eq([
-              ['Aaa', game2.id],
-              ['Bbb', game3.id],
-              ['Ccc', game1.id],
+              [ 'Aaa', game2.id ],
+              [ 'Bbb', game3.id ],
+              [ 'Ccc', game1.id ]
             ])
           end
       end

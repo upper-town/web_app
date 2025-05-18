@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module Users
   class AuthenticateSession
     include Callable
@@ -14,7 +12,7 @@ module Users
         "users_authenticate_session:#{request.remote_ip}",
         3,
         2.minutes,
-        'Too many attempts'
+        "Too many attempts"
       )
     end
 
@@ -34,7 +32,7 @@ module Users
       if User.exists?(email: session.email)
         Result.success
       else
-        Result.failure('Incorrect password or email')
+        Result.failure("Incorrect password or email")
       end
     end
 
@@ -46,7 +44,7 @@ module Users
         Result.success(user: user)
       else
         count_attempt(false)
-        Result.failure('Incorrect password or email')
+        Result.failure("Incorrect password or email")
       end
     end
 

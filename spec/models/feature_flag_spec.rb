@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require 'rails_helper'
 
 RSpec.describe FeatureFlag do
@@ -156,12 +154,12 @@ RSpec.describe FeatureFlag do
       name = 'something'
 
       [
-        ['SOMETHING',    'true', nil],
-        ['FF_SOMETHING', '',     nil],
-        ['FF_SOMETHING', " \n",  nil],
+        [ 'SOMETHING',    'true', nil ],
+        [ 'FF_SOMETHING', '',     nil ],
+        [ 'FF_SOMETHING', " \n",  nil ],
 
-        ['FF_SOMETHING', 'true',     'true'],
-        ['FF_SOMETHING', 'anything', 'anything'],
+        [ 'FF_SOMETHING', 'true',     'true' ],
+        [ 'FF_SOMETHING', 'anything', 'anything' ]
       ].each do |env_var_name, env_var_value, expected_value|
         EnvVarHelper.with_values(env_var_name => env_var_value) do
           returned = described_class.fetch_value_from_env_var(name)
@@ -195,33 +193,33 @@ RSpec.describe FeatureFlag do
   describe '.parse_enabled_and_ffids' do
     it 'returns boolean and array' do
       [
-        ['',                     false, []],
-        [':',                    false, []],
-        [':user_1,user_2',       false, ['user_1', 'user_2']],
-        [':user_1,user_1,user_1', false, ['user_1']],
+        [ '',                     false, [] ],
+        [ ':',                    false, [] ],
+        [ ':user_1,user_2',       false, [ 'user_1', 'user_2' ] ],
+        [ ':user_1,user_1,user_1', false, [ 'user_1' ] ],
 
-        ['false',               false, []],
-        ['false:',              false, []],
-        ['false:user_1,user_2', false, ['user_1', 'user_2']],
-        ['FALSE:user_1,user_2', false, ['user_1', 'user_2']],
+        [ 'false',               false, [] ],
+        [ 'false:',              false, [] ],
+        [ 'false:user_1,user_2', false, [ 'user_1', 'user_2' ] ],
+        [ 'FALSE:user_1,user_2', false, [ 'user_1', 'user_2' ] ],
 
-        ['anything',               false, []],
-        ['anything:',              false, []],
-        ['anything:user_1,user_2', false, ['user_1', 'user_2']],
-        ['ANYTHING:user_1,user_2', false, ['user_1', 'user_2']],
+        [ 'anything',               false, [] ],
+        [ 'anything:',              false, [] ],
+        [ 'anything:user_1,user_2', false, [ 'user_1', 'user_2' ] ],
+        [ 'ANYTHING:user_1,user_2', false, [ 'user_1', 'user_2' ] ],
 
-        ['true',               true, []],
-        ['true:',              true, []],
-        ['true:user_1,user_2', true, ['user_1', 'user_2']],
-        ['TRUE:user_1,user_2', true, ['user_1', 'user_2']],
+        [ 'true',               true, [] ],
+        [ 'true:',              true, [] ],
+        [ 'true:user_1,user_2', true, [ 'user_1', 'user_2' ] ],
+        [ 'TRUE:user_1,user_2', true, [ 'user_1', 'user_2' ] ],
 
-        ['enabled:user_1,user_2', true, ['user_1', 'user_2']],
-        ['ENABLED:user_1,user_2', true, ['user_1', 'user_2']],
+        [ 'enabled:user_1,user_2', true, [ 'user_1', 'user_2' ] ],
+        [ 'ENABLED:user_1,user_2', true, [ 'user_1', 'user_2' ] ],
 
-        ['on:user_1,user_2', true, ['user_1', 'user_2']],
-        ['ON:user_1,user_2', true, ['user_1', 'user_2']],
+        [ 'on:user_1,user_2', true, [ 'user_1', 'user_2' ] ],
+        [ 'ON:user_1,user_2', true, [ 'user_1', 'user_2' ] ],
 
-        ["\n true : , \nuser_1 , user_ 2 ,,\n,user_1", true, ['user_1', 'user_2']],
+        [ "\n true : , \nuser_1 , user_ 2 ,,\n,user_1", true, [ 'user_1', 'user_2' ] ]
       ].each do |value, expected_boolean, expected_array|
         enabled, ffids = described_class.parse_enabled_and_ffids(value)
 

@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module Servers
   class ConsolidateVoteCounts
     attr_reader :server
@@ -43,7 +41,7 @@ module Servers
           country_code: country_code,
           server_id: server.id,
           vote_count: vote_count,
-          vote_count_consolidated_at: vote_count_consolidated_at,
+          vote_count_consolidated_at: vote_count_consolidated_at
         }
       end
 
@@ -62,7 +60,7 @@ module Servers
           country_code: ServerStat::ALL,
           server_id: server.id,
           vote_count: vote_count,
-          vote_count_consolidated_at: vote_count_consolidated_at,
+          vote_count_consolidated_at: vote_count_consolidated_at
         }
       end
 
@@ -77,7 +75,7 @@ module Servers
           :reference_date,
           :game_id,
           :country_code,
-          :server_id,
+          :server_id
         ]
       )
     end

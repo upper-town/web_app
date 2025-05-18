@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module Servers
   class Create
     attr_reader :server, :server_banner_image_uploaded_file, :account

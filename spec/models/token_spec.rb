@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require 'rails_helper'
 
 RSpec.describe Token do
@@ -58,8 +56,8 @@ RSpec.describe Token do
       context 'when token is found by its token_digest' do
         it 'returns Token record' do
           [
-            ['aaaa1111', 2.days.ago],
-            ['bbbb2222', 2.days.from_now],
+            [ 'aaaa1111', 2.days.ago ],
+            [ 'bbbb2222', 2.days.from_now ]
           ].each do |token, expires_at|
             existing_token = create(
               :token,

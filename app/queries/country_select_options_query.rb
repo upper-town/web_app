@@ -1,11 +1,9 @@
-# frozen_string_literal: true
-
 class CountrySelectOptionsQuery
   include Callable
 
   attr_reader :only_in_use, :cache_enabled, :cache_key, :cache_expires_in
 
-  CACHE_KEY = 'country_select_options_query'
+  CACHE_KEY = "country_select_options_query"
   CACHE_EXPIRES_IN = 5.minutes
 
   def initialize(only_in_use: false, cache_enabled: true, cache_key: CACHE_KEY, cache_expires_in: CACHE_EXPIRES_IN)
@@ -52,7 +50,7 @@ class CountrySelectOptionsQuery
     Server
       .group(:country_code)
       .count
-      .sort_by { |country_code, count| [-count, country_code] }
+      .sort_by { |country_code, count| [ -count, country_code ] }
       .map { |country_code, _count| country_code }
   end
 
@@ -60,7 +58,7 @@ class CountrySelectOptionsQuery
     country_codes.map do |country_code|
       country = ISO3166::Country.new(country_code)
 
-      ["#{country.emoji_flag} #{country.common_name}", country_code]
+      [ "#{country.emoji_flag} #{country.common_name}", country_code ]
     end
   end
 

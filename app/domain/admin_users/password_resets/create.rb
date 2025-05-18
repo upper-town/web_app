@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module AdminUsers
   module PasswordResets
     class Create
@@ -15,7 +13,7 @@ module AdminUsers
           "admin_users_password_resets_create:#{request.remote_ip}",
           2,
           5.minutes,
-          'Too many requests'
+          "Too many requests"
         )
       end
 

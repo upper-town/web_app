@@ -1,10 +1,8 @@
-# frozen_string_literal: true
-
 module Servers
   module VerifyAccounts
     class Perform
       # TODO: Add domain hash or ID to the filename
-      JSON_FILE_PATH = '/upper_town.json'
+      JSON_FILE_PATH = "/upper_town.json"
 
       attr_reader :server
 
@@ -21,10 +19,10 @@ module Servers
 
         parsed_body = result.data[:parsed_body]
 
-        result = check_accounts_exist(parsed_body['accounts'])
+        result = check_accounts_exist(parsed_body["accounts"])
         return result if result.failure?
 
-        upsert_server_accounts(parsed_body['accounts'], current_time)
+        upsert_server_accounts(parsed_body["accounts"], current_time)
       end
 
       private
@@ -65,7 +63,7 @@ module Servers
                   verified_at: current_time
                 }
               end,
-              unique_by: [:account_id, :server_id]
+              unique_by: [ :account_id, :server_id ]
             )
           end
 

@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module Admin
   class TableComponent < ViewComponent::Base
     def initialize(collection: [], columns: [])

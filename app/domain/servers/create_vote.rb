@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module Servers
   class CreateVote
     attr_reader :server, :server_vote, :request, :account, :rate_limiter
@@ -14,7 +12,7 @@ module Servers
         "servers_create_vote:#{server.game_id}:#{request.remote_ip}",
         1,
         6.hours,
-        'You have already voted for this game'
+        "You have already voted for this game"
       )
     end
 
@@ -51,8 +49,8 @@ module Servers
 
     def enqueue_consolidate_vote_counts
       ConsolidateVoteCountsJob
-        .set(queue: 'critical')
-        .perform_later(server_vote.server, 'current')
+        .set(queue: "critical")
+        .perform_later(server_vote.server, "current")
     end
 
     def enqueue_server_webhook_event_create

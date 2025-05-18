@@ -1,8 +1,6 @@
-# frozen_string_literal: true
-
 module Servers
   class VerifySchedulerJob < ApplicationJob
-    queue_as 'low'
+    queue_as "low"
     # TODO: rewrite lock: :while_executing)
 
     def perform

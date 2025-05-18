@@ -1,14 +1,12 @@
-# frozen_string_literal: true
-
 module AdminUsers
   class SessionsController < ApplicationAdminController
-    before_action :authenticate_admin_user!, only: [:destroy, :destroy_all]
+    before_action :authenticate_admin_user!, only: [ :destroy, :destroy_all ]
 
     def new
       if signed_in_admin_user?
         redirect_to(
           admin_dashboard_path,
-          notice: 'You are logged in already.'
+          notice: "You are logged in already."
         )
 
         return
@@ -21,7 +19,7 @@ module AdminUsers
       if signed_in_admin_user?
         redirect_to(
           admin_dashboard_path,
-          notice: 'You are logged in already.'
+          notice: "You are logged in already."
         )
         return
       end
@@ -57,7 +55,7 @@ module AdminUsers
 
         redirect_to(
           return_to_url || admin_dashboard_path,
-          success: 'You are logged in.'
+          success: "You are logged in."
         )
       else
         flash.now[:info] = result.errors.full_messages
@@ -70,7 +68,7 @@ module AdminUsers
 
       redirect_to(
         admin_users_sign_in_path,
-        info: 'Your have been logged out.'
+        info: "Your have been logged out."
       )
     end
 

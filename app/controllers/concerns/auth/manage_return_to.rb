@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module Auth
   module ManageReturnTo
     include JsonCookie
@@ -8,7 +6,7 @@ module Auth
       raise NotImplementedError
     end
 
-    RETURN_TO_NAME = 'return_to'
+    RETURN_TO_NAME = "return_to"
 
     def write_return_to(duration = 3.minutes)
       return unless request.get?

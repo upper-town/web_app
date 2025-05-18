@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class DeleteExpiredTokensJob < ApplicationJob
   # TODO: rewrite lock: :while_executing)
 

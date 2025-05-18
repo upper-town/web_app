@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module Seeds
   module Development
     class CreateUsers
@@ -20,7 +18,7 @@ module Seeds
           {
             email: "user.#{n}@#{ENV.fetch('APP_HOST')}",
             password_digest: Seeds::Common.encrypt_password(PASSWORD),
-            email_confirmed_at: Time.current,
+            email_confirmed_at: Time.current
           }
         end
       end

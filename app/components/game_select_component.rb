@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class GameSelectComponent < ViewComponent::Base
   attr_reader(
     :form,
@@ -9,7 +7,7 @@ class GameSelectComponent < ViewComponent::Base
     :blank_name
   )
 
-  def initialize(form, only_in_use: false, default_value: nil, selected_value: nil, blank_name: 'All')
+  def initialize(form, only_in_use: false, default_value: nil, selected_value: nil, blank_name: "All")
     super()
 
     @form = form
@@ -22,7 +20,7 @@ class GameSelectComponent < ViewComponent::Base
   end
 
   def blank_option
-    [blank_name, nil]
+    [ blank_name, nil ]
   end
 
   def options

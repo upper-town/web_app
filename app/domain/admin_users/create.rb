@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module AdminUsers
   class Create
     attr_reader :email_confirmation, :request, :rate_limiter
@@ -12,7 +10,7 @@ module AdminUsers
         "admin_users_create:#{request.remote_ip}",
         2,
         5.minutes,
-        'Too many requests'
+        "Too many requests"
       )
     end
 

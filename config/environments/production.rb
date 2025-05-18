@@ -1,6 +1,4 @@
-# frozen_string_literal: true
-
-require 'active_support/core_ext/integer/time'
+require "active_support/core_ext/integer/time"
 
 BCrypt::Engine.cost = BCrypt::Engine::DEFAULT_COST
 
@@ -18,7 +16,9 @@ Rails.application.configure do
   config.force_ssl = true
 
   config.log_level = :info
-  config.log_tags = [:request_id]
+  config.log_tags  = [ :request_id ]
+  config.logger    = ActiveSupport::TaggedLogging.logger(STDOUT)
+  config.silence_healthcheck_path = "/up"
 
   # cache_store
 
@@ -27,9 +27,7 @@ Rails.application.configure do
   # public_file_server
 
   config.public_file_server.enabled = true
-  config.public_file_server.headers = {
-    'cache-control' => "public, max-age=#{1.year.to_i}"
-  }
+  config.public_file_server.headers = { "cache-control" => "public, max-age=#{1.year.to_i}" }
 
   # action_controller
 
@@ -86,7 +84,7 @@ Rails.application.configure do
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.smtp_settings = {
     # TODO: Configure email service
-    :address => 'localhost',
-    :port => 1025
+    address: "localhost",
+    port: 1025
   }
 end

@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class TestRequestHelper
   def self.build(
     method: 'GET',
@@ -13,7 +11,7 @@ class TestRequestHelper
     request_env = Rack::MockRequest.env_for(url, {
       'REQUEST_METHOD' => method,
       'REMOTE_ADDR'    => remote_ip,
-      'HTTP_REFERER'   => referer,
+      'HTTP_REFERER'   => referer
     }.compact)
     request_env['HTTP_HOST'] = "#{request_env['SERVER_NAME']}:#{request_env['SERVER_PORT']}"
 

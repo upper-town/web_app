@@ -1,8 +1,6 @@
-# frozen_string_literal: true
-
 module Servers
   class DestroyJob < ApplicationJob
-    queue_as 'low'
+    queue_as "low"
     # TODO: rewrite lock: :while_executing)
 
     def perform(server)

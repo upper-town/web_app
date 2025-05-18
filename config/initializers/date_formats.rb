@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 Date::DATE_FORMATS[:default] = Date::DATE_FORMATS[:iso8601]
 
 class Date

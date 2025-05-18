@@ -1,9 +1,7 @@
-# frozen_string_literal: true
-
 module AdminUsers
   module EmailConfirmations
     class EmailJob < ApplicationJob
-      queue_as 'critical'
+      queue_as "critical"
       # TODO: rewrite lock: :while_executing)
 
       def perform(admin_user)

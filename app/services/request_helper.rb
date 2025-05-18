@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class RequestHelper
   include ActionView::Helpers::FormTagHelper
 
@@ -24,14 +22,14 @@ class RequestHelper
 
     parsed_uri.query = parsed_query.empty? ? nil : URI.encode_www_form(parsed_query)
 
-    [parsed_query, parsed_uri]
+    [ parsed_query, parsed_uri ]
   end
 
   def parse_query_and_uri
     parsed_uri = URI.parse(request.original_url)
-    parsed_query = URI.decode_www_form(parsed_uri.query || '').to_h
+    parsed_query = URI.decode_www_form(parsed_uri.query || "").to_h
 
-    [parsed_query, parsed_uri]
+    [ parsed_query, parsed_uri ]
   end
 
   # rubocop:disable Rails/OutputSafety
@@ -52,8 +50,8 @@ class RequestHelper
     return false if request.referer.blank?
 
     parsed_uri = URI.parse(request.referer)
-    return false unless ['http', 'https'].include?(parsed_uri.scheme)
+    return false unless [ "http", "https" ].include?(parsed_uri.scheme)
 
-    parsed_uri.host == ENV.fetch('APP_HOST')
+    parsed_uri.host == ENV.fetch("APP_HOST")
   end
 end

@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module Users
   module ChangeEmailReversions
     class Update
@@ -13,7 +11,7 @@ module Users
           "users_change_email_reversions_update:#{request.remote_ip}",
           3,
           2.minutes,
-          'Too many attempts'
+          "Too many attempts"
         )
       end
 
@@ -24,9 +22,9 @@ module Users
         user, token = find_user_and_token
 
         if !user || !token
-          Result.failure('Invalid or expired token')
-        elsif token.data['email'].blank?
-          Result.failure('Invalid token: old email address is not associated with token')
+          Result.failure("Invalid or expired token")
+        elsif token.data["email"].blank?
+          Result.failure("Invalid token: old email address is not associated with token")
         else
           revert_change_email(user, token)
         end
@@ -44,7 +42,7 @@ module Users
       def revert_change_email(user, token)
         begin
           ActiveRecord::Base.transaction do
-            user.revert_change_email!(token.data['email'])
+            user.revert_change_email!(token.data["email"])
             token.expire!
           end
         rescue StandardError => e

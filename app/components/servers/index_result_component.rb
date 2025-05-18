@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module Servers
   class IndexResultComponent < ViewComponent::Base
     attr_reader(
@@ -34,12 +32,12 @@ module Servers
 
     def format_ranking_number(value)
       number = format_number(value)
-      '#' + (number.nil? ? '--' : number)
+      "#" + (number.nil? ? "--" : number)
     end
 
     def format_vote_count(value)
       number = format_number(value)
-      number.nil? ? '--' : number
+      number.nil? ? "--" : number
     end
 
     private
@@ -53,18 +51,18 @@ module Servers
         number_to_human(
           value,
           precision: 4,
-          units: { thousand: 'k', million: 'M', billion: 'G', trillion: 'T' }
+          units: { thousand: "k", million: "M", billion: "G", trillion: "T" }
         )
       end
     end
 
     def common_name_and_emoji_flag(country_code)
       if country_code == ServerStat::ALL
-        ['All', ServerStat::ALL_EMOJI_FLAG]
+        [ "All", ServerStat::ALL_EMOJI_FLAG ]
       else
         iso_country = ISO3166::Country.new(country_code)
 
-        [iso_country.common_name, iso_country.emoji_flag]
+        [ iso_country.common_name, iso_country.emoji_flag ]
       end
     end
   end

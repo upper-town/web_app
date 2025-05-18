@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class ValidateEmail
   PATTERN = %r{
     \A
@@ -34,16 +32,16 @@ class ValidateEmail
   ]
 
   DISPOSABLE_EMAIL_DOMAINS_LIST = if Rails.env.test?
-    Rails.root.join('vendor/disposable_email_domains/list_test.txt').readlines(chomp: true)
+    Rails.root.join("vendor/disposable_email_domains/list_test.txt").readlines(chomp: true)
   else
-    Rails.root.join('vendor/disposable_email_domains/list.txt').readlines(chomp: true)
+    Rails.root.join("vendor/disposable_email_domains/list.txt").readlines(chomp: true)
   end
 
   attr_reader :email, :errors
 
   def initialize(email)
     @email = email.to_s
-    @errors = [:not_validated_yet]
+    @errors = [ :not_validated_yet ]
   end
 
   def valid?
@@ -86,7 +84,7 @@ class ValidateEmail
   end
 
   def host_has_reserved_name?(host)
-    parts = host.split('.')
+    parts = host.split(".")
 
     parts.last(3).any? { |part| RESERVED_NAMES.include?(part) }
   end

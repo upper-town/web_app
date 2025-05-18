@@ -1,11 +1,9 @@
-# frozen_string_literal: true
-
 module Captcha
-  BASE_URL    = 'https://hcaptcha.com'
-  VERIFY_PATH = '/siteverify'
+  BASE_URL    = "https://hcaptcha.com"
+  VERIFY_PATH = "/siteverify"
 
-  SITE_KEY   = ENV.fetch('H_CAPTCHA_SITE_KEY')
-  SECRET_KEY = ENV.fetch('H_CAPTCHA_SECRET_KEY')
+  SITE_KEY   = ENV.fetch("H_CAPTCHA_SITE_KEY")
+  SECRET_KEY = ENV.fetch("H_CAPTCHA_SECRET_KEY")
 
   extend self
 
@@ -21,7 +19,7 @@ module Captcha
     HTML
   end
 
-  def widget_tag(theme: 'dark')
+  def widget_tag(theme: "dark")
     <<~HTML.html_safe
       <div
         class="h-captcha"
@@ -43,33 +41,33 @@ module Captcha
     captcha_response, remote_ip = extract_values(request)
 
     if captcha_response.blank?
-      return Result.failure('Please pass the captcha')
+      return Result.failure("Please pass the captcha")
     end
 
     begin
       response = send_verify_request(captcha_response, remote_ip)
 
-      if response.body['success'].blank? || !response.body['success']
-        Result.failure('Captcha verification failed')
+      if response.body["success"].blank? || !response.body["success"]
+        Result.failure("Captcha verification failed")
       else
         Result.success
       end
     rescue Faraday::ClientError, Faraday::ServerError
-      Result.failure('Could not verify captcha. Please try again later')
+      Result.failure("Could not verify captcha. Please try again later")
     rescue Faraday::Error
-      Result.failure('Connection failed')
+      Result.failure("Connection failed")
     end
   end
 
   private
 
   def captcha_disabled?
-    Rails.env.development? && StringValueHelper.to_boolean(ENV.fetch('CAPTCHA_DISABLED', 'false'))
+    Rails.env.development? && StringValueHelper.to_boolean(ENV.fetch("CAPTCHA_DISABLED", "false"))
   end
 
   def extract_values(request)
     [
-      request.params['h-captcha-response'],
+      request.params["h-captcha-response"],
       request.remote_ip
     ]
   end
@@ -86,7 +84,7 @@ module Captcha
         sitekey:  SITE_KEY,
         secret:   SECRET_KEY,
         response: captcha_response,
-        remoteip: remote_ip,
+        remoteip: remote_ip
       }
     end
   end

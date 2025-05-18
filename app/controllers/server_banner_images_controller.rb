@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class ServerBannerImagesController < ActionController::API
   before_action :ensure_app_host_referer
 
@@ -35,10 +33,10 @@ class ServerBannerImagesController < ActionController::API
   end
 
   def render_image(server_banner_image)
-    response.set_header('Cache-Control', "max-age=#{ServerBannerImage::CACHE_EXPIRES_IN}, private")
-    response.set_header('ETag', "\"#{server_banner_image.checksum}\"")
-    response.set_header('Content-Type', server_banner_image.content_type)
-    response.set_header('Content-Disposition', 'inline')
+    response.set_header("Cache-Control", "max-age=#{ServerBannerImage::CACHE_EXPIRES_IN}, private")
+    response.set_header("ETag", "\"#{server_banner_image.checksum}\"")
+    response.set_header("Content-Type", server_banner_image.content_type)
+    response.set_header("Content-Disposition", "inline")
 
     render(body: server_banner_image.blob)
   end

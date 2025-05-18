@@ -1,7 +1,5 @@
-# frozen_string_literal: true
-
 class ServerBannerImageUploadedFile < ApplicationModel
-  CONTENT_TYPES = ['image/png', 'image/jpeg']
+  CONTENT_TYPES = [ "image/png", "image/jpeg" ]
   MAX_BYTE_SIZE = 512 * 1024
 
   attribute :uploaded_file

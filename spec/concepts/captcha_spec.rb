@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require 'rails_helper'
 
 RSpec.describe Captcha do
@@ -149,10 +147,10 @@ RSpec.describe Captcha do
     context 'when request to verify captcha responds with 2xx status' do
       it 'returns success or failure according to response body' do
         [
-          [false, {}],
-          [false, { 'success' => ''    }],
-          [false, { 'success' => false }],
-          [true,  { 'success' => true  }],
+          [ false, {} ],
+          [ false, { 'success' => ''    } ],
+          [ false, { 'success' => false } ],
+          [ true,  { 'success' => true  } ]
         ].each_with_index do |(expected_success, response_body), index|
           request = TestRequestHelper.build(
             params: { 'h-captcha-response' => "abcdef123456#{index}" },
@@ -192,7 +190,7 @@ RSpec.describe Captcha do
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: {
         'sitekey' => ENV.fetch('H_CAPTCHA_SITE_KEY'),
-        'secret' => ENV.fetch('H_CAPTCHA_SECRET_KEY'),
+        'secret' => ENV.fetch('H_CAPTCHA_SECRET_KEY')
       }.merge(body).sort.to_h
     )
 

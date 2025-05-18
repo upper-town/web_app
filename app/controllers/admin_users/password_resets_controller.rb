@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module AdminUsers
   class PasswordResetsController < ApplicationAdminController
     before_action :authenticate_admin_user!
@@ -37,7 +35,7 @@ module AdminUsers
       if result.success?
         redirect_to(
           root_path,
-          info: 'Password reset link has been sent to your email.'
+          info: "Password reset link has been sent to your email."
         )
       else
         flash.now[:info] = result.errors.full_messages
@@ -64,7 +62,7 @@ module AdminUsers
       if result.success?
         redirect_to(
           admin_users_sign_in_path,
-          success: 'Your password has been set.'
+          success: "Your password has been set."
         )
       else
         flash.now[:info] = result.errors.full_messages
@@ -83,11 +81,11 @@ module AdminUsers
     end
 
     def password_reset_params
-      params.expect(admin_users_password_reset: [:email])
+      params.expect(admin_users_password_reset: [ :email ])
     end
 
     def password_reset_edit_params
-      params.expect(admin_users_password_reset_edit: [:token, :password])
+      params.expect(admin_users_password_reset_edit: [ :token, :password ])
     end
   end
 end

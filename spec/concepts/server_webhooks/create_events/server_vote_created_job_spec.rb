@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require 'rails_helper'
 
 RSpec.describe ServerWebhooks::CreateEvents::ServerVoteCreatedJob do
@@ -7,8 +5,8 @@ RSpec.describe ServerWebhooks::CreateEvents::ServerVoteCreatedJob do
     context 'when server does not have enabled configs that subscribe to the event_type' do
       it 'does not create ServerWebhookEvent records and does not publish' do
         server = create(:server, country_code: 'US')
-        _server_webhook_config1 = create(:server_webhook_config, server: server, event_types: ['server_vote.created'], disabled_at: Time.current)
-        _server_webhook_config2 = create(:server_webhook_config, server: server, event_types: ['test.event'], disabled_at: nil)
+        _server_webhook_config1 = create(:server_webhook_config, server: server, event_types: [ 'server_vote.created' ], disabled_at: Time.current)
+        _server_webhook_config2 = create(:server_webhook_config, server: server, event_types: [ 'test.event' ], disabled_at: nil)
         account = create(:account)
         server_vote = create(
           :server_vote,
@@ -32,9 +30,9 @@ RSpec.describe ServerWebhooks::CreateEvents::ServerVoteCreatedJob do
     context 'when server has enabled configs that subscribe to the event_type' do
       it 'creates ServerWebhookEvent for them and publishes events' do
         server = create(:server, country_code: 'US')
-        server_webhook_config1 = create(:server_webhook_config, server: server, event_types: ['server_vote.created'], disabled_at: nil)
-        server_webhook_config2 = create(:server_webhook_config, server: server, event_types: ['server_vote.*'], disabled_at: nil)
-        _server_webhook_config3 = create(:server_webhook_config, server: server, event_types: ['test.event'], disabled_at: nil)
+        server_webhook_config1 = create(:server_webhook_config, server: server, event_types: [ 'server_vote.created' ], disabled_at: nil)
+        server_webhook_config2 = create(:server_webhook_config, server: server, event_types: [ 'server_vote.*' ], disabled_at: nil)
+        _server_webhook_config3 = create(:server_webhook_config, server: server, event_types: [ 'test.event' ], disabled_at: nil)
         account = create(:account)
         server_vote = create(
           :server_vote,
@@ -62,7 +60,7 @@ RSpec.describe ServerWebhooks::CreateEvents::ServerVoteCreatedJob do
             'reference'    => 'anything123456',
             'remote_ip'    => '1.1.1.1',
             'account_uuid' => account.uuid,
-            'created_at'   => '2024-09-02T12:00:01Z',
+            'created_at'   => '2024-09-02T12:00:01Z'
           }
         }
         expect(server_webhook_event1.type).to eq('server_vote.created')
@@ -82,9 +80,9 @@ RSpec.describe ServerWebhooks::CreateEvents::ServerVoteCreatedJob do
       context 'when an error is raised during creation of ServerWebhookEvent' do
         it 'raises the error and rolls back' do
           server = create(:server, country_code: 'US')
-          _server_webhook_config1 = create(:server_webhook_config, server: server, event_types: ['server_vote.created'], disabled_at: nil)
-          _server_webhook_config2 = create(:server_webhook_config, server: server, event_types: ['server_vote.*'], disabled_at: nil)
-          _server_webhook_config3 = create(:server_webhook_config, server: server, event_types: ['test.event'], disabled_at: nil)
+          _server_webhook_config1 = create(:server_webhook_config, server: server, event_types: [ 'server_vote.created' ], disabled_at: nil)
+          _server_webhook_config2 = create(:server_webhook_config, server: server, event_types: [ 'server_vote.*' ], disabled_at: nil)
+          _server_webhook_config3 = create(:server_webhook_config, server: server, event_types: [ 'test.event' ], disabled_at: nil)
           account = create(:account)
           server_vote = create(
             :server_vote,

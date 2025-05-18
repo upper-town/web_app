@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require 'rails_helper'
 
 RSpec.describe ServerWebhooks::PublishEvent do
@@ -11,7 +9,7 @@ RSpec.describe ServerWebhooks::PublishEvent do
           method: 'POST',
           url: 'https://game.company.com/webhook_events',
           disabled_at: nil,
-          event_types: ['test.event'],
+          event_types: [ 'test.event' ],
           secret: 'aaaaaaaa'
         )
         server_webhook_event = create(
@@ -41,7 +39,7 @@ RSpec.describe ServerWebhooks::PublishEvent do
           method: 'POST',
           url: 'https://game.company.com/webhook_events',
           disabled_at: nil,
-          event_types: ['test.event'],
+          event_types: [ 'test.event' ],
           secret: 'aaaaaaaa'
         )
         server_webhook_event = create(
@@ -71,7 +69,7 @@ RSpec.describe ServerWebhooks::PublishEvent do
           method: 'POST',
           url: 'https://game.company.com/webhook_events',
           disabled_at: nil,
-          event_types: ['test.event'],
+          event_types: [ 'test.event' ],
           secret: 'aaaaaaaa'
         )
         server_webhook_event = create(
@@ -107,7 +105,7 @@ RSpec.describe ServerWebhooks::PublishEvent do
           method: 'POST',
           url: 'https://game.company.com/webhook_events',
           disabled_at: nil,
-          event_types: ['something.else'],
+          event_types: [ 'something.else' ],
           secret: 'aaaaaaaa'
         )
         server_webhook_event = create(
@@ -143,7 +141,7 @@ RSpec.describe ServerWebhooks::PublishEvent do
           method: 'POST',
           url: 'https://game.company.com/webhook_events',
           disabled_at: Time.current,
-          event_types: ['test.event'],
+          event_types: [ 'test.event' ],
           secret: 'aaaaaaaa'
         )
         server_webhook_event = create(
@@ -181,7 +179,7 @@ RSpec.describe ServerWebhooks::PublishEvent do
               method: 'POST',
               url: 'https://game.company.com/webhook_events',
               disabled_at: nil,
-              event_types: ['test.event'],
+              event_types: [ 'test.event' ],
               secret: 'aaaaaaaa'
             )
             server_webhook_event = create(
@@ -199,7 +197,7 @@ RSpec.describe ServerWebhooks::PublishEvent do
                 'type' => 'test.event',
                 'payload' => server_webhook_event.payload,
                 'last_published_at' => Time.current.iso8601,
-                'failed_attempts' => 0,
+                'failed_attempts' => 0
               }
             }.to_json
             expected_headers = {
@@ -240,7 +238,7 @@ RSpec.describe ServerWebhooks::PublishEvent do
               method: 'POST',
               url: 'https://game.company.com/webhook_events',
               disabled_at: nil,
-              event_types: ['test.event'],
+              event_types: [ 'test.event' ],
               secret: 'aaaaaaaa'
             )
             server_webhook_event = create(
@@ -258,7 +256,7 @@ RSpec.describe ServerWebhooks::PublishEvent do
                 'type' => 'test.event',
                 'payload' => server_webhook_event.payload,
                 'last_published_at' => Time.current.iso8601,
-                'failed_attempts' => 0,
+                'failed_attempts' => 0
               }
             }.to_json
             expected_headers = {
@@ -299,7 +297,7 @@ RSpec.describe ServerWebhooks::PublishEvent do
               method: 'POST',
               url: 'https://game.company.com/webhook_events',
               disabled_at: nil,
-              event_types: ['test.event'],
+              event_types: [ 'test.event' ],
               secret: 'aaaaaaaa'
             )
             server_webhook_event = create(
@@ -317,7 +315,7 @@ RSpec.describe ServerWebhooks::PublishEvent do
                 'type' => 'test.event',
                 'payload' => server_webhook_event.payload,
                 'last_published_at' => Time.current.iso8601,
-                'failed_attempts' => 0,
+                'failed_attempts' => 0
               }
             }.to_json
             expected_headers = {
@@ -358,7 +356,7 @@ RSpec.describe ServerWebhooks::PublishEvent do
               method: 'POST',
               url: 'https://game.company.com/webhook_events',
               disabled_at: nil,
-              event_types: ['test.event'],
+              event_types: [ 'test.event' ],
               secret: 'aaaaaaaa'
             )
             server_webhook_event = create(
@@ -376,7 +374,7 @@ RSpec.describe ServerWebhooks::PublishEvent do
                 'type' => 'test.event',
                 'payload' => server_webhook_event.payload,
                 'last_published_at' => Time.current.iso8601,
-                'failed_attempts' => 24,
+                'failed_attempts' => 24
               }
             }.to_json
             expected_headers = {
@@ -417,7 +415,7 @@ RSpec.describe ServerWebhooks::PublishEvent do
               method: 'POST',
               url: 'https://game.company.com/webhook_events',
               disabled_at: nil,
-              event_types: ['test.event'],
+              event_types: [ 'test.event' ],
               secret: 'aaaaaaaa'
             )
             server_webhook_event = create(
@@ -435,7 +433,7 @@ RSpec.describe ServerWebhooks::PublishEvent do
                 'type' => 'test.event',
                 'payload' => server_webhook_event.payload,
                 'last_published_at' => Time.current.iso8601,
-                'failed_attempts' => 0,
+                'failed_attempts' => 0
               }
             }.to_json
             expected_headers = {
@@ -475,7 +473,7 @@ RSpec.describe ServerWebhooks::PublishEvent do
                 method: 'PUT',
                 url: 'https://game.company.com/webhook_events',
                 disabled_at: nil,
-                event_types: ['test.event'],
+                event_types: [ 'test.event' ],
                 secret: 'aaaaaaaa'
               )
               server_webhook_event = create(
@@ -493,7 +491,7 @@ RSpec.describe ServerWebhooks::PublishEvent do
                   'type' => 'test.event',
                   'payload' => server_webhook_event.payload,
                   'last_published_at' => Time.current.iso8601,
-                  'failed_attempts' => 0,
+                  'failed_attempts' => 0
                 }
               }.to_json
               expected_headers = {
@@ -532,7 +530,7 @@ RSpec.describe ServerWebhooks::PublishEvent do
                 method: 'PATCH',
                 url: 'https://game.company.com/webhook_events',
                 disabled_at: nil,
-                event_types: ['test.event'],
+                event_types: [ 'test.event' ],
                 secret: 'aaaaaaaa'
               )
               server_webhook_event = create(
@@ -550,7 +548,7 @@ RSpec.describe ServerWebhooks::PublishEvent do
                   'type' => 'test.event',
                   'payload' => server_webhook_event.payload,
                   'last_published_at' => Time.current.iso8601,
-                  'failed_attempts' => 0,
+                  'failed_attempts' => 0
                 }
               }.to_json
               expected_headers = {

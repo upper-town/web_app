@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module Admin
   class AccessPolicy
     attr_reader :admin_account, :admin_permission_key

@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require 'rails_helper'
 
 RSpec.describe Servers::VerifyAccounts::Perform do
@@ -245,7 +243,7 @@ RSpec.describe Servers::VerifyAccounts::Perform do
             'accounts' => [
               account1.uuid,
               'e42d89f7-1b04-4d49-a12b-98b7b210e751',
-              '096f9009-9b40-4a2b-88a7-8d74290ff700',
+              '096f9009-9b40-4a2b-88a7-8d74290ff700'
             ]
           }.to_json
         )
@@ -320,7 +318,7 @@ RSpec.describe Servers::VerifyAccounts::Perform do
               'accounts' => [
                 # Removed account1
                 account2.uuid,
-                account3.uuid, # Added account3
+                account3.uuid # Added account3
               ]
             }.to_json
           )

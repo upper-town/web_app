@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 # TODO: implement
 
 # require 'rails_helper'

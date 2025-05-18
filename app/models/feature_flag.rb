@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class FeatureFlag < ApplicationRecord
   # This is a simple feature flag implementation that reads from the database
   # or from env vars. An env var feature flag takes precedence over a database
@@ -36,9 +34,9 @@ class FeatureFlag < ApplicationRecord
   #   FeatureFlag.enabled?(:something, user)
   #   FeatureFlag.enabled?(:something, 'user_1')
   #
-  ENV_VAR_PREFIX    = 'FF_'
-  ENABLED_SEPARATOR = ':'
-  FFID_SEPARATOR    = ','
+  ENV_VAR_PREFIX    = "FF_"
+  ENABLED_SEPARATOR = ":"
+  FFID_SEPARATOR    = ","
 
   def self.enabled?(name, record_or_ffid = nil)
     value = fetch_value(StringValueHelper.remove_whitespaces(name.to_s))
