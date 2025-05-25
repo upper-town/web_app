@@ -1,4 +1,4 @@
-# upper.town
+# Upper Town
 
 Repository for a web app with features for the gaming community.
 
@@ -53,8 +53,8 @@ To override env vars values, create files named `.env.local` and
 `.env.test.local` on your local repository and set any variables you'd like to
 override.
 
-In production and staging, env vars should be properly set in the app settings
-in the cloud hosting service, and not from env files.
+In production, env vars should be properly set in the app settings in the
+cloud hosting service, and not from env files.
 
 ### Running the app in development
 
@@ -68,6 +68,16 @@ running the processes.
 [`bin/dev`]: bin/dev
 [`foreman`]: https://rubygems.org/gems/foreman
 
+### Tests
+
+This project uses the [Minitest] framework. The spec DSL with it/describe blocks
+is available for use through the [minitest-rails] gem.
+
+For assertions though, prefer normal test assertions over spec expectations.
+
+[Minitest](https://github.com/minitest/minitest)
+[minitest-rails](https://rubygems.org/gems/minitest-rails)
+
 ### ActiveRecord Factories for Tests
 
 Factories are defined in `test/support/active_record_factory_test_helper.rb`
@@ -79,11 +89,11 @@ In tests, use factories to create/build records for test cases. Set the
 attributes that are important for your test case, and let the factory take
 care of the other attributes for you.
 
-Factory helper methods are included in Minitest through `spec/test_helper.rb`,
+Factory helper methods are included in Minitest through `test/test_helper.rb`,
 so you can call them directly in tests cases. For example:
 
 ```rb
-test "something" do
+it "does something" do
   user = create_user
 
   # ...
@@ -97,8 +107,7 @@ This section describes some code guidelines.
 ### Rails Controllers
 
 A controller should contain application layer code regarding the
-request/response cycle and delegate business logic to services, queries, jobs,
-or concepts.
+request/response cycle and delegate business logic to services, queries, jobs.
 
 It should set instance variables to be used by views.
 
@@ -111,7 +120,7 @@ use presenters.
 ### Rails Models
 
 A Rails model represents a _data_ model and should contain data-related code.
-Move business logic to services, jobs, or concepts.
+Move business logic to services, queries, jobs.
 
 ### State machines
 
@@ -122,7 +131,7 @@ cases, defining a state machine is not necessary.
 
 Service objects encapsulate business logic code:
 
-- Create a service class in `app/services/`
+- Create a service class in `app/services/` or `app/domain/`
 - Use a descriptive name for the service class with a verb, and do _not_ add a
   suffix to it
 - Use descriptive names for the service methods. If it only exposes one method,
@@ -136,7 +145,7 @@ Service objects encapsulate business logic code:
 Query objects can compose or perform database queries using `ActiveRecord`
 or `SQL`:
 
-- Create a query class in `app/queries/`
+- Create a query class in `app/queries/` or `app/domain/`
 - Use a descriptive name for the query class and add a `Query` suffix to it
 - Use descriptive names for the query methods. If it only exposes one method,
   name it `call`
@@ -144,15 +153,15 @@ or `SQL`:
   result of the query
 - Return `ActiveRecord::Relation` or primitive values like `Array`, `Hash`,
   `Integer`, `String`, and boolean
-- Initialize with a base scope and values if necessary but avoid storing state
+- Initialize with a base scope or values if necessary but avoid storing state
   in query objects
 
 ### Jobs
 
-Jobs can perform an action asynchronously. [Solid Queue] is the background job
+Background jobs can perform an action asynchronously. [Solid Queue] is the
 framework in use:
 
-- Create a job class in `app/jobs/`
+- Create a job class in `app/jobs/` or `app/domain/`
 - Use a descriptive name for the job class and add a `Job` suffix to it
 - Inherit from `ApplicationJob` and use the Active Job interface
 
@@ -163,7 +172,7 @@ framework in use:
 Policies are service/query objects specialized in checking if a user meets
 certain conditions:
 
-- Create a policy in `app/policies/`
+- Create a policy in `app/policies/` or `app/domain/`
 - Use a descriptive name for the policy class and add a `Policy` suffix to it
 - Use names like `#allowed?` for the policy methods
 - Return `true`/`false`
@@ -175,7 +184,7 @@ certain conditions:
 Validators run a set of validations on an `ActiveRecord`-like object. They can
 be Ruby classes or inherit from a Rails validator class:
 
-- Create a validator in `app/validators/`
+- Create a validator in `app/validators/` or `app/domain/`
 - Use a descriptive name for the validator class and add a `Validator`
   suffix to it when it is a model validator
 - Use names like `#valid?` and `#validate` for the validator methods
@@ -189,15 +198,15 @@ Presenters deal with presentation logic. If there is already a component
 framework in place, like [`ViewComponent`], that could be a replacement for
 your presenter logic:
 
-- Create a presenter in `app/presenters/`
+- Create a presenter in `app/presenters/` or `app/domain/`
 - Use a descriptive name for the presenter class and add a `Presenter`
   suffix to it
 - Use descriptive names for the presenter methods
 - Return primitive values that can be directly used in views
 
-[`viewcomponent`]: https://rubygems.org/gems/view_component
+[`ViewComponent`]: https://rubygems.org/gems/view_component
 
-### Concepts
+### Domain
 
 If you notice a set of services, queries, jobs etc composes a concept in your
 domain, feel free to group them together under a more descriptive concept name.
@@ -213,8 +222,7 @@ as you see fit, mapping to the domain language.
 ### Layered Architecture and Rails
 
 Layered Architecture is a way to divide your code in layers each one focused on
-a particular aspect of the software. You can refer to the definition from Eric
-Vans.
+a particular aspect of the software.
 
 Embracing Rails, we can think of a layered architecture as:
 
@@ -222,12 +230,11 @@ Embracing Rails, we can think of a layered architecture as:
 - **Infrastructure layer**: Rails ApplicationRecord, API clients, SolidQueue,
   SolidCache, and other gems
 - **Presentation layter**: Rails Views, Helpers, Presenters, ViewComponents
-- **Domain layer**: models, services, jobs, queries, concepts
+- **Domain layer**: models, services, queries, jobs
 
 ## Tests
 
-To run the test suite, simply run `bundle exec rspec` or `bin/test` and
-`bin/test_system`
+To run the test suite, simply run `bin/rails test`
 
 For a given feature, there are different types of tests we can run: unit tests,
 request tests, and system tests. In terms of time to write and compute time to
@@ -237,11 +244,12 @@ flows with system tests and being inclined to write more unit and request tests.
 
 [testing pyramid]: https://martinfowler.com/articles/practical-test-pyramid.html
 
-System specs (`type: :system`) spin up a browser while executing tests.
-By default, these tests run in a headless browser but for debugging purposes
-it can be useful to run them _headfully_. To run a system spec _headfully_,
-set the `HEADFUL` environment variable while running the test command:
-`HEADFUL=true bundle exec rspec`
+System tests spin up a browser while executing tests.
+
+By default, these tests run in a headless browser but for debugging purposes it
+can be useful to run them _headfully_. To run a system test _headfully_, set the
+`HEADFUL` or `HEADLESS` environment variable while running the test command:
+`HEADFUL=true bin/rails test` or `HEADLESS=false bin/rails test`
 
 ### WebMock stubs and VCR to record and replay HTTP requests
 
@@ -273,26 +281,10 @@ VCR.use_cassette("name_the/request_file_here") do
 end
 ```
 
-Or use the RSpec [`:vcr` tag] in an RSpec `describe`/`context`/`it` block
-and the request YAML file and path will be named based on the descriptions:
-
-[`:vcr` tag]: https://relishapp.com/vcr/vcr/v/6-1-0/docs/test-frameworks/usage-with-rspec-metadata
-
-```rb
-class SomeClass < ActiveSupport::TestCase
-  test "something", :vcr do
-    # HTTP requests are allowed within this block. Requests will be recorded
-    # and replayed during future test runs.
-    #
-    # File: test/cassettes/SomeClass/test_something.yml
-  end
-end
-```
-
 And to force VCR to re-record requests when running a test instead of replaying
 existing records, just delete the specific YAML files, or set `VCR_RECORD_ALL`
 to `true` while running the test command. For example,
-`VCR_RECORD_ALL=true bundle exec rspec test/services/some_class_test.rb`.
+`VCR_RECORD_ALL=true bin/rails test test/services/some_class_test.rb`.
 
 This feature is provided by setting [`default_cassette_options`] `:record`
 to `:all` in VCR configuration when `ENV["VCR_RECORD_ALL"]` is set to `"true"`
