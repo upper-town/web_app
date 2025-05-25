@@ -29,6 +29,10 @@ Dir[Rails.root.join("test/support/config/*.rb")].each do |file|
   require file
 end
 
+Dir[Rails.root.join("test/support/setup/*.rb")].each do |file|
+  require file
+end
+
 Dir[Rails.root.join("test/support/helpers/*.rb")].each do |file|
   require file
 end
@@ -40,11 +44,14 @@ module ActiveSupport
 
     include ActiveJob::TestHelper
 
-    # Add more helper methods to be used by all tests here...
+    include ActiveJobTestSetup
+    include CacheTestSetup
+    include CurrentTestSetup
+
     include ActiveRecordFactoryTestHelper
+    include CaptchaTestHelper
     include EnvTestHelper
     include RailsEnvTestHelper
-    include CaptchaTestHelper
     include RequestTestHelper
   end
 end
