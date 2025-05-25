@@ -68,15 +68,15 @@ running the processes.
 [`bin/dev`]: bin/dev
 [`foreman`]: https://rubygems.org/gems/foreman
 
-### Tests
+### Testing Framework
 
 This project uses the [Minitest] framework. The spec DSL with it/describe blocks
-is available for use through the [minitest-rails] gem.
+is available for use through the [`minitest-rails`] gem.
 
 For assertions though, prefer normal test assertions over spec expectations.
 
-[Minitest](https://github.com/minitest/minitest)
-[minitest-rails](https://rubygems.org/gems/minitest-rails)
+[Minitest]: https://github.com/minitest/minitest
+[`minitest-rails`]: https://rubygems.org/gems/minitest-rails
 
 ### ActiveRecord Factories for Tests
 
