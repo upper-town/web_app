@@ -29,6 +29,8 @@ Layout/ArrayAlignment:
   Enabled: false
 Layout/ElseAlignment:
   Enabled: false
+Layout/EmptyLinesAroundClassBody:
+  Enabled: false
 Layout/EmptyLinesAroundExceptionHandlingKeywords:
   Enabled: false
 Layout/EndAlignment:
