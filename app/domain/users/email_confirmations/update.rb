@@ -9,24 +9,13 @@ module Users
         attribute :user
       end
 
-      attr_reader :email_confirmation_edit, :request, :rate_limiter
+      attr_reader :email_confirmation_edit
 
-      def initialize(email_confirmation_edit, request)
+      def initialize(email_confirmation_edit)
         @email_confirmation_edit = email_confirmation_edit
-        @request = request
-
-        @rate_limiter = RateLimiting::BasicRateLimiter.new(
-          "users_email_confirmation_update:#{request.remote_ip}",
-          2,
-          5.minutes,
-          "Too many attempts"
-        )
       end
 
       def call
-        result = rate_limiter.call
-        return result if result.failure?
-
         user = find_user
 
         if !user
@@ -45,15 +34,9 @@ module Users
       end
 
       def confirm_email(user)
-        begin
-          ActiveRecord::Base.transaction do
-            user.confirm_email!
-            user.expire_token!(:email_confirmation)
-          end
-        rescue StandardError => e
-          rate_limiter.uncall
-
-          raise e
+        ActiveRecord::Base.transaction do
+          user.confirm_email!
+          user.expire_token!(:email_confirmation)
         end
 
         Result.success(user: user)

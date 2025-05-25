@@ -31,7 +31,7 @@ module Inside
         end
 
         result = ::Users::ChangeEmailConfirmations::Create
-          .new(@change_email_confirmation, current_user.email, request).call
+          .new(@change_email_confirmation, current_user.email).call
 
         if result.success?
           redirect_to(

@@ -30,7 +30,7 @@ module Users
         return
       end
 
-      result = Users::PasswordResets::Create.new(@password_reset, request).call
+      result = Users::PasswordResets::Create.new(@password_reset).call
 
       if result.success?
         redirect_to(
@@ -57,7 +57,7 @@ module Users
         return
       end
 
-      result = Users::PasswordResets::Update.new(@password_reset_edit, request).call
+      result = Users::PasswordResets::Update.new(@password_reset_edit).call
 
       if result.success?
         redirect_to(

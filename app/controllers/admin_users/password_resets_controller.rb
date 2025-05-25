@@ -32,7 +32,7 @@ module AdminUsers
         return
       end
 
-      result = AdminUsers::PasswordResets::Create.new(@password_reset, request).call
+      result = AdminUsers::PasswordResets::Create.new(@password_reset).call
 
       if result.success?
         redirect_to(
@@ -59,7 +59,7 @@ module AdminUsers
         return
       end
 
-      result = AdminUsers::PasswordResets::Update.new(@password_reset_edit, request).call
+      result = AdminUsers::PasswordResets::Update.new(@password_reset_edit).call
 
       if result.success?
         redirect_to(

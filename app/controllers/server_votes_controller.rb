@@ -25,7 +25,7 @@ class ServerVotesController < ApplicationController
       return
     end
 
-    result = Servers::CreateVote.new(@server, @server_vote, request, current_account).call
+    result = Servers::CreateVote.new(@server, @server_vote, request.remote_ip, current_account).call
 
     if result.success?
       redirect_to(

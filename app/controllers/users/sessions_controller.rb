@@ -43,7 +43,7 @@ module Users
         return
       end
 
-      result = Users::AuthenticateSession.new(@session, request).call
+      result = Users::AuthenticateSession.new(@session).call
 
       if result.success?
         sign_in_user!(result.user, @session.remember_me)

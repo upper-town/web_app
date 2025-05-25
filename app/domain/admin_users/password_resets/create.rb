@@ -5,24 +5,13 @@ module AdminUsers
     class Create
       include Callable
 
-      attr_reader :password_reset, :request, :rate_limiter
+      attr_reader :password_reset
 
-      def initialize(password_reset, request)
+      def initialize(password_reset)
         @password_reset = password_reset
-        @request = request
-
-        @rate_limiter = RateLimiting::BasicRateLimiter.new(
-          "admin_users_password_resets_create:#{request.remote_ip}",
-          2,
-          5.minutes,
-          "Too many requests"
-        )
       end
 
       def call
-        result = rate_limiter.call
-        return result if result.failure?
-
         admin_user = find_admin_user
         enqueue_email_job(admin_user) if admin_user
 

@@ -19,7 +19,7 @@ module Users
         return
       end
 
-      result = Users::ChangeEmailReversions::Update.new(@change_email_reversion_edit, request).call
+      result = Users::ChangeEmailReversions::Update.new(@change_email_reversion_edit).call
 
       if result.success?
         redirect_to(

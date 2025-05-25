@@ -9,24 +9,13 @@ module Users
         attribute :user
       end
 
-      attr_reader :password_reset_edit, :request, :rate_limiter
+      attr_reader :password_reset_edit
 
-      def initialize(password_reset_edit, request)
+      def initialize(password_reset_edit)
         @password_reset_edit = password_reset_edit
-        @request = request
-
-        @rate_limiter = RateLimiting::BasicRateLimiter.new(
-          "users_password_resets_update:#{request.remote_ip}",
-          2,
-          5.minutes,
-          "Too many requests"
-        )
       end
 
       def call
-        result = rate_limiter.call
-        return result if result.failure?
-
         user = find_user
 
         if user
@@ -43,15 +32,9 @@ module Users
       end
 
       def reset_password(user)
-        begin
-          ActiveRecord::Base.transaction do
-            user.reset_password!(password_reset_edit.password)
-            user.expire_token!(:password_reset)
-          end
-        rescue StandardError => e
-          rate_limiter.uncall
-
-          raise e
+        ActiveRecord::Base.transaction do
+          user.reset_password!(password_reset_edit.password)
+          user.expire_token!(:password_reset)
         end
 
         Result.success(user: user)

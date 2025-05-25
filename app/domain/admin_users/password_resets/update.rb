@@ -9,24 +9,13 @@ module AdminUsers
         attribute :admin_user
       end
 
-      attr_reader :password_reset_edit, :request, :rate_limiter
+      attr_reader :password_reset_edit
 
-      def initialize(password_reset_edit, request)
+      def initialize(password_reset_edit)
         @password_reset_edit = password_reset_edit
-        @request = request
-
-        @rate_limiter = RateLimiting::BasicRateLimiter.new(
-          "admin_users_password_resets_update:#{request.remote_ip}",
-          2,
-          5.minutes,
-          "Too many requests"
-        )
       end
 
       def call
-        result = rate_limiter.call
-        return result if result.failure?
-
         admin_user = find_admin_user
 
         if admin_user
@@ -43,15 +32,9 @@ module AdminUsers
       end
 
       def reset_password(admin_user)
-        begin
-          ActiveRecord::Base.transaction do
-            admin_user.reset_password!(password_reset_edit.password)
-            admin_user.expire_token!(:password_reset)
-          end
-        rescue StandardError => e
-          rate_limiter.uncall
-
-          raise e
+        ActiveRecord::Base.transaction do
+          admin_user.reset_password!(password_reset_edit.password)
+          admin_user.expire_token!(:password_reset)
         end
 
         Result.success(admin_user: admin_user)

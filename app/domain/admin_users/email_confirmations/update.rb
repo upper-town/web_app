@@ -9,24 +9,13 @@ module AdminUsers
         attribute :admin_user
       end
 
-      attr_reader :email_confirmation_edit, :request, :rate_limiter
+      attr_reader :email_confirmation_edit
 
-      def initialize(email_confirmation_edit, request)
+      def initialize(email_confirmation_edit)
         @email_confirmation_edit = email_confirmation_edit
-        @request = request
-
-        @rate_limiter = RateLimiting::BasicRateLimiter.new(
-          "admin_users_email_confirmation_update:#{request.remote_ip}",
-          2,
-          5.minutes,
-          "Too many attempts"
-        )
       end
 
       def call
-        result = rate_limiter.call
-        return result if result.failure?
-
         admin_user = find_admin_user
 
         if !admin_user
@@ -45,15 +34,9 @@ module AdminUsers
       end
 
       def confirm_email(admin_user)
-        begin
-          ActiveRecord::Base.transaction do
-            admin_user.confirm_email!
-            admin_user.expire_token!(:email_confirmation)
-          end
-        rescue StandardError => e
-          rate_limiter.uncall
-
-          raise e
+        ActiveRecord::Base.transaction do
+          admin_user.confirm_email!
+          admin_user.expire_token!(:email_confirmation)
         end
 
         Result.success(admin_user: admin_user)

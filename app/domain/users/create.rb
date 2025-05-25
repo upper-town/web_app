@@ -8,24 +8,13 @@ module Users
       attribute :user
     end
 
-    attr_reader :email_confirmation, :request, :rate_limiter
+    attr_reader :email_confirmation
 
-    def initialize(email_confirmation, request)
+    def initialize(email_confirmation)
       @email_confirmation = email_confirmation
-      @request = request
-
-      @rate_limiter = RateLimiting::BasicRateLimiter.new(
-        "users_create:#{request.remote_ip}",
-        2,
-        5.minutes,
-        "Too many requests"
-      )
     end
 
     def call
-      result = rate_limiter.call
-      return result if result.failure?
-
       user = find_or_create_user
       enqueue_email_confirmation_job(user)
 
@@ -38,18 +27,12 @@ module Users
       user = existing_user || build_user
       return user if user.persisted?
 
-      begin
-        ActiveRecord::Base.transaction do
-          user.save!
-          user.create_account!
-        end
-
-        user
-      rescue StandardError => e
-        rate_limiter.uncall
-
-        raise e
+      ActiveRecord::Base.transaction do
+        user.save!
+        user.create_account!
       end
+
+      user
     end
 
     def existing_user

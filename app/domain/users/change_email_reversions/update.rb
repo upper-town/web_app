@@ -9,24 +9,13 @@ module Users
         attribute :user
       end
 
-      attr_reader :change_email_reversion_edit, :request, :rate_limiter
+      attr_reader :change_email_reversion_edit
 
-      def initialize(change_email_reversion_edit, request)
+      def initialize(change_email_reversion_edit)
         @change_email_reversion_edit = change_email_reversion_edit
-        @request = request
-
-        @rate_limiter = RateLimiting::BasicRateLimiter.new(
-          "users_change_email_reversions_update:#{request.remote_ip}",
-          3,
-          2.minutes,
-          "Too many attempts"
-        )
       end
 
       def call
-        result = rate_limiter.call
-        return result if result.failure?
-
         user, token = find_user_and_token
 
         if !user || !token
@@ -48,15 +37,9 @@ module Users
       end
 
       def revert_change_email(user, token)
-        begin
-          ActiveRecord::Base.transaction do
-            user.revert_change_email!(token.data["email"])
-            token.expire!
-          end
-        rescue StandardError => e
-          rate_limiter.uncall
-
-          raise e
+        ActiveRecord::Base.transaction do
+          user.revert_change_email!(token.data["email"])
+          token.expire!
         end
 
         Result.success(user: user)

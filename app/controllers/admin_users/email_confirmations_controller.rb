@@ -32,7 +32,7 @@ module AdminUsers
         return
       end
 
-      result = AdminUsers::Create.new(@email_confirmation, request).call
+      result = AdminUsers::Create.new(@email_confirmation).call
 
       if result.success?
         redirect_to(
@@ -62,7 +62,7 @@ module AdminUsers
         return
       end
 
-      result = AdminUsers::EmailConfirmations::Update.new(@email_confirmation_edit, request).call
+      result = AdminUsers::EmailConfirmations::Update.new(@email_confirmation_edit).call
 
       if result.success?
         admin_user = result.admin_user

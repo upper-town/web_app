@@ -49,7 +49,7 @@ module AdminUsers
         return
       end
 
-      result = AdminUsers::AuthenticateSession.new(@session, request).call
+      result = AdminUsers::AuthenticateSession.new(@session).call
 
       if result.success?
         sign_in_admin_user!(result.admin_user, @session.remember_me)

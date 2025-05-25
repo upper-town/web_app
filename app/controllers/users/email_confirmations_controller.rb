@@ -2,6 +2,16 @@
 
 module Users
   class EmailConfirmationsController < ApplicationController
+    rate_limit(
+      to: 2,
+      within: 5.minutes,
+      with: -> do
+        flash.now[:alert] = "Please try again later. Too many requests."
+        render(:new, status: :unprocessable_entity)
+      end,
+      only: :create
+    )
+
     def new
       @email_confirmation = Users::EmailConfirmation.new(email: email_from_params)
     end
@@ -30,7 +40,7 @@ module Users
         return
       end
 
-      result = Users::Create.new(@email_confirmation, request).call
+      result = Users::Create.new(@email_confirmation).call
 
       if result.success?
         redirect_to(
@@ -60,7 +70,7 @@ module Users
         return
       end
 
-      result = Users::EmailConfirmations::Update.new(@email_confirmation_edit, request).call
+      result = Users::EmailConfirmations::Update.new(@email_confirmation_edit).call
 
       if result.success?
         user = result.user

@@ -19,7 +19,7 @@ module Users
         return
       end
 
-      result = Users::ChangeEmailConfirmations::Update.new(@change_email_confirmation_edit, request).call
+      result = Users::ChangeEmailConfirmations::Update.new(@change_email_confirmation_edit).call
 
       if result.success?
         redirect_to(
