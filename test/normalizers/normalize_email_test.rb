@@ -6,7 +6,7 @@ class NormalizeEmailTest < ActiveSupport::TestCase
   let(:described_class) { NormalizeEmail }
 
   describe "#call" do
-    it "just removes white spaces and transforms to lower case" do
+    it "removes white spaces and transforms to lower case" do
       [
         [nil, nil],
         ["\n\t \n", ""],

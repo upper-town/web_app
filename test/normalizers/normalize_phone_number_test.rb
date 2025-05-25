@@ -6,7 +6,7 @@ class NormalizePhoneNumberTest < ActiveSupport::TestCase
   let(:described_class) { NormalizePhoneNumber }
 
   describe "#call" do
-    it "tries to normalize phone number to international format" do
+    it "normalizes phone number to international format" do
       [
         [nil, nil],
         ["\n\t \n", ""],

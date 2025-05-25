@@ -6,7 +6,7 @@ class NormalizeTokenTest < ActiveSupport::TestCase
   let(:described_class) { NormalizeToken }
 
   describe "#call" do
-    it "just removes white spaces" do
+    it "removes white spaces" do
       [
         [nil, nil],
         ["\n\t \n", ""],
