@@ -19,7 +19,7 @@ module Servers
         result = DownloadAndParseJsonFile.new(server, JSON_FILE_PATH).call
         return result if result.failure?
 
-        parsed_body = result.data[:parsed_body]
+        parsed_body = result.parsed_body
 
         result = check_accounts_exist(parsed_body["accounts"])
         return result if result.failure?

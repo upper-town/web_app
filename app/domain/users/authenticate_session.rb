@@ -4,6 +4,10 @@ module Users
   class AuthenticateSession
     include Callable
 
+    class Result < ApplicationResult
+      attribute :user
+    end
+
     attr_reader :session, :request, :rate_limiter
 
     def initialize(session, request)

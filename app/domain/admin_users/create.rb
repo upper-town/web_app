@@ -2,6 +2,12 @@
 
 module AdminUsers
   class Create
+    include Callable
+
+    class Result < ApplicationResult
+      attribute :admin_user
+    end
+
     attr_reader :email_confirmation, :request, :rate_limiter
 
     def initialize(email_confirmation, request)

@@ -52,7 +52,7 @@ module AdminUsers
       result = AdminUsers::AuthenticateSession.new(@session, request).call
 
       if result.success?
-        sign_in_admin_user!(result.data[:admin_user], @session.remember_me)
+        sign_in_admin_user!(result.admin_user, @session.remember_me)
         return_to_url = consume_return_to
 
         redirect_to(

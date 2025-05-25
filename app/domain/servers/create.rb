@@ -2,6 +2,12 @@
 
 module Servers
   class Create
+    include Callable
+
+    class Result < ApplicationResult
+      attribute :server
+    end
+
     attr_reader :server, :server_banner_image_uploaded_file, :account
 
     def initialize(server, account, server_banner_image_uploaded_file = nil)

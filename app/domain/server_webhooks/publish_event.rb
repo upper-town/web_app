@@ -4,6 +4,10 @@ module ServerWebhooks
   class PublishEvent
     include Callable
 
+    class Result < ApplicationResult
+      attribute :retry_in
+    end
+
     attr_reader :server_webhook_event
 
     # TODO: Add arg n = 1 max number of events to fetch from database and send

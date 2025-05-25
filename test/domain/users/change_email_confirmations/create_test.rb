@@ -110,8 +110,8 @@ class Users::ChangeEmailConfirmations::CreateTest < ActiveSupport::TestCase
           result = described_class.new(change_email_confirmation, user.email, request).call
 
           assert(result.success?)
-          assert_equal("user.change@upper.town", result.data[:user].change_email)
-          assert_nil(result.data[:user].change_email_confirmed_at)
+          assert_equal("user.change@upper.town", result.user.change_email)
+          assert_nil(result.user.change_email_confirmed_at)
           assert_equal(1, Rails.cache.read(rate_limiter_key))
           assert_enqueued_with(job: Users::ChangeEmailConfirmations::EmailJob, args: [user], at: 30.seconds.from_now)
         end

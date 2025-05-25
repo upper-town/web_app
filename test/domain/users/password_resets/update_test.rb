@@ -93,7 +93,7 @@ class Users::PasswordResets::UpdateTest < ActiveSupport::TestCase
           result = described_class.new(password_reset_edit, request).call
 
           assert(result.success?)
-          assert(result.data[:user].password_reset_at.present?)
+          assert(result.user.password_reset_at.present?)
           assert_equal(1, Rails.cache.read(rate_limiter_key))
           assert(User.find_by_token(:password_reset, token).blank?)
         end

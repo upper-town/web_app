@@ -46,7 +46,7 @@ module Users
       result = Users::AuthenticateSession.new(@session, request).call
 
       if result.success?
-        sign_in_user!(result.data[:user], @session.remember_me)
+        sign_in_user!(result.user, @session.remember_me)
         return_to_url = consume_return_to
 
         redirect_to(

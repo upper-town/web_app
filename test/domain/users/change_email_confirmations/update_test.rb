@@ -142,10 +142,10 @@ class Users::ChangeEmailConfirmations::UpdateTest < ActiveSupport::TestCase
             result = described_class.new(change_email_confirmation_edit, request).call
 
             assert(result.success?)
-            assert_equal("user.change@upper.town", result.data[:user].email)
-            assert(result.data[:user].change_email.blank?)
-            assert_equal(Time.current, result.data[:user].change_email_confirmed_at)
-            assert_equal(Time.current, result.data[:user].email_confirmed_at)
+            assert_equal("user.change@upper.town", result.user.email)
+            assert(result.user.change_email.blank?)
+            assert_equal(Time.current, result.user.change_email_confirmed_at)
+            assert_equal(Time.current, result.user.email_confirmed_at)
             assert_equal(1, Rails.cache.read(rate_limiter_key))
             assert_nil(User.find_by_token(:change_email_confirmation, token))
           end

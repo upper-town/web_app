@@ -63,7 +63,7 @@ module Users
       result = Users::EmailConfirmations::Update.new(@email_confirmation_edit, request).call
 
       if result.success?
-        user = result.data[:user]
+        user = result.user
 
         if signed_in_user?
           redirect_to(

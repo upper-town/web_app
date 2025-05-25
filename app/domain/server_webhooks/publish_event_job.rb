@@ -12,8 +12,8 @@ module ServerWebhooks
           "[ServerWebhooks::PublishEventJob] failure: #{result.errors.to_hash}"
         end
 
-        if result.data[:retry_in].present?
-          PublishEventJob.set(wait: result.data[:retry_in]).perform_later(server_webhook_event)
+        if result.retry_in.present?
+          PublishEventJob.set(wait: result.retry_in).perform_later(server_webhook_event)
         end
       end
     end

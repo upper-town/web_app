@@ -111,11 +111,11 @@ class Users::ChangeEmailReversions::UpdateTest < ActiveSupport::TestCase
             result = described_class.new(change_email_reversion_edit, request).call
 
             assert(result.success?)
-            assert_equal("user@upper.town", result.data[:user].email)
-            assert_equal(Time.current, result.data[:user].email_confirmed_at)
-            assert_nil(result.data[:user].change_email)
-            assert_nil(result.data[:user].change_email_confirmed_at)
-            assert_equal(Time.current, result.data[:user].change_email_reverted_at)
+            assert_equal("user@upper.town", result.user.email)
+            assert_equal(Time.current, result.user.email_confirmed_at)
+            assert_nil(result.user.change_email)
+            assert_nil(result.user.change_email_confirmed_at)
+            assert_equal(Time.current, result.user.change_email_reverted_at)
             assert_equal(1, Rails.cache.read(rate_limiter_key))
             assert_nil(User.find_by_token(:change_email_reversion, token))
           end

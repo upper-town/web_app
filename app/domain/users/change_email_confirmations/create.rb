@@ -5,6 +5,10 @@ module Users
     class Create
       include Callable
 
+      class Result < ApplicationResult
+        attribute :user
+      end
+
       attr_reader :change_email_confirmation, :current_user_email, :request, :rate_limiter
 
       def initialize(change_email_confirmation, current_user_email, request)

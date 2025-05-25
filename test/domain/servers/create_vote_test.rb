@@ -92,18 +92,18 @@ class Servers::CreateVoteTest < ActiveSupport::TestCase
         end
 
         assert(result.success?)
-        assert_equal(ServerVote.last, result.data[:server_vote])
-        assert_equal(server, result.data[:server_vote].server)
-        assert_equal(server.game, result.data[:server_vote].game)
-        assert_equal(server.country_code, result.data[:server_vote].country_code)
-        assert_equal("1.1.1.1", result.data[:server_vote].remote_ip)
-        assert_equal("anything123456", result.data[:server_vote].reference)
-        assert_equal(account, result.data[:server_vote].account)
+        assert_equal(ServerVote.last, result.server_vote)
+        assert_equal(server, result.server_vote.server)
+        assert_equal(server.game, result.server_vote.game)
+        assert_equal(server.country_code, result.server_vote.country_code)
+        assert_equal("1.1.1.1", result.server_vote.remote_ip)
+        assert_equal("anything123456", result.server_vote.reference)
+        assert_equal(account, result.server_vote.account)
 
         assert_equal(1, Rails.cache.read(rate_limiter_key))
 
         assert_enqueued_with(job: Servers::ConsolidateVoteCountsJob, args: [server, "current"], queue: "critical")
-        assert_enqueued_with(job: ServerWebhooks::CreateEvents::ServerVoteCreatedJob, args: [result.data[:server_vote]])
+        assert_enqueued_with(job: ServerWebhooks::CreateEvents::ServerVoteCreatedJob, args: [result.server_vote])
       end
     end
   end

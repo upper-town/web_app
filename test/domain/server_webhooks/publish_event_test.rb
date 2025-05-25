@@ -92,7 +92,7 @@ class ServerWebhooks::PublishEventTest < ActiveSupport::TestCase
 
         assert(result.failure?)
         assert(result.errors[:base].any? { it.match?(/May retry event/) })
-        assert(result.data[:retry_in].present?)
+        assert(result.retry_in.present?)
       end
     end
 
@@ -126,7 +126,7 @@ class ServerWebhooks::PublishEventTest < ActiveSupport::TestCase
 
         assert(result.failure?)
         assert(result.errors[:base].any? { it.match?(/May retry event: #{server_webhook_event.notice}/) })
-        assert(result.data[:retry_in].present?)
+        assert(result.retry_in.present?)
       end
     end
 
@@ -160,7 +160,7 @@ class ServerWebhooks::PublishEventTest < ActiveSupport::TestCase
 
         assert(result.failure?)
         assert(result.errors[:base].any? { it.match?(/May retry event: #{server_webhook_event.notice}/) })
-        assert(result.data[:retry_in].present?)
+        assert(result.retry_in.present?)
       end
     end
 
@@ -217,7 +217,7 @@ class ServerWebhooks::PublishEventTest < ActiveSupport::TestCase
 
             assert(result.failure?)
             assert(result.errors[:base].any? { it.match?(/May retry event/) })
-            assert(result.data[:retry_in].present?)
+            assert(result.retry_in.present?)
           end
         end
       end
@@ -274,7 +274,7 @@ class ServerWebhooks::PublishEventTest < ActiveSupport::TestCase
 
             assert(result.failure?)
             assert(result.errors[:base].any? { it.match?(/May retry event/) })
-            assert(result.data[:retry_in].present?)
+            assert(result.retry_in.present?)
           end
         end
       end
@@ -331,7 +331,7 @@ class ServerWebhooks::PublishEventTest < ActiveSupport::TestCase
 
             assert(result.failure?)
             assert(result.errors[:base].any? { it.match?(/May retry event/) })
-            assert(result.data[:retry_in].present?)
+            assert(result.retry_in.present?)
           end
         end
       end
@@ -388,7 +388,7 @@ class ServerWebhooks::PublishEventTest < ActiveSupport::TestCase
 
             assert(result.failure?)
             assert(result.errors[:base].any? { it.match?(/May retry event/) })
-            assert_nil(result.data[:retry_in])
+            assert_nil(result.retry_in)
           end
         end
       end

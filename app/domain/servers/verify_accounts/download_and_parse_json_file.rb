@@ -3,6 +3,12 @@
 module Servers
   module VerifyAccounts
     class DownloadAndParseJsonFile
+      include Callable
+
+      class Result < ApplicationResult
+        attribute :parsed_body
+      end
+
       attr_reader :server, :json_file_path, :connection
 
       def initialize(server, json_file_path)

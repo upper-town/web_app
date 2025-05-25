@@ -3,6 +3,12 @@
 module AdminUsers
   module PasswordResets
     class Update
+      include Callable
+
+      class Result < ApplicationResult
+        attribute :admin_user
+      end
+
       attr_reader :password_reset_edit, :request, :rate_limiter
 
       def initialize(password_reset_edit, request)

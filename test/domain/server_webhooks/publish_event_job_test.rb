@@ -14,7 +14,7 @@ class ServerWebhooks::PublishEventJobTest < ActiveSupport::TestCase
         ServerWebhooks::PublishEvent.stub(:call, ->(arg) do
           called += 1
           assert(server_webhook_event, arg)
-          Result.success
+          ServerWebhooks::PublishEvent::Result.success
         end) do
           described_class.new.perform(server_webhook_event)
         end
@@ -33,7 +33,7 @@ class ServerWebhooks::PublishEventJobTest < ActiveSupport::TestCase
           ServerWebhooks::PublishEvent.stub(:call, ->(arg) do
             called += 1
             assert_equal(server_webhook_event, arg)
-            Result.failure
+            ServerWebhooks::PublishEvent::Result.failure
           end) do
             described_class.new.perform(server_webhook_event)
           end
@@ -52,7 +52,7 @@ class ServerWebhooks::PublishEventJobTest < ActiveSupport::TestCase
             ServerWebhooks::PublishEvent.stub(:call, ->(arg) do
               called += 1
               assert_equal(server_webhook_event, arg)
-              Result.failure(nil, retry_in: 120)
+              ServerWebhooks::PublishEvent::Result.failure(nil, retry_in: 120)
             end) do
               described_class.new.perform(server_webhook_event)
             end

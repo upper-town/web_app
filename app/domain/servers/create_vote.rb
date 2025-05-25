@@ -2,6 +2,12 @@
 
 module Servers
   class CreateVote
+    include Callable
+
+    class Result < ApplicationResult
+      attribute :server_vote
+    end
+
     attr_reader :server, :server_vote, :request, :account, :rate_limiter
 
     def initialize(server, server_vote, request, account = nil)

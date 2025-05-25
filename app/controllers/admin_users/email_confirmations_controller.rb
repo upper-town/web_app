@@ -65,7 +65,7 @@ module AdminUsers
       result = AdminUsers::EmailConfirmations::Update.new(@email_confirmation_edit, request).call
 
       if result.success?
-        admin_user = result.data[:admin_user]
+        admin_user = result.admin_user
 
         if signed_in_admin_user?
           redirect_to(

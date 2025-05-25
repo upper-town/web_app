@@ -29,7 +29,7 @@ class ServerVotesController < ApplicationController
 
     if result.success?
       redirect_to(
-        server_vote_path(result.data[:server_vote]),
+        server_vote_path(result.server_vote),
         success: "Your vote has been saved!"
       )
     else

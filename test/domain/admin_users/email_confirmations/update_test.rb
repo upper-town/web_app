@@ -73,7 +73,7 @@ class AdminUsers::EmailConfirmations::UpdateTest < ActiveSupport::TestCase
 
           assert(result.failure?)
           assert(result.errors[:base].any? { it.match?(/Email address has already been confirmed/) })
-          assert(result.data[:admin_user].email_confirmed_at.present?)
+          assert(result.admin_user.email_confirmed_at.present?)
           assert_equal(1, Rails.cache.read(rate_limiter_key))
         end
       end
@@ -111,7 +111,7 @@ class AdminUsers::EmailConfirmations::UpdateTest < ActiveSupport::TestCase
           result = described_class.new(email_confirmation_edit, request).call
 
           assert(result.success?)
-          assert(result.data[:admin_user].email_confirmed_at.present?)
+          assert(result.admin_user.email_confirmed_at.present?)
           assert_equal(1, Rails.cache.read(rate_limiter_key))
           assert(AdminUser.find_by_token(:email_confirmation, token).blank?)
         end

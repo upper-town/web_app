@@ -68,7 +68,7 @@ class AdminUsers::AuthenticateSessionTest < ActiveSupport::TestCase
           result = described_class.new(session, request).call
 
           assert(result.success?)
-          assert_equal(admin_user, result.data[:admin_user])
+          assert_equal(admin_user, result.admin_user)
           assert_enqueued_with(job: AdminUsers::CountSignInAttemptsJob, args: ["admin.user@upper.town", true])
           assert_equal(1, Rails.cache.read(rate_limiter_key))
         end

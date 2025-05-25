@@ -73,7 +73,7 @@ class Users::EmailConfirmations::UpdateTest < ActiveSupport::TestCase
 
           assert(result.failure?)
           assert(result.errors[:base].any? { it.match?(/Email address has already been confirmed/) })
-          assert(result.data[:user].email_confirmed_at.present?)
+          assert(result.user.email_confirmed_at.present?)
           assert_equal(1, Rails.cache.read(rate_limiter_key))
         end
       end
@@ -111,7 +111,7 @@ class Users::EmailConfirmations::UpdateTest < ActiveSupport::TestCase
           result = described_class.new(email_confirmation_edit, request).call
 
           assert(result.success?)
-          assert(result.data[:user].email_confirmed_at.present?)
+          assert(result.user.email_confirmed_at.present?)
           assert_equal(1, Rails.cache.read(rate_limiter_key))
           assert(User.find_by_token(:email_confirmation, token).blank?)
         end
