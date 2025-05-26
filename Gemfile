@@ -91,7 +91,7 @@ group :development, :test do
 end
 
 group :development do
-  gem "foreman"
+  gem "overmind"
   gem "mailcatcher"
 end
 

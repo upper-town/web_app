@@ -59,14 +59,15 @@ cloud hosting service, and not from env files.
 ### Running the app in development
 
 `Procfile.dev` has the list of processes needed for development. The [`bin/dev`]
-script runs them with [`foreman`].
+script runs them with [`overmind`] which requires [`tmux`].
 
 You can also run processes separately, each one in a terminal window.
 In this case, make sure to run `source .env` and `source .env.local` before
 running the processes.
 
 [`bin/dev`]: bin/dev
-[`foreman`]: https://rubygems.org/gems/foreman
+[`overmind`]: https://rubygems.org/gems/overmind
+[`tmux`]: https://github.com/tmux/tmux/wiki
 
 ### Testing Framework
 
