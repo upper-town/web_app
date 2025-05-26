@@ -6,7 +6,9 @@ VCR.configure do |c|
   c.ignore_localhost = true
   # c.ignore_hosts "chromedriver.storage.googleapis.com" # I'm not sure if this is neeed
 
-  c.default_cassette_options[:record] = :all if ["true", "1"].include?(ENV.fetch("VCR_RECORD_ALL", "false"))
+  if ENV.fetch("VCR_RECORD_ALL", "false") == "true"
+    c.default_cassette_options[:record] = :all
+  end
 
   # Example of how to filter sensitive values in VCR records
   # c.filter_sensitive_data("filtered_SOME_ENV_VAR") { ENV.fetch("SOME_ENV_VAR") }

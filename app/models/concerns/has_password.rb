@@ -11,7 +11,7 @@ module HasPassword
 
   def reset_password!(password)
     update!(
-      password:          password,
+      password: password,
       password_reset_at: Time.current
     )
   end

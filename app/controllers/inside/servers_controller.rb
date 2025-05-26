@@ -49,7 +49,7 @@ module Inside
       if result.success?
         redirect_to(inside_servers_path, success: "Your server has been added.")
       else
-        flash.now[:alert] = result.errors.full_messages
+        flash.now[:alert] = result.errors
         render(:new, status: :unprocessable_entity)
       end
     end
@@ -68,7 +68,7 @@ module Inside
         flash[:success] = "Server has been archived. " \
           "Servers that are archived and without votes will be deleted soon automatically."
       else
-        flash[:alert] = result.errors.full_messages
+        flash[:alert] = result.errors
       end
 
       redirect_to(inside_servers_path)
@@ -81,7 +81,7 @@ module Inside
       if result.success?
         flash[:success] = "Server has been unarchived."
       else
-        flash[:alert] = result.errors.full_messages
+        flash[:alert] = result.errors
       end
 
       redirect_to(inside_servers_path)
@@ -94,7 +94,7 @@ module Inside
       if result.success?
         flash[:success] = "Server has been marked to be deleted."
       else
-        flash[:alert] = result.errors.full_messages
+        flash[:alert] = result.errors
       end
 
       redirect_to(inside_servers_path)
@@ -107,7 +107,7 @@ module Inside
       if result.success?
         flash[:success] = "Server has been unmarked for deletion."
       else
-        flash[:alert] = result.errors.full_messages
+        flash[:alert] = result.errors
       end
 
       redirect_to(inside_servers_path)

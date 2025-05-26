@@ -8,11 +8,11 @@ ActionView::Base.field_error_proc = ->(html_tag, instance) do
     tag.div(class: "field-with-errors") do
       html_tag + tag.div(class: "invalid-feedback") do
         if instance.error_message.one?
-          instance.error_message.first.capitalize
+          StringHelper.format_sentence(instance.error_message.first)
         else
           tag.ul do
             instance.error_message.each do |message|
-              concat(tag.li(message.capitalize))
+              concat(tag.li(StringHelper.format_sentence(message)))
             end
           end
         end

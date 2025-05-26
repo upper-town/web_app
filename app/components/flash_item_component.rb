@@ -15,34 +15,40 @@ class FlashItemComponent < ViewComponent::Base
 
     @flash_item = flash_item
 
-    @key = parse_key
+    @key   = parse_key
     @value = parse_value
 
     @alert_options = parse_alert_options
-    @content = parse_content
-    @html_safe = parse_html_safe
+    @content       = parse_content
+    @html_safe     = parse_html_safe
+  end
+
+  def render?
+    content.present?
   end
 
   private
 
   def parse_key
-    key, _value = flash_item
+    key, _ = flash_item
     key = key.to_sym
 
     case key
     when :alert  then :warning
-    when :notice then :info
+    when :notice then :success
     else
       key
     end
   end
 
   def parse_value
-    _key, value = flash_item
+    _, value = flash_item
 
     case value
     when Hash
       value.with_indifferent_access
+    when ActiveModel::Errors
+      value.full_messages
     else
       value
     end
@@ -63,7 +69,13 @@ class FlashItemComponent < ViewComponent::Base
   def parse_content
     Array(
       case value
-      when Hash then value[:content]
+      when Hash
+        case value[:content]
+        when ActiveModel::Errors
+          value.full_messages
+        else
+          value[:content]
+        end
       else
         value
       end
@@ -72,7 +84,8 @@ class FlashItemComponent < ViewComponent::Base
 
   def parse_html_safe
     case value
-    when Hash then value[:html_safe]
+    when Hash
+      value[:html_safe]
     else
       false
     end

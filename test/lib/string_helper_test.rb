@@ -2,8 +2,8 @@
 
 require "test_helper"
 
-class StringValueHelperTest < ActiveSupport::TestCase
-  let(:described_class) { StringValueHelper }
+class StringHelperTest < ActiveSupport::TestCase
+  let(:described_class) { StringHelper }
 
   describe ".to_boolean" do
     it "converts string value to boolean" do

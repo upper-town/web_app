@@ -40,6 +40,20 @@ ActiveRecord::Schema[8.0].define(version: 2024_09_15_165037) do
     t.index ["admin_user_id"], name: "index_admin_accounts_on_admin_user_id", unique: true
   end
 
+  create_table "admin_codes", force: :cascade do |t|
+    t.string "code_digest", null: false
+    t.string "purpose", null: false
+    t.datetime "expires_at", null: false
+    t.jsonb "data", default: {}, null: false
+    t.bigint "admin_user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["admin_user_id"], name: "index_admin_codes_on_admin_user_id"
+    t.index ["code_digest"], name: "index_admin_codes_on_code_digest", unique: true
+    t.index ["expires_at"], name: "index_admin_codes_on_expires_at"
+    t.index ["purpose"], name: "index_admin_codes_on_purpose"
+  end
+
   create_table "admin_permissions", force: :cascade do |t|
     t.string "key", null: false
     t.string "description", default: "", null: false
@@ -113,6 +127,20 @@ ActiveRecord::Schema[8.0].define(version: 2024_09_15_165037) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["email"], name: "index_admin_users_on_email", unique: true
+  end
+
+  create_table "codes", force: :cascade do |t|
+    t.string "code_digest", null: false
+    t.string "purpose", null: false
+    t.datetime "expires_at", null: false
+    t.jsonb "data", default: {}, null: false
+    t.bigint "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["code_digest"], name: "index_codes_on_code_digest", unique: true
+    t.index ["expires_at"], name: "index_codes_on_expires_at"
+    t.index ["purpose"], name: "index_codes_on_purpose"
+    t.index ["user_id"], name: "index_codes_on_user_id"
   end
 
   create_table "dummies", force: :cascade do |t|
@@ -312,10 +340,12 @@ ActiveRecord::Schema[8.0].define(version: 2024_09_15_165037) do
   add_foreign_key "admin_account_roles", "admin_accounts"
   add_foreign_key "admin_account_roles", "admin_roles"
   add_foreign_key "admin_accounts", "admin_users"
+  add_foreign_key "admin_codes", "admin_users"
   add_foreign_key "admin_role_permissions", "admin_permissions"
   add_foreign_key "admin_role_permissions", "admin_roles"
   add_foreign_key "admin_sessions", "admin_users"
   add_foreign_key "admin_tokens", "admin_users"
+  add_foreign_key "codes", "users"
   add_foreign_key "server_accounts", "accounts"
   add_foreign_key "server_accounts", "servers"
   add_foreign_key "server_banner_images", "servers"

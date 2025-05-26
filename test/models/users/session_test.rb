@@ -27,6 +27,10 @@ class Users::SessionTest < ActiveSupport::TestCase
       instance.validate
       assert(instance.errors.of_kind?(:email, :too_long))
 
+      instance = described_class.new(email: "xxx@xxx")
+      instance.validate
+      assert(instance.errors.of_kind?(:email, :format_is_not_valid))
+
       instance = described_class.new(email: "user@upper.town")
       instance.validate
       assert_not(instance.errors.key?(:email))

@@ -1,26 +1,38 @@
-import { Controller } from '@hotwired/stimulus'
+import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
   connect() {
-    this.element.addEventListener('input', this.#removeErrorMessages)
+    this.#addClassIsInvalid()
+    this.element.addEventListener("input", this.#removeInvalidFeedbackAndClassIsInvalid)
   }
 
   disconnect() {
-    this.element.removeEventListener('input', this.#removeErrorMessages)
+    this.element.removeEventListener("input", this.#removeInvalidFeedbackAndClassIsInvalid)
   }
 
-  #removeErrorMessages(event) {
+  #addClassIsInvalid() {
+    this.element
+      .querySelectorAll("div.field-with-errors input, div.field-with-errors select, div.field-with-errors textarea")
+      .forEach((elem) => {
+        elem.classList.add("is-invalid")
+      })
+  }
+
+  #removeInvalidFeedbackAndClassIsInvalid(event) {
     if (!(event.target instanceof HTMLElement)) {
       return
     }
 
-    const wrapper = event.target.closest('div.field-with-errors')
+    const wrapper = event.target.closest("div.field-with-errors")
 
     if (wrapper) {
-      wrapper.classList.remove('field-with-errors')
-      wrapper.querySelectorAll('.invalid-feedback').forEach((elem) => {
+      wrapper.querySelectorAll(".invalid-feedback").forEach((elem) => {
         elem.remove()
       })
+      wrapper.querySelectorAll("input, select, textarea").forEach((elem) => {
+        elem.classList.remove("is-invalid")
+      })
+      wrapper.classList.remove("field-with-errors")
     }
   }
 }

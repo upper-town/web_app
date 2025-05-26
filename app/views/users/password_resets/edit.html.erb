@@ -3,20 +3,34 @@
 </h2>
 
 <%= form_with(
-  model: @password_reset_edit,
+  model: @password_reset,
   method: :put,
   url: users_password_reset_path,
-  data: { 'controller' => 'form-error-messages-handler' }
+  data: { "controller" => "form-error-messages-handler" }
 ) do |form| %>
   <%= form.hidden_field(:token) %>
 
   <div class="mb-3">
-    <%= form.label(:password, "Enter your new password", class: 'form-label') %>
+    <%= form.label(:code, "Verification Code", class: "form-label") %>
+    <%= form.text_field(
+      :code,
+      class: "form-control",
+      aria: { describedby: "code-help" },
+      required: true
+    ) %>
+    <div id="code-help" class="form-text">
+      Enter the verification code we have sent to your email.
+    </div>
+  </div>
+
+  <div class="mb-3">
+    <%= form.label(:password, "Enter your new password", class: "form-label") %>
     <%= form.password_field(
       :password,
-      autocomplete: 'new-password',
-      class: 'form-control',
-      aria: { describedby: 'password-help' }
+      autocomplete: "new-password",
+      class: "form-control",
+      aria: { describedby: "password-help" },
+      required: true
     ) %>
     <div id="password-help" class="form-text">
       Minimum password length is 8 characters.
@@ -26,7 +40,8 @@
   <div class="mb-3">
     <%= form.submit(
       "Set password",
-      { class: 'btn btn-primary' }
+      class: "btn btn-primary",
+      data: { "turbo-submits-with" => "Loading..." }
     ) %>
   </div>
 <% end %>

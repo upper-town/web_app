@@ -2,22 +2,24 @@
   <% if content.size > 1 %>
 
     <ul class="mb-0 ps-4">
-      <% content.each do |content| %>
+      <% content.each do |content_item| %>
         <li>
           <% if html_safe %>
-            <%= content.html_safe %>
+            <%= StringHelper.format_sentence(content_item).html_safe %>
           <% else %>
-            <%= content %>
+            <%= StringHelper.format_sentence(content_item) %>
           <% end %>
         </li>
       <% end %>
     </ul>
 
   <% else %>
+
     <% if html_safe %>
-      <%= content.first.html_safe %>
+      <%= StringHelper.format_sentence(content.first).html_safe %>
     <% else %>
-      <%= content.first %>
+      <%= StringHelper.format_sentence(content.first) %>
     <% end %>
+
   <% end %>
 <% end %>

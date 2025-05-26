@@ -3,6 +3,7 @@
 class User < ApplicationRecord
   include FeatureFlagId
   include HasTokens
+  include HasCodes
   include HasEmailConfirmation
   include HasPassword
   include HasLock
@@ -11,4 +12,5 @@ class User < ApplicationRecord
 
   has_many :sessions, class_name: "Session", dependent: :destroy
   has_many :tokens, class_name: "Token", dependent: :destroy
+  has_many :codes, class_name: "Code", dependent: :destroy
 end

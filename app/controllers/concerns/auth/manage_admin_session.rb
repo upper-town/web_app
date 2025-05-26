@@ -34,8 +34,12 @@ module Auth
       write_admin_session_value(token, remember_me)
     end
 
-    def sign_out_admin_user!
-      current_admin_session&.destroy!
+    def sign_out_admin_user!(destroy_all: false)
+      if current_admin_session
+        current_admin_session.destroy!
+        AdminSession.where(admin_user: current_admin_session.admin_user).destroy_all if destroy_all
+      end
+
       delete_admin_session_value
     end
 

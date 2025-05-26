@@ -7,25 +7,25 @@ class Users::PasswordResets::CreateTest < ActiveSupport::TestCase
 
   describe "#call" do
     describe "when user is not found" do
-      it "returns success but doesn not enqueue job to send email" do
-        _user = create_user(email: "user@upper.town")
-        password_reset = Users::PasswordReset.new(email: "xxxxxxxx@upper.town")
+      it "returns failure and does not send password reset email" do
+        create_user(email: "user@upper.town")
 
-        result = described_class.new(password_reset).call
+        result = described_class.new("xxxx@upper.town").call
 
-        assert(result.success?)
+        assert(result.failure?)
+        assert(result.errors.of_kind?(:base, :user_not_found))
         assert_no_enqueued_jobs(only: Users::PasswordResets::EmailJob)
       end
     end
 
     describe "when user is found" do
-      it "returns success and enqueues job to send email" do
+      it "returns success and sends password reset email" do
         user = create_user(email: "user@upper.town")
-        password_reset = Users::PasswordReset.new(email: "user@upper.town")
 
-        result = described_class.new(password_reset).call
+        result = described_class.new("user@upper.town").call
 
         assert(result.success?)
+        assert_equal(user, result.user)
         assert_enqueued_with(job: Users::PasswordResets::EmailJob, args: [user])
       end
     end

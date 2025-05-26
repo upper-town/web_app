@@ -5,27 +5,25 @@ module Users
     class Create
       include Callable
 
-      attr_reader :password_reset
+      class Result < ApplicationResult
+        attribute :user
+      end
 
-      def initialize(password_reset)
-        @password_reset = password_reset
+      attr_reader :email
+
+      def initialize(email)
+        @email = email
       end
 
       def call
-        user = find_user
-        enqueue_email_job(user) if user
+        user = User.find_by(email:)
 
-        Result.success
-      end
-
-      private
-
-      def find_user
-        User.find_by(email: password_reset.email)
-      end
-
-      def enqueue_email_job(user)
-        Users::PasswordResets::EmailJob.perform_later(user)
+        if !user
+          Result.failure(:user_not_found)
+        else
+          PasswordResets::EmailJob.perform_later(user)
+          Result.success(user:)
+        end
       end
     end
   end

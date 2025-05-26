@@ -21,4 +21,8 @@ class AlertComponent < ViewComponent::Base
     @variant = VARIANTS.include?(variant) ? variant : DEFAULT_VARIANT
     @dismissible = dismissible
   end
+
+  def render?
+    content.present?
+  end
 end

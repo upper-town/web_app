@@ -3,11 +3,21 @@
 class UsersMailer < ApplicationMailer
   def email_confirmation
     @email = params[:email]
-    @email_confirmation_token = params[:email_confirmation_token]
+    @email_confirmation_code = params[:email_confirmation_code]
 
     mail(
       to: @email,
-      subject: "Upper Town: Email confirmation link"
+      subject: "Email Confirmation: verification code"
+    )
+  end
+
+  def password_reset
+    @email = params[:email]
+    @password_reset_code = params[:password_reset_code]
+
+    mail(
+      to: @email,
+      subject: "Password Reset: verification code"
     )
   end
 
@@ -18,28 +28,18 @@ class UsersMailer < ApplicationMailer
 
     mail(
       to: @email,
-      subject: "Upper Town: Change email reversion link"
+      subject: "Change Email: reversion link"
     )
   end
 
   def change_email_confirmation
     @email = params[:email]
     @change_email = params[:change_email]
-    @change_email_confirmation_token = params[:change_email_confirmation_token]
+    @change_email_confirmation_code = params[:change_email_confirmation_code]
 
     mail(
       to: @change_email,
-      subject: "Upper Town: Change email confirmation link"
-    )
-  end
-
-  def password_reset
-    @email = params[:email]
-    @password_reset_token = params[:password_reset_token]
-
-    mail(
-      to: @email,
-      subject: "Upper Town: Password Reset Email"
+      subject: "Change Email: verification code"
     )
   end
 end

@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-module AdminUsers
-  class ChangeEmailConfirmationEdit < ApplicationModel
-    attribute :token, :string, default: nil
+module Users
+  class ChangeEmailReversion < ApplicationModel
+    attribute :token,      :string,  default: nil
     attribute :auto_click, :boolean, default: false
 
     validates :token, presence: true, length: { maximum: 255 }

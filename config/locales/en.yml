@@ -28,13 +28,30 @@
 #       enabled: "ON"
 
 en:
-  hello: "Hello world"
+  notice:
+    email_address_confirmed: "Email address has been confirmed."
+    password_set: "Your password has been set."
+    logged_in: "You are logged in."
+    logged_out: "Your have been logged out."
+    logged_out_all: "Your have been logged out from all sessions."
+
+  alert:
+    please_try_again_later_too_many_requests: "Please try again later. Too many requests."
+
+  info:
+    verification_code_sent: "Verification code has been sent to your email."
+    set_password_for_your_account: "Set a password for your account."
+    logged_in_already: "You are logged in already."
 
   errors:
     messages:
-      generic_error: "An error has occurred"
+      generic_error: "an error has occurred"
       format_is_not_valid: "format is not valid"
       domain_is_not_supported: "domain is not supported"
+      invalid_or_expired_code: "invalid or expired code"
+      incorrect_password_or_email: "incorrect password or email"
+      email_address_already_confirmed: "email address has already been confirmed"
+      user_not_found: "user not found"
 
   activerecord:
     errors:

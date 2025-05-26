@@ -41,7 +41,7 @@ class FeatureFlag < ApplicationRecord
   FFID_SEPARATOR    = ","
 
   def self.enabled?(name, record_or_ffid = nil)
-    value = fetch_value(StringValueHelper.remove_whitespaces(name.to_s))
+    value = fetch_value(StringHelper.remove_whitespaces(name.to_s))
     return false unless value
 
     enabled, ffids = parse_enabled_and_ffids(value)
@@ -81,8 +81,8 @@ class FeatureFlag < ApplicationRecord
     enabled_str, ffids_str = value.split(ENABLED_SEPARATOR, 2)
 
     [
-      StringValueHelper.to_boolean(enabled_str.to_s),
-      StringValueHelper.values_list_uniq(ffids_str.to_s, FFID_SEPARATOR)
+      StringHelper.to_boolean(enabled_str.to_s),
+      StringHelper.values_list_uniq(ffids_str.to_s, FFID_SEPARATOR)
     ]
   end
 

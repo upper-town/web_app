@@ -63,8 +63,9 @@ module Captcha
 
   private
 
+  # TODO: move this to controller scope via ManageCaptcha
   def captcha_disabled?
-    Rails.env.development? && StringValueHelper.to_boolean(ENV.fetch("CAPTCHA_DISABLED", "false"))
+    Rails.env.local? && ENV.fetch("CAPTCHA_DISABLED", "false") == "true"
   end
 
   def extract_values(request)

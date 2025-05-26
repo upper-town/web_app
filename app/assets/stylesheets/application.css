@@ -9,50 +9,81 @@
  * Consider organizing styles into separate files for maintainability.
  */
 
-/* Custom Application CSS */
-
-/* TODO: Fix: stop using SASS */
-
-.field-with-errors input,
-.field-with-errors select,
-.field-with-errors textarea {
-  @extend .is-invalid;
-}
-
 /* Pagination */
+
 .pagination-goto {
   max-width: 6.5rem;
 }
+
 .pagination-prev-next {
   flex-grow: 0.9;
-  @include media-breakpoint-up(sm) { flex-grow: 0.65; }
-  @include media-breakpoint-up(md) { flex-grow: 0.4; }
-  @include media-breakpoint-up(lg) { flex-grow: 0; width: 18rem; }
 }
+
+@media (min-width: 576px) {
+  .pagination-prev-next {
+    flex-grow: 0.65;
+  }
+}
+
+@media (min-width: 768px) {
+  .pagination-prev-next {
+    flex-grow: 0.4;
+  }
+}
+
+@media (min-width: 992px) {
+  .pagination-prev-next {
+    flex-grow: 0;
+    width: 18rem;
+  }
+}
+
 .pagination-prev-next li {
   flex-grow: 1;
 }
+
 .pagination-prev-next li a,
 .pagination-prev-next li span {
   text-align: center;
 }
 
 /* PaginationCursor */
+
 .pagination-cursor-goto select {
   max-width: 6.5rem;
 }
+
 .pagination-cursor-goto input {
   max-width: 12rem;
 }
+
 .pagination-cursor-prev-next {
   flex-grow: 0.9;
-  @include media-breakpoint-up(sm) { flex-grow: 0.65; }
-  @include media-breakpoint-up(md) { flex-grow: 0.4; }
-  @include media-breakpoint-up(lg) { flex-grow: 0; width: 18rem; }
 }
+
+@media (min-width: 576px) {
+  .pagination-cursor-prev-next {
+    flex-grow: 0.65;
+  }
+}
+
+@media (min-width: 768px) {
+  .pagination-cursor-prev-next {
+    flex-grow: 0.4;
+  }
+}
+
+@media (min-width: 992px) {
+  .pagination-cursor-prev-next {
+    flex-grow: 0;
+    width: 18rem;
+  }
+}
+
 .pagination-cursor-prev-next li {
   flex-grow: 1;
 }
+
 .pagination-cursor-prev-next li a,
 .pagination-cursor-prev-next li span {
   text-align: center;

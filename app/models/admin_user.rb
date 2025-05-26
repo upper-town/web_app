@@ -3,6 +3,7 @@
 class AdminUser < ApplicationRecord
   include FeatureFlagId
   include HasAdminTokens
+  include HasAdminCodes
   include HasEmailConfirmation
   include HasPassword
   include HasLock
@@ -11,4 +12,5 @@ class AdminUser < ApplicationRecord
 
   has_many :sessions, class_name: "AdminSession", dependent: :destroy
   has_many :tokens, class_name: "AdminToken", dependent: :destroy
+  has_many :codes, class_name: "AdminCode", dependent: :destroy
 end

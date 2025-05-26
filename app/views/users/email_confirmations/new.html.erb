@@ -3,27 +3,27 @@
 <% end %>
 
 <h2>
-  Sign Up: Email confirmation link
+  Sign Up: Email Confirmation
 </h2>
 
 <%= form_with(
-  model: @email_confirmation,
+  model: @user,
   method: :post,
   url: users_email_confirmation_path,
-  data: { 'controller' => 'form-error-messages-handler' }
+  data: { "controller" => "form-error-messages-handler" }
 ) do |form| %>
   <div class="mb-3">
-    <%= form.label(:email, 'Email address', class: 'form-label') %>
+    <%= form.label(:email, "Email address", class: "form-label") %>
     <%= form.email_field(
       :email,
       autofocus: true,
       autocomplete: "email",
-      class: 'form-control',
+      class: "form-control",
       aria: { describedby: "email-help" },
       required: true
     ) %>
     <div id="email-help" class="form-text">
-      We'll send you a message with the link to confirm your email address.
+      We'll send you a message with a <strong>verification code</strong> to confirm your email address.
     </div>
   </div>
 
@@ -33,9 +33,9 @@
 
   <div class="mb-3">
     <%= form.submit(
-      'Send email confirmation link',
-      class: 'btn btn-primary',
-      data: { 'turbo-submits-with' => 'Loading...' }
+      "Send verfication code",
+      class: "btn btn-primary",
+      data: { "turbo-submits-with" => "Loading..." }
     ) %>
   </div>
 <% end %>

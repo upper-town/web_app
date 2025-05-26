@@ -3,7 +3,7 @@
 class AdminUsersMailer < ApplicationMailer
   def email_confirmation
     @email = params[:email]
-    @email_confirmation_token = params[:email_confirmation_token]
+    @email_confirmation_code = params[:email_confirmation_code]
 
     mail(
       to: @email,
@@ -13,7 +13,7 @@ class AdminUsersMailer < ApplicationMailer
 
   def password_reset
     @email = params[:email]
-    @password_reset_token = params[:password_reset_token]
+    @password_reset_code = params[:password_reset_code]
 
     mail(
       to: @email,

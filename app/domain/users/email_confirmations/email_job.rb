@@ -7,13 +7,13 @@ module Users
       # TODO: rewrite lock: :while_executing)
 
       def perform(user)
-        email_confirmation_token = user.generate_token!(:email_confirmation)
+        email_confirmation_code = user.generate_code!(:email_confirmation)
         user.update!(email_confirmation_sent_at: Time.current)
 
         UsersMailer
           .with(
             email: user.email,
-            email_confirmation_token: email_confirmation_token
+            email_confirmation_code: email_confirmation_code
           )
           .email_confirmation
           .deliver_now

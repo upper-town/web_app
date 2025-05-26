@@ -19,7 +19,7 @@ class ServerVotesController < ApplicationController
     result = captcha_check
 
     if result.failure?
-      flash.now[:alert] = result.errors.full_messages
+      flash.now[:alert] = result.errors
       render(:new, status: :unprocessable_entity)
 
       return
@@ -33,7 +33,7 @@ class ServerVotesController < ApplicationController
         success: "Your vote has been saved!"
       )
     else
-      flash.now[:alert] = result.errors.full_messages
+      flash.now[:alert] = result.errors
       render(:new, status: :unprocessable_entity)
     end
   end

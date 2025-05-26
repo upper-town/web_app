@@ -5,7 +5,7 @@ module TokenGenerator
 
   extend self
 
-  def generate(length = 48, secret = SECRET)
+  def generate(length = 44, secret = SECRET)
     token = SecureRandom.base58(length)
     token_digest = digest(token, secret)
     token_last_four = token.last(4)

@@ -3,12 +3,9 @@
 </p>
 
 <p>
-  You can confirm your email through the link below:
+  Here is your verification code:
 </p>
 
 <p>
-  <%= link_to(
-    'Confirm my email address',
-    edit_users_email_confirmation_url(token: @email_confirmation_token, auto_click: true)
-  ) %>
+  <%= @email_confirmation_code %>
 </p>

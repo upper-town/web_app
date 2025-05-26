@@ -13,8 +13,8 @@ module CapybaraTestSetup
   private
 
   def capybara_select_default_driver
-    headful  = ["true", "1"].include?(ENV.fetch("HEADFUL", "false").downcase)
-    headless = ["true", "1"].include?(ENV.fetch("HEADLESS", "true").downcase)
+    headful  = ENV.fetch("HEADFUL", "false") == "true"
+    headless = ENV.fetch("HEADLESS", "true") == "true"
 
     if headful || !headless
       :selenium

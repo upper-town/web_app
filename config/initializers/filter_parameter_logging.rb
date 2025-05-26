@@ -13,7 +13,7 @@ Rails.application.config.filter_parameters += [
   :crypt,
   :cvc,
   :cvv,
-  :email,
+  # :email,
   :otp,
   :passw,
   :salt,

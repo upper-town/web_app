@@ -7,7 +7,7 @@ module TokenGenerator
     extend self
 
     def generate
-      TokenGenerator.generate(48, SECRET)
+      TokenGenerator.generate(44, SECRET)
     end
 
     def digest(token)

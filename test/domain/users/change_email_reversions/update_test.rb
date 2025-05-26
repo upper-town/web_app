@@ -11,7 +11,7 @@ class Users::ChangeEmailReversions::UpdateTest < ActiveSupport::TestCase
         it "returns failure" do
           user = create_user(email: "user.change@upper.town")
           _token = user.generate_token!(:change_email_reversion, 30.days, { email: "user@upper.town" })
-          change_email_reversion_edit = Users::ChangeEmailReversionEdit.new(token: "xxxxxxxx")
+          change_email_reversion_edit = Users::ChangeEmailReversion.new(token: "xxxxxxxx")
 
           result = described_class.new(change_email_reversion_edit).call
 
@@ -24,7 +24,7 @@ class Users::ChangeEmailReversions::UpdateTest < ActiveSupport::TestCase
         it "returns failure" do
           user = create_user(email: "user.change@upper.town")
           token = user.generate_token!(:change_email_reversion, 0.seconds, { email: "user@upper.town" })
-          change_email_reversion_edit = Users::ChangeEmailReversionEdit.new(token: token)
+          change_email_reversion_edit = Users::ChangeEmailReversion.new(token: token)
 
           result = described_class.new(change_email_reversion_edit).call
 
@@ -39,7 +39,7 @@ class Users::ChangeEmailReversions::UpdateTest < ActiveSupport::TestCase
         it "returns failure" do
           user = create_user(email: "user.change@upper.town")
           token = user.generate_token!(:change_email_reversion, 30.days, { email: " " })
-          change_email_reversion_edit = Users::ChangeEmailReversionEdit.new(token: token)
+          change_email_reversion_edit = Users::ChangeEmailReversion.new(token: token)
 
           result = described_class.new(change_email_reversion_edit).call
 
@@ -52,7 +52,7 @@ class Users::ChangeEmailReversions::UpdateTest < ActiveSupport::TestCase
         it "raises an error" do
           user = create_user(email: "user.change@upper.town")
           token = user.generate_token!(:change_email_reversion, 30.days, { email: "user@upper.town" })
-          change_email_reversion_edit = Users::ChangeEmailReversionEdit.new(token: token)
+          change_email_reversion_edit = Users::ChangeEmailReversion.new(token: token)
 
           called = 0
           User.stub_any_instance(:revert_change_email!, ->(*) { called += 1 ; raise ActiveRecord::ActiveRecordError }) do
@@ -69,7 +69,7 @@ class Users::ChangeEmailReversions::UpdateTest < ActiveSupport::TestCase
           freeze_time do
             user = create_user(email: "user.change@upper.town")
             token = user.generate_token!(:change_email_reversion, 30.days, { email: "user@upper.town" })
-            change_email_reversion_edit = Users::ChangeEmailReversionEdit.new(token: token)
+            change_email_reversion_edit = Users::ChangeEmailReversion.new(token: token)
 
             result = described_class.new(change_email_reversion_edit).call
 

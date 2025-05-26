@@ -9,73 +9,107 @@ class Users::EmailConfirmations::UpdateTest < ActiveSupport::TestCase
     describe "when user is not found by token" do
       describe "non-existing token" do
         it "returns failure" do
-          user = create_user
-          _token = user.generate_token!(:email_confirmation)
-          email_confirmation_edit = Users::EmailConfirmationEdit.new(token: "xxxxxxxx")
+          user  = create_user
+          token = "non-existing-token"
+          code  = user.generate_code!(:email_confirmation)
 
-          result = described_class.new(email_confirmation_edit).call
+          result = described_class.new(token, code).call
 
           assert(result.failure?)
-          assert(result.errors[:base].any? { it.match?(/Invalid or expired token/) })
+          assert(result.errors.of_kind?(:base, :invalid_or_expired_code))
         end
       end
 
       describe "expired token" do
         it "returns failure" do
-          user = create_user
+          user  = create_user
           token = user.generate_token!(:email_confirmation, 0.seconds)
-          email_confirmation_edit = Users::EmailConfirmationEdit.new(token: token)
+          code  = user.generate_code!(:email_confirmation)
 
-          result = described_class.new(email_confirmation_edit).call
+          result = described_class.new(token, code).call
 
           assert(result.failure?)
-          assert(result.errors[:base].any? { it.match?(/Invalid or expired token/) })
+          assert(result.errors.of_kind?(:base, :invalid_or_expired_code))
         end
       end
     end
 
-    describe "when user is found by token" do
-      describe "when email has already been confirmed" do
+    describe "when user is not found by code" do
+      describe "non-existing code" do
         it "returns failure" do
-          user = create_user(email_confirmed_at: Time.current)
+          user  = create_user
           token = user.generate_token!(:email_confirmation)
-          email_confirmation_edit = Users::EmailConfirmationEdit.new(token: token)
+          code  = "non-existing-code"
 
-          result = described_class.new(email_confirmation_edit).call
+          result = described_class.new(token, code).call
 
           assert(result.failure?)
-          assert(result.errors[:base].any? { it.match?(/Email address has already been confirmed/) })
+          assert(result.errors.of_kind?(:base, :invalid_or_expired_code))
+        end
+      end
+
+      describe "expired code" do
+        it "returns failure" do
+          user  = create_user
+          token = user.generate_token!(:email_confirmation)
+          code  = user.generate_code!(:email_confirmation, 0.seconds)
+
+          result = described_class.new(token, code).call
+
+          assert(result.failure?)
+          assert(result.errors.of_kind?(:base, :invalid_or_expired_code))
+        end
+      end
+    end
+
+    describe "when user is found" do
+      describe "when email has already been confirmed" do
+        it "returns failure" do
+          user  = create_user(email_confirmed_at: Time.current)
+          token = user.generate_token!(:email_confirmation)
+          code  = user.generate_code!(:email_confirmation)
+
+          result = described_class.new(token, code).call
+
+          assert(result.failure?)
+          assert(result.errors.of_kind?(:base, :email_address_already_confirmed))
           assert(result.user.email_confirmed_at.present?)
         end
       end
 
-      describe "when trying to confirm email raises an error" do
-        it "raises an error" do
-          user = create_user
+      describe "when confirm email succeeds" do
+        it "returns success, expires token and code" do
+          user  = create_user
           token = user.generate_token!(:email_confirmation)
-          email_confirmation_edit = Users::EmailConfirmationEdit.new(token: token)
+          code  = user.generate_code!(:email_confirmation)
 
-          called = 0
-          User.stub_any_instance(:confirm_email!, -> { called += 1 ; raise ActiveRecord::ActiveRecordError }) do
-            assert_raises(ActiveRecord::ActiveRecordError) do
-              described_class.new(email_confirmation_edit).call
-            end
-          end
-          assert_equal(1, called)
-        end
-      end
-
-      describe "when trying to confirm email succeeds" do
-        it "returns success and expires tokens" do
-          user = create_user
-          token = user.generate_token!(:email_confirmation)
-          email_confirmation_edit = Users::EmailConfirmationEdit.new(token: token)
-
-          result = described_class.new(email_confirmation_edit).call
+          result = described_class.new(token, code).call
 
           assert(result.success?)
           assert(result.user.email_confirmed_at.present?)
           assert(User.find_by_token(:email_confirmation, token).blank?)
+          assert(User.find_by_code(:email_confirmation, code).blank?)
+        end
+      end
+
+      describe "when confirm email raises an error" do
+        it "raises an error" do
+          user  = create_user
+          token = user.generate_token!(:email_confirmation)
+          code  = user.generate_code!(:email_confirmation)
+
+          called = 0
+          User.stub_any_instance(:confirm_email!, -> {
+            called += 1
+            raise ActiveRecord::ActiveRecordError
+          }) do
+            assert_raises(ActiveRecord::ActiveRecordError) do
+              described_class.new(token, code).call
+            end
+          end
+          assert_equal(1, called)
+
+          assert(user.reload.email_confirmed_at.blank?)
         end
       end
     end

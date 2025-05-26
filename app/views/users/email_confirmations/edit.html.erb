@@ -1,23 +1,35 @@
 <h2>
-  Email confirmation
+  Sign Up: Verification Code
 </h2>
 
 <%= form_with(
-  model: @email_confirmation_edit,
+  model: @email_confirmation,
   method: :put,
   url: users_email_confirmation_path,
-  data: { 'controller' => 'form-error-messages-handler' }
+  data: { "controller" => "form-error-messages-handler" }
 ) do |form| %>
   <%= form.hidden_field(:token) %>
 
   <div class="my-3">
+    <%= form.label(:token, "Enter the verification code we have sent to your email", class: "form-label") %>
+    <%= form.text_field(
+      :code,
+      autofocus: true,
+      autocomplete: "code",
+      class: "form-control",
+      aria: { describedby: "code-help" },
+      required: true
+    ) %>
+  </div>
+
+  <div class="my-3">
     <%= form.submit(
-      'Confirm my email address',
-      class: 'btn btn-primary',
+      "Confirm my email address",
+      class: "btn btn-primary",
       data: {
-        'turbo-submits-with' => 'Confirming...',
-        'controller' => @email_confirmation_edit.auto_click ? 'auto-click' : nil
+        "turbo-submits-with" => "Confirming..."
       }.compact,
     ) %>
   </div>
 <% end %>
+

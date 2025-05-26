@@ -19,7 +19,7 @@ module AdminUsers
       )
 
       if result.failure?
-        flash.now[:alert] = result.errors.full_messages
+        flash.now[:alert] = result.errors
         render(:new, status: :unprocessable_entity)
 
         return
@@ -40,7 +40,7 @@ module AdminUsers
           info: "Password reset link has been sent to your email."
         )
       else
-        flash.now[:info] = result.errors.full_messages
+        flash.now[:info] = result.errors
         render(:new, status: :unprocessable_entity)
       end
     end
@@ -67,7 +67,7 @@ module AdminUsers
           success: "Your password has been set."
         )
       else
-        flash.now[:info] = result.errors.full_messages
+        flash.now[:info] = result.errors
         render(:edit, status: :unprocessable_entity)
       end
     end

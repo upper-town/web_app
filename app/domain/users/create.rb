@@ -8,46 +8,26 @@ module Users
       attribute :user
     end
 
-    attr_reader :email_confirmation
+    attr_reader :email
 
-    def initialize(email_confirmation)
-      @email_confirmation = email_confirmation
+    def initialize(email)
+      @email = email
     end
 
     def call
-      user = find_or_create_user
-      enqueue_email_confirmation_job(user)
+      user = User.find_or_initialize_by(email:)
 
-      Result.success(user: user)
-    end
+      if user.valid?
+        ActiveRecord::Base.transaction do
+          user.save! unless user.persisted?
+          user.create_account! unless user.account.present?
+        end
 
-    private
-
-    def find_or_create_user
-      user = existing_user || build_user
-      return user if user.persisted?
-
-      ActiveRecord::Base.transaction do
-        user.save!
-        user.create_account!
+        EmailConfirmations::EmailJob.perform_later(user)
+        Result.success(user:)
+      else
+        Result.failure(user.errors)
       end
-
-      user
-    end
-
-    def existing_user
-      User.find_by(email: email_confirmation.email)
-    end
-
-    def build_user
-      User.new(
-        email: email_confirmation.email,
-        email_confirmed_at: nil
-      )
-    end
-
-    def enqueue_email_confirmation_job(user)
-      Users::EmailConfirmations::EmailJob.perform_later(user)
     end
   end
 end

@@ -6,25 +6,25 @@ class Users::EmailConfirmations::EmailJobTest < ActiveSupport::TestCase
   let(:described_class) { Users::EmailConfirmations::EmailJob }
 
   describe "#perform" do
-    it "generates token and sends it in the email" do
+    it "generates code and sends it in the email" do
       freeze_time do
         user = create_user
 
-        assert_difference(-> { Token.count }, 1) do
+        assert_difference(-> { Code.count }, 1) do
           assert_difference(-> { ActionMailer::Base.deliveries.count }, 1) do
             described_class.new.perform(user)
           end
         end
 
-        token = Token.last
-        assert_equal("email_confirmation", token.purpose)
-        assert_equal(1.hour.from_now, token.expires_at)
+        code = Code.last
+        assert_equal("email_confirmation", code.purpose)
+        assert_equal(30.minutes.from_now, code.expires_at)
 
         mail_message = ActionMailer::Base.deliveries.last
         assert_equal(["noreply@test.upper.town"], mail_message.from)
         assert_equal([user.email], mail_message.to)
-        assert_includes(mail_message.subject, "Email confirmation link")
-        assert_match(%r"users/email_confirmation/edit\?auto_click=true&amp;token=[ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz123456789]{48}", mail_message.body.to_s)
+        assert_includes(mail_message.subject, "Email Confirmation: verification code")
+        assert_match(/[ABCDEFGHJKLMNPQRSTUWXYZ123456789]{8}/, mail_message.body.to_s)
 
         assert_equal(Time.current, user.reload.email_confirmation_sent_at)
       end

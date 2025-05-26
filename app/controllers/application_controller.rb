@@ -6,6 +6,7 @@ class ApplicationController < ActionController::Base
 
   include AddFlashTypes
   include ManageCaptcha
+  include ManageRateLimit
 
   class InvalidQueryParamError < StandardError; end
 

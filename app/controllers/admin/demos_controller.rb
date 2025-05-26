@@ -20,7 +20,7 @@ module Admin
 
       # Alert scheme
 
-      flash.now[:info] = {
+      flash.now[:notice] = {
         subject: "Subject here",
         content: "Some info message",
         dismissible: true,

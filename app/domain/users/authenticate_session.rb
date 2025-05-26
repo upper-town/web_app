@@ -8,43 +8,39 @@ module Users
       attribute :user
     end
 
-    attr_reader :session
+    attr_reader :email, :password
 
-    def initialize(session)
-      @session = session
+    def initialize(email, password)
+      @email = email
+      @password = password
     end
 
     def call
-      result = check_exists
-      return result if result.failure?
-
-      authenticate
+      if user_exists?
+        if (user = authenticate_user)
+          count_sign_in_attempt
+          Result.success(user:)
+        else
+          count_sign_in_attempt(succeeded: false)
+          Result.failure(:incorrect_password_or_email)
+        end
+      else
+        Result.failure(:incorrect_password_or_email)
+      end
     end
 
     private
 
-    def check_exists
-      if User.exists?(email: session.email)
-        Result.success
-      else
-        Result.failure("Incorrect password or email")
-      end
+    def user_exists?
+      User.exists?(email:)
     end
 
-    def authenticate
-      user = User.authenticate_by(email: session.email, password: session.password)
-
-      if user
-        count_attempt(true)
-        Result.success(user: user)
-      else
-        count_attempt(false)
-        Result.failure("Incorrect password or email")
-      end
+    def authenticate_user
+      User.authenticate_by(email:, password:)
     end
 
-    def count_attempt(succeeded)
-      Users::CountSignInAttemptsJob.perform_later(session.email, succeeded)
+    def count_sign_in_attempt(succeeded: true)
+      Users::CountSignInAttemptsJob.perform_later(email, succeeded)
     end
   end
 end

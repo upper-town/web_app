@@ -7,13 +7,13 @@ module Users
       # TODO: rewrite lock: :while_executing)
 
       def perform(user)
-        change_email_reversion_token, change_email_confirmation_token = update_and_generate_tokens(user)
+        change_email_reversion_token, change_email_confirmation_code = generate_token_and_code(user)
 
         UsersMailer
           .with(
             email: user.email,
             change_email: user.change_email,
-            change_email_reversion_token: change_email_reversion_token
+            change_email_reversion_token:
           )
           .change_email_reversion
           .deliver_now
@@ -22,7 +22,7 @@ module Users
           .with(
             email: user.email,
             change_email: user.change_email,
-            change_email_confirmation_token: change_email_confirmation_token
+            change_email_confirmation_code:
           )
           .change_email_confirmation
           .deliver_now
@@ -30,16 +30,21 @@ module Users
 
       private
 
-      def update_and_generate_tokens(user)
+      def generate_token_and_code(user)
         current_time = Time.current
 
         ActiveRecord::Base.transaction do
           change_email_reversion_token = user.generate_token!(
-            :change_email_reversion, 30.days, { email: user.email }
+            :change_email_reversion,
+            30.days,
+            { email: user.email }
           )
-          change_email_confirmation_token = user.generate_token!(
-            :change_email_confirmation, nil, { change_email: user.change_email }
+          change_email_confirmation_code = user.generate_code!(
+            :change_email_confirmation,
+            nil,
+            { change_email: user.change_email }
           )
+
           user.update!(
             change_email_reversion_sent_at: current_time,
             change_email_confirmation_sent_at: current_time
@@ -47,7 +52,7 @@ module Users
 
           [
             change_email_reversion_token,
-            change_email_confirmation_token
+            change_email_confirmation_code
           ]
         end
       end

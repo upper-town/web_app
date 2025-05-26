@@ -9,37 +9,42 @@ module Users
         attribute :user
       end
 
-      attr_reader :change_email_confirmation, :current_user_email
+      attr_reader :email, :change_email, :password, :current_user_email
 
-      def initialize(change_email_confirmation, current_user_email)
-        @change_email_confirmation = change_email_confirmation
+      def initialize(email, change_email, password, current_user_email)
+        @email = email
+        @change_email = change_email
+        @password = password
         @current_user_email = current_user_email
       end
 
       def call
-        if current_user_email != change_email_confirmation.email
-          Result.failure("Incorrect current email address")
-        else
+        if ActiveSupport::SecurityUtils.secure_compare(email, current_user_email)
           authenticate_and_change_user_email
+        else
+          Result.failure("Incorrect current email address")
         end
       end
 
       private
 
       def authenticate_and_change_user_email
-        user = User.authenticate_by(email: current_user_email, password: change_email_confirmation.password)
-        return Result.failure("Incorrect password") unless user
+        user = User.authenticate_by(email: current_user_email, password:)
 
-        ActiveRecord::Base.transaction do
-          user.update!(change_email: change_email_confirmation.change_email)
-          user.unconfirm_change_email!
+        if !user
+          Result.failure("Incorrect password")
+        else
+          ActiveRecord::Base.transaction do
+            user.update!(change_email:)
+            user.unconfirm_change_email!
+          end
+
+          Users::ChangeEmailConfirmations::EmailJob
+            .set(wait: 30.seconds)
+            .perform_later(user)
+
+          Result.success(user: user)
         end
-
-        Users::ChangeEmailConfirmations::EmailJob
-          .set(wait: 30.seconds)
-          .perform_later(user)
-
-        Result.success(user: user)
       end
     end
   end

@@ -34,8 +34,12 @@ module Auth
       write_session_value(token, remember_me)
     end
 
-    def sign_out_user!
-      current_session&.destroy!
+    def sign_out_user!(destroy_all: false)
+      if current_session
+        current_session.destroy!
+        Session.where(user: current_session.user).destroy_all if destroy_all
+      end
+
       delete_session_value
     end
 

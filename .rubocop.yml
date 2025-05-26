@@ -117,6 +117,8 @@ Rails/ActionOrder:
     - destroy
 Rails/ApplicationController:
   Enabled: false
+Rails/Blank:
+  Enabled: false
 Rails/Delegate:
   Enabled: false
 Rails/DynamicFindBy:
