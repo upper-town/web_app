@@ -21,7 +21,7 @@ class Users::EmailConfirmations::EmailJobTest < ActiveSupport::TestCase
         assert_equal(30.minutes.from_now, code.expires_at)
 
         mail_message = ActionMailer::Base.deliveries.last
-        assert_equal(["noreply@test.upper.town"], mail_message.from)
+        assert_equal(["noreply@uppertown.test"], mail_message.from)
         assert_equal([user.email], mail_message.to)
         assert_includes(mail_message.subject, "Email Confirmation: verification code")
         assert_match(/[ABCDEFGHJKLMNPQRSTUWXYZ123456789]{8}/, mail_message.body.to_s)

@@ -21,7 +21,7 @@ class Users::PasswordResets::EmailJobTest < ActiveSupport::TestCase
         assert_equal(1.hour.from_now, token.expires_at)
 
         mail_message = ActionMailer::Base.deliveries.last
-        assert_equal(["noreply@test.upper.town"], mail_message.from)
+        assert_equal(["noreply@uppertown.test"], mail_message.from)
         assert_equal([user.email], mail_message.to)
         assert_includes(mail_message.subject, "Password Reset Email")
         assert_match(%r"users/password_reset/edit\?token=[ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz123456789]{48}", mail_message.body.to_s)

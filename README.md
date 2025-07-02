@@ -6,11 +6,11 @@ Repository for a web app with features for the gaming community.
 
 Current domains in use by this app:
 
-| Environment | Domain/site                        | `APP_ENV`     | `RAILS_ENV `  |
-| ----------- | ---------------------------------- | ------------- | ------------- |
-| production  | https://upper.town                 | `production`  | `production`  |
-| development | http://development.upper.town:3000 | `development` | `development` |
-| test        | http://test.upper.town:3000        | `test`        | `test`        |
+| Environment | Domain/site                | `APP_ENV`     | `RAILS_ENV `  |
+| ----------- | ---------------------------| ------------- | ------------- |
+| production  | https://upper.town         | `production`  | `production`  |
+| development | http://uppertown.test:3000 | `development` | `development` |
+| test        | http://uppertown.test:3100 | `test`        | `test`        |
 
 Also,
 
@@ -24,11 +24,10 @@ Also,
 Edit you `/etc/hosts` and add the following:
 
 ```
-127.0.0.1    development.upper.town
-127.0.0.1    test.upper.town
+127.0.0.1    uppertown.test
 ```
 
-Those are the domains used locally for `development` and `test` environments.
+That is the domain used locally for `development` and `test` environments.
 
 ### Ruby
 

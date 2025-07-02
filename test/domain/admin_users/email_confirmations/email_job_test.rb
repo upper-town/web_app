@@ -21,7 +21,7 @@ class AdminUsers::EmailConfirmations::EmailJobTest < ActiveSupport::TestCase
         assert_equal(1.hour.from_now, admin_token.expires_at)
 
         mail_message = ActionMailer::Base.deliveries.last
-        assert_equal(["noreply@test.upper.town"], mail_message.from)
+        assert_equal(["noreply@uppertown.test"], mail_message.from)
         assert_equal([admin_user.email], mail_message.to)
         assert_includes(mail_message.subject, "Email confirmation link")
         assert_match(

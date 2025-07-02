@@ -29,12 +29,12 @@ class Users::ChangeEmailConfirmations::EmailJobTest < ActiveSupport::TestCase
         assert_equal(Time.current, user.change_email_confirmation_sent_at)
 
         mail_message1 = ActionMailer::Base.deliveries.find { |mail_message| mail_message.subject.include?("Change email reversion link") }
-        assert_equal(["noreply@test.upper.town"], mail_message1.from)
+        assert_equal(["noreply@uppertown.test"], mail_message1.from)
         assert_equal(["user@upper.town"], mail_message1.to)
         assert_match(%r"users/change_email_reversion/edit\?auto_click=true&amp;token=[ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz123456789]{48}", mail_message1.body.to_s)
 
         mail_message2 = ActionMailer::Base.deliveries.find { |mail_message| mail_message.subject.include?("Change email confirmation link") }
-        assert_equal(["noreply@test.upper.town"], mail_message2.from)
+        assert_equal(["noreply@uppertown.test"], mail_message2.from)
         assert_equal(["user.change@upper.town"], mail_message2.to)
         assert_match(%r"users/change_email_confirmation/edit\?auto_click=true&amp;token=[ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz123456789]{48}", mail_message2.body.to_s)
       end

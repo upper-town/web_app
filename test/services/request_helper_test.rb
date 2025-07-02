@@ -141,9 +141,9 @@ class RequestHelperTest < ActiveSupport::TestCase
       describe "when scheme is http/https and host matches APP_HOST" do
         it "returns true" do
           [
-            "https://test.upper.town",
-            "http://test.upper.town/",
-            "http://test.upper.town:3000"
+            "https://uppertown.test",
+            "http://uppertown.test/",
+            "http://uppertown.test:3100"
           ].each do |referer|
             request = build_request(referer: referer)
 

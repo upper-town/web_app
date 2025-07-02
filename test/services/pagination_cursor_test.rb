@@ -401,63 +401,63 @@ class PaginationCursorTest < ActiveSupport::TestCase
     describe "with 0 records" do
       it "returns accordingly" do
         relation = Dummy.all
-        request = build_request(url: "http://test.upper.town/servers")
+        request = build_request(url: "http://uppertown.test/servers")
 
         pagination_cursor = described_class.new(relation, request, order: "asc", per_page: 3, indicator: "after")
 
         assert_nil(pagination_cursor.start_cursor)
         assert(pagination_cursor.start_cursor?)
-        assert_equal("http://test.upper.town/servers?order=asc", pagination_cursor.start_cursor_url)
+        assert_equal("http://uppertown.test/servers?order=asc", pagination_cursor.start_cursor_url)
 
         assert_nil(pagination_cursor.before_cursor)
         assert_not(pagination_cursor.has_before_cursor?)
-        assert_equal("http://test.upper.town/servers?order=asc&indicator=before", pagination_cursor.before_cursor_url)
+        assert_equal("http://uppertown.test/servers?order=asc&indicator=before", pagination_cursor.before_cursor_url)
 
         assert_nil(pagination_cursor.after_cursor)
         assert_not(pagination_cursor.has_after_cursor?)
-        assert_equal("http://test.upper.town/servers?order=asc&indicator=after", pagination_cursor.after_cursor_url)
+        assert_equal("http://uppertown.test/servers?order=asc&indicator=after", pagination_cursor.after_cursor_url)
 
         pagination_cursor = described_class.new(relation, request, order: "asc", per_page: 3, indicator: "after", per_page_from_request: true)
 
         assert_nil(pagination_cursor.start_cursor)
         assert(pagination_cursor.start_cursor?)
-        assert_equal("http://test.upper.town/servers?order=asc&per_page=3", pagination_cursor.start_cursor_url)
+        assert_equal("http://uppertown.test/servers?order=asc&per_page=3", pagination_cursor.start_cursor_url)
 
         assert_nil(pagination_cursor.before_cursor)
         assert_not(pagination_cursor.has_before_cursor?)
-        assert_equal("http://test.upper.town/servers?order=asc&indicator=before&per_page=3", pagination_cursor.before_cursor_url)
+        assert_equal("http://uppertown.test/servers?order=asc&indicator=before&per_page=3", pagination_cursor.before_cursor_url)
 
         assert_nil(pagination_cursor.after_cursor)
         assert_not(pagination_cursor.has_after_cursor?)
-        assert_equal("http://test.upper.town/servers?order=asc&indicator=after&per_page=3", pagination_cursor.after_cursor_url)
+        assert_equal("http://uppertown.test/servers?order=asc&indicator=after&per_page=3", pagination_cursor.after_cursor_url)
 
         pagination_cursor = described_class.new(relation, request, order: "asc", per_page: 3, indicator: "before")
 
         assert_nil(pagination_cursor.start_cursor)
         assert(pagination_cursor.start_cursor?)
-        assert_equal("http://test.upper.town/servers?order=asc", pagination_cursor.start_cursor_url)
+        assert_equal("http://uppertown.test/servers?order=asc", pagination_cursor.start_cursor_url)
 
         assert_nil(pagination_cursor.before_cursor)
         assert_not(pagination_cursor.has_before_cursor?)
-        assert_equal("http://test.upper.town/servers?order=asc&indicator=before", pagination_cursor.before_cursor_url)
+        assert_equal("http://uppertown.test/servers?order=asc&indicator=before", pagination_cursor.before_cursor_url)
 
         assert_nil(pagination_cursor.after_cursor)
         assert_not(pagination_cursor.has_after_cursor?)
-        assert_equal("http://test.upper.town/servers?order=asc&indicator=after", pagination_cursor.after_cursor_url)
+        assert_equal("http://uppertown.test/servers?order=asc&indicator=after", pagination_cursor.after_cursor_url)
 
         pagination_cursor = described_class.new(relation, request, order: "asc", per_page: 3, indicator: "before", per_page_from_request: true)
 
         assert_nil(pagination_cursor.start_cursor)
         assert(pagination_cursor.start_cursor?)
-        assert_equal("http://test.upper.town/servers?order=asc&per_page=3", pagination_cursor.start_cursor_url)
+        assert_equal("http://uppertown.test/servers?order=asc&per_page=3", pagination_cursor.start_cursor_url)
 
         assert_nil(pagination_cursor.before_cursor)
         assert_not(pagination_cursor.has_before_cursor?)
-        assert_equal("http://test.upper.town/servers?order=asc&indicator=before&per_page=3", pagination_cursor.before_cursor_url)
+        assert_equal("http://uppertown.test/servers?order=asc&indicator=before&per_page=3", pagination_cursor.before_cursor_url)
 
         assert_nil(pagination_cursor.after_cursor)
         assert_not(pagination_cursor.has_after_cursor?)
-        assert_equal("http://test.upper.town/servers?order=asc&indicator=after&per_page=3", pagination_cursor.after_cursor_url)
+        assert_equal("http://uppertown.test/servers?order=asc&indicator=after&per_page=3", pagination_cursor.after_cursor_url)
       end
     end
 
@@ -465,63 +465,63 @@ class PaginationCursorTest < ActiveSupport::TestCase
       it "returns accordingly" do
         dummy = create_dummy
         relation = Dummy.all
-        request = build_request(url: "http://test.upper.town/servers")
+        request = build_request(url: "http://uppertown.test/servers")
 
         pagination_cursor = described_class.new(relation, request, order: "asc", per_page: 3, indicator: "after")
 
         assert_nil(pagination_cursor.start_cursor)
         assert(pagination_cursor.start_cursor?)
-        assert_equal("http://test.upper.town/servers?order=asc", pagination_cursor.start_cursor_url)
+        assert_equal("http://uppertown.test/servers?order=asc", pagination_cursor.start_cursor_url)
 
         assert_nil(pagination_cursor.before_cursor)
         assert_not(pagination_cursor.has_before_cursor?)
-        assert_equal("http://test.upper.town/servers?order=asc&indicator=before", pagination_cursor.before_cursor_url)
+        assert_equal("http://uppertown.test/servers?order=asc&indicator=before", pagination_cursor.before_cursor_url)
 
         assert_nil(pagination_cursor.after_cursor)
         assert_not(pagination_cursor.has_after_cursor?)
-        assert_equal("http://test.upper.town/servers?order=asc&indicator=after", pagination_cursor.after_cursor_url)
+        assert_equal("http://uppertown.test/servers?order=asc&indicator=after", pagination_cursor.after_cursor_url)
 
         pagination_cursor = described_class.new(relation, request, order: "asc", per_page: 3, indicator: "after", per_page_from_request: true)
 
         assert_nil(pagination_cursor.start_cursor)
         assert(pagination_cursor.start_cursor?)
-        assert_equal("http://test.upper.town/servers?order=asc&per_page=3", pagination_cursor.start_cursor_url)
+        assert_equal("http://uppertown.test/servers?order=asc&per_page=3", pagination_cursor.start_cursor_url)
 
         assert_nil(pagination_cursor.before_cursor)
         assert_not(pagination_cursor.has_before_cursor?)
-        assert_equal("http://test.upper.town/servers?order=asc&indicator=before&per_page=3", pagination_cursor.before_cursor_url)
+        assert_equal("http://uppertown.test/servers?order=asc&indicator=before&per_page=3", pagination_cursor.before_cursor_url)
 
         assert_nil(pagination_cursor.after_cursor)
         assert_not(pagination_cursor.has_after_cursor?)
-        assert_equal("http://test.upper.town/servers?order=asc&indicator=after&per_page=3", pagination_cursor.after_cursor_url)
+        assert_equal("http://uppertown.test/servers?order=asc&indicator=after&per_page=3", pagination_cursor.after_cursor_url)
 
         pagination_cursor = described_class.new(relation, request, order: "asc", per_page: 3, indicator: "before")
 
         assert_nil(pagination_cursor.start_cursor)
         assert(pagination_cursor.start_cursor?)
-        assert_equal("http://test.upper.town/servers?order=asc", pagination_cursor.start_cursor_url)
+        assert_equal("http://uppertown.test/servers?order=asc", pagination_cursor.start_cursor_url)
 
         assert_nil(pagination_cursor.before_cursor)
         assert_not(pagination_cursor.has_before_cursor?)
-        assert_equal("http://test.upper.town/servers?order=asc&indicator=before", pagination_cursor.before_cursor_url)
+        assert_equal("http://uppertown.test/servers?order=asc&indicator=before", pagination_cursor.before_cursor_url)
 
         assert_equal(dummy.id, pagination_cursor.after_cursor)
         assert(pagination_cursor.has_after_cursor?)
-        assert_equal("http://test.upper.town/servers?order=asc&indicator=after&cursor=#{dummy.id}", pagination_cursor.after_cursor_url)
+        assert_equal("http://uppertown.test/servers?order=asc&indicator=after&cursor=#{dummy.id}", pagination_cursor.after_cursor_url)
 
         pagination_cursor = described_class.new(relation, request, order: "asc", per_page: 3, indicator: "before", per_page_from_request: true)
 
         assert_nil(pagination_cursor.start_cursor)
         assert(pagination_cursor.start_cursor?)
-        assert_equal("http://test.upper.town/servers?order=asc&per_page=3", pagination_cursor.start_cursor_url)
+        assert_equal("http://uppertown.test/servers?order=asc&per_page=3", pagination_cursor.start_cursor_url)
 
         assert_nil(pagination_cursor.before_cursor)
         assert_not(pagination_cursor.has_before_cursor?)
-        assert_equal("http://test.upper.town/servers?order=asc&indicator=before&per_page=3", pagination_cursor.before_cursor_url)
+        assert_equal("http://uppertown.test/servers?order=asc&indicator=before&per_page=3", pagination_cursor.before_cursor_url)
 
         assert_equal(dummy.id, pagination_cursor.after_cursor)
         assert(pagination_cursor.has_after_cursor?)
-        assert_equal("http://test.upper.town/servers?order=asc&indicator=after&cursor=#{dummy.id}&per_page=3", pagination_cursor.after_cursor_url)
+        assert_equal("http://uppertown.test/servers?order=asc&indicator=after&cursor=#{dummy.id}&per_page=3", pagination_cursor.after_cursor_url)
       end
     end
 
@@ -529,147 +529,147 @@ class PaginationCursorTest < ActiveSupport::TestCase
       it "returns accordingly" do
         dummies = 10.times.map { create_dummy }
         relation = Dummy.order(id: :desc)
-        request = build_request(url: "http://test.upper.town/servers")
+        request = build_request(url: "http://uppertown.test/servers")
 
         pagination_cursor = described_class.new(relation, request, order: "asc", per_page: 3, indicator: "after")
 
         assert_nil(pagination_cursor.start_cursor)
         assert(pagination_cursor.start_cursor?)
-        assert_equal("http://test.upper.town/servers?order=asc", pagination_cursor.start_cursor_url)
+        assert_equal("http://uppertown.test/servers?order=asc", pagination_cursor.start_cursor_url)
 
         assert_nil(pagination_cursor.before_cursor)
         assert_not(pagination_cursor.has_before_cursor?)
-        assert_equal("http://test.upper.town/servers?order=asc&indicator=before", pagination_cursor.before_cursor_url)
+        assert_equal("http://uppertown.test/servers?order=asc&indicator=before", pagination_cursor.before_cursor_url)
 
         assert_equal(dummies[2].id, pagination_cursor.after_cursor)
         assert(pagination_cursor.has_after_cursor?)
-        assert_equal("http://test.upper.town/servers?order=asc&indicator=after&cursor=#{dummies[2].id}", pagination_cursor.after_cursor_url)
+        assert_equal("http://uppertown.test/servers?order=asc&indicator=after&cursor=#{dummies[2].id}", pagination_cursor.after_cursor_url)
 
         pagination_cursor = described_class.new(relation, request, order: "asc", per_page: 3, indicator: "after", per_page_from_request: true)
 
         assert_nil(pagination_cursor.start_cursor)
         assert(pagination_cursor.start_cursor?)
-        assert_equal("http://test.upper.town/servers?order=asc&per_page=3", pagination_cursor.start_cursor_url)
+        assert_equal("http://uppertown.test/servers?order=asc&per_page=3", pagination_cursor.start_cursor_url)
 
         assert_nil(pagination_cursor.before_cursor)
         assert_not(pagination_cursor.has_before_cursor?)
-        assert_equal("http://test.upper.town/servers?order=asc&indicator=before&per_page=3", pagination_cursor.before_cursor_url)
+        assert_equal("http://uppertown.test/servers?order=asc&indicator=before&per_page=3", pagination_cursor.before_cursor_url)
 
         assert_equal(dummies[2].id, pagination_cursor.after_cursor)
         assert(pagination_cursor.has_after_cursor?)
-        assert_equal("http://test.upper.town/servers?order=asc&indicator=after&cursor=#{dummies[2].id}&per_page=3", pagination_cursor.after_cursor_url)
+        assert_equal("http://uppertown.test/servers?order=asc&indicator=after&cursor=#{dummies[2].id}&per_page=3", pagination_cursor.after_cursor_url)
 
         pagination_cursor = described_class.new(relation, request, order: "asc", per_page: 3, indicator: "before")
 
         assert_nil(pagination_cursor.start_cursor)
         assert(pagination_cursor.start_cursor?)
-        assert_equal("http://test.upper.town/servers?order=asc", pagination_cursor.start_cursor_url)
+        assert_equal("http://uppertown.test/servers?order=asc", pagination_cursor.start_cursor_url)
 
         assert_nil(pagination_cursor.before_cursor)
         assert_not(pagination_cursor.has_before_cursor?)
-        assert_equal("http://test.upper.town/servers?order=asc&indicator=before", pagination_cursor.before_cursor_url)
+        assert_equal("http://uppertown.test/servers?order=asc&indicator=before", pagination_cursor.before_cursor_url)
 
         assert_equal(dummies[2].id, pagination_cursor.after_cursor)
         assert(pagination_cursor.has_after_cursor?)
-        assert_equal("http://test.upper.town/servers?order=asc&indicator=after&cursor=#{dummies[2].id}", pagination_cursor.after_cursor_url)
+        assert_equal("http://uppertown.test/servers?order=asc&indicator=after&cursor=#{dummies[2].id}", pagination_cursor.after_cursor_url)
 
         pagination_cursor = described_class.new(relation, request, order: "asc", per_page: 3, indicator: "before", per_page_from_request: true)
 
         assert_nil(pagination_cursor.start_cursor)
         assert(pagination_cursor.start_cursor?)
-        assert_equal("http://test.upper.town/servers?order=asc&per_page=3", pagination_cursor.start_cursor_url)
+        assert_equal("http://uppertown.test/servers?order=asc&per_page=3", pagination_cursor.start_cursor_url)
 
         assert_nil(pagination_cursor.before_cursor)
         assert_not(pagination_cursor.has_before_cursor?)
-        assert_equal("http://test.upper.town/servers?order=asc&indicator=before&per_page=3", pagination_cursor.before_cursor_url)
+        assert_equal("http://uppertown.test/servers?order=asc&indicator=before&per_page=3", pagination_cursor.before_cursor_url)
 
         assert_equal(dummies[2].id, pagination_cursor.after_cursor)
         assert(pagination_cursor.has_after_cursor?)
-        assert_equal("http://test.upper.town/servers?order=asc&indicator=after&cursor=#{dummies[2].id}&per_page=3", pagination_cursor.after_cursor_url)
+        assert_equal("http://uppertown.test/servers?order=asc&indicator=after&cursor=#{dummies[2].id}&per_page=3", pagination_cursor.after_cursor_url)
 
         pagination_cursor = described_class.new(relation, request, order: "asc", per_page: 3, indicator: "after", cursor: dummies[2].id)
 
         assert_nil(pagination_cursor.start_cursor)
         assert_not(pagination_cursor.start_cursor?)
-        assert_equal("http://test.upper.town/servers?order=asc", pagination_cursor.start_cursor_url)
+        assert_equal("http://uppertown.test/servers?order=asc", pagination_cursor.start_cursor_url)
 
         assert_equal(dummies[3].id, pagination_cursor.before_cursor)
         assert(pagination_cursor.has_before_cursor?)
-        assert_equal("http://test.upper.town/servers?order=asc&indicator=before&cursor=#{dummies[3].id}", pagination_cursor.before_cursor_url)
+        assert_equal("http://uppertown.test/servers?order=asc&indicator=before&cursor=#{dummies[3].id}", pagination_cursor.before_cursor_url)
 
         assert_equal(dummies[5].id, pagination_cursor.after_cursor)
         assert(pagination_cursor.has_after_cursor?)
-        assert_equal("http://test.upper.town/servers?order=asc&indicator=after&cursor=#{dummies[5].id}", pagination_cursor.after_cursor_url)
+        assert_equal("http://uppertown.test/servers?order=asc&indicator=after&cursor=#{dummies[5].id}", pagination_cursor.after_cursor_url)
 
         pagination_cursor = described_class.new(relation, request, order: "asc", per_page: 3, indicator: "after", cursor: dummies[2].id, per_page_from_request: true)
 
         assert_nil(pagination_cursor.start_cursor)
         assert_not(pagination_cursor.start_cursor?)
-        assert_equal("http://test.upper.town/servers?order=asc&per_page=3", pagination_cursor.start_cursor_url)
+        assert_equal("http://uppertown.test/servers?order=asc&per_page=3", pagination_cursor.start_cursor_url)
 
         assert_equal(dummies[3].id, pagination_cursor.before_cursor)
         assert(pagination_cursor.has_before_cursor?)
-        assert_equal("http://test.upper.town/servers?order=asc&indicator=before&cursor=#{dummies[3].id}&per_page=3", pagination_cursor.before_cursor_url)
+        assert_equal("http://uppertown.test/servers?order=asc&indicator=before&cursor=#{dummies[3].id}&per_page=3", pagination_cursor.before_cursor_url)
 
         assert_equal(dummies[5].id, pagination_cursor.after_cursor)
         assert(pagination_cursor.has_after_cursor?)
-        assert_equal("http://test.upper.town/servers?order=asc&indicator=after&cursor=#{dummies[5].id}&per_page=3", pagination_cursor.after_cursor_url)
+        assert_equal("http://uppertown.test/servers?order=asc&indicator=after&cursor=#{dummies[5].id}&per_page=3", pagination_cursor.after_cursor_url)
 
         pagination_cursor = described_class.new(relation, request, order: "asc", per_page: 3, indicator: "after", cursor: dummies[8].id)
 
         assert_nil(pagination_cursor.start_cursor)
         assert_not(pagination_cursor.start_cursor?)
-        assert_equal("http://test.upper.town/servers?order=asc", pagination_cursor.start_cursor_url)
+        assert_equal("http://uppertown.test/servers?order=asc", pagination_cursor.start_cursor_url)
 
         assert_equal(dummies[9].id, pagination_cursor.before_cursor)
         assert(pagination_cursor.has_before_cursor?)
-        assert_equal("http://test.upper.town/servers?order=asc&indicator=before&cursor=#{dummies[9].id}", pagination_cursor.before_cursor_url)
+        assert_equal("http://uppertown.test/servers?order=asc&indicator=before&cursor=#{dummies[9].id}", pagination_cursor.before_cursor_url)
 
         assert_nil(pagination_cursor.after_cursor)
         assert_not(pagination_cursor.has_after_cursor?)
-        assert_equal("http://test.upper.town/servers?order=asc&indicator=after", pagination_cursor.after_cursor_url)
+        assert_equal("http://uppertown.test/servers?order=asc&indicator=after", pagination_cursor.after_cursor_url)
 
         pagination_cursor = described_class.new(relation, request, order: "asc", per_page: 3, indicator: "after", cursor: dummies[8].id, per_page_from_request: true)
 
         assert_nil(pagination_cursor.start_cursor)
         assert_not(pagination_cursor.start_cursor?)
-        assert_equal("http://test.upper.town/servers?order=asc&per_page=3", pagination_cursor.start_cursor_url)
+        assert_equal("http://uppertown.test/servers?order=asc&per_page=3", pagination_cursor.start_cursor_url)
 
         assert_equal(dummies[9].id, pagination_cursor.before_cursor)
         assert(pagination_cursor.has_before_cursor?)
-        assert_equal("http://test.upper.town/servers?order=asc&indicator=before&cursor=#{dummies[9].id}&per_page=3", pagination_cursor.before_cursor_url)
+        assert_equal("http://uppertown.test/servers?order=asc&indicator=before&cursor=#{dummies[9].id}&per_page=3", pagination_cursor.before_cursor_url)
 
         assert_nil(pagination_cursor.after_cursor)
         assert_not(pagination_cursor.has_after_cursor?)
-        assert_equal("http://test.upper.town/servers?order=asc&indicator=after&per_page=3", pagination_cursor.after_cursor_url)
+        assert_equal("http://uppertown.test/servers?order=asc&indicator=after&per_page=3", pagination_cursor.after_cursor_url)
 
         pagination_cursor = described_class.new(relation, request, order: "asc", per_page: 3, indicator: "before", cursor: dummies[9].id)
 
         assert_nil(pagination_cursor.start_cursor)
         assert_not(pagination_cursor.start_cursor?)
-        assert_equal("http://test.upper.town/servers?order=asc", pagination_cursor.start_cursor_url)
+        assert_equal("http://uppertown.test/servers?order=asc", pagination_cursor.start_cursor_url)
 
         assert_equal(dummies[6].id, pagination_cursor.before_cursor)
         assert(pagination_cursor.has_before_cursor?)
-        assert_equal("http://test.upper.town/servers?order=asc&indicator=before&cursor=#{dummies[6].id}", pagination_cursor.before_cursor_url)
+        assert_equal("http://uppertown.test/servers?order=asc&indicator=before&cursor=#{dummies[6].id}", pagination_cursor.before_cursor_url)
 
         assert_equal(dummies[8].id, pagination_cursor.after_cursor)
         assert(pagination_cursor.has_after_cursor?)
-        assert_equal("http://test.upper.town/servers?order=asc&indicator=after&cursor=#{dummies[8].id}", pagination_cursor.after_cursor_url)
+        assert_equal("http://uppertown.test/servers?order=asc&indicator=after&cursor=#{dummies[8].id}", pagination_cursor.after_cursor_url)
 
         pagination_cursor = described_class.new(relation, request, order: "asc", per_page: 3, indicator: "before", cursor: dummies[9].id, per_page_from_request: true)
 
         assert_nil(pagination_cursor.start_cursor)
         assert_not(pagination_cursor.start_cursor?)
-        assert_equal("http://test.upper.town/servers?order=asc&per_page=3", pagination_cursor.start_cursor_url)
+        assert_equal("http://uppertown.test/servers?order=asc&per_page=3", pagination_cursor.start_cursor_url)
 
         assert_equal(dummies[6].id, pagination_cursor.before_cursor)
         assert(pagination_cursor.has_before_cursor?)
-        assert_equal("http://test.upper.town/servers?order=asc&indicator=before&cursor=#{dummies[6].id}&per_page=3", pagination_cursor.before_cursor_url)
+        assert_equal("http://uppertown.test/servers?order=asc&indicator=before&cursor=#{dummies[6].id}&per_page=3", pagination_cursor.before_cursor_url)
 
         assert_equal(dummies[8].id, pagination_cursor.after_cursor)
         assert(pagination_cursor.has_after_cursor?)
-        assert_equal("http://test.upper.town/servers?order=asc&indicator=after&cursor=#{dummies[8].id}&per_page=3", pagination_cursor.after_cursor_url)
+        assert_equal("http://uppertown.test/servers?order=asc&indicator=after&cursor=#{dummies[8].id}&per_page=3", pagination_cursor.after_cursor_url)
       end
 
       describe "string, date, datetime, decimal, float column_type" do
@@ -682,77 +682,77 @@ class PaginationCursorTest < ActiveSupport::TestCase
             create_dummy(uuid: SecureRandom.uuid, date: "2024-09-05", datetime: "2024-09-01T12:00:00.000005Z", decimal: "0.000005".to_d, float: 0.000005) # index 4
           ]
           relation = Dummy.order(id: :desc)
-          request = build_request(url: "http://test.upper.town/servers")
+          request = build_request(url: "http://uppertown.test/servers")
 
           pagination_cursor = described_class.new(relation, request, order: "asc", per_page: 2, indicator: "after", cursor: dummies[1].uuid, cursor_type: :string, cursor_column: :uuid)
 
           assert_nil(pagination_cursor.start_cursor)
           assert_not(pagination_cursor.start_cursor?)
-          assert_equal("http://test.upper.town/servers?order=asc", pagination_cursor.start_cursor_url)
+          assert_equal("http://uppertown.test/servers?order=asc", pagination_cursor.start_cursor_url)
 
           assert_equal(dummies[2].uuid, pagination_cursor.before_cursor)
           assert(pagination_cursor.has_before_cursor?)
-          assert_equal("http://test.upper.town/servers?order=asc&indicator=before&cursor=#{dummies[2].uuid}", pagination_cursor.before_cursor_url)
+          assert_equal("http://uppertown.test/servers?order=asc&indicator=before&cursor=#{dummies[2].uuid}", pagination_cursor.before_cursor_url)
 
           assert_equal(dummies[3].uuid, pagination_cursor.after_cursor)
           assert(pagination_cursor.has_after_cursor?)
-          assert_equal("http://test.upper.town/servers?order=asc&indicator=after&cursor=#{dummies[3].uuid}", pagination_cursor.after_cursor_url)
+          assert_equal("http://uppertown.test/servers?order=asc&indicator=after&cursor=#{dummies[3].uuid}", pagination_cursor.after_cursor_url)
 
           pagination_cursor = described_class.new(relation, request, order: "asc", per_page: 2, indicator: "after", cursor: dummies[1].date, cursor_type: :date, cursor_column: :date)
 
           assert_nil(pagination_cursor.start_cursor)
           assert_not(pagination_cursor.start_cursor?)
-          assert_equal("http://test.upper.town/servers?order=asc", pagination_cursor.start_cursor_url)
+          assert_equal("http://uppertown.test/servers?order=asc", pagination_cursor.start_cursor_url)
 
           assert_equal(dummies[2].date, pagination_cursor.before_cursor)
           assert(pagination_cursor.has_before_cursor?)
-          assert_equal("http://test.upper.town/servers?order=asc&indicator=before&cursor=#{dummies[2].date.iso8601}", pagination_cursor.before_cursor_url)
+          assert_equal("http://uppertown.test/servers?order=asc&indicator=before&cursor=#{dummies[2].date.iso8601}", pagination_cursor.before_cursor_url)
 
           assert_equal(dummies[3].date, pagination_cursor.after_cursor)
           assert(pagination_cursor.has_after_cursor?)
-          assert_equal("http://test.upper.town/servers?order=asc&indicator=after&cursor=#{dummies[3].date.iso8601}", pagination_cursor.after_cursor_url)
+          assert_equal("http://uppertown.test/servers?order=asc&indicator=after&cursor=#{dummies[3].date.iso8601}", pagination_cursor.after_cursor_url)
 
           pagination_cursor = described_class.new(relation, request, order: "asc", per_page: 2, indicator: "after", cursor: dummies[1].datetime, cursor_type: :datetime, cursor_column: :datetime)
 
           assert_nil(pagination_cursor.start_cursor)
           assert_not(pagination_cursor.start_cursor?)
-          assert_equal("http://test.upper.town/servers?order=asc", pagination_cursor.start_cursor_url)
+          assert_equal("http://uppertown.test/servers?order=asc", pagination_cursor.start_cursor_url)
 
           assert_equal(dummies[2].datetime, pagination_cursor.before_cursor)
           assert(pagination_cursor.has_before_cursor?)
-          assert_equal("http://test.upper.town/servers?order=asc&indicator=before&cursor=#{ERB::Util.url_encode(dummies[2].datetime.iso8601(6))}", pagination_cursor.before_cursor_url)
+          assert_equal("http://uppertown.test/servers?order=asc&indicator=before&cursor=#{ERB::Util.url_encode(dummies[2].datetime.iso8601(6))}", pagination_cursor.before_cursor_url)
 
           assert_equal(dummies[3].datetime, pagination_cursor.after_cursor)
           assert(pagination_cursor.has_after_cursor?)
-          assert_equal("http://test.upper.town/servers?order=asc&indicator=after&cursor=#{ERB::Util.url_encode(dummies[3].datetime.iso8601(6))}", pagination_cursor.after_cursor_url)
+          assert_equal("http://uppertown.test/servers?order=asc&indicator=after&cursor=#{ERB::Util.url_encode(dummies[3].datetime.iso8601(6))}", pagination_cursor.after_cursor_url)
 
           pagination_cursor = described_class.new(relation, request, order: "asc", per_page: 2, indicator: "after", cursor: dummies[1].decimal, cursor_type: :decimal, cursor_column: :decimal)
 
           assert_nil(pagination_cursor.start_cursor)
           assert_not(pagination_cursor.start_cursor?)
-          assert_equal("http://test.upper.town/servers?order=asc", pagination_cursor.start_cursor_url)
+          assert_equal("http://uppertown.test/servers?order=asc", pagination_cursor.start_cursor_url)
 
           assert_equal(dummies[2].decimal, pagination_cursor.before_cursor)
           assert(pagination_cursor.has_before_cursor?)
-          assert_equal("http://test.upper.town/servers?order=asc&indicator=before&cursor=#{dummies[2].decimal}", pagination_cursor.before_cursor_url)
+          assert_equal("http://uppertown.test/servers?order=asc&indicator=before&cursor=#{dummies[2].decimal}", pagination_cursor.before_cursor_url)
 
           assert_equal(dummies[3].decimal, pagination_cursor.after_cursor)
           assert(pagination_cursor.has_after_cursor?)
-          assert_equal("http://test.upper.town/servers?order=asc&indicator=after&cursor=#{dummies[3].decimal}", pagination_cursor.after_cursor_url)
+          assert_equal("http://uppertown.test/servers?order=asc&indicator=after&cursor=#{dummies[3].decimal}", pagination_cursor.after_cursor_url)
 
           pagination_cursor = described_class.new(relation, request, order: "asc", per_page: 2, indicator: "after", cursor: dummies[1].float, cursor_type: :float, cursor_column: :float)
 
           assert_nil(pagination_cursor.start_cursor)
           assert_not(pagination_cursor.start_cursor?)
-          assert_equal("http://test.upper.town/servers?order=asc", pagination_cursor.start_cursor_url)
+          assert_equal("http://uppertown.test/servers?order=asc", pagination_cursor.start_cursor_url)
 
           assert_equal(dummies[2].float, pagination_cursor.before_cursor)
           assert(pagination_cursor.has_before_cursor?)
-          assert_equal("http://test.upper.town/servers?order=asc&indicator=before&cursor=#{dummies[2].float}", pagination_cursor.before_cursor_url)
+          assert_equal("http://uppertown.test/servers?order=asc&indicator=before&cursor=#{dummies[2].float}", pagination_cursor.before_cursor_url)
 
           assert_equal(dummies[3].float, pagination_cursor.after_cursor)
           assert(pagination_cursor.has_after_cursor?)
-          assert_equal("http://test.upper.town/servers?order=asc&indicator=after&cursor=#{dummies[3].float}", pagination_cursor.after_cursor_url)
+          assert_equal("http://uppertown.test/servers?order=asc&indicator=after&cursor=#{dummies[3].float}", pagination_cursor.after_cursor_url)
         end
       end
     end

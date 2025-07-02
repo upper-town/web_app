@@ -3,7 +3,7 @@
 module RequestTestHelper
   def build_request(
     method: "GET",
-    url: "http://test.upper.town/",
+    url: "http://uppertown.test/",
     params: {},
     headers: {},
     env: {},
