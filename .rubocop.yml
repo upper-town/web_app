@@ -13,11 +13,11 @@ plugins:
   - rubocop-thread_safety
 
 AllCops:
-  TargetRubyVersion: 3.4.4
-  # NewCops: disable
   Exclude:
     - vendor/**/*
     - db/*schema.rb
+  NewCops: enable
+  TargetRubyVersion: 3.4.4
 
 Bundler/DuplicatedGroup:
   Enabled: false
@@ -98,9 +98,15 @@ Minitest/AssertEmptyLiteral:
   Enabled: false
 Minitest/AssertEqual:
   Enabled: false
+Minitest/AssertPredicate:
+  Enabled: false
+Minitest/AssertRaisesCompoundBody:
+  Enabled: false
+Minitest/MultipleAssertions:
+  Enabled: false
 Naming/MethodParameterName:
   MinNameLength: 1
-Naming/PredicateName:
+Naming/PredicatePrefix:
   Enabled: false
 Naming/VariableNumber:
   Enabled: false
@@ -136,6 +142,8 @@ Style/EmptyMethod:
 Style/GuardClause:
   Enabled: false
 Style/HashEachMethods:
+  Enabled: false
+Style/HashSyntax:
   Enabled: false
 Style/HashTransformValues:
   Enabled: false
@@ -185,6 +193,8 @@ Style/TernaryParentheses:
   Enabled: false
 Style/TrailingCommaInArguments:
   Enabled: true
+Style/TrailingCommaInArrayLiteral:
+  Enabled: false
 Style/TrailingUnderscoreVariable:
   Enabled: false
 Style/WordArray:

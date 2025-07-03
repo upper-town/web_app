@@ -34,7 +34,7 @@ module Servers
 
         account_uuids.each do |uuid|
           if !Account.exists?(uuid: uuid)
-            result.add_errors("Account #{uuid} does not exist")
+            result.add_error("Account #{uuid} does not exist")
           end
         end
 

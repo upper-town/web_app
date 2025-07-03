@@ -37,83 +37,45 @@ class ApplicationResultTest < ActiveSupport::TestCase
     end
   end
 
-  describe "#add_errors" do
-    it "adds to errors from Hash with Symbol, String, Number or Array values, and skips blanks" do
-      result = described_class.failure("existing error message")
-
-      result.add_errors(
-        {
-          error_code_1: "error message",
-          error_code_2: :invalid,
-          error_code_3: 123456,
-          error_code_4: " ",
-          error_code_5: false,
-          error_code_6: nil,
-          error_code_7: [],
-          error_code_8: ["error message", :invalid, 123456, " ", false, nil]
-        }
-      )
-
-      assert(result.errors.of_kind?(:base, "existing error message"))
-      assert(result.errors.of_kind?(:error_code_1, "error message"))
-      assert(result.errors.of_kind?(:error_code_2, :invalid))
-      assert(result.errors.of_kind?(:error_code_3, "123456"))
-      assert(result.errors.of_kind?(:error_code_8, "error message"))
-      assert(result.errors.of_kind?(:error_code_8, :invalid))
-      assert(result.errors.of_kind?(:error_code_8, "123456"))
-      assert_equal(
-        {
-          base: ["existing error message"],
-          error_code_1: ["error message"],
-          error_code_2: ["is invalid"],
-          error_code_3: ["123456"],
-          error_code_8: ["error message", "is invalid", "123456"]
-        },
-        result.errors.messages
-      )
-    end
-
-    it "adds to errors from Array, and skips blanks" do
-      result = described_class.failure("existing error message")
-
-      result.add_errors(
-        ["error message", :invalid, 123456, " ", false, nil]
-      )
-
-      assert(result.errors.of_kind?(:base, "existing error message"))
-      assert(result.errors.of_kind?(:base, "error message"))
-      assert(result.errors.of_kind?(:base, :invalid))
-      assert(result.errors.of_kind?(:base, "123456"))
-      assert_equal(
-        { base: ["existing error message", "error message", "is invalid", "123456"] },
-        result.errors.messages
-      )
-    end
-
-    it "adds to errors from String, Symbol, Numeric, and skips blanks" do
+  describe "#add_error" do
+    it "adds to errors from Symbol" do
       [
-        ["error message", ["existing error message", "error message"], { base: ["existing error message", "error message"] }],
-        [:invalid,        ["existing error message", :invalid],        { base: ["existing error message", "is invalid"] }],
-        [123456,          ["existing error message", "123456"],        { base: ["existing error message", "123456"]  }],
-        [1234.56,         ["existing error message", "1234.56"],       { base: ["existing error message", "1234.56"] }]
-      ].each do |error_value, expected_error_types, expected_error_messages|
-        result = described_class.failure("existing error message")
+        [:some_error, nil,             { some_error: ["is invalid"] }],
+        [:some_error, :invalid,        { some_error: ["is invalid"] }],
+        [:some_error, "error message", { some_error: ["error message"] }],
+        [:"",         "error message", {}]
+      ].each do |value, type, expected_errors_messages|
+        result = described_class.new
+        result.add_error(value, type)
 
-        result.add_errors(error_value)
-
-        expected_error_types.each do |expected_type|
-          assert(result.errors.of_kind?(:base, expected_type), "Failed for #{error_value.inspect}")
-        end
-        assert_equal(expected_error_messages, result.errors.messages)
+        assert_equal(expected_errors_messages, result.errors.messages)
       end
+    end
 
-      [" ", "", :'', false, nil].each do |blank_error_value|
-        result = described_class.failure("existing error message")
+    it "adds to errors from Numeric" do
+      [
+        [0,   nil,             { :"0" =>   ["is invalid"] }],
+        [42,  :invalid,        { :"42" =>  ["is invalid"] }],
+        [100, "error message", { :"100" => ["error message"] }],
+      ].each do |value, type, expected_errors_messages|
+        result = described_class.new
+        result.add_error(value, type)
 
-        result.add_errors(blank_error_value)
+        assert_equal(expected_errors_messages, result.errors.messages)
+      end
+    end
 
-        assert(result.errors.of_kind?(:base, "existing error message"), "Failed for #{blank_error_value.inspect}")
-        assert_equal({ base: ["existing error message"] }, result.errors.messages)
+    it "adds to errors from String" do
+      [
+        ["error message", nil,            { base: ["error message"] }],
+        ["error message", :ignored_type,  { base: ["error message"] }],
+        ["error message", "ignored type", { base: ["error message"] }],
+        ["",              "ignored type", {}],
+      ].each do |value, type, expected_errors_messages|
+        result = described_class.new
+        result.add_error(value, type)
+
+        assert_equal(expected_errors_messages, result.errors.messages)
       end
     end
 
@@ -123,8 +85,7 @@ class ApplicationResultTest < ActiveSupport::TestCase
       active_model_errors.add(:description, :invalid)
 
       result = described_class.failure("existing error message")
-
-      result.add_errors(active_model_errors)
+      result.add_error(active_model_errors)
 
       assert(result.errors.of_kind?(:base, "existing error message"))
       assert(result.errors.of_kind?(:name, "error message"))
@@ -139,54 +100,44 @@ class ApplicationResultTest < ActiveSupport::TestCase
       )
     end
 
-    it "adds to errors from true with a generic message" do
-      result = described_class.failure("existing error message")
+    it "adds to errors from true with default error" do
+      result = described_class.new
+      result.add_error(true)
 
-      result.add_errors(true)
-
-      assert(result.errors.of_kind?(:base, :generic_error))
-      assert(result.errors.of_kind?(:base, "existing error message"))
-      assert_equal(
-        { base: ["existing error message", "An error has occurred"] },
-        result.errors.messages
-      )
+      assert(result.errors.of_kind?(:base, :invalid))
+      assert_equal({ base: ["is invalid"] }, result.errors.messages)
     end
 
     it "does not add to errors from nil, false" do
-      [nil, false].each do |nil_or_false_error_value|
-        result = described_class.failure("existing error message")
+      [nil, false].each do |value|
+        result = described_class.new
+        result.add_error(value)
 
-        result.add_errors(nil_or_false_error_value)
-
-        assert(result.errors.of_kind?(:base, "existing error message"), "Failed for #{nil_or_false_error_value.inspect}")
-        assert_equal(
-          { base: ["existing error message"] },
-          result.errors.messages
-        )
+        assert_empty(result.errors)
       end
     end
 
     it "raises an error when errors class is invalid" do
       error = assert_raises(StandardError) do
-        result = described_class.failure("existing error message")
-        result.add_errors(Time.current)
+        result = described_class.new
+        result.add_error(Time.current)
       end
 
       assert_match(
-        /ApplicationResult: invalid error_values\.class/,
+        /ApplicationResult: invalid class for error/,
         error.message
       )
     end
   end
 
   describe ".success" do
-    it "creates an instance with empty errors and empty data" do
+    it "creates an instance with empty errors" do
       result = described_class.success
 
       assert_empty(result.errors)
     end
 
-    it "accepts only data" do
+    it "accepts data" do
       result = generic_result_class.success(attr: "value")
 
       assert_empty(result.errors)
@@ -196,10 +147,10 @@ class ApplicationResultTest < ActiveSupport::TestCase
 
   describe ".failure" do
     it "ensures a Result instance is created with errors, defaults to a generic error" do
-      result = described_class.failure(nil)
+      result = described_class.failure(nil, nil)
 
-      assert(result.errors.of_kind?(:base, :generic_error))
-      assert_equal({ base: ["An error has occurred"] }, result.errors.messages)
+      assert(result.errors.of_kind?(:base, :invalid))
+      assert_equal({ base: ["is invalid"] }, result.errors.messages)
     end
 
     it "accepts errors and data" do
