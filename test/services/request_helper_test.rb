@@ -125,27 +125,27 @@ class RequestHelperTest < ActiveSupport::TestCase
         end
       end
 
-      describe "when scheme is http/https but host does not match APP_HOST" do
+      describe "when scheme is http/https but host does not match web_app_host" do
         it "returns false" do
           [
             "https://example.com",
             "http://example.com"
           ].each do |referer|
-            request = build_request(referer: referer)
+            request = build_request(referer:)
 
             assert_not(described_class.new(request).app_host_referer?, "Failed for #{referer.inspect}")
           end
         end
       end
 
-      describe "when scheme is http/https and host matches APP_HOST" do
+      describe "when scheme is http/https and host matches web_app_host" do
         it "returns true" do
           [
             "https://uppertown.test",
             "http://uppertown.test/",
             "http://uppertown.test:3100"
           ].each do |referer|
-            request = build_request(referer: referer)
+            request = build_request(referer:)
 
             assert(described_class.new(request).app_host_referer?, "Failed for #{referer.inspect}")
           end

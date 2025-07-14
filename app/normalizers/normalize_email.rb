@@ -3,16 +3,16 @@
 class NormalizeEmail
   include Callable
 
-  attr_reader :email
+  attr_reader :str
 
-  def initialize(email)
-    @email = email
+  def initialize(str)
+    @str = str
   end
 
   def call
-    return if email.nil?
-    return "" if email.blank?
+    return if str.nil?
+    return "" if str.blank?
 
-    email.gsub(/[[:space:]]/, "").downcase
+    str.gsub(/[[:space:]]/, "").downcase
   end
 end

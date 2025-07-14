@@ -63,7 +63,7 @@ class AdminTokenTest < ActiveSupport::TestCase
           ].each do |token, expires_at|
             existing_admin_token = create_admin_token(
               token_digest: TokenGenerator::Admin.digest(token),
-              expires_at: expires_at
+              expires_at:
             )
 
             assert_equal(existing_admin_token, described_class.find_by_token(token, true))

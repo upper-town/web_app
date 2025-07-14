@@ -14,8 +14,8 @@ class AdminAccountTest < ActiveSupport::TestCase
 
     it "has_may admin_account_roles" do
       admin_account = create_admin_account
-      admin_account_role1 = create_admin_account_role(admin_account: admin_account)
-      admin_account_role2 = create_admin_account_role(admin_account: admin_account)
+      admin_account_role1 = create_admin_account_role(admin_account:)
+      admin_account_role2 = create_admin_account_role(admin_account:)
 
       assert_equal(
         [admin_account_role1, admin_account_role2].sort,
@@ -25,8 +25,8 @@ class AdminAccountTest < ActiveSupport::TestCase
 
     it "has_may roles through admin_account_roles" do
       admin_account = create_admin_account
-      admin_account_role1 = create_admin_account_role(admin_account: admin_account)
-      admin_account_role2 = create_admin_account_role(admin_account: admin_account)
+      admin_account_role1 = create_admin_account_role(admin_account:)
+      admin_account_role2 = create_admin_account_role(admin_account:)
 
       assert_equal(
         [admin_account_role1.admin_role, admin_account_role2.admin_role].sort,
@@ -45,8 +45,8 @@ class AdminAccountTest < ActiveSupport::TestCase
       create_admin_role_permission(admin_role: admin_role2, admin_permission: admin_permission1)
       create_admin_role_permission(admin_role: admin_role2, admin_permission: admin_permission3)
       admin_account = create_admin_account
-      create_admin_account_role(admin_account: admin_account, admin_role: admin_role1)
-      create_admin_account_role(admin_account: admin_account, admin_role: admin_role2)
+      create_admin_account_role(admin_account:, admin_role: admin_role1)
+      create_admin_account_role(admin_account:, admin_role: admin_role2)
 
       assert_equal(
         [admin_permission1, admin_permission2, admin_permission3].sort,

@@ -8,8 +8,8 @@ module JsonCookie
   def write_json_cookie(name, object, expires: nil, httponly: true)
     json_cookie_jar[name] = {
       value: object.to_json,
-      expires: expires,
-      httponly: httponly,
+      expires:,
+      httponly:,
       secure: Rails.env.production?
     }
   end

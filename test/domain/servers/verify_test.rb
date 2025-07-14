@@ -9,7 +9,7 @@ class Servers::VerifyTest < ActiveSupport::TestCase
     describe "when VerifyAccounts::Perform suceeds" do
       it "updates server as verified" do
         freeze_time do
-          server = create_server(verified_at: nil, verified_notice: "something")
+          server = create_server(verified_at: nil, metadata: { notice: "something" })
           verify_accounts_perform = Servers::VerifyAccounts::Perform.new(server)
 
           called = 0
@@ -26,14 +26,14 @@ class Servers::VerifyTest < ActiveSupport::TestCase
 
           server.reload
           assert_equal(Time.current, server.verified_at)
-          assert_equal("", server.verified_notice)
+          assert_equal({}, server.metadata)
         end
       end
     end
 
     describe "when VerifyAccounts::Perform fails" do
       it "updates server as not verified" do
-        server = create_server(verified_at: Time.current, verified_notice: "")
+        server = create_server(verified_at: Time.current, metadata: {})
         verify_accounts_perform = Servers::VerifyAccounts::Perform.new(server)
 
         called = 0
@@ -44,7 +44,9 @@ class Servers::VerifyTest < ActiveSupport::TestCase
         end) do
           verify_accounts_perform.stub(:call, ->(_current_time) do
             called += 1
-            Result.failure(["an error", "another error"])
+            result = Result.new
+            result.add_error("an error") ; result.add_error("another error")
+            result
           end) do
             described_class.new(server).call
           end
@@ -53,7 +55,7 @@ class Servers::VerifyTest < ActiveSupport::TestCase
 
         server.reload
         assert_nil(server.verified_at)
-        assert_equal("an error; another error", server.verified_notice)
+        assert_equal("an error; another error", server.metadata["notice"])
       end
     end
   end

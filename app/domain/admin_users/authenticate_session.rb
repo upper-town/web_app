@@ -8,43 +8,39 @@ module AdminUsers
       attribute :admin_user
     end
 
-    attr_reader :session
+    attr_reader :email, :password
 
-    def initialize(session)
-      @session = session
+    def initialize(email, password)
+      @email = email
+      @password = password
     end
 
     def call
-      result = check_exists
-      return result if result.failure?
-
-      authenticate
+      if admin_user_exists?
+        if (admin_user = authenticate_admin_user)
+          count_sign_in_attempt(succeeded: true)
+          Result.success(admin_user:)
+        else
+          count_sign_in_attempt(succeeded: false)
+          Result.failure(:incorrect_password_or_email)
+        end
+      else
+        Result.failure(:incorrect_password_or_email)
+      end
     end
 
     private
 
-    def check_exists
-      if AdminUser.exists?(email: session.email)
-        Result.success
-      else
-        Result.failure("Incorrect password or email")
-      end
+    def admin_user_exists?
+      AdminUser.exists?(email:)
     end
 
-    def authenticate
-      admin_user = AdminUser.authenticate_by(email: session.email, password: session.password)
-
-      if admin_user
-        count_attempt(true)
-        Result.success(admin_user: admin_user)
-      else
-        count_attempt(false)
-        Result.failure("Incorrect password or email")
-      end
+    def authenticate_admin_user
+      AdminUser.authenticate_by(email:, password:)
     end
 
-    def count_attempt(succeeded)
-      AdminUsers::CountSignInAttemptsJob.perform_later(session.email, succeeded)
+    def count_sign_in_attempt(succeeded:)
+      AdminUsers::CountSignInAttemptsJob.perform_later(email, succeeded)
     end
   end
 end

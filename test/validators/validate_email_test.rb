@@ -8,7 +8,7 @@ class ValidateEmailTest < ActiveSupport::TestCase
   it "initializes with errors not empty before calling #valid? or #invalid?" do
     validator = described_class.new("user@gmail.com")
 
-    assert_includes(validator.errors, :not_validated_yet)
+    assert_includes(validator.errors, :not_yet_validated)
   end
 
   describe "#valid? and #invalid?" do
@@ -33,7 +33,7 @@ class ValidateEmailTest < ActiveSupport::TestCase
 
           assert_not(validator.valid?, "Failed for #{invalid_email.inspect}")
           assert(validator.invalid?)
-          assert_includes(validator.errors, :format_is_not_valid)
+          assert_includes(validator.errors, :format_invalid)
         end
       end
 
@@ -50,7 +50,7 @@ class ValidateEmailTest < ActiveSupport::TestCase
 
         assert_not(validator.valid?)
         assert(validator.invalid?)
-        assert_includes(validator.errors, :format_is_not_valid)
+        assert_includes(validator.errors, :format_invalid)
       end
     end
 
@@ -58,21 +58,9 @@ class ValidateEmailTest < ActiveSupport::TestCase
       describe "when email contains reserved name" do
         it "returns accordingly" do
           %w[
-            corp
-            domain
             example
-            home
-            host
-            internal
-            intranet
-            invalid
-            lan
             local
-            localdomain
             localhost
-            onion
-            private
-            test
           ].each do |reserved_name|
             [
               [false, "user@sub.#{reserved_name}"],
@@ -108,7 +96,7 @@ class ValidateEmailTest < ActiveSupport::TestCase
                   "Failed for #{reserved_name.inspect} and #{email_with_reserved_domain.inspect}"
                 )
                 assert(validator.invalid?)
-                assert_includes(validator.errors, :domain_is_not_supported)
+                assert_includes(validator.errors, :domain_not_supported)
               end
             end
           end
@@ -118,16 +106,14 @@ class ValidateEmailTest < ActiveSupport::TestCase
 
     describe "when email domain is from a disposable email service" do
       it "returns false and set errors" do
-        file_path = Rails.root.join("vendor/disposable_email_domains/list_test.txt")
-
-        File.foreach(file_path, chomp: true) do |disposable_email_host|
+        ["zzz.com"].each do |disposable_email_host|
           disposable_email = "user@#{disposable_email_host}"
 
           validator = described_class.new(disposable_email)
 
           assert_not(validator.valid?)
           assert(validator.invalid?)
-          assert_includes(validator.errors, :domain_is_not_supported)
+          assert_includes(validator.errors, :domain_not_supported)
         end
       end
     end

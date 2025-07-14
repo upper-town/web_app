@@ -22,7 +22,7 @@ module Users
         if ActiveSupport::SecurityUtils.secure_compare(email, current_user_email)
           authenticate_and_change_user_email
         else
-          Result.failure("Incorrect current email address")
+          Result.failure(:incorrect_current_email)
         end
       end
 
@@ -32,18 +32,15 @@ module Users
         user = User.authenticate_by(email: current_user_email, password:)
 
         if !user
-          Result.failure("Incorrect password")
+          Result.failure(:incorrect_password_or_email)
         else
           ActiveRecord::Base.transaction do
             user.update!(change_email:)
             user.unconfirm_change_email!
           end
 
-          Users::ChangeEmailConfirmations::EmailJob
-            .set(wait: 30.seconds)
-            .perform_later(user)
-
-          Result.success(user: user)
+          EmailJob.perform_later(user)
+          Result.success(user:)
         end
       end
     end

@@ -16,7 +16,8 @@ class Users::PasswordResets::UpdateTest < ActiveSupport::TestCase
           result = described_class.new(token, code, "testpass").call
 
           assert(result.failure?)
-          assert(result.errors.of_kind?(:base, :invalid_or_expired_code))
+          assert_nil(result.user)
+          assert(result.errors.key?(:invalid_or_expired_token_or_code))
         end
       end
 
@@ -29,7 +30,8 @@ class Users::PasswordResets::UpdateTest < ActiveSupport::TestCase
           result = described_class.new(token, code, "testpass").call
 
           assert(result.failure?)
-          assert(result.errors.of_kind?(:base, :invalid_or_expired_code))
+          assert_nil(result.user)
+          assert(result.errors.key?(:invalid_or_expired_token_or_code))
         end
       end
     end
@@ -44,7 +46,8 @@ class Users::PasswordResets::UpdateTest < ActiveSupport::TestCase
           result = described_class.new(token, code, "testpass").call
 
           assert(result.failure?)
-          assert(result.errors.of_kind?(:base, :invalid_or_expired_code))
+          assert_nil(result.user)
+          assert(result.errors.key?(:invalid_or_expired_token_or_code))
         end
       end
 
@@ -57,7 +60,8 @@ class Users::PasswordResets::UpdateTest < ActiveSupport::TestCase
           result = described_class.new(token, code, "testpass").call
 
           assert(result.failure?)
-          assert(result.errors.of_kind?(:base, :invalid_or_expired_code))
+          assert_nil(result.user)
+          assert(result.errors.key?(:invalid_or_expired_token_or_code))
         end
       end
     end
@@ -72,17 +76,17 @@ class Users::PasswordResets::UpdateTest < ActiveSupport::TestCase
           result = described_class.new(token, code, "testpass").call
 
           assert(result.success?)
-          assert(user, result.user)
+          assert_equal(user, result.user)
           assert(result.user.password_digest.present?)
           assert(result.user.password_reset_at.present?)
-          assert(User.find_by_token(:password_reset, token).blank?)
-          assert(User.find_by_code(:password_reset, code).blank?)
+          assert_nil(User.find_by_token(:password_reset, token))
+          assert_nil(User.find_by_code(:password_reset, code))
         end
       end
 
       describe "when reset password raises an error" do
         it "raises an error" do
-          user  = create_user
+          user  = create_user(password: nil)
           token = user.generate_token!(:password_reset)
           code  = user.generate_code!(:password_reset)
 
@@ -98,8 +102,10 @@ class Users::PasswordResets::UpdateTest < ActiveSupport::TestCase
           assert_equal(1, called)
 
           user.reload
-          assert(user.password_digest.blank?)
-          assert(user.password_reset_at.blank?)
+          assert_nil(user.password_digest)
+          assert_nil(user.password_reset_at)
+          assert_not_nil(User.find_by_token(:password_reset, token))
+          assert_not_nil(User.find_by_code(:password_reset, code))
         end
       end
     end

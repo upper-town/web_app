@@ -48,14 +48,14 @@ class ServerBannerImageUploadedFileTest < ActiveSupport::TestCase
   describe "#present?, #blank?, #presence" do
     it "delegates to uploaded_file" do
       uploaded_file = nil
-      instance = described_class.new(uploaded_file: uploaded_file)
+      instance = described_class.new(uploaded_file:)
 
       assert(instance.blank?)
       assert_not(instance.present?)
       assert_nil(instance.presence)
 
       uploaded_file = StringIO.new("aaa")
-      instance = described_class.new(uploaded_file: uploaded_file)
+      instance = described_class.new(uploaded_file:)
 
       assert_not(instance.blank?)
       assert(instance.present?)

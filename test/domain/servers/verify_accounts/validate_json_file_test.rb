@@ -15,7 +15,7 @@ class Servers::VerifyAccounts::ValidateJsonFileTest < ActiveSupport::TestCase
       }
     )
 
-    assert_includes(validator.errors, :not_validated_yet)
+    assert_includes(validator.errors, :not_yet_validated)
   end
 
   describe "#valid? and #invalid?" do
@@ -33,7 +33,7 @@ class Servers::VerifyAccounts::ValidateJsonFileTest < ActiveSupport::TestCase
 
           assert_not(validator.valid?, "Failed for #{data.inspect}")
           assert(validator.invalid?)
-          assert_includes(validator.errors, :invalid_json_schema)
+          assert_includes(validator.errors, :json_schema_invalid)
         end
       end
     end

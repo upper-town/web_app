@@ -3,7 +3,8 @@
 module Auth
   module ManageAdminSession
     ADMIN_SESSION_NAME = "admin_session"
-    ADMIN_SESSION_REMEMBER_ME_DURATION = 4.months
+    ADMIN_SESSION_MIN_DURATION = 1.day
+    ADMIN_SESSION_MAX_DURATION = 4.months
 
     extend ActiveSupport::Concern
 
@@ -30,8 +31,8 @@ module Auth
     end
 
     def sign_in_admin_user!(admin_user, remember_me = false)
-      token = create_admin_session(admin_user, remember_me)
-      write_admin_session_value(token, remember_me)
+      attributes = create_admin_session(admin_user, remember_me)
+      write_admin_session_value(attributes, remember_me)
     end
 
     def sign_out_admin_user!(destroy_all: false)
@@ -49,11 +50,11 @@ module Auth
       AdminSessionValue.new(read_json_cookie(ADMIN_SESSION_NAME))
     end
 
-    def write_admin_session_value(token, remember_me)
+    def write_admin_session_value(attributes, remember_me)
       write_json_cookie(
         ADMIN_SESSION_NAME,
-        AdminSessionValue.new(token: token),
-        expires: remember_me ? ADMIN_SESSION_REMEMBER_ME_DURATION : nil
+        AdminSessionValue.new(attributes),
+        expires: remember_me ? ADMIN_SESSION_MAX_DURATION : nil
       )
     end
 
@@ -65,14 +66,14 @@ module Auth
       token, token_digest, token_last_four = TokenGenerator::AdminSession.generate
 
       admin_user.sessions.create!(
-        token_digest: token_digest,
-        token_last_four: token_last_four,
+        token_digest:,
+        token_last_four:,
         remote_ip:  request.remote_ip,
         user_agent: request.user_agent,
-        expires_at: remember_me ? ADMIN_SESSION_REMEMBER_ME_DURATION.from_now : 1.day.from_now
+        expires_at: remember_me ? ADMIN_SESSION_MAX_DURATION.from_now : ADMIN_SESSION_MIN_DURATION.from_now
       )
 
-      token
+      { token: }
     end
 
     def find_admin_session

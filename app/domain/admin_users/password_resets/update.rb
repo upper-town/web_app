@@ -9,35 +9,37 @@ module AdminUsers
         attribute :admin_user
       end
 
-      attr_reader :password_reset_edit
+      attr_reader :token, :code, :password
 
-      def initialize(password_reset_edit)
-        @password_reset_edit = password_reset_edit
+      def initialize(token, code, password)
+        @token = token
+        @code = code
+        @password = password
       end
 
       def call
         admin_user = find_admin_user
 
-        if admin_user
-          reset_password(admin_user)
+        if !admin_user
+          Result.failure(:invalid_or_expired_token_or_code)
         else
-          Result.failure("Invalid or expired token")
+          ActiveRecord::Base.transaction do
+            admin_user.reset_password!(password)
+            admin_user.expire_token!(:password_reset)
+            admin_user.expire_code!(:password_reset)
+          end
+
+          Result.success(admin_user:)
         end
       end
 
       private
 
       def find_admin_user
-        AdminUser.find_by_token(:password_reset, password_reset_edit.token)
-      end
+        admin_user_by_token = AdminUser.find_by_token(:password_reset, token)
+        admin_user_by_code  = AdminUser.find_by_code(:password_reset, code)
 
-      def reset_password(admin_user)
-        ActiveRecord::Base.transaction do
-          admin_user.reset_password!(password_reset_edit.password)
-          admin_user.expire_token!(:password_reset)
-        end
-
-        Result.success(admin_user: admin_user)
+        admin_user_by_token == admin_user_by_code ? admin_user_by_code : nil
       end
     end
   end

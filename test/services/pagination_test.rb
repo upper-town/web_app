@@ -40,8 +40,8 @@ class PaginationTest < ActiveSupport::TestCase
         pagination = described_class.new(
           relation,
           request,
-          page: page,
-          page_max: page_max
+          page:,
+          page_max:
         )
 
         assert_equal(expected_page, pagination.page)
@@ -92,9 +92,9 @@ class PaginationTest < ActiveSupport::TestCase
         pagination = described_class.new(
           relation,
           request,
-          per_page: per_page,
-          per_page_max: per_page_max,
-          per_page_from_request: per_page_from_request
+          per_page:,
+          per_page_max:,
+          per_page_from_request:
         )
 
         assert_equal(expected_per_page, pagination.per_page, "Failed for #{per_page.inspect} and #{expected_per_page.inspect}")
@@ -115,8 +115,8 @@ class PaginationTest < ActiveSupport::TestCase
         pagination = described_class.new(
           relation,
           request,
-          per_page: per_page,
-          page: page
+          per_page:,
+          page:
         )
 
         assert_equal(expected_offset, pagination.offset)
@@ -272,7 +272,7 @@ class PaginationTest < ActiveSupport::TestCase
       ].each do |page, expected_prev_page, expected_has_prev_page|
         relation = Dummy.all
         request = build_request
-        pagination = described_class.new(relation, request, page: page)
+        pagination = described_class.new(relation, request, page:)
 
         assert_equal(expected_prev_page, pagination.prev_page)
         assert_equal(expected_has_prev_page, pagination.has_prev_page?)

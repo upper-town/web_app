@@ -2,50 +2,62 @@
 
 module Users
   class PasswordResetsController < ApplicationController
+    before_action -> { set_password_reset(:create) }, only: [:new,  :create]
+    before_action -> { set_password_reset(:update) }, only: [:edit, :update]
+
     rate_limit(
-      to: 4,
+      to: 6,
       within: 1.minute,
-      with: -> { rate_limit_for_create },
+      with: -> { render_rate_limited(:new) },
       name: "create",
-      only: :create
+      only: [:create]
+    )
+    rate_limit(
+      to: 6,
+      within: 1.minute,
+      with: -> { render_rate_limited(:edit) },
+      name: "update",
+      only: [:update]
     )
 
-    before_action :captcha_for_create, only: :create
+    before_action(
+      -> do
+        check_captcha_and_render(:new, if_success_skip_paths: [
+          new_users_password_reset_path,
+          users_password_reset_path
+        ])
+      end,
+      only: [:create]
+    )
 
     def new
-      @user = User.new
     end
 
     def create
-      set_user_for_create
-
-      if @user.invalid?
-        flash.now[:alert] = @user.errors
+      if @password_reset.invalid?
+        flash.now[:alert] = @password_reset.errors
         render(:new, status: :unprocessable_entity)
 
         return
       end
 
-      result = PasswordResets::Create.new(@user.email).call
+      result = PasswordResets::Create.call(@password_reset.email)
 
-      flash[:info] = t("info.verification_code_sent")
+      flash[:info] = t("users.password_resets.verification_code_sent")
 
       if result.success?
         password_reset_token = result.user.generate_token!(:password_reset)
         redirect_to(edit_users_password_reset_path(token: password_reset_token))
       else
-        dummy_token = TokenGenerator.generate
+        dummy_token, _, _ = TokenGenerator.generate
         redirect_to(edit_users_password_reset_path(token: dummy_token))
       end
     end
 
     def edit
-      @password_reset = PasswordReset.new(token: token_from_params)
     end
 
     def update
-      @password_reset = PasswordReset.new(password_reset_params)
-
       if @password_reset.invalid?
         flash.now[:alert] = @password_reset.errors
         render(:edit, status: :unprocessable_entity)
@@ -53,14 +65,14 @@ module Users
         return
       end
 
-      result = PasswordResets::Update.new(
+      result = PasswordResets::Update.call(
         @password_reset.token,
         @password_reset.code,
         @password_reset.password
-      ).call
+      )
 
       if result.success?
-        flash[:notice] = t("notice.password_set")
+        flash[:notice] = t("users.password_resets.password_set")
         redirect_to(signed_in_user? ? inside_dashboard_path : users_sign_in_path)
       else
         flash.now[:alert] = result.errors
@@ -70,44 +82,17 @@ module Users
 
     private
 
-    def rate_limit_for_create
-      set_user_for_create
-
-      flash.now[:alert] = t("alert.please_try_again_later_too_many_requests")
-      render(:new, status: :unprocessable_entity)
+    def set_password_reset(action)
+      @password_reset = PasswordReset.new(permitted_params[:users_password_reset])
+      @password_reset.action = action
+      @password_reset.token = permitted_params[:token].presence if @password_reset.token.blank?
     end
 
-    def captcha_for_create
-      set_user_for_create
-
-      result = captcha_check(
-        if_success_skip_paths: [
-          new_users_password_reset_path,
-          users_password_reset_path
-        ]
+    def permitted_params
+      params.permit(
+        :token,
+        users_password_reset: [:email, :token, :code, :password]
       )
-
-      if result.failure?
-        flash.now[:alert] = result.errors
-        render(:new, status: :unprocessable_entity)
-      end
-    end
-
-    def set_user_for_create
-      @user = User.new(user_params)
-      @user.skip_email_uniqueness_validation = true
-    end
-
-    def user_params
-      params.expect(user: [:email])
-    end
-
-    def password_reset_params
-      params.expect(users_password_reset: [:token, :code, :password])
-    end
-
-    def token_from_params
-      @token_from_params ||= params["token"].presence
     end
   end
 end

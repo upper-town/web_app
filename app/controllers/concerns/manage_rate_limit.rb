@@ -3,13 +3,20 @@
 module ManageRateLimit
   extend ActiveSupport::Concern
 
-  module ClassMethods
+  class_methods do
     def rate_limit(...)
-      super(...) unless rate_limit_disabled?
+      super unless rate_limit_disabled?
     end
 
     def rate_limit_disabled?
       Rails.env.local? && ENV.fetch("RATE_LIMIT_DISABLED", "false") == "true"
     end
+  end
+
+  private
+
+  def render_rate_limited(view)
+    flash.now[:alert] = t("shared.message.please_try_again_later_too_many_requests")
+    render(view, status: :too_many_requests)
   end
 end

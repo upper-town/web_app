@@ -11,7 +11,7 @@ class TokenGenerator::AdminTest < ActiveSupport::TestCase
       secret = Rails.application.key_generator.generate_key(ENV.fetch("TOKEN_ADMIN_SALT"))
 
       token, token_digest, token_last_four = described_class.generate
-      assert_match(/\A[#{base58_chars}]{48}\z/, token)
+      assert_match(/\A[#{base58_chars}]{44}\z/, token)
       assert_equal(OpenSSL::HMAC.hexdigest("sha256", secret, token), token_digest)
       assert_equal(token.last(4), token_last_four)
     end

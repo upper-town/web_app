@@ -13,10 +13,15 @@ class GameSelectOptionsQuery
     :cache_expires_in
   )
 
-  def initialize(only_in_use: false, cache_enabled: true, cache_key: CACHE_KEY, cache_expires_in: CACHE_EXPIRES_IN)
+  def initialize(
+    only_in_use: false,
+    cache_enabled: true,
+    cache_key: CACHE_KEY,
+    cache_expires_in: CACHE_EXPIRES_IN
+  )
     @only_in_use = only_in_use
     @cache_enabled = cache_enabled
-    @cache_key = "#{cache_key}#{only_in_use ? ':only_in_use' : ''}"
+    @cache_key = "#{cache_key}#{':only_in_use' if only_in_use}"
     @cache_expires_in = cache_expires_in
   end
 

@@ -14,45 +14,45 @@ class Servers::ConsolidateRankingsTest < ActiveSupport::TestCase
         server2 = create_server
         server3 = create_server
 
-        create_server_vote(server: server1, game: game, country_code: "US", created_at: "2023-12-31T23:59:59Z") # Server1, US, NOT current year, NOT current month, NOT current week
-        create_server_vote(server: server1, game: game, country_code: "US", created_at: "2024-01-01T00:00:00Z") # Server1, US, current year,     NOT current month, NOT current week
-        create_server_vote(server: server1, game: game, country_code: "US", created_at: "2024-03-01T12:00:00Z") # Server1, US, current year,     NOT current month, NOT current week
-        create_server_vote(server: server1, game: game, country_code: "US", created_at: "2024-04-01T12:00:00Z") # Server1, US, current year,     NOT current month, NOT current week
-        create_server_vote(server: server1, game: game, country_code: "US", created_at: "2024-09-01T23:59:59Z") # Server1, US, current year,     current month,     NOT current week
-        create_server_vote(server: server1, game: game, country_code: "US", created_at: "2024-09-02T00:00:00Z") # Server1, US, current year,     current month,     current week
-        create_server_vote(server: server1, game: game, country_code: "US", created_at: "2024-09-06T12:00:00Z") # Server1, US, current year,     current month,     current week
-        create_server_vote(server: server1, game: game, country_code: "BR", created_at: "2024-09-07T12:00:00Z") # Server1, BR, current year,     current month,     current week
-        create_server_vote(server: server1, game: game, country_code: "BR", created_at: "2024-09-08T12:00:00Z") # Server1, BR, current year,     current month,     current week
+        create_server_vote(server: server1, game:, country_code: "US", created_at: "2023-12-31T23:59:59Z") # Server1, US, NOT current year, NOT current month, NOT current week
+        create_server_vote(server: server1, game:, country_code: "US", created_at: "2024-01-01T00:00:00Z") # Server1, US, current year,     NOT current month, NOT current week
+        create_server_vote(server: server1, game:, country_code: "US", created_at: "2024-03-01T12:00:00Z") # Server1, US, current year,     NOT current month, NOT current week
+        create_server_vote(server: server1, game:, country_code: "US", created_at: "2024-04-01T12:00:00Z") # Server1, US, current year,     NOT current month, NOT current week
+        create_server_vote(server: server1, game:, country_code: "US", created_at: "2024-09-01T23:59:59Z") # Server1, US, current year,     current month,     NOT current week
+        create_server_vote(server: server1, game:, country_code: "US", created_at: "2024-09-02T00:00:00Z") # Server1, US, current year,     current month,     current week
+        create_server_vote(server: server1, game:, country_code: "US", created_at: "2024-09-06T12:00:00Z") # Server1, US, current year,     current month,     current week
+        create_server_vote(server: server1, game:, country_code: "BR", created_at: "2024-09-07T12:00:00Z") # Server1, BR, current year,     current month,     current week
+        create_server_vote(server: server1, game:, country_code: "BR", created_at: "2024-09-08T12:00:00Z") # Server1, BR, current year,     current month,     current week
 
-        create_server_vote(server: server2, game: game, country_code: "US", created_at: "2024-01-01T00:00:00Z") # Server2, US, current year,     NOT current month, NOT current week
-        create_server_vote(server: server2, game: game, country_code: "US", created_at: "2024-01-02T00:00:00Z") # Server2, US, current year,     NOT current month, NOT current week
-        create_server_vote(server: server2, game: game, country_code: "US", created_at: "2024-01-03T00:00:00Z") # Server2, US, current year,     NOT current month, NOT current week
-        create_server_vote(server: server2, game: game, country_code: "US", created_at: "2024-01-04T00:00:00Z") # Server2, US, current year,     NOT current month, NOT current week
+        create_server_vote(server: server2, game:, country_code: "US", created_at: "2024-01-01T00:00:00Z") # Server2, US, current year,     NOT current month, NOT current week
+        create_server_vote(server: server2, game:, country_code: "US", created_at: "2024-01-02T00:00:00Z") # Server2, US, current year,     NOT current month, NOT current week
+        create_server_vote(server: server2, game:, country_code: "US", created_at: "2024-01-03T00:00:00Z") # Server2, US, current year,     NOT current month, NOT current week
+        create_server_vote(server: server2, game:, country_code: "US", created_at: "2024-01-04T00:00:00Z") # Server2, US, current year,     NOT current month, NOT current week
 
-        create_server_vote(server: server3, game: game, country_code: "US", created_at: "2024-09-01T12:00:00Z") # Server3, US, current year,     current month,     NOT current week
-        create_server_vote(server: server3, game: game, country_code: "US", created_at: "2024-09-01T13:00:00Z") # Server3, US, current year,     current month,     NOT current week
-        create_server_vote(server: server3, game: game, country_code: "US", created_at: "2024-09-01T14:00:00Z") # Server3, US, current year,     current month,     NOT current week
-        create_server_vote(server: server3, game: game, country_code: "US", created_at: "2024-09-01T15:00:00Z") # Server3, US, current year,     current month,     NOT current week
-        create_server_vote(server: server3, game: game, country_code: "US", created_at: "2024-09-01T23:59:59Z") # Server3, US, current year,     current month,     NOT current week
+        create_server_vote(server: server3, game:, country_code: "US", created_at: "2024-09-01T12:00:00Z") # Server3, US, current year,     current month,     NOT current week
+        create_server_vote(server: server3, game:, country_code: "US", created_at: "2024-09-01T13:00:00Z") # Server3, US, current year,     current month,     NOT current week
+        create_server_vote(server: server3, game:, country_code: "US", created_at: "2024-09-01T14:00:00Z") # Server3, US, current year,     current month,     NOT current week
+        create_server_vote(server: server3, game:, country_code: "US", created_at: "2024-09-01T15:00:00Z") # Server3, US, current year,     current month,     NOT current week
+        create_server_vote(server: server3, game:, country_code: "US", created_at: "2024-09-01T23:59:59Z") # Server3, US, current year,     current month,     NOT current week
 
         server_stat_assertions = -> do
-          assert_equal(1, ServerStat.find_by!(period: "year", reference_date: "2024-12-31", game: game, country_code: "US",  server: server1).ranking_number)
-          assert_equal(2, ServerStat.find_by!(period: "year", reference_date: "2024-12-31", game: game, country_code: "US",  server: server3).ranking_number)
-          assert_equal(3, ServerStat.find_by!(period: "year", reference_date: "2024-12-31", game: game, country_code: "US",  server: server2).ranking_number)
-          assert_equal(1, ServerStat.find_by!(period: "year", reference_date: "2024-12-31", game: game, country_code: "BR",  server: server1).ranking_number)
-          assert_equal(1, ServerStat.find_by!(period: "year", reference_date: "2024-12-31", game: game, country_code: "all", server: server1).ranking_number)
-          assert_equal(2, ServerStat.find_by!(period: "year", reference_date: "2024-12-31", game: game, country_code: "all", server: server3).ranking_number)
-          assert_equal(3, ServerStat.find_by!(period: "year", reference_date: "2024-12-31", game: game, country_code: "all", server: server2).ranking_number)
+          assert_equal(1, ServerStat.find_by!(period: "year", reference_date: "2024-12-31", game:, country_code: "US",  server: server1).ranking_number)
+          assert_equal(2, ServerStat.find_by!(period: "year", reference_date: "2024-12-31", game:, country_code: "US",  server: server3).ranking_number)
+          assert_equal(3, ServerStat.find_by!(period: "year", reference_date: "2024-12-31", game:, country_code: "US",  server: server2).ranking_number)
+          assert_equal(1, ServerStat.find_by!(period: "year", reference_date: "2024-12-31", game:, country_code: "BR",  server: server1).ranking_number)
+          assert_equal(1, ServerStat.find_by!(period: "year", reference_date: "2024-12-31", game:, country_code: "all", server: server1).ranking_number)
+          assert_equal(2, ServerStat.find_by!(period: "year", reference_date: "2024-12-31", game:, country_code: "all", server: server3).ranking_number)
+          assert_equal(3, ServerStat.find_by!(period: "year", reference_date: "2024-12-31", game:, country_code: "all", server: server2).ranking_number)
 
-          assert_equal(1, ServerStat.find_by!(period: "month", reference_date: "2024-09-30", game: game, country_code: "US",  server: server3).ranking_number)
-          assert_equal(2, ServerStat.find_by!(period: "month", reference_date: "2024-09-30", game: game, country_code: "US",  server: server1).ranking_number)
-          assert_equal(1, ServerStat.find_by!(period: "month", reference_date: "2024-09-30", game: game, country_code: "BR",  server: server1).ranking_number)
-          assert_equal(1, ServerStat.find_by!(period: "month", reference_date: "2024-09-30", game: game, country_code: "all", server: server3).ranking_number)
-          assert_equal(2, ServerStat.find_by!(period: "month", reference_date: "2024-09-30", game: game, country_code: "all", server: server1).ranking_number)
+          assert_equal(1, ServerStat.find_by!(period: "month", reference_date: "2024-09-30", game:, country_code: "US",  server: server3).ranking_number)
+          assert_equal(2, ServerStat.find_by!(period: "month", reference_date: "2024-09-30", game:, country_code: "US",  server: server1).ranking_number)
+          assert_equal(1, ServerStat.find_by!(period: "month", reference_date: "2024-09-30", game:, country_code: "BR",  server: server1).ranking_number)
+          assert_equal(1, ServerStat.find_by!(period: "month", reference_date: "2024-09-30", game:, country_code: "all", server: server3).ranking_number)
+          assert_equal(2, ServerStat.find_by!(period: "month", reference_date: "2024-09-30", game:, country_code: "all", server: server1).ranking_number)
 
-          assert_equal(1, ServerStat.find_by!(period: "week", reference_date: "2024-09-08", game: game, country_code: "US",  server: server1).ranking_number)
-          assert_equal(1, ServerStat.find_by!(period: "week", reference_date: "2024-09-08", game: game, country_code: "BR",  server: server1).ranking_number)
-          assert_equal(1, ServerStat.find_by!(period: "week", reference_date: "2024-09-08", game: game, country_code: "all", server: server1).ranking_number)
+          assert_equal(1, ServerStat.find_by!(period: "week", reference_date: "2024-09-08", game:, country_code: "US",  server: server1).ranking_number)
+          assert_equal(1, ServerStat.find_by!(period: "week", reference_date: "2024-09-08", game:, country_code: "BR",  server: server1).ranking_number)
+          assert_equal(1, ServerStat.find_by!(period: "week", reference_date: "2024-09-08", game:, country_code: "all", server: server1).ranking_number)
         end
 
         travel_to(current_time) do
@@ -97,71 +97,71 @@ class Servers::ConsolidateRankingsTest < ActiveSupport::TestCase
         server2 = create_server
         server3 = create_server
 
-        create_server_vote(server: server1, game: game, country_code: "US", created_at: "2023-12-31T23:59:59Z") # Server1, US, 2023, 2023-12, 2023-12-31
-        create_server_vote(server: server1, game: game, country_code: "US", created_at: "2024-01-01T00:00:00Z") # Server1, US, 2024, 2024-01, 2024-01-07
-        create_server_vote(server: server1, game: game, country_code: "US", created_at: "2024-03-01T12:00:00Z") # Server1, US, 2024, 2024-03, 2024-03-03
-        create_server_vote(server: server1, game: game, country_code: "US", created_at: "2024-04-01T12:00:00Z") # Server1, US, 2024, 2024-04, 2024-04-07
-        create_server_vote(server: server1, game: game, country_code: "US", created_at: "2024-09-01T23:59:59Z") # Server1, US, 2024, 2024-09, 2024-09-01
-        create_server_vote(server: server1, game: game, country_code: "US", created_at: "2024-09-02T00:00:00Z") # Server1, US, 2024, 2024-09, 2024-09-08
-        create_server_vote(server: server1, game: game, country_code: "US", created_at: "2024-09-06T12:00:00Z") # Server1, US, 2024, 2024-09, 2024-09-08
-        create_server_vote(server: server1, game: game, country_code: "BR", created_at: "2024-09-07T12:00:00Z") # Server1, BR, 2024, 2024-09, 2024-09-08
-        create_server_vote(server: server1, game: game, country_code: "BR", created_at: "2024-09-08T12:00:00Z") # Server1, BR, 2024, 2024-09, 2024-09-08
+        create_server_vote(server: server1, game:, country_code: "US", created_at: "2023-12-31T23:59:59Z") # Server1, US, 2023, 2023-12, 2023-12-31
+        create_server_vote(server: server1, game:, country_code: "US", created_at: "2024-01-01T00:00:00Z") # Server1, US, 2024, 2024-01, 2024-01-07
+        create_server_vote(server: server1, game:, country_code: "US", created_at: "2024-03-01T12:00:00Z") # Server1, US, 2024, 2024-03, 2024-03-03
+        create_server_vote(server: server1, game:, country_code: "US", created_at: "2024-04-01T12:00:00Z") # Server1, US, 2024, 2024-04, 2024-04-07
+        create_server_vote(server: server1, game:, country_code: "US", created_at: "2024-09-01T23:59:59Z") # Server1, US, 2024, 2024-09, 2024-09-01
+        create_server_vote(server: server1, game:, country_code: "US", created_at: "2024-09-02T00:00:00Z") # Server1, US, 2024, 2024-09, 2024-09-08
+        create_server_vote(server: server1, game:, country_code: "US", created_at: "2024-09-06T12:00:00Z") # Server1, US, 2024, 2024-09, 2024-09-08
+        create_server_vote(server: server1, game:, country_code: "BR", created_at: "2024-09-07T12:00:00Z") # Server1, BR, 2024, 2024-09, 2024-09-08
+        create_server_vote(server: server1, game:, country_code: "BR", created_at: "2024-09-08T12:00:00Z") # Server1, BR, 2024, 2024-09, 2024-09-08
 
-        create_server_vote(server: server2, game: game, country_code: "US", created_at: "2024-01-01T00:00:00Z") # Server2, US, 2024, 2024-01, 2024-01-07
-        create_server_vote(server: server2, game: game, country_code: "US", created_at: "2024-01-02T00:00:00Z") # Server2, US, 2024, 2024-01, 2024-01-07
-        create_server_vote(server: server2, game: game, country_code: "US", created_at: "2024-01-03T00:00:00Z") # Server2, US, 2024, 2024-01, 2024-01-07
-        create_server_vote(server: server2, game: game, country_code: "US", created_at: "2024-01-04T00:00:00Z") # Server2, US, 2024, 2024-01, 2024-01-07
+        create_server_vote(server: server2, game:, country_code: "US", created_at: "2024-01-01T00:00:00Z") # Server2, US, 2024, 2024-01, 2024-01-07
+        create_server_vote(server: server2, game:, country_code: "US", created_at: "2024-01-02T00:00:00Z") # Server2, US, 2024, 2024-01, 2024-01-07
+        create_server_vote(server: server2, game:, country_code: "US", created_at: "2024-01-03T00:00:00Z") # Server2, US, 2024, 2024-01, 2024-01-07
+        create_server_vote(server: server2, game:, country_code: "US", created_at: "2024-01-04T00:00:00Z") # Server2, US, 2024, 2024-01, 2024-01-07
 
-        create_server_vote(server: server3, game: game, country_code: "US", created_at: "2024-09-01T12:00:00Z") # Server3, US, 2024, 2024-09, 2024-09-01
-        create_server_vote(server: server3, game: game, country_code: "US", created_at: "2024-09-01T13:00:00Z") # Server3, US, 2024, 2024-09, 2024-09-01
-        create_server_vote(server: server3, game: game, country_code: "US", created_at: "2024-09-01T14:00:00Z") # Server3, US, 2024, 2024-09, 2024-09-01
-        create_server_vote(server: server3, game: game, country_code: "US", created_at: "2024-09-01T15:00:00Z") # Server3, US, 2024, 2024-09, 2024-09-01
-        create_server_vote(server: server3, game: game, country_code: "US", created_at: "2024-09-01T23:59:59Z") # Server3, US, 2024, 2024-09, 2024-09-01
+        create_server_vote(server: server3, game:, country_code: "US", created_at: "2024-09-01T12:00:00Z") # Server3, US, 2024, 2024-09, 2024-09-01
+        create_server_vote(server: server3, game:, country_code: "US", created_at: "2024-09-01T13:00:00Z") # Server3, US, 2024, 2024-09, 2024-09-01
+        create_server_vote(server: server3, game:, country_code: "US", created_at: "2024-09-01T14:00:00Z") # Server3, US, 2024, 2024-09, 2024-09-01
+        create_server_vote(server: server3, game:, country_code: "US", created_at: "2024-09-01T15:00:00Z") # Server3, US, 2024, 2024-09, 2024-09-01
+        create_server_vote(server: server3, game:, country_code: "US", created_at: "2024-09-01T23:59:59Z") # Server3, US, 2024, 2024-09, 2024-09-01
 
         server_stat_assertions = -> do
-          assert_equal(1, ServerStat.find_by!(period: "year", reference_date: "2023-12-31", game: game, country_code: "US",  server: server1).ranking_number)
-          assert_equal(1, ServerStat.find_by!(period: "year", reference_date: "2023-12-31", game: game, country_code: "all", server: server1).ranking_number)
-          assert_equal(1, ServerStat.find_by!(period: "year", reference_date: "2024-12-31", game: game, country_code: "US",  server: server1).ranking_number)
-          assert_equal(2, ServerStat.find_by!(period: "year", reference_date: "2024-12-31", game: game, country_code: "US",  server: server3).ranking_number)
-          assert_equal(3, ServerStat.find_by!(period: "year", reference_date: "2024-12-31", game: game, country_code: "US",  server: server2).ranking_number)
-          assert_equal(1, ServerStat.find_by!(period: "year", reference_date: "2024-12-31", game: game, country_code: "BR",  server: server1).ranking_number)
-          assert_equal(1, ServerStat.find_by!(period: "year", reference_date: "2024-12-31", game: game, country_code: "all", server: server1).ranking_number)
-          assert_equal(2, ServerStat.find_by!(period: "year", reference_date: "2024-12-31", game: game, country_code: "all", server: server3).ranking_number)
-          assert_equal(3, ServerStat.find_by!(period: "year", reference_date: "2024-12-31", game: game, country_code: "all", server: server2).ranking_number)
+          assert_equal(1, ServerStat.find_by!(period: "year", reference_date: "2023-12-31", game:, country_code: "US",  server: server1).ranking_number)
+          assert_equal(1, ServerStat.find_by!(period: "year", reference_date: "2023-12-31", game:, country_code: "all", server: server1).ranking_number)
+          assert_equal(1, ServerStat.find_by!(period: "year", reference_date: "2024-12-31", game:, country_code: "US",  server: server1).ranking_number)
+          assert_equal(2, ServerStat.find_by!(period: "year", reference_date: "2024-12-31", game:, country_code: "US",  server: server3).ranking_number)
+          assert_equal(3, ServerStat.find_by!(period: "year", reference_date: "2024-12-31", game:, country_code: "US",  server: server2).ranking_number)
+          assert_equal(1, ServerStat.find_by!(period: "year", reference_date: "2024-12-31", game:, country_code: "BR",  server: server1).ranking_number)
+          assert_equal(1, ServerStat.find_by!(period: "year", reference_date: "2024-12-31", game:, country_code: "all", server: server1).ranking_number)
+          assert_equal(2, ServerStat.find_by!(period: "year", reference_date: "2024-12-31", game:, country_code: "all", server: server3).ranking_number)
+          assert_equal(3, ServerStat.find_by!(period: "year", reference_date: "2024-12-31", game:, country_code: "all", server: server2).ranking_number)
 
-          assert_equal(1, ServerStat.find_by!(period: "month", reference_date: "2023-12-31", game: game, country_code: "US",  server: server1).ranking_number)
-          assert_equal(1, ServerStat.find_by!(period: "month", reference_date: "2023-12-31", game: game, country_code: "all", server: server1).ranking_number)
-          assert_equal(1, ServerStat.find_by!(period: "month", reference_date: "2024-01-31", game: game, country_code: "US",  server: server2).ranking_number)
-          assert_equal(2, ServerStat.find_by!(period: "month", reference_date: "2024-01-31", game: game, country_code: "US",  server: server1).ranking_number)
-          assert_equal(1, ServerStat.find_by!(period: "month", reference_date: "2024-01-31", game: game, country_code: "all", server: server2).ranking_number)
-          assert_equal(2, ServerStat.find_by!(period: "month", reference_date: "2024-01-31", game: game, country_code: "all", server: server1).ranking_number)
-          assert_equal(1, ServerStat.find_by!(period: "month", reference_date: "2024-03-31", game: game, country_code: "US",  server: server1).ranking_number)
-          assert_equal(1, ServerStat.find_by!(period: "month", reference_date: "2024-03-31", game: game, country_code: "all", server: server1).ranking_number)
-          assert_equal(1, ServerStat.find_by!(period: "month", reference_date: "2024-04-30", game: game, country_code: "US",  server: server1).ranking_number)
-          assert_equal(1, ServerStat.find_by!(period: "month", reference_date: "2024-04-30", game: game, country_code: "all", server: server1).ranking_number)
-          assert_equal(1, ServerStat.find_by!(period: "month", reference_date: "2024-09-30", game: game, country_code: "US",  server: server3).ranking_number)
-          assert_equal(2, ServerStat.find_by!(period: "month", reference_date: "2024-09-30", game: game, country_code: "US",  server: server1).ranking_number)
-          assert_equal(1, ServerStat.find_by!(period: "month", reference_date: "2024-09-30", game: game, country_code: "BR",  server: server1).ranking_number)
-          assert_equal(1, ServerStat.find_by!(period: "month", reference_date: "2024-09-30", game: game, country_code: "all", server: server3).ranking_number)
-          assert_equal(2, ServerStat.find_by!(period: "month", reference_date: "2024-09-30", game: game, country_code: "all", server: server1).ranking_number)
+          assert_equal(1, ServerStat.find_by!(period: "month", reference_date: "2023-12-31", game:, country_code: "US",  server: server1).ranking_number)
+          assert_equal(1, ServerStat.find_by!(period: "month", reference_date: "2023-12-31", game:, country_code: "all", server: server1).ranking_number)
+          assert_equal(1, ServerStat.find_by!(period: "month", reference_date: "2024-01-31", game:, country_code: "US",  server: server2).ranking_number)
+          assert_equal(2, ServerStat.find_by!(period: "month", reference_date: "2024-01-31", game:, country_code: "US",  server: server1).ranking_number)
+          assert_equal(1, ServerStat.find_by!(period: "month", reference_date: "2024-01-31", game:, country_code: "all", server: server2).ranking_number)
+          assert_equal(2, ServerStat.find_by!(period: "month", reference_date: "2024-01-31", game:, country_code: "all", server: server1).ranking_number)
+          assert_equal(1, ServerStat.find_by!(period: "month", reference_date: "2024-03-31", game:, country_code: "US",  server: server1).ranking_number)
+          assert_equal(1, ServerStat.find_by!(period: "month", reference_date: "2024-03-31", game:, country_code: "all", server: server1).ranking_number)
+          assert_equal(1, ServerStat.find_by!(period: "month", reference_date: "2024-04-30", game:, country_code: "US",  server: server1).ranking_number)
+          assert_equal(1, ServerStat.find_by!(period: "month", reference_date: "2024-04-30", game:, country_code: "all", server: server1).ranking_number)
+          assert_equal(1, ServerStat.find_by!(period: "month", reference_date: "2024-09-30", game:, country_code: "US",  server: server3).ranking_number)
+          assert_equal(2, ServerStat.find_by!(period: "month", reference_date: "2024-09-30", game:, country_code: "US",  server: server1).ranking_number)
+          assert_equal(1, ServerStat.find_by!(period: "month", reference_date: "2024-09-30", game:, country_code: "BR",  server: server1).ranking_number)
+          assert_equal(1, ServerStat.find_by!(period: "month", reference_date: "2024-09-30", game:, country_code: "all", server: server3).ranking_number)
+          assert_equal(2, ServerStat.find_by!(period: "month", reference_date: "2024-09-30", game:, country_code: "all", server: server1).ranking_number)
 
-          assert_equal(1, ServerStat.find_by!(period: "week", reference_date: "2023-12-31", game: game, country_code: "US",  server: server1).ranking_number)
-          assert_equal(1, ServerStat.find_by!(period: "week", reference_date: "2023-12-31", game: game, country_code: "all", server: server1).ranking_number)
-          assert_equal(1, ServerStat.find_by!(period: "week", reference_date: "2024-01-07", game: game, country_code: "US",  server: server2).ranking_number)
-          assert_equal(2, ServerStat.find_by!(period: "week", reference_date: "2024-01-07", game: game, country_code: "US",  server: server1).ranking_number)
-          assert_equal(1, ServerStat.find_by!(period: "week", reference_date: "2024-01-07", game: game, country_code: "all", server: server2).ranking_number)
-          assert_equal(2, ServerStat.find_by!(period: "week", reference_date: "2024-01-07", game: game, country_code: "all", server: server1).ranking_number)
-          assert_equal(1, ServerStat.find_by!(period: "week", reference_date: "2024-03-03", game: game, country_code: "US",  server: server1).ranking_number)
-          assert_equal(1, ServerStat.find_by!(period: "week", reference_date: "2024-03-03", game: game, country_code: "all", server: server1).ranking_number)
-          assert_equal(1, ServerStat.find_by!(period: "week", reference_date: "2024-04-07", game: game, country_code: "US",  server: server1).ranking_number)
-          assert_equal(1, ServerStat.find_by!(period: "week", reference_date: "2024-04-07", game: game, country_code: "all", server: server1).ranking_number)
-          assert_equal(1, ServerStat.find_by!(period: "week", reference_date: "2024-09-01", game: game, country_code: "US",  server: server3).ranking_number)
-          assert_equal(2, ServerStat.find_by!(period: "week", reference_date: "2024-09-01", game: game, country_code: "US",  server: server1).ranking_number)
-          assert_equal(1, ServerStat.find_by!(period: "week", reference_date: "2024-09-01", game: game, country_code: "all", server: server3).ranking_number)
-          assert_equal(2, ServerStat.find_by!(period: "week", reference_date: "2024-09-01", game: game, country_code: "all", server: server1).ranking_number)
-          assert_equal(1, ServerStat.find_by!(period: "week", reference_date: "2024-09-08", game: game, country_code: "US",  server: server1).ranking_number)
-          assert_equal(1, ServerStat.find_by!(period: "week", reference_date: "2024-09-08", game: game, country_code: "BR",  server: server1).ranking_number)
-          assert_equal(1, ServerStat.find_by!(period: "week", reference_date: "2024-09-08", game: game, country_code: "all", server: server1).ranking_number)
+          assert_equal(1, ServerStat.find_by!(period: "week", reference_date: "2023-12-31", game:, country_code: "US",  server: server1).ranking_number)
+          assert_equal(1, ServerStat.find_by!(period: "week", reference_date: "2023-12-31", game:, country_code: "all", server: server1).ranking_number)
+          assert_equal(1, ServerStat.find_by!(period: "week", reference_date: "2024-01-07", game:, country_code: "US",  server: server2).ranking_number)
+          assert_equal(2, ServerStat.find_by!(period: "week", reference_date: "2024-01-07", game:, country_code: "US",  server: server1).ranking_number)
+          assert_equal(1, ServerStat.find_by!(period: "week", reference_date: "2024-01-07", game:, country_code: "all", server: server2).ranking_number)
+          assert_equal(2, ServerStat.find_by!(period: "week", reference_date: "2024-01-07", game:, country_code: "all", server: server1).ranking_number)
+          assert_equal(1, ServerStat.find_by!(period: "week", reference_date: "2024-03-03", game:, country_code: "US",  server: server1).ranking_number)
+          assert_equal(1, ServerStat.find_by!(period: "week", reference_date: "2024-03-03", game:, country_code: "all", server: server1).ranking_number)
+          assert_equal(1, ServerStat.find_by!(period: "week", reference_date: "2024-04-07", game:, country_code: "US",  server: server1).ranking_number)
+          assert_equal(1, ServerStat.find_by!(period: "week", reference_date: "2024-04-07", game:, country_code: "all", server: server1).ranking_number)
+          assert_equal(1, ServerStat.find_by!(period: "week", reference_date: "2024-09-01", game:, country_code: "US",  server: server3).ranking_number)
+          assert_equal(2, ServerStat.find_by!(period: "week", reference_date: "2024-09-01", game:, country_code: "US",  server: server1).ranking_number)
+          assert_equal(1, ServerStat.find_by!(period: "week", reference_date: "2024-09-01", game:, country_code: "all", server: server3).ranking_number)
+          assert_equal(2, ServerStat.find_by!(period: "week", reference_date: "2024-09-01", game:, country_code: "all", server: server1).ranking_number)
+          assert_equal(1, ServerStat.find_by!(period: "week", reference_date: "2024-09-08", game:, country_code: "US",  server: server1).ranking_number)
+          assert_equal(1, ServerStat.find_by!(period: "week", reference_date: "2024-09-08", game:, country_code: "BR",  server: server1).ranking_number)
+          assert_equal(1, ServerStat.find_by!(period: "week", reference_date: "2024-09-08", game:, country_code: "all", server: server1).ranking_number)
         end
 
         travel_to(current_time) do

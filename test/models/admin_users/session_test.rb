@@ -27,7 +27,15 @@ class AdminUsers::SessionTest < ActiveSupport::TestCase
       instance.validate
       assert(instance.errors.of_kind?(:email, :too_long))
 
-      instance = described_class.new(email: "user@upper.town")
+      instance = described_class.new(email: "xxx@xxx")
+      instance.validate
+      assert(instance.errors.of_kind?(:email, :format_invalid))
+
+      instance = described_class.new(email: "admin_user@example.com")
+      instance.validate
+      assert(instance.errors.of_kind?(:email, :domain_not_supported))
+
+      instance = described_class.new(email: "admin_user@upper.town")
       instance.validate
       assert_not(instance.errors.key?(:email))
     end
@@ -50,12 +58,10 @@ class AdminUsers::SessionTest < ActiveSupport::TestCase
   describe "normalizations" do
     it "normalizes email" do
       instance = described_class.new(email: nil)
-
       assert_nil(instance.email)
 
-      instance = described_class.new(email: "\n\t USER  @UPPER .Town \n")
-
-      assert_equal("user@upper.town", instance.email)
+      instance = described_class.new(email: "\n\t Admin_USER  @UPPER .Town \n")
+      assert_equal("admin_user@upper.town", instance.email)
     end
   end
 end

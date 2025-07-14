@@ -14,7 +14,8 @@ class Users::AuthenticateSessionTest < ActiveSupport::TestCase
         result = described_class.new(email, password).call
 
         assert(result.failure?)
-        assert(result.errors.of_kind?(:base, :incorrect_password_or_email))
+        assert_nil(result.user)
+        assert(result.errors.key?(:incorrect_password_or_email))
         assert_no_enqueued_jobs(only: Users::CountSignInAttemptsJob)
       end
     end
@@ -39,7 +40,8 @@ class Users::AuthenticateSessionTest < ActiveSupport::TestCase
           result = described_class.new("user@upper.town", "xxxxxxxx").call
 
           assert(result.failure?)
-          assert(result.errors.of_kind?(:base, :incorrect_password_or_email))
+          assert_nil(result.user)
+          assert(result.errors.key?(:incorrect_password_or_email))
           assert_enqueued_with(job: Users::CountSignInAttemptsJob, args: ["user@upper.town", false])
         end
       end

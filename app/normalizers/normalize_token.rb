@@ -3,16 +3,16 @@
 class NormalizeToken
   include Callable
 
-  attr_reader :token
+  attr_reader :str
 
-  def initialize(token)
-    @token = token
+  def initialize(str)
+    @str = str
   end
 
   def call
-    return if token.nil?
-    return "" if token.blank?
+    return if str.nil?
+    return "" if str.blank?
 
-    token.gsub(/[[:space:]]/, "")
+    str.gsub(/[[:space:]]/, "")
   end
 end

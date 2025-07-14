@@ -13,7 +13,7 @@ class SiteUrlValidatorTest < ActiveSupport::TestCase
         validator = described_class.new(attributes: [:site_url])
         validator.validate(record)
 
-        assert(record.errors.of_kind?(:site_url, :format_is_not_valid))
+        assert(record.errors.of_kind?(:site_url, :format_invalid))
       end
     end
 

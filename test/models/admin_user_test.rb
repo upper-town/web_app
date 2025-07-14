@@ -8,8 +8,8 @@ class AdminUserTest < ActiveSupport::TestCase
   describe "associations" do
     it "has many sessions" do
       admin_user = create_admin_user
-      admin_session1 = create_admin_session(admin_user: admin_user)
-      admin_session2 = create_admin_session(admin_user: admin_user)
+      admin_session1 = create_admin_session(admin_user:)
+      admin_session2 = create_admin_session(admin_user:)
 
       assert_equal(
         [admin_session1, admin_session2].sort,
@@ -22,8 +22,8 @@ class AdminUserTest < ActiveSupport::TestCase
 
     it "has many tokens" do
       admin_user = create_admin_user
-      admin_token1 = create_admin_token(admin_user: admin_user)
-      admin_token2 = create_admin_token(admin_user: admin_user)
+      admin_token1 = create_admin_token(admin_user:)
+      admin_token2 = create_admin_token(admin_user:)
 
       assert_equal(
         [admin_token1, admin_token2].sort,
@@ -36,7 +36,7 @@ class AdminUserTest < ActiveSupport::TestCase
 
     it "has one account" do
       admin_user = create_admin_user
-      admin_account = create_admin_account(admin_user: admin_user)
+      admin_account = create_admin_account(admin_user:)
 
       assert_equal(admin_account, admin_user.account)
       admin_user.destroy!
@@ -157,17 +157,17 @@ class AdminUserTest < ActiveSupport::TestCase
           freeze_time do
             admin_user = create_admin_user
             admin_token1 = create_admin_token(
-              admin_user: admin_user,
+              admin_user:,
               purpose: "email_confirmation",
               expires_at: 2.days.from_now
             )
             admin_token2 = create_admin_token(
-              admin_user: admin_user,
+              admin_user:,
               purpose: "email_confirmation",
               expires_at: 2.days.from_now
             )
             admin_token3 = create_admin_token(
-              admin_user: admin_user,
+              admin_user:,
               purpose: "something_else",
               expires_at: 2.days.from_now
             )
@@ -193,17 +193,17 @@ class AdminUserTest < ActiveSupport::TestCase
           freeze_time do
             admin_user = create_admin_user
             admin_token1 = create_admin_token(
-              admin_user: admin_user,
+              admin_user:,
               purpose: "email_confirmation",
               expires_at: 2.days.from_now
             )
             admin_token2 = create_admin_token(
-              admin_user: admin_user,
+              admin_user:,
               purpose: "email_confirmation",
               expires_at: 2.days.from_now
             )
             admin_token3 = create_admin_token(
-              admin_user: admin_user,
+              admin_user:,
               purpose: "something_else",
               expires_at: 2.days.from_now
             )
@@ -230,22 +230,10 @@ class AdminUserTest < ActiveSupport::TestCase
     describe "normalizations" do
       it "normalizes email" do
         admin_user = build_admin_user(email: nil)
-
         assert_nil(admin_user.email)
 
-        admin_user = build_admin_user(email: "\n\t admin.USER  @UPPER .Town \n")
-
-        assert_equal("admin.user@upper.town", admin_user.email)
-      end
-
-      it "normalizes change_email" do
-        admin_user = build_admin_user(change_email: nil)
-
-        assert_nil(admin_user.change_email)
-
-        admin_user = build_admin_user(change_email: "\n\t admin.USER  @UPPER .Town \n")
-
-        assert_equal("admin.user@upper.town", admin_user.change_email)
+        admin_user = build_admin_user(email: "\n\t Admin_USER  @UPPER .Town \n")
+        assert_equal("admin_user@upper.town", admin_user.email)
       end
     end
 
@@ -255,13 +243,13 @@ class AdminUserTest < ActiveSupport::TestCase
         admin_user.validate
         assert(admin_user.errors.of_kind?(:email, :blank))
 
-        admin_user = build_admin_user(email: "@upper.town")
+        admin_user = build_admin_user(email: "xxx@xxx")
         admin_user.validate
-        assert(admin_user.errors.of_kind?(:email, :format_is_not_valid))
+        assert(admin_user.errors.of_kind?(:email, :format_invalid))
 
-        admin_user = build_user(email: "admin.user@example.com")
+        admin_user = build_user(email: "admin_user@example.com")
         admin_user.validate
-        assert(admin_user.errors.of_kind?(:email, :domain_is_not_supported))
+        assert(admin_user.errors.of_kind?(:email, :domain_not_supported))
       end
     end
 
@@ -320,86 +308,6 @@ class AdminUserTest < ActiveSupport::TestCase
         admin_user.unconfirm_email!
 
         assert_nil(admin_user.email_confirmed_at)
-      end
-    end
-
-    describe "#confirmed_change_email?" do
-      describe "when change_email_confirmed_at is blank" do
-        it "returns false" do
-          admin_user = create_admin_user(change_email_confirmed_at: nil)
-
-          assert_not(admin_user.confirmed_change_email?)
-        end
-      end
-
-      describe "when change_email_confirmed_at is present" do
-        it "returns true" do
-          admin_user = create_admin_user(change_email_confirmed_at: Time.current)
-
-          assert(admin_user.confirmed_change_email?)
-        end
-      end
-    end
-
-    describe "#unconfirmed_change_email?" do
-      describe "when change_email_confirmed_at is blank" do
-        it "returns true" do
-          admin_user = create_admin_user(change_email_confirmed_at: nil)
-
-          assert(admin_user.unconfirmed_change_email?)
-        end
-      end
-
-      describe "when change_email_confirmed_at is present" do
-        it "returns false" do
-          admin_user = create_admin_user(change_email_confirmed_at: Time.current)
-
-          assert_not(admin_user.unconfirmed_change_email?)
-        end
-      end
-    end
-
-    describe "#confirm_change_email!" do
-      it "updates change_email_confirmed_at to the current time" do
-        freeze_time do
-          admin_user = create_admin_user(change_email_confirmed_at: nil)
-
-          admin_user.confirm_change_email!
-
-          assert_equal(Time.current, admin_user.change_email_confirmed_at)
-        end
-      end
-    end
-
-    describe "#unconfirm_change_email!" do
-      it "updates change_email_confirmed_at to nil" do
-        admin_user = create_admin_user(change_email_confirmed_at: Time.current)
-
-        admin_user.unconfirm_change_email!
-
-        assert_nil(admin_user.change_email_confirmed_at)
-      end
-    end
-
-    describe "#revert_change_email!" do
-      it "reverts email to the previous_email" do
-        freeze_time do
-          admin_user = create_admin_user(
-            email: "admin.user@upper.town",
-            email_confirmed_at: 2.hours.ago,
-            change_email: "admin.user@upper.town",
-            change_email_confirmed_at: 1.hour.ago,
-            change_email_reverted_at: nil
-          )
-
-          admin_user.revert_change_email!("previous.admin.user@upper.town")
-
-          assert_equal("previous.admin.user@upper.town", admin_user.email)
-          assert_equal(Time.current, admin_user.email_confirmed_at)
-          assert_nil(admin_user.change_email)
-          assert_nil(admin_user.change_email_confirmed_at)
-          assert_equal(Time.current, admin_user.change_email_reverted_at)
-        end
       end
     end
   end
@@ -474,7 +382,7 @@ class AdminUserTest < ActiveSupport::TestCase
 
   describe "HasPassword" do
     it "has secure password" do
-      admin_user = build_admin_user(email: "admin.user@upper.town", password: "abcd1234")
+      admin_user = build_admin_user(email: "admin_user@upper.town", password: "abcd1234")
 
       assert(admin_user.password_digest.present?)
       assert_not_equal("abcd1234", admin_user.password_digest)
@@ -483,7 +391,7 @@ class AdminUserTest < ActiveSupport::TestCase
 
       assert_equal(
         admin_user,
-        described_class.authenticate_by(email: "admin.user@upper.town", password: "abcd1234")
+        described_class.authenticate_by(email: "admin_user@upper.town", password: "abcd1234")
       )
     end
 

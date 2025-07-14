@@ -4,18 +4,15 @@ module AdminUsers
   module EmailConfirmations
     class EmailJob < ApplicationJob
       queue_as "critical"
-      # TODO: rewrite lock: :while_executing)
+      limits_concurrency key: ->(admin_user) { admin_user }
 
       def perform(admin_user)
+        email_confirmation_token = admin_user.generate_token!(:email_confirmation)
         email_confirmation_code = admin_user.generate_code!(:email_confirmation)
         admin_user.update!(email_confirmation_sent_at: Time.current)
 
-        AdminUsersMailer
-          .with(
-            email: admin_user.email,
-            email_confirmation_code: email_confirmation_code
-          )
-          .email_confirmation
+        AdminUserMailer
+          .email_confirmation(admin_user.email, email_confirmation_token, email_confirmation_code)
           .deliver_now
       end
     end

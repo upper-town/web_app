@@ -1,5 +1,6 @@
 <h2>
-  Sign Up: Verification Code
+  <%= t("shared.nav.sign_up") %>:
+  <%= t("users.email_confirmations.edit.title") %>
 </h2>
 
 <%= form_with(
@@ -11,23 +12,27 @@
   <%= form.hidden_field(:token) %>
 
   <div class="my-3">
-    <%= form.label(:token, "Enter the verification code we have sent to your email", class: "form-label") %>
+    <%= form.label(:code, class: "form-label") %>
     <%= form.text_field(
       :code,
       autofocus: true,
-      autocomplete: "code",
+      autocomplete: "off",
       class: "form-control",
       aria: { describedby: "code-help" },
       required: true
     ) %>
   </div>
 
+  <div id="code-help" class="form-text">
+    <%= t("users.email_confirmations.edit.code_help") %>
+  </div>
+
   <div class="my-3">
     <%= form.submit(
-      "Confirm my email address",
+      t("users.email_confirmations.edit.submit"),
       class: "btn btn-primary",
       data: {
-        "turbo-submits-with" => "Confirming..."
+        "turbo-submits-with" => t("shared.button.confirming")
       }.compact,
     ) %>
   </div>

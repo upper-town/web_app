@@ -10,10 +10,11 @@ class Users::PasswordResets::CreateTest < ActiveSupport::TestCase
       it "returns failure and does not send password reset email" do
         create_user(email: "user@upper.town")
 
-        result = described_class.new("xxxx@upper.town").call
+        result = described_class.new("xxx@upper.town").call
 
         assert(result.failure?)
-        assert(result.errors.of_kind?(:base, :user_not_found))
+        assert_nil(result.user)
+        assert(result.errors.key?(:user_not_found))
         assert_no_enqueued_jobs(only: Users::PasswordResets::EmailJob)
       end
     end

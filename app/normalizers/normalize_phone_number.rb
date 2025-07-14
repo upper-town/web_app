@@ -3,16 +3,16 @@
 class NormalizePhoneNumber
   include Callable
 
-  attr_reader :phone_number
+  attr_reader :str
 
-  def initialize(phone_number)
-    @phone_number = phone_number
+  def initialize(str)
+    @str = str
   end
 
   def call
-    return if phone_number.nil?
-    return "" if phone_number.blank?
+    return if str.nil?
+    return "" if str.blank?
 
-    Phonelib.parse(phone_number.gsub(/[[:space:]]/, "")).full_e164
+    Phonelib.parse(str.gsub(/[[:space:]]/, "")).full_e164
   end
 end

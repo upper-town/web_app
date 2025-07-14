@@ -37,10 +37,10 @@ module Servers
       ordered_grouped_server_stats.each do |_country_code, values|
         values.each.with_index(1) do |(_country_code, id), index|
           ServerStat
-            .where(id: id)
+            .where(id:)
             .update_all(
               ranking_number: index,
-              ranking_number_consolidated_at: ranking_number_consolidated_at
+              ranking_number_consolidated_at:
             )
         end
       end
@@ -48,7 +48,7 @@ module Servers
 
     def ordered_grouped_server_stats_query(period, reference_date)
       ServerStat
-        .where(period: period, reference_date: reference_date, game: game)
+        .where(period:, reference_date:, game:)
         .where.not(vote_count_consolidated_at: nil)
         .order(:country_code, vote_count: :desc, id: :desc)
         .pluck(:country_code, :id)

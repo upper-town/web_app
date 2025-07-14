@@ -3,7 +3,7 @@
 module AdminUsers
   class CountSignInAttemptsJob < ApplicationJob
     queue_as "low"
-    # TODO: rewrite lock: :while_executing, on_conflict: :reschedule)
+    limits_concurrency key: ->(admin_user_email, *) { admin_user_email }
 
     def perform(admin_user_email, succeeded)
       admin_user = AdminUser.find_by(email: admin_user_email)

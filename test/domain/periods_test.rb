@@ -151,8 +151,8 @@ class PeriodsTest < ActiveSupport::TestCase
   end
 
   describe "loop_through" do
-    def around_loop_through(&block)
-      env_with_values("PERIODS_MIN_PAST_TIME" => "2024-01-01T00:00:00Z", &block)
+    def around_loop_through(&)
+      env_with_values("PERIODS_MIN_PAST_TIME" => "2024-01-01T00:00:00Z", &)
     end
 
     describe "when past_time is greater than current_time" do

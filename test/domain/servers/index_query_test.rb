@@ -364,10 +364,10 @@ class Servers::IndexQueryTest < ActiveSupport::TestCase
   def query_result(game_name, period, country_code, current_time)
     Servers::IndexQuery.new(Game.find_by(name: game_name), period, country_code, current_time).call.map do |server|
       server_stat = ServerStat.find_by(
-        server: server,
+        server:,
         game: server.game,
-        period: period,
-        country_code: country_code,
+        period:,
+        country_code:,
         reference_date: Periods.reference_date_for(period, current_time)
       )
 
@@ -385,11 +385,11 @@ class Servers::IndexQueryTest < ActiveSupport::TestCase
       game ||= create_game(name: game_name)
 
       server = Server.find_by(name: server_name)
-      server ||= create_server(game: game, name: server_name, country_code: country_code)
+      server ||= create_server(game:, name: server_name, country_code:)
 
       votes_week.times do
         create_server_vote(
-          server: server,
+          server:,
           game: server.game,
           country_code: server.country_code,
           created_at: week_time
@@ -397,7 +397,7 @@ class Servers::IndexQueryTest < ActiveSupport::TestCase
       end
       (votes_month - votes_week).times do
         create_server_vote(
-          server: server,
+          server:,
           game: server.game,
           country_code: server.country_code,
           created_at: month_time
@@ -405,7 +405,7 @@ class Servers::IndexQueryTest < ActiveSupport::TestCase
       end
       (votes_year - votes_month).times do
         create_server_vote(
-          server: server,
+          server:,
           game: server.game,
           country_code: server.country_code,
           created_at: year_time

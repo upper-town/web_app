@@ -2,8 +2,8 @@
 
 module CurrentTestSetup
   def setup
-    Current.reset
-
     super
+
+    Current.reset
   end
 end

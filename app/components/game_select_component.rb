@@ -18,7 +18,7 @@ class GameSelectComponent < ViewComponent::Base
     @selected_value = selected_value
     @blank_name = blank_name
 
-    @query = GameSelectOptionsQuery.new(only_in_use: only_in_use)
+    @query = GameSelectOptionsQuery.new(only_in_use:)
   end
 
   def blank_option

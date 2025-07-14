@@ -2,26 +2,33 @@
 
 module Users
   class SessionsController < ApplicationController
-    before_action :check_already_logged_in, only: [:new, :create]
     before_action :authenticate_user!, only: [:destroy, :destroy_all]
 
+    before_action :set_session,             only: [:new, :create]
+    before_action :check_already_logged_in, only: [:new, :create]
+
     rate_limit(
-      to: 4,
+      to: 6,
       within: 1.minute,
-      with: -> { rate_limit_for_create },
+      with: -> { render_rate_limited(:new) },
       name: "create",
-      only: :create
+      only: [:create]
     )
 
-    before_action :captcha_for_create, only: :create
+    before_action(
+      -> do
+        check_captcha_and_render(:new, if_success_skip_paths: [
+          users_sign_in_path,
+          users_sessions_path
+        ])
+      end,
+      only: [:create]
+    )
 
     def new
-      @session = Users::Session.new
     end
 
     def create
-      set_session_for_create
-
       if @session.invalid?
         flash.now[:alert] = @session.errors
         render(:new, status: :unprocessable_entity)
@@ -29,16 +36,16 @@ module Users
         return
       end
 
-      result = AuthenticateSession.new(
+      result = AuthenticateSession.call(
         @session.email,
         @session.password
-      ).call
+      )
 
       if result.success?
         sign_in_user!(result.user, @session.remember_me)
         return_to_url = consume_return_to
 
-        flash[:notice] = t("notice.logged_in")
+        flash[:notice] = t("users.sessions.logged_in")
         redirect_to(return_to_url || inside_dashboard_path)
       else
         flash.now[:alert] = result.errors
@@ -49,14 +56,14 @@ module Users
     def destroy
       sign_out_user!
 
-      flash[:info] = t("notice.logged_out")
+      flash[:info] = t("users.sessions.logged_out")
       redirect_to(root_path)
     end
 
     def destroy_all
       sign_out_user!(destroy_all: true)
 
-      flash[:info] = t("notice.logged_out_all")
+      flash[:info] = t("users.sessions.logged_out_all")
       redirect_to(root_path)
     end
 
@@ -64,40 +71,17 @@ module Users
 
     def check_already_logged_in
       if signed_in_user?
-        flash[:info] = t("info.logged_in_already")
+        flash[:info] = t("users.sessions.logged_in_already")
         redirect_to(inside_dashboard_path)
       end
     end
 
-    def rate_limit_for_create
-      set_session_for_create
-
-      flash.now[:alert] = t("alert.please_try_again_later_too_many_requests")
-      render(:new, status: :unprocessable_entity)
+    def set_session
+      @session = Session.new(permitted_params[:users_session])
     end
 
-    def captcha_for_create
-      set_session_for_create
-
-      result = captcha_check(
-        if_success_skip_paths: [
-          users_sign_in_path,
-          users_sessions_path
-        ]
-      )
-
-      if result.failure?
-        flash.now[:alert] = result.errors
-        render(:new, status: :unprocessable_entity)
-      end
-    end
-
-    def set_session_for_create
-      @session = Users::Session.new(session_params)
-    end
-
-    def session_params
-      params.expect(users_session: [:email, :password, :remember_me])
+    def permitted_params
+      params.permit(users_session: [:email, :password, :remember_me])
     end
   end
 end

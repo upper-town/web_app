@@ -43,10 +43,10 @@ class Admin::AccessPolicyTest < ActiveSupport::TestCase
         it "returns true" do
           admin_role = create_admin_role
           admin_permission = create_admin_permission(key: "admin_permission_key")
-          create_admin_role_permission(admin_role: admin_role, admin_permission: admin_permission)
+          create_admin_role_permission(admin_role:, admin_permission:)
 
           admin_account = create_admin_account
-          create_admin_account_role(admin_account: admin_account, admin_role: admin_role)
+          create_admin_account_role(admin_account:, admin_role:)
 
           env_with_values("SUPER_ADMIN_ACCOUNT_IDS" => "") do
             access_policy = described_class.new(admin_account, "admin_permission_key")

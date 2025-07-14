@@ -63,7 +63,7 @@ class TokenTest < ActiveSupport::TestCase
           ].each do |token, expires_at|
             existing_token = create_token(
               token_digest: TokenGenerator.digest(token),
-              expires_at: expires_at
+              expires_at:
             )
 
             assert_equal(existing_token, described_class.find_by_token(token, true))

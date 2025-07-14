@@ -20,7 +20,7 @@ module Users
         user = find_user
 
         if !user
-          Result.failure(:invalid_or_expired_code)
+          Result.failure(:invalid_or_expired_token_or_code)
         elsif user.confirmed_email?
           Result.failure(:email_address_already_confirmed, user:)
         else

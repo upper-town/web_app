@@ -24,12 +24,12 @@ class AdminAccountRoleTest < ActiveSupport::TestCase
       admin_account = create_admin_account
       admin_role = create_admin_role
       existing_admin_account_role = create_admin_account_role(
-        admin_account: admin_account,
-        admin_role: admin_role
+        admin_account:,
+        admin_role:
       )
       admin_account_role = build_admin_account_role(
-        admin_account: admin_account,
-        admin_role: admin_role
+        admin_account:,
+        admin_role:
       )
 
       admin_account_role.validate

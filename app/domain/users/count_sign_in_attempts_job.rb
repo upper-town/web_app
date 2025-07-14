@@ -3,7 +3,7 @@
 module Users
   class CountSignInAttemptsJob < ApplicationJob
     queue_as "low"
-    # TODO: rewrite lock: :while_executing, on_conflict: :reschedule)
+    limits_concurrency key: ->(user_email, *) { user_email }
 
     def perform(user_email, succeeded)
       user = User.find_by(email: user_email)

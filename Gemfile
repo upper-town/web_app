@@ -2,8 +2,6 @@
 
 source "https://rubygems.org"
 
-gem "dotenv-rails", groups: [:development, :test]
-
 # ------------------------------------------------------------------------------
 # Gemfile from running:
 #     rails new web_app --database=postgresql --skip-rubocop
@@ -77,6 +75,7 @@ gem "faraday"
 gem "phonelib"
 
 group :development, :test do
+  gem "dotenv", require: false
   gem "simplecov", require: false
 
   gem "rubocop", require: false

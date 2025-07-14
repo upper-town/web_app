@@ -8,8 +8,8 @@ class Servers::DestroyJobTest < ActiveSupport::TestCase
   describe "#perform" do
     it "deletes all ServerStat and ServerVote records, and deletes Server" do
       server = create_server
-      create_server_stat(server: server)
-      create_server_vote(server: server)
+      create_server_stat(server:)
+      create_server_vote(server:)
 
       assert_difference(-> { ServerStat.count }, -1) do
         assert_difference(-> { ServerVote.count }, -1) do
@@ -19,8 +19,8 @@ class Servers::DestroyJobTest < ActiveSupport::TestCase
         end
       end
 
-      assert(ServerStat.where(server: server).blank?)
-      assert(ServerVote.where(server: server).blank?)
+      assert(ServerStat.where(server:).blank?)
+      assert(ServerVote.where(server:).blank?)
       assert(Server.where(id: server.id).blank?)
     end
   end

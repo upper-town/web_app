@@ -5,7 +5,7 @@ class ValidatePhoneNumber
 
   def initialize(phone_number)
     @phone_number = phone_number.to_s
-    @errors = [:not_validated_yet]
+    @errors = [:not_yet_validated]
   end
 
   def valid?
@@ -22,7 +22,7 @@ class ValidatePhoneNumber
 
   def validate_possible
     unless Phonelib.parse(phone_number).possible?
-      @errors << :not_valid
+      @errors << :invalid
     end
   end
 end

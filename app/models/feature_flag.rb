@@ -74,7 +74,7 @@ class FeatureFlag < ApplicationRecord
   end
 
   def self.fetch_value_from_database(name)
-    select(:value).find_by(name: name)&.value
+    select(:value).find_by(name:)&.value
   end
 
   def self.parse_enabled_and_ffids(value)

@@ -37,13 +37,13 @@ module Servers
 
       server_stat_hashes = game_country_code_vote_counts.map do |(game_id, country_code), vote_count|
         {
-          period: period,
-          reference_date: reference_date,
-          game_id: game_id,
-          country_code: country_code,
+          period:,
+          reference_date:,
+          game_id:,
+          country_code:,
           server_id: server.id,
-          vote_count: vote_count,
-          vote_count_consolidated_at: vote_count_consolidated_at
+          vote_count:,
+          vote_count_consolidated_at:
         }
       end
 
@@ -56,13 +56,13 @@ module Servers
 
       server_stat_hashes = game_vote_counts.map do |game_id, vote_count|
         {
-          period: period,
-          reference_date: reference_date,
-          game_id: game_id,
+          period:,
+          reference_date:,
+          game_id:,
           country_code: ServerStat::ALL,
           server_id: server.id,
-          vote_count: vote_count,
-          vote_count_consolidated_at: vote_count_consolidated_at
+          vote_count:,
+          vote_count_consolidated_at:
         }
       end
 
@@ -84,7 +84,7 @@ module Servers
 
     def game_country_code_vote_counts_query(reference_range)
       ServerVote
-        .where(server: server)
+        .where(server:)
         .where(created_at: reference_range)
         .group(:game_id, :country_code)
         .count
@@ -92,7 +92,7 @@ module Servers
 
     def game_vote_counts_query(reference_range)
       ServerVote
-        .where(server: server)
+        .where(server:)
         .where(created_at: reference_range)
         .group(:game_id)
         .count

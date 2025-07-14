@@ -1,5 +1,5 @@
 <h2>
-  Set your password
+  <%= t("users.password_resets.edit.title") %>
 </h2>
 
 <%= form_with(
@@ -11,20 +11,21 @@
   <%= form.hidden_field(:token) %>
 
   <div class="mb-3">
-    <%= form.label(:code, "Verification Code", class: "form-label") %>
+    <%= form.label(:code, class: "form-label") %>
     <%= form.text_field(
       :code,
       class: "form-control",
+      autocomplete: "off",
       aria: { describedby: "code-help" },
       required: true
     ) %>
     <div id="code-help" class="form-text">
-      Enter the verification code we have sent to your email.
+      <%= t("users.password_resets.edit.code_help") %>
     </div>
   </div>
 
   <div class="mb-3">
-    <%= form.label(:password, "Enter your new password", class: "form-label") %>
+    <%= form.label(:password, class: "form-label") %>
     <%= form.password_field(
       :password,
       autocomplete: "new-password",
@@ -33,15 +34,15 @@
       required: true
     ) %>
     <div id="password-help" class="form-text">
-      Minimum password length is 8 characters.
+      <%= t("users.password_resets.edit.password_help") %>
     </div>
   </div>
 
   <div class="mb-3">
     <%= form.submit(
-      "Set password",
+      t("users.password_resets.edit.submit"),
       class: "btn btn-primary",
-      data: { "turbo-submits-with" => "Loading..." }
+      data: { "turbo-submits-with" => t("shared.button.loading") }
     ) %>
   </div>
 <% end %>

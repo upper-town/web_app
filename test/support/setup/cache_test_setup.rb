@@ -2,8 +2,8 @@
 
 module CacheTestSetup
   def setup
-    Rails.cache.clear
-
     super
+
+    Rails.cache.clear
   end
 end

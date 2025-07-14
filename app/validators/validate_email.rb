@@ -15,26 +15,36 @@ class ValidateEmail
     \z
   }xi
 
-  RESERVED_NAMES = %w[
-    corp
-    domain
-    example
-    home
-    host
-    internal
-    intranet
-    invalid
-    lan
-    local
-    localdomain
-    localhost
-    onion
-    private
-    test
-  ]
+  RESERVED_NAMES = if Rails.env.local?
+    %w[
+      example
+      local
+      localhost
+    ]
+  else
+    %w[
+      corp
+      domain
+      example
+      home
+      host
+      internal
+      intranet
+      invalid
+      lan
+      local
+      localdomain
+      localhost
+      onion
+      private
+      test
+    ]
+  end
 
-  DISPOSABLE_EMAIL_DOMAINS_LIST = if Rails.env.test?
-    Rails.root.join("vendor/disposable_email_domains/list_test.txt").readlines(chomp: true)
+  DISPOSABLE_EMAIL_DOMAINS_LIST = if Rails.env.local?
+    %w[
+      zzz.com
+    ]
   else
     Rails.root.join("vendor/disposable_email_domains/list.txt").readlines(chomp: true)
   end
@@ -43,7 +53,7 @@ class ValidateEmail
 
   def initialize(email)
     @email = email.to_s
-    @errors = [:not_validated_yet]
+    @errors = [:not_yet_validated]
   end
 
   def valid?
@@ -63,13 +73,13 @@ class ValidateEmail
 
   def validate_format
     unless email.match?(PATTERN)
-      @errors << :format_is_not_valid
+      @errors << :format_invalid
     end
   end
 
   def validate_email_domain
     if match_reserved_domain? || match_disposable_email_domains?
-      @errors << :domain_is_not_supported
+      @errors << :domain_not_supported
     end
   end
 

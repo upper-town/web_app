@@ -14,7 +14,7 @@ module HasCodes
       return if purpose.blank? || code.blank?
 
       joins(:codes)
-        .where(codes: { purpose: purpose, code_digest: code_generator.digest(code) })
+        .where(codes: { purpose:, code_digest: code_generator.digest(code) })
         .where("codes.expires_at > ?", Time.current)
         .first
     end
@@ -26,10 +26,10 @@ module HasCodes
     code, code_digest = self.class.code_generator.generate
 
     codes.create!(
-      purpose: purpose,
+      purpose:,
       expires_at: expires_in.from_now,
-      data: data,
-      code_digest: code_digest
+      data:,
+      code_digest:
     )
 
     code
@@ -38,6 +38,6 @@ module HasCodes
   def expire_code!(purpose)
     return if purpose.blank?
 
-    codes.where(purpose: purpose).update_all(expires_at: 2.days.ago)
+    codes.where(purpose:).update_all(expires_at: 2.days.ago)
   end
 end

@@ -13,7 +13,7 @@ class EmailValidatorTest < ActiveSupport::TestCase
         validator = described_class.new(attributes: [:email])
         validator.validate(record)
 
-        assert(record.errors.of_kind?(:email, :format_is_not_valid))
+        assert(record.errors.of_kind?(:email, :format_invalid))
       end
     end
 
@@ -24,7 +24,7 @@ class EmailValidatorTest < ActiveSupport::TestCase
         validator = described_class.new(attributes: [:email])
         validator.validate(record)
 
-        assert(record.errors.of_kind?(:email, :domain_is_not_supported))
+        assert(record.errors.of_kind?(:email, :domain_not_supported))
       end
     end
 

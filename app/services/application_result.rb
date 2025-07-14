@@ -43,17 +43,9 @@ class ApplicationResult < ApplicationModel
     end
   end
 
-  # The following methods are needed for ActiveModel::Errors
+  # The following method is needed for ActiveModel::Errors
 
   def read_attribute_for_validation(attr)
     attr
-  end
-
-  def self.human_attribute_name(attr, _options = {})
-    attr
-  end
-
-  def self.lookup_ancestors
-    [self]
   end
 end

@@ -18,10 +18,10 @@ class Servers::CreateVoteTest < ActiveSupport::TestCase
         end
 
         assert(result.failure?)
-        assert(result.errors[:server].any? { it.match?(/cannot be archived/) })
+        assert(result.errors[:server].any? { it.include?("cannot be archived") })
 
         assert_no_enqueued_jobs(only: Servers::ConsolidateVoteCountsJob)
-        assert_no_enqueued_jobs(only: ServerWebhooks::CreateEvents::ServerVoteCreatedJob)
+        assert_no_enqueued_jobs(only: Webhooks::CreateEvents::ServerVoteCreatedJob)
       end
     end
 
@@ -42,7 +42,7 @@ class Servers::CreateVoteTest < ActiveSupport::TestCase
         assert_equal(1, called)
 
         assert_no_enqueued_jobs(only: Servers::ConsolidateVoteCountsJob)
-        assert_no_enqueued_jobs(only: ServerWebhooks::CreateEvents::ServerVoteCreatedJob)
+        assert_no_enqueued_jobs(only: Webhooks::CreateEvents::ServerVoteCreatedJob)
       end
     end
 
@@ -67,7 +67,7 @@ class Servers::CreateVoteTest < ActiveSupport::TestCase
         assert_equal(account, result.server_vote.account)
 
         assert_enqueued_with(job: Servers::ConsolidateVoteCountsJob, args: [server, "current"], queue: "critical")
-        assert_enqueued_with(job: ServerWebhooks::CreateEvents::ServerVoteCreatedJob, args: [result.server_vote])
+        assert_enqueued_with(job: Webhooks::CreateEvents::ServerVoteCreatedJob, args: [result.server_vote])
       end
     end
   end

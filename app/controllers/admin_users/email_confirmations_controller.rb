@@ -2,86 +2,84 @@
 
 module AdminUsers
   class EmailConfirmationsController < ApplicationAdminController
-    before_action :authenticate_admin_user!
+    skip_before_action :authenticate_admin_user!, only: [:edit, :update]
+
+    before_action -> { set_email_confirmation(:create) }, only: [:new,  :create]
+    before_action -> { set_email_confirmation(:update) }, only: [:edit, :update]
+
+    rate_limit(
+      to: 6,
+      within: 1.minute,
+      with: -> { render_rate_limited(:new) },
+      name: "create",
+      only: [:create]
+    )
+    rate_limit(
+      to: 6,
+      within: 1.minute,
+      with: -> { render_rate_limited(:edit) },
+      name: "update",
+      only: [:update]
+    )
+
+    before_action(
+      -> do
+        check_captcha_and_render(:new, if_success_skip_paths: [
+          admin_users_sign_up_path,
+          admin_users_email_confirmation_path
+        ])
+      end,
+      only: [:create]
+    )
 
     def new
-      @email_confirmation = AdminUsers::EmailConfirmation.new(email: email_from_params)
     end
 
     def create
-      @email_confirmation = AdminUsers::EmailConfirmation.new(email_confirmation_params)
-
-      result = captcha_check(
-        if_success_skip_paths: [
-          admin_users_sign_up_path,
-          admin_users_email_confirmation_path
-        ]
-      )
-
-      if result.failure?
-        flash.now[:alert] = result.errors
-        render(:new, status: :unprocessable_entity)
-
-        return
-      end
-
       if @email_confirmation.invalid?
-        flash.now[:alert] = @email_confirmation.errors.full_messages
+        flash.now[:alert] = @email_confirmation.errors
         render(:new, status: :unprocessable_entity)
 
         return
       end
 
-      result = AdminUsers::Create.new(@email_confirmation).call
+      result = Create.new(@email_confirmation.email).call
 
       if result.success?
-        redirect_to(
-          root_path,
-          info: "Email confirmation link has been sent to your email."
-        )
+        flash[:info] = t("admin_users.email_confirmations.verification_code_sent")
+        redirect_to(admin_admin_users_path)
       else
-        flash.now[:info] = result.errors
+        flash.now[:alert] = result.errors
         render(:new, status: :unprocessable_entity)
       end
     end
 
     def edit
-      @email_confirmation_edit = AdminUsers::EmailConfirmationEdit.new(
-        token: token_from_params,
-        auto_click: auto_click_from_params
-      )
     end
 
     def update
-      @email_confirmation_edit = AdminUsers::EmailConfirmationEdit.new(email_confirmation_edit_params)
-
-      if @email_confirmation_edit.invalid?
-        flash.now[:info] = @email_confirmation_edit.errors.full_messages
+      if @email_confirmation.invalid?
+        flash.now[:alert] = @email_confirmation.errors
         render(:edit, status: :unprocessable_entity)
 
         return
       end
 
-      result = AdminUsers::EmailConfirmations::Update.new(@email_confirmation_edit).call
+      result = EmailConfirmations::Update.call(
+        @email_confirmation.token,
+        @email_confirmation.code
+      )
 
       if result.success?
-        admin_user = result.admin_user
+        flash[:notice] = t("admin_users.email_confirmations.email_address_confirmed")
 
         if signed_in_admin_user?
-          redirect_to(
-            admin_dashboard_path,
-            success: "Email address has been confirmed."
-          )
-        elsif admin_user.password_digest.present?
-          redirect_to(
-            admin_users_sign_in_path,
-            success: "Email address has been confirmed."
-          )
+          redirect_to(admin_dashboard_path)
+        elsif result.admin_user.password_digest.present?
+          redirect_to(admin_users_sign_in_path)
         else
-          redirect_to(
-            new_admin_users_password_reset_path(email: admin_user.email),
-            success: "Email address has been confirmed. Set a password for your account."
-          )
+          flash[:info] = t("admin_users.email_confirmations.set_password_for_your_account")
+          redirect_to(new_admin_users_password_reset_path)
         end
       else
         flash.now[:alert] = result.errors
@@ -91,24 +89,17 @@ module AdminUsers
 
     private
 
-    def email_confirmation_params
-      params.expect(admin_users_email_confirmation: [:email])
+    def set_email_confirmation(action)
+      @email_confirmation = EmailConfirmation.new(permitted_params[:admin_users_email_confirmation])
+      @email_confirmation.action = action
+      @email_confirmation.token = permitted_params[:token].presence if @email_confirmation.token.blank?
     end
 
-    def email_confirmation_edit_params
-      params.expect(admin_users_email_confirmation: [:token])
-    end
-
-    def email_from_params
-      @email_from_params ||= params[:email].presence
-    end
-
-    def token_from_params
-      @token_from_params ||= params[:token].presence
-    end
-
-    def auto_click_from_params
-      @auto_click_from_params ||= params[:auto_click].presence
+    def permitted_params
+      params.permit(
+        :token,
+        admin_users_email_confirmation: [:email, :token, :code]
+      )
     end
   end
 end

@@ -17,12 +17,12 @@ class Server < ApplicationRecord
     through: :server_accounts,
     source: :account
 
-  has_many :webhook_configs, class_name: "ServerWebhookConfig", dependent: :destroy
-  has_many :webhook_events,  class_name: "ServerWebhookEvent",  dependent: :destroy
+  has_many :webhook_configs, as: :source, dependent: :destroy
+  has_many :webhook_events, through: :webhook_configs, source: :events
 
-  normalizes :name, with: ->(str) { str.squish }
-  normalizes :description, with: ->(str) { str.squish }
-  normalizes :info, with: ->(str) { str.strip }
+  normalizes :name,        with: NormalizeName
+  normalizes :description, with: NormalizeDescription
+  normalizes :info,        with: NormalizeInfo
 
   validates :name, length: { minimum: 3, maximum: 255 }, presence: true
   validates :description, length: { maximum: 1_000 }
@@ -54,6 +54,10 @@ class Server < ApplicationRecord
 
   def self.not_verified
     where(verified_at: nil)
+  end
+
+  def site_url_checksum
+    Digest::SHA256.hexdigest(site_url).last(8)
   end
 
   def archived?
@@ -93,7 +97,7 @@ class Server < ApplicationRecord
   end
 
   def integrated?
-    webhook_config?(ServerWebhookEvent::SERVER_VOTE_CREATED)
+    webhook_config?(WebhookEvent::SERVER_VOTE_CREATED)
   end
 
   private
@@ -101,7 +105,7 @@ class Server < ApplicationRecord
   def verified_server_with_same_name_exist
     return if not_verified?
 
-    if Server.verified.exists?(name: name, game_id: game_id)
+    if Server.verified.exists?(name:, game_id:)
       errors.add(:name, :verified_server_with_same_name_exist)
     end
   end

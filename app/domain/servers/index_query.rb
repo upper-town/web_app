@@ -15,8 +15,8 @@ module Servers
 
     def call
       scope = Server.includes(:game)
-      scope = scope.where(game: game) if game.present?
-      scope = scope.where(country_code: country_code) if Server::COUNTRY_CODES.include?(country_code)
+      scope = scope.where(game:) if game.present?
+      scope = scope.where(country_code:) if Server::COUNTRY_CODES.include?(country_code)
       scope = scope.joins(sql_left_join_server_stats)
 
       scope.order(sql_order)

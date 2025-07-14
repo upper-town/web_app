@@ -21,13 +21,14 @@ module Users
         user = find_user
 
         if !user
-          Result.failure(:invalid_or_expired_code)
+          Result.failure(:invalid_or_expired_token_or_code)
         else
           ActiveRecord::Base.transaction do
             user.reset_password!(password)
             user.expire_token!(:password_reset)
             user.expire_code!(:password_reset)
           end
+
           Result.success(user:)
         end
       end

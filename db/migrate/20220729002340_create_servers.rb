@@ -12,7 +12,7 @@ class CreateServers < ActiveRecord::Migration[7.1]
       t.references :game, null: false, foreign_key: true, index: false
 
       t.datetime :verified_at,            null: true
-      t.text     :verified_notice,        null: false, default: ""
+      t.jsonb    :metadata,               null: false, default: {}
       t.datetime :archived_at,            null: true
       t.datetime :marked_for_deletion_at, null: true
 

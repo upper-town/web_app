@@ -9,6 +9,6 @@ class ServerStat < ApplicationRecord
   belongs_to :server
   belongs_to :game
 
-  validates :period, inclusion: { in: Periods::PERIODS }, presence: true
-  validates :country_code, inclusion: { in: COUNTRY_CODES }, presence: true
+  validates :period,       presence: true, inclusion: { in: Periods::PERIODS }
+  validates :country_code, presence: true, inclusion: { in: COUNTRY_CODES }
 end

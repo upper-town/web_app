@@ -3,20 +3,18 @@
 module Servers
   module VerifyAccounts
     class Perform
-      # TODO: Add domain hash or ID to the filename
-      JSON_FILE_PATH = "/upper_town.json"
-
-      attr_reader :server
+      attr_reader :server, :json_file_path
 
       def initialize(server)
         @server = server
+        @json_file_path = "upper_town_#{server.site_url_checksum}.json"
       end
 
       def call(current_time = Time.current)
-        result = CheckJsonFileMetadata.new(server, JSON_FILE_PATH).call
+        result = CheckJsonFileMetadata.new(server, json_file_path).call
         return result if result.failure?
 
-        result = DownloadAndParseJsonFile.new(server, JSON_FILE_PATH).call
+        result = DownloadAndParseJsonFile.new(server, json_file_path).call
         return result if result.failure?
 
         parsed_body = result.parsed_body
@@ -33,7 +31,7 @@ module Servers
         result = Result.new
 
         account_uuids.each do |uuid|
-          if !Account.exists?(uuid: uuid)
+          if !Account.exists?(uuid:)
             result.add_error("Account #{uuid} does not exist")
           end
         end
@@ -46,21 +44,21 @@ module Servers
 
         if account_ids.empty?
           ServerAccount
-            .where(server: server)
+            .where(server:)
             .update_all(verified_at: nil)
 
-          Result.failure("Empty \"accounts\" array in #{JSON_FILE_PATH}")
+          Result.failure("Empty \"accounts\" array in #{json_file_path}")
         else
           ApplicationRecord.transaction do
             ServerAccount
-              .where(server: server)
+              .where(server:)
               .where.not(account_id: account_ids)
               .update_all(verified_at: nil)
 
             ServerAccount.upsert_all(
               account_ids.map do |account_id|
                 {
-                  account_id: account_id,
+                  account_id:,
                   server_id: server.id,
                   verified_at: current_time
                 }

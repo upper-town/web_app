@@ -1,25 +1,30 @@
 # frozen_string_literal: true
 
 module CapybaraTestSetup
-  def setup
-    Capybara.default_driver = capybara_select_default_driver
-    Capybara.javascript_driver = Capybara.default_driver
+  extend ActiveSupport::Concern
 
-    Capybara.app_host = "http://#{ENV.fetch('APP_HOST')}"
+  class_methods do
+    def capybara_default_driver
+      headful  = ENV.fetch("HEADFUL", "false") == "true"
+      headless = ENV.fetch("HEADLESS", "true") == "true"
 
-    super
+      if headful || !headless
+        :selenium
+      else
+        :selenium_headless
+      end
+    end
   end
 
-  private
+  included do
+    driven_by(capybara_default_driver)
+  end
 
-  def capybara_select_default_driver
-    headful  = ENV.fetch("HEADFUL", "false") == "true"
-    headless = ENV.fetch("HEADLESS", "true") == "true"
+  def setup
+    super
 
-    if headful || !headless
-      :selenium
-    else
-      :selenium_headless
-    end
+    Capybara.app_host = "http://#{web_app_host}:#{web_app_port}"
+    Capybara.server_host = web_app_host
+    Capybara.server_port = web_app_port
   end
 end

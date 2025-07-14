@@ -37,7 +37,7 @@ class ValidateSiteUrl
 
   def initialize(site_url)
     @site_url = site_url.to_s
-    @errors = [:not_validated_yet]
+    @errors = [:not_yet_validated]
   end
 
   def valid?
@@ -57,13 +57,13 @@ class ValidateSiteUrl
 
   def validate_format
     unless site_url.match?(PATTERN)
-      @errors << :format_is_not_valid
+      @errors << :format_invalid
     end
   end
 
   def validate_site_url_domain
     if match_reserved_domain?
-      @errors << :domain_is_not_supported
+      @errors << :domain_not_supported
     end
   end
 

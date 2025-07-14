@@ -2,36 +2,51 @@
 
 module Users
   class EmailConfirmationsController < ApplicationController
+    before_action -> { set_email_confirmation(:create) }, only: [:new,  :create]
+    before_action -> { set_email_confirmation(:update) }, only: [:edit, :update]
+
     rate_limit(
-      to: 4,
+      to: 6,
       within: 1.minute,
-      with: -> { rate_limit_for_create },
+      with: -> { render_rate_limited(:new) },
       name: "create",
-      only: :create
+      only: [:create]
+    )
+    rate_limit(
+      to: 6,
+      within: 1.minute,
+      with: -> { render_rate_limited(:edit) },
+      name: "update",
+      only: [:update]
     )
 
-    before_action :captcha_for_create, only: :create
+    before_action(
+      -> do
+        check_captcha_and_render(:new, if_success_skip_paths: [
+          users_sign_up_path,
+          users_email_confirmation_path
+        ])
+      end,
+      only: [:create]
+    )
 
     def new
-      @user = User.new
     end
 
     def create
-      set_user_for_create
-
-      if @user.invalid?
-        flash.now[:alert] = @user.errors
+      if @email_confirmation.invalid?
+        flash.now[:alert] = @email_confirmation.errors
         render(:new, status: :unprocessable_entity)
 
         return
       end
 
-      result = Create.new(@user.email).call
+      result = Create.new(@email_confirmation.email).call
 
       if result.success?
         email_confirmation_token = result.user.generate_token!(:email_confirmation)
 
-        flash[:info] = t("info.verification_code_sent")
+        flash[:info] = t("users.email_confirmations.verification_code_sent")
         redirect_to(edit_users_email_confirmation_path(token: email_confirmation_token))
       else
         flash.now[:alert] = result.errors
@@ -40,12 +55,9 @@ module Users
     end
 
     def edit
-      @email_confirmation = EmailConfirmation.new(token: token_from_params)
     end
 
     def update
-      @email_confirmation = EmailConfirmation.new(email_confirmation_params)
-
       if @email_confirmation.invalid?
         flash.now[:alert] = @email_confirmation.errors
         render(:edit, status: :unprocessable_entity)
@@ -53,20 +65,20 @@ module Users
         return
       end
 
-      result = EmailConfirmations::Update.new(
+      result = EmailConfirmations::Update.call(
         @email_confirmation.token,
         @email_confirmation.code
-      ).call
+      )
 
       if result.success?
-        flash[:notice] = t("notice.email_address_confirmed")
+        flash[:notice] = t("users.email_confirmations.email_address_confirmed")
 
         if signed_in_user?
           redirect_to(inside_dashboard_path)
         elsif result.user.password_digest.present?
           redirect_to(users_sign_in_path)
         else
-          flash[:info] = t("info.set_password_for_your_account")
+          flash[:info] = t("users.email_confirmations.set_password_for_your_account")
           redirect_to(new_users_password_reset_path)
         end
       else
@@ -77,44 +89,17 @@ module Users
 
     private
 
-    def rate_limit_for_create
-      set_user_for_create
-
-      flash.now[:alert] = t("alert.please_try_again_later_too_many_requests")
-      render(:new, status: :unprocessable_entity)
+    def set_email_confirmation(action)
+      @email_confirmation = EmailConfirmation.new(permitted_params[:users_email_confirmation])
+      @email_confirmation.action = action
+      @email_confirmation.token = permitted_params[:token].presence if @email_confirmation.token.blank?
     end
 
-    def captcha_for_create
-      set_user_for_create
-
-      result = captcha_check(
-        if_success_skip_paths: [
-          users_sign_up_path,
-          users_email_confirmation_path
-        ]
+    def permitted_params
+      params.permit(
+        :token,
+        users_email_confirmation: [:email, :token, :code]
       )
-
-      if result.failure?
-        flash.now[:alert] = result.errors
-        render(:new, status: :unprocessable_entity)
-      end
-    end
-
-    def set_user_for_create
-      @user = User.new(user_params)
-      @user.skip_email_uniqueness_validation = true
-    end
-
-    def user_params
-      params.expect(user: [:email])
-    end
-
-    def email_confirmation_params
-      params.expect(users_email_confirmation: [:token, :code])
-    end
-
-    def token_from_params
-      @token_from_params ||= params["token"].presence
     end
   end
 end

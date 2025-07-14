@@ -116,11 +116,6 @@ ActiveRecord::Schema[8.0].define(version: 2024_09_15_165037) do
     t.datetime "password_reset_sent_at"
     t.integer "sign_in_count", default: 0, null: false
     t.integer "failed_attempts", default: 0, null: false
-    t.string "change_email"
-    t.datetime "change_email_confirmed_at"
-    t.datetime "change_email_confirmation_sent_at"
-    t.datetime "change_email_reverted_at"
-    t.datetime "change_email_reversion_sent_at"
     t.datetime "locked_at"
     t.string "locked_reason"
     t.text "locked_comment"
@@ -232,39 +227,6 @@ ActiveRecord::Schema[8.0].define(version: 2024_09_15_165037) do
     t.index ["uuid"], name: "index_server_votes_on_uuid", unique: true
   end
 
-  create_table "server_webhook_configs", force: :cascade do |t|
-    t.bigint "server_id", null: false
-    t.string "method", default: "POST", null: false
-    t.string "url", null: false
-    t.string "event_types", default: ["*"], null: false, array: true
-    t.string "secret", null: false
-    t.string "notice", default: "", null: false
-    t.datetime "disabled_at"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["server_id"], name: "index_server_webhook_configs_on_server_id"
-  end
-
-  create_table "server_webhook_events", force: :cascade do |t|
-    t.bigint "server_id", null: false
-    t.string "type", null: false
-    t.jsonb "payload", default: {}, null: false
-    t.string "status", null: false
-    t.string "notice", default: "", null: false
-    t.integer "failed_attempts", default: 0, null: false
-    t.datetime "last_published_at"
-    t.datetime "delivered_at"
-    t.bigint "server_webhook_config_id"
-    t.uuid "uuid", default: -> { "gen_random_uuid()" }, null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["server_id"], name: "index_server_webhook_events_on_server_id"
-    t.index ["server_webhook_config_id"], name: "index_server_webhook_events_on_server_webhook_config_id"
-    t.index ["type"], name: "index_server_webhook_events_on_type"
-    t.index ["updated_at"], name: "index_server_webhook_events_on_updated_at"
-    t.index ["uuid"], name: "index_server_webhook_events_on_uuid", unique: true
-  end
-
   create_table "servers", force: :cascade do |t|
     t.string "name", null: false
     t.string "country_code", null: false
@@ -273,7 +235,7 @@ ActiveRecord::Schema[8.0].define(version: 2024_09_15_165037) do
     t.text "info", default: "", null: false
     t.bigint "game_id", null: false
     t.datetime "verified_at"
-    t.text "verified_notice", default: "", null: false
+    t.jsonb "metadata", default: {}, null: false
     t.datetime "archived_at"
     t.datetime "marked_for_deletion_at"
     t.datetime "created_at", null: false
@@ -336,6 +298,37 @@ ActiveRecord::Schema[8.0].define(version: 2024_09_15_165037) do
     t.index ["email"], name: "index_users_on_email", unique: true
   end
 
+  create_table "webhook_configs", force: :cascade do |t|
+    t.string "source_type", null: false
+    t.bigint "source_id", null: false
+    t.string "event_types", default: ["*"], null: false, array: true
+    t.string "method", default: "POST", null: false
+    t.string "url", null: false
+    t.string "secret", null: false
+    t.jsonb "metadata", default: {}, null: false
+    t.datetime "disabled_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["source_type", "source_id"], name: "index_webhook_configs_on_source_type_and_source_id"
+  end
+
+  create_table "webhook_events", force: :cascade do |t|
+    t.uuid "uuid", default: -> { "gen_random_uuid()" }, null: false
+    t.bigint "webhook_config_id", null: false
+    t.string "type", null: false
+    t.string "status", null: false
+    t.jsonb "data", default: {}, null: false
+    t.jsonb "metadata", default: {}, null: false
+    t.integer "failed_attempts", default: 0, null: false
+    t.datetime "last_published_at"
+    t.datetime "delivered_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["type"], name: "index_webhook_events_on_type"
+    t.index ["uuid"], name: "index_webhook_events_on_uuid", unique: true
+    t.index ["webhook_config_id"], name: "index_webhook_events_on_webhook_config_id"
+  end
+
   add_foreign_key "accounts", "users"
   add_foreign_key "admin_account_roles", "admin_accounts"
   add_foreign_key "admin_account_roles", "admin_roles"
@@ -354,10 +347,8 @@ ActiveRecord::Schema[8.0].define(version: 2024_09_15_165037) do
   add_foreign_key "server_votes", "accounts"
   add_foreign_key "server_votes", "games"
   add_foreign_key "server_votes", "servers"
-  add_foreign_key "server_webhook_configs", "servers"
-  add_foreign_key "server_webhook_events", "server_webhook_configs"
-  add_foreign_key "server_webhook_events", "servers"
   add_foreign_key "servers", "games"
   add_foreign_key "sessions", "users"
   add_foreign_key "tokens", "users"
+  add_foreign_key "webhook_events", "webhook_configs"
 end

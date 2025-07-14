@@ -10,9 +10,8 @@
 #     MovieGenre.find_or_create_by!(name: genre_name)
 #   end
 
-Rails.root.glob("db/seeds/**/*.rb").each do |seeds_file|
-  require seeds_file
+Rails.root.glob("db/seeds/**/*.rb").each do |file|
+  require file
 end
 
-# TODO: Make this idempotent
-# Seeds::Development::Runner.new.call
+Seeds::Runner.call

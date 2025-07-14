@@ -18,7 +18,7 @@ module Users
     def call
       if user_exists?
         if (user = authenticate_user)
-          count_sign_in_attempt
+          count_sign_in_attempt(succeeded: true)
           Result.success(user:)
         else
           count_sign_in_attempt(succeeded: false)
@@ -39,7 +39,7 @@ module Users
       User.authenticate_by(email:, password:)
     end
 
-    def count_sign_in_attempt(succeeded: true)
+    def count_sign_in_attempt(succeeded:)
       Users::CountSignInAttemptsJob.perform_later(email, succeeded)
     end
   end

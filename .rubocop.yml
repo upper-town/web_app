@@ -49,10 +49,8 @@ Layout/LineEndStringConcatenationIndentation:
   Enabled: false
 Layout/LineLength:
   Exclude:
-    - config/routes.rb
     - test/**/*_test.rb
-    - test/**/*_test_helper.rb
-  Max: 120
+  Max: 110
 Layout/MultilineMethodCallIndentation:
   Enabled: false
 Layout/SpaceBeforeSemicolon:
@@ -98,14 +96,24 @@ Minitest/AssertEmptyLiteral:
   Enabled: false
 Minitest/AssertEqual:
   Enabled: false
+Minitest/AssertInDelta:
+  Enabled: false
+Minitest/AssertOperator:
+  Enabled: false
 Minitest/AssertPredicate:
   Enabled: false
 Minitest/AssertRaisesCompoundBody:
   Enabled: false
+Minitest/EmptyLineBeforeAssertionMethods:
+  Enabled: false
 Minitest/MultipleAssertions:
+  Enabled: false
+Naming/AccessorMethodName:
   Enabled: false
 Naming/MethodParameterName:
   MinNameLength: 1
+Naming/PredicateMethod:
+  Enabled: false
 Naming/PredicatePrefix:
   Enabled: false
 Naming/VariableNumber:
@@ -129,6 +137,8 @@ Rails/Delegate:
   Enabled: false
 Rails/DynamicFindBy:
   Enabled: false
+Rails/I18nLazyLookup:
+  EnforcedStyle: explicit
 Rails/RedundantPresenceValidationOnBelongsTo:
   Enabled: false
 Rails/SkipsModelValidations:
@@ -144,7 +154,8 @@ Style/GuardClause:
 Style/HashEachMethods:
   Enabled: false
 Style/HashSyntax:
-  Enabled: false
+  # Enabled: false
+  EnforcedShorthandSyntax: always
 Style/HashTransformValues:
   Enabled: false
 Style/IfInsideElse:
@@ -170,6 +181,8 @@ Style/NumericLiterals:
 Style/OptionalBooleanParameter:
   Enabled: false
 Style/ParenthesesAroundCondition:
+  Enabled: false
+Style/RedundantBegin:
   Enabled: false
 Style/RedundantParentheses:
   Enabled: false

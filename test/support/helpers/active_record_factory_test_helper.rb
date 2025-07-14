@@ -112,7 +112,7 @@ module ActiveRecordFactoryTestHelper
   # AdminUser
 
   def build_admin_user(**kwargs)
-    set_attr(kwargs, :email,    "admin.user.#{random_chars}@upper.town")
+    set_attr(kwargs, :email,    "admin_user_#{random_chars}@upper.town")
     set_attr(kwargs, :password, "testpass")
 
     AdminUser.new(**kwargs)
@@ -232,33 +232,33 @@ module ActiveRecordFactoryTestHelper
     build_server_vote(...).tap { it.save! }
   end
 
-  # ServerWebhookConfig
+  # WebhookConfig
 
-  def build_server_webhook_config(**kwargs)
-    set_attr(kwargs, :server, build_server)
+  def build_webhook_config(**kwargs)
+    set_attr(kwargs, :source, build_server)
     set_attr(kwargs, :url,    "https://game.company.com")
     set_attr(kwargs, :secret, "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
 
-    ServerWebhookConfig.new(**kwargs)
+    WebhookConfig.new(**kwargs)
   end
 
-  def create_server_webhook_config(...)
-    build_server_webhook_config(...).tap { it.save! }
+  def create_webhook_config(...)
+    build_webhook_config(...).tap { it.save! }
   end
 
-  # ServerWebhookEvent
+  # WebhookEvent
 
-  def build_server_webhook_event(**kwargs)
-    set_attr(kwargs, :server,  build_server)
-    set_attr(kwargs, :type,    "test.event")
-    set_attr(kwargs, :payload, "{}")
-    set_attr(kwargs, :status,  ServerWebhookEvent::PENDING)
+  def build_webhook_event(**kwargs)
+    set_attr(kwargs, :config, build_webhook_config)
+    set_attr(kwargs, :type,   "test.event")
+    set_attr(kwargs, :data,   "{}")
+    set_attr(kwargs, :status, WebhookEvent::PENDING)
 
-    ServerWebhookEvent.new(**kwargs)
+    WebhookEvent.new(**kwargs)
   end
 
-  def create_server_webhook_event(...)
-    build_server_webhook_event(...).tap { it.save! }
+  def create_webhook_event(...)
+    build_webhook_event(...).tap { it.save! }
   end
 
   # Session
@@ -273,15 +273,15 @@ module ActiveRecordFactoryTestHelper
     Session.new(**kwargs)
   end
 
-  # Token
-
   def create_session(...)
     build_session(...).tap { it.save! }
   end
 
+  # Token
+
   def build_token(**kwargs)
     set_attr(kwargs, :user,            build_user)
-    set_attr(kwargs, :purpose,         "email_confirmation")
+    set_attr(kwargs, :purpose,         :email_confirmation)
     set_attr(kwargs, :expires_at,      30.days.from_now)
     set_attr(kwargs, :token_last_four, "abcd")
     set_attr(kwargs, :token_digest,    Digest::SHA256.hexdigest("token-#{random_chars}-#{kwargs[:token_last_four]}"))
@@ -293,10 +293,26 @@ module ActiveRecordFactoryTestHelper
     build_token(...).tap { it.save! }
   end
 
+  # Code
+
+  def build_code(**kwargs)
+    set_attr(kwargs, :user,        build_user)
+    set_attr(kwargs, :purpose,     :email_confirmation)
+    set_attr(kwargs, :expires_at,  30.days.from_now)
+    set_attr(kwargs, :code_digest, Digest::SHA256.hexdigest(random_chars(8).upcase))
+
+    Code.new(**kwargs)
+  end
+
+  def create_code(...)
+    build_code(...).tap { it.save! }
+  end
+
   # User
 
   def build_user(**kwargs)
-    set_attr(kwargs, :email, "user.#{random_chars}@upper.town")
+    set_attr(kwargs, :email,    "user_#{random_chars}@upper.town")
+    set_attr(kwargs, :password, "testpass")
 
     User.new(**kwargs)
   end
@@ -311,7 +327,7 @@ module ActiveRecordFactoryTestHelper
     attrs[name] = value unless attrs.key?(name)
   end
 
-  def random_chars
-    SecureRandom.base58
+  def random_chars(n = nil)
+    SecureRandom.base58(n)
   end
 end

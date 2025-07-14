@@ -31,12 +31,12 @@ class Admin::ConstraintTest < ActiveSupport::TestCase
     if signed_in
       token, token_digest, token_last_four = TokenGenerator::AdminSession.generate
       create_admin_session(
-        admin_user: admin_user,
-        token_digest: token_digest,
-        token_last_four: token_last_four,
+        admin_user:,
+        token_digest:,
+        token_last_four:,
         expires_at: 1.month.from_now
       )
-      request.cookie_jar["admin_session"] = { token: token }.to_json
+      request.cookie_jar["admin_session"] = { token: }.to_json
     end
 
     request

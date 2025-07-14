@@ -131,7 +131,7 @@ class GameTest < ActiveSupport::TestCase
 
       game = build_game(site_url: "abc://game")
       game.validate
-      assert(game.errors.of_kind?(:site_url, :format_is_not_valid))
+      assert(game.errors.of_kind?(:site_url, :format_invalid))
 
       game = build_game(site_url: "https://game.company.com")
       game.validate

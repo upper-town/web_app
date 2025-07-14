@@ -11,6 +11,6 @@ class AdminUser < ApplicationRecord
   has_one :account, class_name: "AdminAccount", dependent: :destroy
 
   has_many :sessions, class_name: "AdminSession", dependent: :destroy
-  has_many :tokens, class_name: "AdminToken", dependent: :destroy
-  has_many :codes, class_name: "AdminCode", dependent: :destroy
+  has_many :tokens,   class_name: "AdminToken",   dependent: :destroy
+  has_many :codes,    class_name: "AdminCode",    dependent: :destroy
 end

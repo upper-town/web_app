@@ -31,9 +31,9 @@ module Servers
       server_vote.save!
 
       enqueue_consolidate_vote_counts
-      enqueue_server_webhook_event_create
+      enqueue_webhook_event_create
 
-      Result.success(server_vote: server_vote)
+      Result.success(server_vote:)
     end
 
     private
@@ -44,8 +44,8 @@ module Servers
         .perform_later(server_vote.server, "current")
     end
 
-    def enqueue_server_webhook_event_create
-      ServerWebhooks::CreateEvents::ServerVoteCreatedJob.perform_later(server_vote)
+    def enqueue_webhook_event_create
+      Webhooks::CreateEvents::ServerVoteCreatedJob.perform_later(server_vote)
     end
   end
 end

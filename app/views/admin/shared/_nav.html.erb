@@ -1,10 +1,12 @@
-<ul>
-  <li><%= link_to('Users', admin_users_path) %></li>
-  <li><%= link_to('Admin Users', admin_admin_users_path) %></li>
-  <li><%= link_to('Servers', admin_servers_path) %></li>
-</ul>
+<% if signed_in_admin_user? %>
+  <ul>
+    <li><%= link_to("Users", admin_users_path) %></li>
+    <li><%= link_to("Admin Users", admin_admin_users_path) %></li>
+    <li><%= link_to("Servers", admin_servers_path) %></li>
+  </ul>
 
-<ul>
-  <li><%= link_to('Dashboard', admin_dashboard_path) %></li>
-  <li><%= link_to("Sign out", admin_users_sign_out_path)  %></li>
-</ul>
+  <ul>
+    <li><%= link_to("Dashboard", admin_dashboard_path) %></li>
+    <li><%= link_to("Sign Out", admin_users_sign_out_path)  %></li>
+  </ul>
+<% end %>

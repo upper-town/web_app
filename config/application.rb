@@ -4,7 +4,15 @@ require_relative "boot"
 
 require "rails/all"
 
-# Helper methods
+require "dotenv" if Rails.env.local?
+
+if Rails.env.development?
+  Dotenv.load(".env.local", ".env")
+elsif Rails.env.test?
+  Dotenv.load(".env.test.local", ".env.test", ".env.local", ".env")
+end
+
+# General helper methods
 
 def running_assets_precompile?
   ["true", "1"].include?(ENV.fetch("SECRET_KEY_BASE_DUMMY", nil))
@@ -48,6 +56,8 @@ module WebApp
 
     config.action_controller.include_all_helpers = true
 
+    config.active_model.i18n_customize_full_message = true
+
     unless running_assets_precompile?
       config.active_record.encryption.primary_key =
         ENV.fetch("ACTIVE_RECORD_ENCRYPTION_PRIMARY_KEY").split(",")
@@ -61,6 +71,6 @@ module WebApp
       self.datetime_type = :timestamptz
     end
 
-    config.session_store :cookie_store, key: "app_session"
+    config.session_store :cookie_store, key: "rails_session"
   end
 end

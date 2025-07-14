@@ -4,9 +4,9 @@ module ActiveJobTestSetup
   include ActiveJob::TestHelper
 
   def setup
+    super
+
     clear_enqueued_jobs
     clear_performed_jobs
-
-    super
   end
 end

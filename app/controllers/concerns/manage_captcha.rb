@@ -14,7 +14,18 @@ module ManageCaptcha
     )
   end
 
-  def captcha_check(if_success_skip_paths: [], limit: 2)
+  private
+
+  def check_captcha_and_render(view, **)
+    result = check_captcha(**)
+
+    if result.failure?
+      flash.now[:alert] = result.errors
+      render(view, status: :unprocessable_entity)
+    end
+  end
+
+  def check_captcha(if_success_skip_paths: [], limit: 3)
     perform_captcha_skip || perform_captcha_check(if_success_skip_paths, limit)
   end
 
@@ -30,7 +41,9 @@ module ManageCaptcha
     Captcha.widget_tag(...)
   end
 
-  private
+  def captcha_disabled?
+    Rails.env.local? && ENV.fetch("CAPTCHA_DISABLED", "false") == "true"
+  end
 
   def perform_captcha_skip
     captcha_skip = read_captcha_skip
@@ -44,7 +57,11 @@ module ManageCaptcha
   end
 
   def perform_captcha_check(if_success_skip_paths, limit)
-    result = Captcha.call(request)
+    result = if captcha_disabled?
+      Result.success
+    else
+      Captcha.call(request)
+    end
 
     if result.success? && if_success_skip_paths.any?
       write_captcha_skip(if_success_skip_paths, limit)
@@ -59,7 +76,7 @@ module ManageCaptcha
 
   def write_captcha_skip(paths, limit)
     token = TokenGenerator.generate(26).first
-    captcha_skip = CaptchaSkip.new(token: token, paths: paths)
+    captcha_skip = CaptchaSkip.new(token:, paths:)
 
     Rails.cache.write(captcha_skip.key, limit, expires_in: 1.hour)
 

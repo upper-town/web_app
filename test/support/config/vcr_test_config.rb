@@ -4,7 +4,6 @@ VCR.configure do |c|
   c.cassette_library_dir = "test/cassettes"
   c.hook_into :webmock
   c.ignore_localhost = true
-  # c.ignore_hosts "chromedriver.storage.googleapis.com" # I'm not sure if this is neeed
 
   if ENV.fetch("VCR_RECORD_ALL", "false") == "true"
     c.default_cassette_options[:record] = :all

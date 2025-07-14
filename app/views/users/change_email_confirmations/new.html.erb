@@ -1,0 +1,64 @@
+<% content_for(:head) do %>
+  <%= captcha_script_tag %>
+<% end %>
+
+<h2>
+  <%= t("users.change_email_confirmations.new.title") %>
+</h2>
+
+<%= form_with(
+  model: @change_email_confirmation,
+  method: :post,
+  url: users_change_email_confirmation_path,
+  data: { "controller" => "form-error-messages-handler" }
+) do |form| %>
+  <div class="mb-3">
+    <%= form.label(:email, class: "form-label") %>
+    <%= form.email_field(
+      :email,
+      autofocus: true,
+      class: "form-control",
+      aria: { describedby: "email-help" },
+      required: true
+    ) %>
+    <div id="email-help" class="form-text">
+      <%= t("users.change_email_confirmations.new.email_help") %>
+    </div>
+  </div>
+
+  <div class="mb-3">
+    <%= form.label(:change_email, class: "form-label") %>
+    <%= form.email_field(
+      :change_email,
+      autofocus: true,
+      class: "form-control",
+      aria: { describedby: "change-email-help" },
+      required: true
+    ) %>
+    <div id="change-email-help" class="form-text">
+      <%= t("users.change_email_confirmations.new.change_email_help") %>
+    </div>
+  </div>
+
+  <div class="mb-3">
+    <%= form.label(:password, class: "form-label") %>
+    <%= form.password_field(
+      :password,
+      autocomplete: "current-password",
+      class: "form-control",
+      required: true
+    ) %>
+  </div>
+
+  <div class="mb-3">
+    <%= captcha_widget_tag %>
+  </div>
+
+  <div class="mb-3">
+    <%= form.submit(
+      t("users.change_email_confirmations.new.submit"),
+      class: "btn btn-primary",
+      data: { "turbo-submits-with" => t("shared.button.loading") }
+    ) %>
+  </div>
+<% end %>

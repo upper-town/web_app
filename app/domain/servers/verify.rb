@@ -23,7 +23,7 @@ module Servers
     def update_as_verified(current_time)
       server.update!(
         verified_at: current_time,
-        verified_notice: ""
+        metadata: {}
       )
     end
 
@@ -32,7 +32,7 @@ module Servers
 
       server.update!(
         verified_at: nil,
-        verified_notice: notice
+        metadata: { notice: }
       )
     end
   end

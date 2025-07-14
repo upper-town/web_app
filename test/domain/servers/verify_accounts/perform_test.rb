@@ -11,7 +11,7 @@ class Servers::VerifyAccounts::PerformTest < ActiveSupport::TestCase
         server = create_server(site_url: "https://game-server.company.com/")
         json_file_head_request = stub_json_file_request(
           :head,
-          "https://game-server.company.com/upper_town.json",
+          "https://game-server.company.com/upper_town_28c62f1f.json",
           response_timeout: true
         )
 
@@ -29,14 +29,14 @@ class Servers::VerifyAccounts::PerformTest < ActiveSupport::TestCase
         server = create_server(site_url: "https://game-server.company.com/")
         json_file_head_request = stub_json_file_request(
           :head,
-          "https://game-server.company.com/upper_town.json",
+          "https://game-server.company.com/upper_town_28c62f1f.json",
           response_status: 500
         )
 
         result = described_class.new(server).call
 
         assert(result.failure?)
-        assert(result.errors.of_kind?(:base, "Request failed: the server responded with status 500"))
+        assert(result.errors[:base].any? { it.include?("Request failed: the server responded with status 500") })
 
         assert_requested(json_file_head_request)
       end
@@ -47,14 +47,14 @@ class Servers::VerifyAccounts::PerformTest < ActiveSupport::TestCase
         server = create_server(site_url: "https://game-server.company.com/")
         json_file_head_request = stub_json_file_request(
           :head,
-          "https://game-server.company.com/upper_town.json",
+          "https://game-server.company.com/upper_town_28c62f1f.json",
           response_status: 400
         )
 
         result = described_class.new(server).call
 
         assert(result.failure?)
-        assert(result.errors.of_kind?(:base, "Request failed: the server responded with status 400"))
+        assert(result.errors[:base].any? { it.include?("Request failed: the server responded with status 400") })
 
         assert_requested(json_file_head_request)
       end
@@ -65,7 +65,7 @@ class Servers::VerifyAccounts::PerformTest < ActiveSupport::TestCase
         server = create_server(site_url: "https://game-server.company.com/")
         json_file_head_request = stub_json_file_request(
           :head,
-          "https://game-server.company.com/upper_town.json",
+          "https://game-server.company.com/upper_town_28c62f1f.json",
           response_status: 200,
           response_headers: { "Content-Length" => "513" }
         )
@@ -73,7 +73,7 @@ class Servers::VerifyAccounts::PerformTest < ActiveSupport::TestCase
         result = described_class.new(server).call
 
         assert(result.failure?)
-        assert(result.errors.of_kind?(:base, "JSON file size must not be greater than 512 bytes"))
+        assert(result.errors[:base].any? { it.include?("JSON file size must not be greater than 512 bytes") })
 
         assert_requested(json_file_head_request)
       end
@@ -84,7 +84,7 @@ class Servers::VerifyAccounts::PerformTest < ActiveSupport::TestCase
         server = create_server(site_url: "https://game-server.company.com/")
         json_file_head_request = stub_json_file_request(
           :head,
-          "https://game-server.company.com/upper_town.json",
+          "https://game-server.company.com/upper_town_28c62f1f.json",
           response_status: 200,
           response_headers: { "Content-Length" => "512", "Content-Type" => "text/plain" }
         )
@@ -92,7 +92,7 @@ class Servers::VerifyAccounts::PerformTest < ActiveSupport::TestCase
         result = described_class.new(server).call
 
         assert(result.failure?)
-        assert(result.errors.of_kind?(:base, "JSON file Content-Type must be application/json"))
+        assert(result.errors[:base].any? { it.include?("JSON file Content-Type must be application/json") })
 
         assert_requested(json_file_head_request)
       end
@@ -103,20 +103,20 @@ class Servers::VerifyAccounts::PerformTest < ActiveSupport::TestCase
         server = create_server(site_url: "https://game-server.company.com/")
         json_file_head_request = stub_json_file_request(
           :head,
-          "https://game-server.company.com/upper_town.json",
+          "https://game-server.company.com/upper_town_28c62f1f.json",
           response_status: 200,
           response_headers: { "Content-Length" => "512", "Content-Type" => "application/json" }
         )
         json_file_get_request = stub_json_file_request(
           :get,
-          "https://game-server.company.com/upper_town.json",
+          "https://game-server.company.com/upper_town_28c62f1f.json",
           response_timeout: true
         )
 
         result = described_class.new(server).call
 
         assert(result.failure?)
-        assert(result.errors.of_kind?(:base, "Connection failed: execution expired"))
+        assert(result.errors[:base].any? { it.include?("Connection failed: execution expired") })
 
         assert_requested(json_file_head_request)
         assert_requested(json_file_get_request)
@@ -128,20 +128,20 @@ class Servers::VerifyAccounts::PerformTest < ActiveSupport::TestCase
         server = create_server(site_url: "https://game-server.company.com/")
         json_file_head_request = stub_json_file_request(
           :head,
-          "https://game-server.company.com/upper_town.json",
+          "https://game-server.company.com/upper_town_28c62f1f.json",
           response_status: 200,
           response_headers: { "Content-Length" => "512", "Content-Type" => "application/json" }
         )
         json_file_get_request = stub_json_file_request(
           :get,
-          "https://game-server.company.com/upper_town.json",
+          "https://game-server.company.com/upper_town_28c62f1f.json",
           response_status: 500
         )
 
         result = described_class.new(server).call
 
         assert(result.failure?)
-        assert(result.errors.of_kind?(:base, "Request failed: the server responded with status 500"))
+        assert(result.errors[:base].any? { it.include?("Request failed: the server responded with status 500") })
 
         assert_requested(json_file_head_request)
         assert_requested(json_file_get_request)
@@ -153,20 +153,20 @@ class Servers::VerifyAccounts::PerformTest < ActiveSupport::TestCase
         server = create_server(site_url: "https://game-server.company.com/")
         json_file_head_request = stub_json_file_request(
           :head,
-          "https://game-server.company.com/upper_town.json",
+          "https://game-server.company.com/upper_town_28c62f1f.json",
           response_status: 200,
           response_headers: { "Content-Length" => "512", "Content-Type" => "application/json" }
         )
         json_file_get_request = stub_json_file_request(
           :get,
-          "https://game-server.company.com/upper_town.json",
+          "https://game-server.company.com/upper_town_28c62f1f.json",
           response_status: 400
         )
 
         result = described_class.new(server).call
 
         assert(result.failure?)
-        assert(result.errors.of_kind?(:base, "Request failed: the server responded with status 400"))
+        assert(result.errors[:base].any? { it.include?("Request failed: the server responded with status 400") })
 
         assert_requested(json_file_head_request)
         assert_requested(json_file_get_request)
@@ -178,13 +178,13 @@ class Servers::VerifyAccounts::PerformTest < ActiveSupport::TestCase
         server = create_server(site_url: "https://game-server.company.com/")
         json_file_head_request = stub_json_file_request(
           :head,
-          "https://game-server.company.com/upper_town.json",
+          "https://game-server.company.com/upper_town_28c62f1f.json",
           response_status: 200,
           response_headers: { "Content-Length" => "512", "Content-Type" => "application/json" }
         )
         json_file_get_request = stub_json_file_request(
           :get,
-          "https://game-server.company.com/upper_town.json",
+          "https://game-server.company.com/upper_town_28c62f1f.json",
           response_status: 200,
           response_headers: { "Content-Length" => "512", "Content-Type" => "application/json" },
           response_body: '{""}'
@@ -193,8 +193,7 @@ class Servers::VerifyAccounts::PerformTest < ActiveSupport::TestCase
         result = described_class.new(server).call
 
         assert(result.failure?)
-        assert(result.errors.key?(:base))
-        assert(result.errors.full_messages.any? { it.match?(/Invalid JSON file/) })
+        assert(result.errors[:base].any? { it.include?("Invalid JSON file") })
 
         assert_requested(json_file_head_request)
         assert_requested(json_file_get_request)
@@ -206,13 +205,13 @@ class Servers::VerifyAccounts::PerformTest < ActiveSupport::TestCase
         server = create_server(site_url: "https://game-server.company.com/")
         json_file_head_request = stub_json_file_request(
           :head,
-          "https://game-server.company.com/upper_town.json",
+          "https://game-server.company.com/upper_town_28c62f1f.json",
           response_status: 200,
           response_headers: { "Content-Length" => "512", "Content-Type" => "application/json" }
         )
         json_file_get_request = stub_json_file_request(
           :get,
-          "https://game-server.company.com/upper_town.json",
+          "https://game-server.company.com/upper_town_28c62f1f.json",
           response_status: 200,
           response_headers: { "Content-Length" => "512", "Content-Type" => "application/json" },
           response_body: { "something" => "else" }.to_json
@@ -221,7 +220,7 @@ class Servers::VerifyAccounts::PerformTest < ActiveSupport::TestCase
         result = described_class.new(server).call
 
         assert(result.failure?)
-        assert(result.errors.of_kind?(:base, :invalid_json_schema))
+        assert(result.errors.of_kind?(:json_schema_invalid))
 
         assert_requested(json_file_head_request)
         assert_requested(json_file_get_request)
@@ -234,13 +233,13 @@ class Servers::VerifyAccounts::PerformTest < ActiveSupport::TestCase
         account1 = create_account
         json_file_head_request = stub_json_file_request(
           :head,
-          "https://game-server.company.com/upper_town.json",
+          "https://game-server.company.com/upper_town_28c62f1f.json",
           response_status: 200,
           response_headers: { "Content-Length" => "512", "Content-Type" => "application/json" }
         )
         json_file_get_request = stub_json_file_request(
           :get,
-          "https://game-server.company.com/upper_town.json",
+          "https://game-server.company.com/upper_town_28c62f1f.json",
           response_status: 200,
           response_headers: { "Content-Length" => "512", "Content-Type" => "application/json" },
           response_body: {
@@ -267,17 +266,17 @@ class Servers::VerifyAccounts::PerformTest < ActiveSupport::TestCase
     describe "when JSON file has an empty list of account UUIDs" do
       it "returns failure and unverifies existing server_accounts associations" do
         server = create_server(site_url: "https://game-server.company.com/")
-        existing_server_account1 = create_server_account(server: server, verified_at: 2.days.ago)
-        existing_server_account2 = create_server_account(server: server, verified_at: 1.day.ago)
+        existing_server_account1 = create_server_account(server:, verified_at: 2.days.ago)
+        existing_server_account2 = create_server_account(server:, verified_at: 1.day.ago)
         json_file_head_request = stub_json_file_request(
           :head,
-          "https://game-server.company.com/upper_town.json",
+          "https://game-server.company.com/upper_town_28c62f1f.json",
           response_status: 200,
           response_headers: { "Content-Length" => "512", "Content-Type" => "application/json" }
         )
         json_file_get_request = stub_json_file_request(
           :get,
-          "https://game-server.company.com/upper_town.json",
+          "https://game-server.company.com/upper_town_28c62f1f.json",
           response_status: 200,
           response_headers: { "Content-Length" => "512", "Content-Type" => "application/json" },
           response_body: {
@@ -288,7 +287,7 @@ class Servers::VerifyAccounts::PerformTest < ActiveSupport::TestCase
         result = described_class.new(server).call
 
         assert(result.failure?)
-        assert(result.errors.of_kind?(:base, 'Empty "accounts" array in /upper_town.json'))
+        assert(result.errors[:base].any? { it.include?('Empty "accounts" array in upper_town_28c62f1f.json') })
 
         assert_nil(existing_server_account1.reload.verified_at)
         assert_nil(existing_server_account2.reload.verified_at)
@@ -305,17 +304,17 @@ class Servers::VerifyAccounts::PerformTest < ActiveSupport::TestCase
           account1 = create_account
           account2 = create_account
           account3 = create_account
-          existing_server_account1 = create_server_account(server: server, account: account1, verified_at: 2.days.ago)
-          existing_server_account2 = create_server_account(server: server, account: account2, verified_at: 1.day.ago)
+          existing_server_account1 = create_server_account(server:, account: account1, verified_at: 2.days.ago)
+          existing_server_account2 = create_server_account(server:, account: account2, verified_at: 1.day.ago)
           json_file_head_request = stub_json_file_request(
             :head,
-            "https://game-server.company.com/upper_town.json",
+            "https://game-server.company.com/upper_town_28c62f1f.json",
             response_status: 200,
             response_headers: { "Content-Length" => "512", "Content-Type" => "application/json" }
           )
           json_file_get_request = stub_json_file_request(
             :get,
-            "https://game-server.company.com/upper_town.json",
+            "https://game-server.company.com/upper_town_28c62f1f.json",
             response_status: 200,
             response_headers: { "Content-Length" => "512", "Content-Type" => "application/json" },
             response_body: {

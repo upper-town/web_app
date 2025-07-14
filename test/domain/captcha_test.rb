@@ -45,29 +45,6 @@ class CaptchaTest < ActiveSupport::TestCase
   # rubocop:enable Rails/OutputSafety
 
   describe "call" do
-    describe "when development-only env var CAPTCHA_DISABLED is true" do
-      it "returns success and does not send request to verify captcha" do
-        rails_with_env("development") do
-          env_with_values("CAPTCHA_DISABLED" => "true") do
-            request = build_request(
-              params: { "h-captcha-response" => "abcdef123456" },
-              remote_ip: "8.8.8.8"
-            )
-            captcha_verify_request = stub_captcha_verify_request(
-              body: { "response" => "abcdef123456", "remoteip" => "8.8.8.8" },
-              response_status: 200,
-              response_body: { "success" => false }
-            )
-
-            result = described_class.call(request)
-            assert(result.success?)
-
-            assert_not_requested(captcha_verify_request)
-          end
-        end
-      end
-    end
-
     describe "when captcha_response is blank" do
       it "returns failure and does not send request to verify captcha" do
         request = build_request(
@@ -163,7 +140,7 @@ class CaptchaTest < ActiveSupport::TestCase
           captcha_verify_request = stub_captcha_verify_request(
             body: { "response" => "abcdef123456#{index}", "remoteip" => "8.8.8.8" },
             response_status: 200,
-            response_body: response_body
+            response_body:
           )
 
           result = described_class.call(request)
@@ -191,7 +168,7 @@ class CaptchaTest < ActiveSupport::TestCase
     request = stub_request(
       :post, "https://hcaptcha.com/siteverify"
     ).with(
-      headers: { 'Content-Type': "application/x-www-form-urlencoded" },
+      headers: { "Content-Type" => "application/x-www-form-urlencoded" },
       body: {
         "sitekey" => ENV.fetch("H_CAPTCHA_SITE_KEY"),
         "secret" => ENV.fetch("H_CAPTCHA_SECRET_KEY")

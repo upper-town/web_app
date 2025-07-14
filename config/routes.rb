@@ -1,9 +1,5 @@
 # frozen_string_literal: true
 
-require_relative "routes/auth_routes"
-require_relative "routes/admin_auth_routes"
-require_relative "routes/admin_routes"
-
 Rails.application.routes.draw do
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
@@ -17,13 +13,6 @@ Rails.application.routes.draw do
   # get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
   # get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
 
-  auth_routes
-  admin_auth_routes
-
-  # /admin
-
-  admin_routes
-
   # /
 
   root to: "home#index"
@@ -34,20 +23,69 @@ Rails.application.routes.draw do
   resources :server_votes, only: [:show]
   resources :server_banner_images, only: [:show]
 
+  # /users
+
+  scope(path: "users", module: "users", as: "users") do
+    get "sign_up",  to: "email_confirmations#new"
+    get "sign_in",  to: "sessions#new"
+    get "sign_out", to: "sessions#destroy"
+
+    resource  :email_confirmation, only: [:create, :edit, :update]
+    resource  :password_reset, only: [:new, :create, :edit, :update]
+    resource  :change_email_confirmation, only: [:new, :create, :edit, :update]
+    resource  :change_email_reversion, only: [:edit, :update]
+    resources :sessions, only: [:create] do
+      collection do
+        delete "destroy_all", to: "sessions#destroy_all"
+      end
+    end
+  end
+
+  # /admin_users
+
+  scope(path: "admin_users", module: "admin_users", as: "admin_users") do
+    get "sign_up",  to: "email_confirmations#new"
+    get "sign_in",  to: "sessions#new"
+    get "sign_out", to: "sessions#destroy"
+
+    resource  :email_confirmation, only: [:create, :edit, :update]
+    resource  :password_reset, only: [:new, :create, :edit, :update]
+    resources :sessions, only: [:create] do
+      collection do
+        delete "destroy_all", to: "sessions#destroy_all"
+      end
+    end
+  end
+
+  # /admin
+
+  constraints(Admin::Constraint.new) do
+    scope(path: "admin", module: "admin", as: "admin") do
+      root to: "dashboards#show"
+
+      resource  :dashboard, only: [:show]
+      resource  :demo, only: [:show]
+      resources :users, only: [:index, :show, :edit]
+      resources :admin_users
+      resources :servers, only: [:index, :show, :new, :create, :edit, :update]
+
+      constraints(Admin::JobsConstraint.new) do
+        mount MissionControl::Jobs::Engine, at: "/jobs"
+      end
+    end
+  end
+
   # /u/
 
   resources :accounts, path: "u", only: [:show]
 
   # /i/
 
-  namespace :inside, path: "i" do
+  scope(path: "i", module: "inside", as: "inside") do
     root to: "dashboards#show"
 
     resource :dashboard, only: [:show]
     resource :account, only: [:show]
-    resource :user, module: :users do
-      resource :change_email_confirmation, only: [:new, :create]
-    end
     resources :servers, only: [:index, :new, :create, :edit, :update] do
       member do
         post :archive

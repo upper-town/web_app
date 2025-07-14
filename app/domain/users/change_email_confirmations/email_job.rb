@@ -4,44 +4,49 @@ module Users
   module ChangeEmailConfirmations
     class EmailJob < ApplicationJob
       queue_as "critical"
-      # TODO: rewrite lock: :while_executing)
+      limits_concurrency key: ->(user) { user }
 
       def perform(user)
-        change_email_reversion_token, change_email_confirmation_code = generate_token_and_code(user)
+        change_email_reversion_token,
+          change_email_reversion_code,
+          change_email_confirmation_code = generate_tokens_and_code(user)
 
-        UsersMailer
-          .with(
-            email: user.email,
-            change_email: user.change_email,
-            change_email_reversion_token:
+        UserMailer
+          .change_email_reversion(
+            user.email,
+            user.change_email,
+            change_email_reversion_token,
+            change_email_reversion_code
           )
-          .change_email_reversion
-          .deliver_now
+          .deliver_later
 
-        UsersMailer
-          .with(
-            email: user.email,
-            change_email: user.change_email,
-            change_email_confirmation_code:
+        UserMailer
+          .change_email_confirmation(
+            user.email,
+            user.change_email,
+            change_email_confirmation_code
           )
-          .change_email_confirmation
-          .deliver_now
+          .deliver_later
       end
 
       private
 
-      def generate_token_and_code(user)
+      def generate_tokens_and_code(user)
         current_time = Time.current
 
         ActiveRecord::Base.transaction do
           change_email_reversion_token = user.generate_token!(
+            :change_email_reversion,
+            30.days
+          )
+          change_email_reversion_code = user.generate_code!(
             :change_email_reversion,
             30.days,
             { email: user.email }
           )
           change_email_confirmation_code = user.generate_code!(
             :change_email_confirmation,
-            nil,
+            30.minutes,
             { change_email: user.change_email }
           )
 
@@ -52,6 +57,7 @@ module Users
 
           [
             change_email_reversion_token,
+            change_email_reversion_code,
             change_email_confirmation_code
           ]
         end

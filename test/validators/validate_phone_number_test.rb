@@ -8,7 +8,7 @@ class ValidatePhoneNumberTest < ActiveSupport::TestCase
   it "initializes with errors not empty before calling #valid? or #invalid?" do
     validator = described_class.new("+1 (202) 555-9999")
 
-    assert_includes(validator.errors, :not_validated_yet)
+    assert_includes(validator.errors, :not_yet_validated)
   end
 
   describe "#valid? and #invalid?" do
@@ -28,7 +28,7 @@ class ValidatePhoneNumberTest < ActiveSupport::TestCase
 
           assert_not(validator.valid?, "Failed for #{invaild_phone_number.inspect}")
           assert(validator.invalid?)
-          assert_includes(validator.errors, :not_valid)
+          assert_includes(validator.errors, :invalid)
         end
       end
     end

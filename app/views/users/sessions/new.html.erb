@@ -3,7 +3,7 @@
 <% end %>
 
 <h2>
-  Sign In
+  <%= t("shared.nav.sign_in") %>
 </h2>
 
 <%= form_with(
@@ -13,7 +13,7 @@
   data: { "controller" => "form-error-messages-handler" }
 ) do |form| %>
   <div class="mb-3">
-    <%= form.label(:email, "Email address", class: "form-label") %>
+    <%= form.label(:email, class: "form-label") %>
     <%= form.email_field(
       :email,
       autofocus: true,
@@ -24,7 +24,7 @@
   </div>
 
   <div class="mb-3">
-    <%= form.label(:password, "Password", class: "form-label") %>
+    <%= form.label(:password, class: "form-label") %>
     <%= form.password_field(
       :password,
       autocomplete: "current-password",
@@ -44,18 +44,20 @@
 
   <div class="mb-3">
     <%= form.submit(
-      "Submit",
+      t("shared.button.submit"),
       class: "btn btn-primary",
-      data: { "turbo-submits-with" => "Loading..." }
+      data: { "turbo-submits-with" => t("shared.button.loading") }
     ) %>
   </div>
 <% end %>
 
 <ul>
   <li>
-    Don't have account? <%= link_to("Click here to Sign Up", users_sign_up_path) %>
+    <%= t("users.sessions.new.dont_have_account") %>
+    <%= link_to(t("users.sessions.new.click_here_to_sign_up"), users_sign_up_path) %>
   </li>
   <li>
-    Forgot your password? <%= link_to("Click here to Reset Password", new_users_password_reset_path) %>
+    <%= t("users.sessions.new.forgot_your_password") %>
+    <%= link_to(t("users.sessions.new.click_here_to_reset_password"), new_users_password_reset_path) %>
   </li>
 </ul>

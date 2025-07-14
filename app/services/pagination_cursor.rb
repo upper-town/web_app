@@ -124,23 +124,24 @@ class PaginationCursor
   private
 
   def choose_order
-    (request.params["order"].presence || options[:order]).to_s.downcase == "asc" ? "asc" : "desc"
+    (request.params[:order].presence || options[:order]).to_s.downcase == "asc" ? "asc" : "desc"
   end
 
   def choose_per_page
     if options[:per_page_from_request]
-      request.params["per_page"].presence || options[:per_page]
+      request.params[:per_page].presence || options[:per_page]
     else
       options[:per_page]
     end.to_i.clamp(1, [options[:per_page_max], HARD_MAX].min)
   end
 
   def choose_indicator
-    (request.params["indicator"].presence || options[:indicator]).to_s.downcase == "before" ? "before" : "after"
+    (request.params[:indicator].presence || options[:indicator])
+      .to_s.downcase == "before" ? "before" : "after"
   end
 
   def choose_cursor
-    value = request.params["cursor"].presence || options[:cursor]
+    value = request.params[:cursor].presence || options[:cursor]
 
     case value
     when Numeric, Date, Time, DateTime

@@ -4,18 +4,14 @@ module AdminUsers
   module PasswordResets
     class EmailJob < ApplicationJob
       queue_as "critical"
-      # TODO: rewrite lock: :while_executing)
+      limits_concurrency key: ->(admin_user) { admin_user }
 
       def perform(admin_user)
         password_reset_code = admin_user.generate_code!(:password_reset)
         admin_user.update!(password_reset_sent_at: Time.current)
 
-        AdminUsersMailer
-          .with(
-            email: admin_user.email,
-            password_reset_code: password_reset_code
-          )
-          .password_reset
+        AdminUserMailer
+          .password_reset(admin_user.email, password_reset_code)
           .deliver_now
       end
     end

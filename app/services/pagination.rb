@@ -127,12 +127,12 @@ class Pagination
   private
 
   def choose_page
-    (request.params["page"].presence || options[:page]).to_i.clamp(1, [options[:page_max], HARD_MAX].min)
+    (request.params[:page].presence || options[:page]).to_i.clamp(1, [options[:page_max], HARD_MAX].min)
   end
 
   def choose_per_page
     if options[:per_page_from_request]
-      request.params["per_page"].presence || options[:per_page]
+      request.params[:per_page].presence || options[:per_page]
     else
       options[:per_page]
     end.to_i.clamp(1, [options[:per_page_max], HARD_MAX].min)

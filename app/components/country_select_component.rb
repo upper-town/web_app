@@ -18,7 +18,7 @@ class CountrySelectComponent < ViewComponent::Base
     @selected_value = selected_value
     @blank_name = blank_name
 
-    @query = CountrySelectOptionsQuery.new(only_in_use: only_in_use)
+    @query = CountrySelectOptionsQuery.new(only_in_use:)
   end
 
   def blank_option

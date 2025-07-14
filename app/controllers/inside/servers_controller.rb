@@ -79,7 +79,7 @@ module Inside
       result = Servers::Unarchive.new(server).call
 
       if result.success?
-        flash[:success] = "Server has been unarchived."
+        flash[:success] = t("inside.servers.unarchive.success")
       else
         flash[:alert] = result.errors
       end
@@ -92,7 +92,7 @@ module Inside
       result = Servers::MarkForDeletion.new(server).call
 
       if result.success?
-        flash[:success] = "Server has been marked to be deleted."
+        flash[:success] = t("inside.servers.mark_for_deletion.success")
       else
         flash[:alert] = result.errors
       end
@@ -105,7 +105,7 @@ module Inside
       result = Servers::UnmarkForDeletion.new(server).call
 
       if result.success?
-        flash[:success] = "Server has been unmarked for deletion."
+        flash[:success] = t("inside.servers.unmark_for_deletion.success")
       else
         flash[:alert] = result.errors
       end
@@ -136,7 +136,7 @@ module Inside
       if count >= MAX_VERIFIED_SERVERS_PER_ACCOUNT
         redirect_to(
           inside_servers_path,
-          warning: "You already have too many verified servers associated with your account."
+          warning: t("inside.servers.max_verified_servers_per_account")
         )
       end
     end
@@ -147,7 +147,7 @@ module Inside
       if count >= MAX_NOT_VERIFIED_SERVERS_PER_ACCOUNT
         redirect_to(
           inside_servers_path,
-          warning: "You have many servers pending verification. Please verify them first before adding more servers."
+          warning: t("inside.servers.max_not_verified_servers_per_account")
         )
       end
     end

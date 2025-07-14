@@ -2,10 +2,12 @@
 
 module Seeds
   module Common
-    def self.encrypt_password(unencrypted_password)
+    extend self
+
+    def encrypt_password(unencrypted_password)
       cost = ActiveModel::SecurePassword.min_cost ? BCrypt::Engine::MIN_COST : BCrypt::Engine.cost
 
-      BCrypt::Password.create(unencrypted_password, cost: cost)
+      BCrypt::Password.create(unencrypted_password, cost:)
     end
   end
 end

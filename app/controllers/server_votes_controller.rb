@@ -16,7 +16,7 @@ class ServerVotesController < ApplicationController
     @reference = server_vote_params[:reference]
     @server_vote = ServerVote.new(server_vote_params)
 
-    result = captcha_check
+    result = check_captcha
 
     if result.failure?
       flash.now[:alert] = result.errors

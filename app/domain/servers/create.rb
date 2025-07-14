@@ -41,7 +41,7 @@ module Servers
         server.accounts << account
       end
 
-      Result.success(server: server)
+      Result.success(server:)
     end
   end
 end

@@ -43,6 +43,7 @@ class Users::CreateTest < ActiveSupport::TestCase
           end
 
           assert(result.failure?)
+          assert_nil(result.user)
           assert(result.errors.key?(:email))
 
           assert_no_enqueued_jobs(only: Users::EmailConfirmations::EmailJob)

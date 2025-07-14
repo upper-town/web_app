@@ -54,9 +54,9 @@ class ApplicationResultTest < ActiveSupport::TestCase
 
     it "adds to errors from Numeric" do
       [
-        [0,   nil,             { :"0" =>   ["is invalid"] }],
-        [42,  :invalid,        { :"42" =>  ["is invalid"] }],
-        [100, "error message", { :"100" => ["error message"] }],
+        [0,   nil,             { "0":   ["is invalid"] }],
+        [42,  :invalid,        { "42":  ["is invalid"] }],
+        [100, "error message", { "100": ["error message"] }],
       ].each do |value, type, expected_errors_messages|
         result = described_class.new
         result.add_error(value, type)

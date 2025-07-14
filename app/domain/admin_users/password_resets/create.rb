@@ -5,27 +5,25 @@ module AdminUsers
     class Create
       include Callable
 
-      attr_reader :password_reset
+      class Result < ApplicationResult
+        attribute :admin_user
+      end
 
-      def initialize(password_reset)
-        @password_reset = password_reset
+      attr_reader :email
+
+      def initialize(email)
+        @email = email
       end
 
       def call
-        admin_user = find_admin_user
-        enqueue_email_job(admin_user) if admin_user
+        admin_user = AdminUser.find_by(email:)
 
-        Result.success
-      end
-
-      private
-
-      def find_admin_user
-        AdminUser.find_by(email: password_reset.email)
-      end
-
-      def enqueue_email_job(admin_user)
-        AdminUsers::PasswordResets::EmailJob.perform_later(admin_user)
+        if !admin_user
+          Result.failure(:admin_user_not_found)
+        else
+          PasswordResets::EmailJob.perform_later(admin_user)
+          Result.success(admin_user:)
+        end
       end
     end
   end

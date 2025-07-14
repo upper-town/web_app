@@ -66,7 +66,7 @@ class UserTest < ActiveSupport::TestCase
 
       describe "when token is blank" do
         it "returns nil" do
-          user = described_class.find_by_token("email_confirmation", "")
+          user = described_class.find_by_token(:email_confirmation, "")
 
           assert_nil(user)
         end
@@ -74,7 +74,7 @@ class UserTest < ActiveSupport::TestCase
 
       describe "when token is not found" do
         it "returns nil" do
-          user = described_class.find_by_token("email_confirmation", "abcdef123456")
+          user = described_class.find_by_token(:email_confirmation, "abcdef123456")
 
           assert_nil(user)
         end
@@ -118,7 +118,7 @@ class UserTest < ActiveSupport::TestCase
           returned_token = nil
 
           assert_difference(-> { Token.count }, 1) do
-            returned_token = user.generate_token!("email_confirmation", 15.minutes, { "some" => "data" })
+            returned_token = user.generate_token!(:email_confirmation, 15.minutes, { "some" => "data" })
           end
 
           token = Token.last
@@ -137,7 +137,7 @@ class UserTest < ActiveSupport::TestCase
             returned_token = nil
 
             assert_difference(-> { Token.count }, 1) do
-              returned_token = user.generate_token!("email_confirmation")
+              returned_token = user.generate_token!(:email_confirmation)
             end
 
             token = Token.last
@@ -157,24 +157,24 @@ class UserTest < ActiveSupport::TestCase
           freeze_time do
             user = create_user
             token1 = create_token(
-              user: user,
-              purpose: "email_confirmation",
+              user:,
+              purpose: :email_confirmation,
               expires_at: 2.days.from_now
             )
             token2 = create_token(
-              user: user,
-              purpose: "email_confirmation",
+              user:,
+              purpose: :email_confirmation,
               expires_at: 2.days.from_now
             )
             token3 = create_token(
-              user: user,
+              user:,
               purpose: "something_else",
               expires_at: 2.days.from_now
             )
             another_user = create_user
             token4 = create_token(
               user: another_user,
-              purpose: "email_confirmation",
+              purpose: :email_confirmation,
               expires_at: 2.days.from_now
             )
 
@@ -193,28 +193,28 @@ class UserTest < ActiveSupport::TestCase
           freeze_time do
             user = create_user
             token1 = create_token(
-              user: user,
-              purpose: "email_confirmation",
+              user:,
+              purpose: :email_confirmation,
               expires_at: 2.days.from_now
             )
             token2 = create_token(
-              user: user,
-              purpose: "email_confirmation",
+              user:,
+              purpose: :email_confirmation,
               expires_at: 2.days.from_now
             )
             token3 = create_token(
-              user: user,
+              user:,
               purpose: "something_else",
               expires_at: 2.days.from_now
             )
             another_user = create_user
             token4 = create_token(
               user: another_user,
-              purpose: "email_confirmation",
+              purpose: :email_confirmation,
               expires_at: 2.days.from_now
             )
 
-            user.expire_token!("email_confirmation")
+            user.expire_token!(:email_confirmation)
 
             assert_equal(2.days.ago, token1.reload.expires_at)
             assert_equal(2.days.ago, token2.reload.expires_at)
@@ -226,26 +226,184 @@ class UserTest < ActiveSupport::TestCase
     end
   end
 
+  describe "HasCodes" do
+    describe ".find_by_code" do
+      describe "when purpose is blank" do
+        it "returns nil" do
+          user = described_class.find_by_code("", "ABCD1234")
+
+          assert_nil(user)
+        end
+      end
+
+      describe "when code is blank" do
+        it "returns nil" do
+          user = described_class.find_by_code(:email_confirmation, "")
+
+          assert_nil(user)
+        end
+      end
+
+      describe "when code is not found" do
+        it "returns nil" do
+          user = described_class.find_by_code(:email_confirmation, "ABCD1234")
+
+          assert_nil(user)
+        end
+      end
+
+      describe "when code is found but expired" do
+        it "returns nil" do
+          freeze_time do
+            code = create_code(
+              code_digest: CodeGenerator.digest("ABCD1234"),
+              expires_at: 1.second.ago
+            )
+
+            user = described_class.find_by_code(code.purpose, "ABCD1234")
+
+            assert_nil(user)
+          end
+        end
+      end
+
+      describe "when code is found and not expired" do
+        it "returns user" do
+          freeze_time do
+            code = create_code(
+              code_digest: CodeGenerator.digest("ABCD1234"),
+              expires_at: 1.second.from_now
+            )
+
+            user = described_class.find_by_code(code.purpose, "ABCD1234")
+
+            assert_equal(code.user, user)
+          end
+        end
+      end
+    end
+
+    describe "#generate_code!" do
+      it "creates a Code record and returns code" do
+        freeze_time do
+          user = create_user
+          returned_code = nil
+
+          assert_difference(-> { Code.count }, 1) do
+            returned_code = user.generate_code!(:email_confirmation, 15.minutes, { "some" => "data" })
+          end
+
+          code = Code.last
+          assert_equal("email_confirmation", code.purpose)
+          assert_equal(CodeGenerator.digest(returned_code), code.code_digest)
+          assert_equal(15.minutes.from_now, code.expires_at)
+          assert_equal({ "some" => "data" }, code.data)
+        end
+      end
+
+      describe "default expires_in and data" do
+        it "creates a Code record and returns code" do
+          freeze_time do
+            user = create_user
+            returned_code = nil
+
+            assert_difference(-> { Code.count }, 1) do
+              returned_code = user.generate_code!(:email_confirmation)
+            end
+
+            code = Code.last
+            assert_equal("email_confirmation", code.purpose)
+            assert_equal(CodeGenerator.digest(returned_code), code.code_digest)
+            assert_equal(30.minutes.from_now, code.expires_at)
+            assert_equal({}, code.data)
+          end
+        end
+      end
+    end
+
+    describe "#expire_code!" do
+      describe "when purpose is blank" do
+        it "does not expire user codes" do
+          freeze_time do
+            user = create_user
+            code1 = create_code(
+              user:,
+              purpose: :email_confirmation,
+              expires_at: 2.days.from_now
+            )
+            code2 = create_code(
+              user:,
+              purpose: :email_confirmation,
+              expires_at: 2.days.from_now
+            )
+            code3 = create_code(
+              user:,
+              purpose: "something_else",
+              expires_at: 2.days.from_now
+            )
+            another_user = create_user
+            code4 = create_code(
+              user: another_user,
+              purpose: :email_confirmation,
+              expires_at: 2.days.from_now
+            )
+
+            user.expire_code!(" ")
+
+            assert_equal(2.days.from_now, code1.reload.expires_at)
+            assert_equal(2.days.from_now, code2.reload.expires_at)
+            assert_equal(2.days.from_now, code3.reload.expires_at)
+            assert_equal(2.days.from_now, code4.reload.expires_at)
+          end
+        end
+      end
+
+      describe "when purpose is present" do
+        it "expires user codes with that purpose" do
+          freeze_time do
+            user = create_user
+            code1 = create_code(
+              user:,
+              purpose: :email_confirmation,
+              expires_at: 2.days.from_now
+            )
+            code2 = create_code(
+              user:,
+              purpose: :email_confirmation,
+              expires_at: 2.days.from_now
+            )
+            code3 = create_code(
+              user:,
+              purpose: "something_else",
+              expires_at: 2.days.from_now
+            )
+            another_user = create_user
+            code4 = create_code(
+              user: another_user,
+              purpose: :email_confirmation,
+              expires_at: 2.days.from_now
+            )
+
+            user.expire_code!(:email_confirmation)
+
+            assert_equal(2.days.ago, code1.reload.expires_at)
+            assert_equal(2.days.ago, code2.reload.expires_at)
+            assert_equal(2.days.from_now, code3.reload.expires_at)
+            assert_equal(2.days.from_now, code4.reload.expires_at)
+          end
+        end
+      end
+    end
+  end
+
   describe "HasEmailConfirmation" do
     describe "normalizations" do
       it "normalizes email" do
         user = build_user(email: nil)
-
         assert_nil(user.email)
 
         user = build_user(email: "\n\t USER  @UPPER .Town \n")
-
         assert_equal("user@upper.town", user.email)
-      end
-
-      it "normalizes change_email" do
-        user = build_user(change_email: nil)
-
-        assert_nil(user.change_email)
-
-        user = build_user(change_email: "\n\t USER  @UPPER .Town \n")
-
-        assert_equal("user@upper.town", user.change_email)
       end
     end
 
@@ -257,11 +415,11 @@ class UserTest < ActiveSupport::TestCase
 
         user = build_user(email: "@upper.town")
         user.validate
-        assert(user.errors.of_kind?(:email, :format_is_not_valid))
+        assert(user.errors.of_kind?(:email, :format_invalid))
 
         user = build_user(email: "user@example.com")
         user.validate
-        assert(user.errors.of_kind?(:email, :domain_is_not_supported))
+        assert(user.errors.of_kind?(:email, :domain_not_supported))
       end
     end
 
@@ -320,6 +478,38 @@ class UserTest < ActiveSupport::TestCase
         user.unconfirm_email!
 
         assert_nil(user.email_confirmed_at)
+      end
+    end
+  end
+
+  describe "HasChangeEmailConfirmation" do
+    describe "normalizations" do
+      it "normalizes change_email" do
+        user = build_user(change_email: nil)
+        assert_nil(user.change_email)
+
+        user = build_user(change_email: "\n\t USER  @UPPER .Town \n")
+        assert_equal("user@upper.town", user.change_email)
+      end
+    end
+
+    describe "validations" do
+      it "validates change_email" do
+        user = build_user(change_email: nil)
+        user.validate
+        assert_not(user.errors.key?(:change_email))
+
+        user = build_user(change_email: "")
+        user.validate
+        assert(user.errors.of_kind?(:change_email, :too_short))
+
+        user = build_user(change_email: "@upper.town")
+        user.validate
+        assert(user.errors.of_kind?(:change_email, :format_invalid))
+
+        user = build_user(change_email: "user@example.com")
+        user.validate
+        assert(user.errors.of_kind?(:change_email, :domain_not_supported))
       end
     end
 
@@ -487,22 +677,6 @@ class UserTest < ActiveSupport::TestCase
       )
     end
 
-    describe "validations" do
-      it "validates password" do
-        user = build_user(password: "")
-        user.validate
-        assert_not(user.errors.of_kind?(:password, :blank))
-
-        user = build_user(password: "abcd")
-        user.validate
-        assert(user.errors.of_kind?(:password, :too_short))
-
-        user = build_user(password: "abcd1234")
-        user.validate
-        assert_not(user.errors.of_kind?(:password, :too_short))
-      end
-    end
-
     describe "#reset_password!" do
       it "updates password and password_reset_at" do
         freeze_time do
@@ -517,6 +691,24 @@ class UserTest < ActiveSupport::TestCase
           assert_equal(
             user,
             described_class.authenticate_by(email: user.email, password: "abcd1234")
+          )
+        end
+      end
+    end
+
+    describe "#clear_password!" do
+      it "sets password and password_reset_at to nil" do
+        freeze_time do
+          user = create_user
+          user.reset_password!("testpass")
+
+          user.clear_password!
+
+          assert_nil(user.password_digest)
+          assert_nil(user.password_reset_at)
+
+          assert_nil(
+            described_class.authenticate_by(email: user.email, password: "testpass")
           )
         end
       end

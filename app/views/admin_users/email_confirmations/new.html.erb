@@ -3,39 +3,40 @@
 <% end %>
 
 <h2>
-  Sign Up: Email confirmation link
+  <%= t("shared.nav.sign_up") %>:
+  <%= t("admin_users.email_confirmations.new.email_confirmation") %>
 </h2>
 
 <%= form_with(
   model: @email_confirmation,
   method: :post,
   url: admin_users_email_confirmation_path,
-  data: { 'controller' => 'form-error-messages-handler' }
+  data: { "controller" => "form-error-messages-handler" }
 ) do |form| %>
   <div class="mb-3">
-    <%= form.label(:email, 'Email address', class: 'form-label') %>
+    <%= form.label(:email, class: "form-label") %>
     <%= form.email_field(
       :email,
       autofocus: true,
       autocomplete: "email",
-      class: 'form-control',
+      class: "form-control",
       aria: { describedby: "email-help" },
       required: true
     ) %>
     <div id="email-help" class="form-text">
-      We'll send you a message with the link to confirm your email address.
+      <%= t("admin_users.email_confirmations.new.email_help_html") %>
     </div>
   </div>
 
   <div class="mb-3">
-    <%= captcha_widget_tag(theme: 'light') %>
+    <%= captcha_widget_tag %>
   </div>
 
   <div class="mb-3">
     <%= form.submit(
-      'Send email confirmation link',
-      class: 'btn btn-primary',
-      data: { 'turbo-submits-with' => 'Loading...' }
+      t("admin_users.email_confirmations.new.submit"),
+      class: "btn btn-primary",
+      data: { "turbo-submits-with" => t("shared.button.loading") }
     ) %>
   </div>
 <% end %>

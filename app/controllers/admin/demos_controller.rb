@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# rubocop:disable Rails/I18nLocaleTexts
 module Admin
   class DemosController < BaseController
     def show
@@ -42,3 +43,4 @@ module Admin
     end
   end
 end
+# rubocop:enable Rails/I18nLocaleTexts

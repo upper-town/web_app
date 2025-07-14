@@ -24,12 +24,12 @@ class AdminRolePermissionTest < ActiveSupport::TestCase
       admin_role = create_admin_role
       admin_permission = create_admin_permission
       existing_admin_role_permission = create_admin_role_permission(
-        admin_role: admin_role,
-        admin_permission: admin_permission
+        admin_role:,
+        admin_permission:
       )
       admin_role_permission = build_admin_role_permission(
-        admin_role: admin_role,
-        admin_permission: admin_permission
+        admin_role:,
+        admin_permission:
       )
 
       admin_role_permission.validate

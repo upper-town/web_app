@@ -16,7 +16,8 @@ class Users::EmailConfirmations::UpdateTest < ActiveSupport::TestCase
           result = described_class.new(token, code).call
 
           assert(result.failure?)
-          assert(result.errors.of_kind?(:base, :invalid_or_expired_code))
+          assert_nil(result.user)
+          assert(result.errors.key?(:invalid_or_expired_token_or_code))
         end
       end
 
@@ -29,7 +30,8 @@ class Users::EmailConfirmations::UpdateTest < ActiveSupport::TestCase
           result = described_class.new(token, code).call
 
           assert(result.failure?)
-          assert(result.errors.of_kind?(:base, :invalid_or_expired_code))
+          assert_nil(result.user)
+          assert(result.errors.key?(:invalid_or_expired_token_or_code))
         end
       end
     end
@@ -44,7 +46,8 @@ class Users::EmailConfirmations::UpdateTest < ActiveSupport::TestCase
           result = described_class.new(token, code).call
 
           assert(result.failure?)
-          assert(result.errors.of_kind?(:base, :invalid_or_expired_code))
+          assert_nil(result.user)
+          assert(result.errors.key?(:invalid_or_expired_token_or_code))
         end
       end
 
@@ -57,7 +60,8 @@ class Users::EmailConfirmations::UpdateTest < ActiveSupport::TestCase
           result = described_class.new(token, code).call
 
           assert(result.failure?)
-          assert(result.errors.of_kind?(:base, :invalid_or_expired_code))
+          assert_nil(result.user)
+          assert(result.errors.key?(:invalid_or_expired_token_or_code))
         end
       end
     end
@@ -72,29 +76,31 @@ class Users::EmailConfirmations::UpdateTest < ActiveSupport::TestCase
           result = described_class.new(token, code).call
 
           assert(result.failure?)
-          assert(result.errors.of_kind?(:base, :email_address_already_confirmed))
+          assert_equal(user, result.user)
+          assert(result.errors.key?(:email_address_already_confirmed))
           assert(result.user.email_confirmed_at.present?)
         end
       end
 
       describe "when confirm email succeeds" do
         it "returns success, expires token and code" do
-          user  = create_user
+          user  = create_user(email_confirmed_at: nil)
           token = user.generate_token!(:email_confirmation)
           code  = user.generate_code!(:email_confirmation)
 
           result = described_class.new(token, code).call
 
           assert(result.success?)
+          assert_equal(user, result.user)
           assert(result.user.email_confirmed_at.present?)
-          assert(User.find_by_token(:email_confirmation, token).blank?)
-          assert(User.find_by_code(:email_confirmation, code).blank?)
+          assert_nil(User.find_by_token(:email_confirmation, token))
+          assert_nil(User.find_by_code(:email_confirmation, code))
         end
       end
 
       describe "when confirm email raises an error" do
         it "raises an error" do
-          user  = create_user
+          user  = create_user(email_confirmed_at: nil)
           token = user.generate_token!(:email_confirmation)
           code  = user.generate_code!(:email_confirmation)
 
@@ -109,7 +115,9 @@ class Users::EmailConfirmations::UpdateTest < ActiveSupport::TestCase
           end
           assert_equal(1, called)
 
-          assert(user.reload.email_confirmed_at.blank?)
+          assert_not(user.reload.email_confirmed_at.present?)
+          assert_not_nil(User.find_by_token(:email_confirmation, token))
+          assert_not_nil(User.find_by_code(:email_confirmation, code))
         end
       end
     end

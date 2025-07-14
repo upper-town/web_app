@@ -3,16 +3,16 @@
 class NormalizeCode
   include Callable
 
-  attr_reader :code
+  attr_reader :str
 
-  def initialize(code)
-    @code = code
+  def initialize(str)
+    @str = str
   end
 
   def call
-    return if code.nil?
-    return "" if code.blank?
+    return if str.nil?
+    return "" if str.blank?
 
-    code.gsub(/[[:space:]]/, "").upcase
+    str.gsub(/[[:space:]]/, "").upcase
   end
 end

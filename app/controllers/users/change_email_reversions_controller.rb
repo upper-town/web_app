@@ -2,30 +2,35 @@
 
 module Users
   class ChangeEmailReversionsController < ApplicationController
+    before_action :set_change_email_reversion, only: [:edit, :update]
+
+    rate_limit(
+      to: 6,
+      within: 1.minute,
+      with: -> { render_rate_limited(:edit) },
+      name: "update",
+      only: [:update]
+    )
+
     def edit
-      @change_email_reversion_edit = Users::ChangeEmailReversion.new(
-        token: token_from_params,
-        auto_click: auto_click_from_params
-      )
     end
 
     def update
-      @change_email_reversion_edit = Users::ChangeEmailReversion.new(change_email_reversion_params)
-
-      if @change_email_reversion_edit.invalid?
-        flash.now[:alert] = @change_email_reversion_edit.errors.full_messages
+      if @change_email_reversion.invalid?
+        flash.now[:alert] = @change_email_reversion.errors
         render(:edit, status: :unprocessable_entity)
 
         return
       end
 
-      result = Users::ChangeEmailReversions::Update.new(@change_email_reversion_edit).call
+      result = ChangeEmailReversions::Update.call(
+        @change_email_reversion.token,
+        @change_email_reversion.code
+      )
 
       if result.success?
-        redirect_to(
-          signed_in_user? ? inside_dashboard_path : root_path,
-          success: "Email address has been restored."
-        )
+        flash[:success] = t("users.change_email_reversions.email_restored")
+        redirect_to(signed_in_user? ? inside_dashboard_path : root_path)
       else
         flash.now[:alert] = result.errors
         render(:edit, status: :unprocessable_entity)
@@ -34,16 +39,19 @@ module Users
 
     private
 
-    def change_email_reversion_params
-      params.expect(users_change_email_reversion: [:token])
+    def set_change_email_reversion
+      @change_email_reversion = ChangeEmailReversion.new(permitted_params[:users_change_email_reversion])
+
+      if @change_email_reversion.token.blank?
+        @change_email_reversion.token = permitted_params[:token].presence
+      end
     end
 
-    def token_from_params
-      @token_from_params ||= params[:token].presence
-    end
-
-    def auto_click_from_params
-      @auto_click_from_params ||= params[:auto_click].presence
+    def permitted_params
+      params.permit(
+        :token,
+        users_change_email_reversion: [:token, :code]
+      )
     end
   end
 end

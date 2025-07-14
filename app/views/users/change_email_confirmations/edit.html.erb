@@ -1,22 +1,37 @@
 <h2>
-  Change Email: confirmation
+    <%= t("users.change_email_confirmations.edit.title") %>
 </h2>
 
 <%= form_with(
-  model: @change_email_confirmation_edit,
+  model: @change_email_confirmation,
   method: :put,
   url: users_change_email_confirmation_path,
-  data: { 'controller' => 'form-error-messages-handler' }
+  data: { "controller" => "form-error-messages-handler" }
 ) do |form| %>
   <%= form.hidden_field(:token) %>
 
   <div class="my-3">
+    <%= form.label(:code, class: "form-label") %>
+    <%= form.text_field(
+      :code,
+      autofocus: true,
+      autocomplete: "off",
+      class: "form-control",
+      aria: { describedby: "code-help" },
+      required: true
+    ) %>
+  </div>
+
+  <div id="code-help" class="form-text">
+    <%= t("users.change_email_confirmations.edit.code_help") %>
+  </div>
+
+  <div class="my-3">
     <%= form.submit(
-      'Confirm and change my email address',
-      class: 'btn btn-primary',
+      t("users.change_email_confirmations.edit.submit"),
+      class: "btn btn-primary",
       data: {
-        'turbo-submits-with' => 'Confirming...',
-        'controller' => @change_email_confirmation_edit.auto_click ? 'auto-click' : nil
+        "turbo-submits-with" => t("shared.button.confirming")
       }.compact,
     ) %>
   </div>

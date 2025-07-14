@@ -8,8 +8,8 @@ class AdminRoleTest < ActiveSupport::TestCase
   describe "associations" do
     it "has many admin_account_roles" do
       admin_role = create_admin_role
-      admin_account_role1 = create_admin_account_role(admin_role: admin_role)
-      admin_account_role2 = create_admin_account_role(admin_role: admin_role)
+      admin_account_role1 = create_admin_account_role(admin_role:)
+      admin_account_role2 = create_admin_account_role(admin_role:)
 
       assert_equal(
         [admin_account_role1, admin_account_role2].sort,
@@ -22,8 +22,8 @@ class AdminRoleTest < ActiveSupport::TestCase
 
     it "has many admin_role_permissions" do
       admin_role = create_admin_role
-      admin_role_permission1 = create_admin_role_permission(admin_role: admin_role)
-      admin_role_permission2 = create_admin_role_permission(admin_role: admin_role)
+      admin_role_permission1 = create_admin_role_permission(admin_role:)
+      admin_role_permission2 = create_admin_role_permission(admin_role:)
 
       assert_equal(
         [admin_role_permission1, admin_role_permission2].sort,
@@ -36,8 +36,8 @@ class AdminRoleTest < ActiveSupport::TestCase
 
     it "has many accounts through admin_account_roles" do
       admin_role = create_admin_role
-      admin_account_role1 = create_admin_account_role(admin_role: admin_role)
-      admin_account_role2 = create_admin_account_role(admin_role: admin_role)
+      admin_account_role1 = create_admin_account_role(admin_role:)
+      admin_account_role2 = create_admin_account_role(admin_role:)
 
       assert_equal(
         [admin_account_role1.admin_account, admin_account_role2.admin_account].sort,
@@ -47,8 +47,8 @@ class AdminRoleTest < ActiveSupport::TestCase
 
     it "has many permissions through admin_role_permissions" do
       admin_role = create_admin_role
-      admin_role_permission1 = create_admin_role_permission(admin_role: admin_role)
-      admin_role_permission2 = create_admin_role_permission(admin_role: admin_role)
+      admin_role_permission1 = create_admin_role_permission(admin_role:)
+      admin_role_permission2 = create_admin_role_permission(admin_role:)
 
       assert_equal(
         [admin_role_permission1.admin_permission, admin_role_permission2.admin_permission].sort,

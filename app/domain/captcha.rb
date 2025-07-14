@@ -36,10 +36,6 @@ module Captcha
   # rubocop:enable Rails/OutputSafety
 
   def call(request)
-    if captcha_disabled?
-      return Result.success
-    end
-
     captcha_response, remote_ip = extract_values(request)
 
     if captcha_response.blank?
@@ -62,11 +58,6 @@ module Captcha
   end
 
   private
-
-  # TODO: move this to controller scope via ManageCaptcha
-  def captcha_disabled?
-    Rails.env.local? && ENV.fetch("CAPTCHA_DISABLED", "false") == "true"
-  end
 
   def extract_values(request)
     [

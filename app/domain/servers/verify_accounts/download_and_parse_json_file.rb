@@ -26,7 +26,8 @@ module Servers
         if validator.valid?
           Result.success(parsed_body: response.body)
         else
-          Result.failure(validator.errors)
+          result = Result.new ; validator.errors.each { result.add_error(it) }
+          result
         end
       rescue Faraday::ClientError, Faraday::ServerError => e
         Result.failure("Request failed: #{e}")

@@ -43,14 +43,14 @@ and rate limiting.
 
 ### Environment variables
 
-The [`dotenv-rails`] gem is available in development and test environments only,
+The [`dotenv`] gem is available in development and test environments only,
 and it reads and sets env vars from the `.env` and `.env.test` files.
 
-[`dotenv-rails`]: https://rubygems.org/gems/dotenv-rails
+[`dotenv`]: https://rubygems.org/gems/dotenv
 
 To override env vars values, create files named `.env.local` and
-`.env.test.local` on your local repository and set any variables you'd like to
-override.
+`.env.test.local` on your local repository and set any variables you'd like
+to override.
 
 In production, env vars should be properly set in the app settings in the
 cloud hosting service, and not from env files.
@@ -234,7 +234,7 @@ Embracing Rails, we can think of a layered architecture as:
 
 ## Tests
 
-To run the test suite, simply run `bin/rails test`
+To run the test suite, simply run `bin/rails test` and `bin/rails test:system`
 
 For a given feature, there are different types of tests we can run: unit tests,
 request tests, and system tests. In terms of time to write and compute time to
@@ -249,7 +249,7 @@ System tests spin up a browser while executing tests.
 By default, these tests run in a headless browser but for debugging purposes it
 can be useful to run them _headfully_. To run a system test _headfully_, set the
 `HEADFUL` or `HEADLESS` environment variable while running the test command:
-`HEADFUL=true bin/rails test` or `HEADLESS=false bin/rails test`
+`HEADFUL=true bin/rails test:system` or `HEADLESS=false bin/rails test:system`
 
 ### WebMock stubs and VCR to record and replay HTTP requests
 

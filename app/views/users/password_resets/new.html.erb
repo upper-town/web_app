@@ -3,17 +3,17 @@
 <% end %>
 
 <h2>
-  Reset Password: Verification Code
+  <%= t("users.password_resets.new.title") %>
 </h2>
 
 <%= form_with(
-  model: @user,
+  model: @password_reset,
   method: :post,
   url: users_password_reset_path,
   data: { "controller" => "form-error-messages-handler" }
 ) do |form| %>
   <div class="mb-3">
-    <%= form.label(:email, "Email address", class: "form-label") %>
+    <%= form.label(:email, class: "form-label") %>
     <%= form.email_field(
       :email,
       autofocus: true,
@@ -23,7 +23,7 @@
       required: true
     ) %>
     <div id="email-help" class="form-text">
-      We'll send you a message with a <strong>verification code</strong> to set or reset your password.
+      <%= t("users.password_resets.new.email_help_html") %>
     </div>
   </div>
 
@@ -33,9 +33,9 @@
 
   <div class="mb-3">
     <%= form.submit(
-      "Send verfication code",
+      t("users.password_resets.new.submit"),
       class: "btn btn-primary",
-      data: { "turbo-submits-with" => "Loading..." }
+      data: { "turbo-submits-with" => t("shared.button.loading") }
     ) %>
   </div>
 <% end %>

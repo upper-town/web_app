@@ -29,7 +29,11 @@ class Users::SessionTest < ActiveSupport::TestCase
 
       instance = described_class.new(email: "xxx@xxx")
       instance.validate
-      assert(instance.errors.of_kind?(:email, :format_is_not_valid))
+      assert(instance.errors.of_kind?(:email, :format_invalid))
+
+      instance = described_class.new(email: "user@example.com")
+      instance.validate
+      assert(instance.errors.of_kind?(:email, :domain_not_supported))
 
       instance = described_class.new(email: "user@upper.town")
       instance.validate
@@ -54,11 +58,9 @@ class Users::SessionTest < ActiveSupport::TestCase
   describe "normalizations" do
     it "normalizes email" do
       instance = described_class.new(email: nil)
-
       assert_nil(instance.email)
 
       instance = described_class.new(email: "\n\t USER  @UPPER .Town \n")
-
       assert_equal("user@upper.town", instance.email)
     end
   end

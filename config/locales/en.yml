@@ -28,32 +28,206 @@
 #       enabled: "ON"
 
 en:
-  notice:
-    email_address_confirmed: "Email address has been confirmed."
-    password_set: "Your password has been set."
-    logged_in: "You are logged in."
-    logged_out: "Your have been logged out."
-    logged_out_all: "Your have been logged out from all sessions."
+  shared:
+    message:
+      please_try_again_later_too_many_requests: "Please try again later. Too many requests."
 
-  alert:
-    please_try_again_later_too_many_requests: "Please try again later. Too many requests."
+    button:
+      submit: "Submit"
+      loading: "Loading..."
+      confirming: "Confirming..."
 
-  info:
-    verification_code_sent: "Verification code has been sent to your email."
-    set_password_for_your_account: "Set a password for your account."
-    logged_in_already: "You are logged in already."
+    nav:
+      sign_in: "Sign In"
+      sign_up: "Sign Up"
 
   errors:
     messages:
-      format_is_not_valid: "format is not valid"
-      domain_is_not_supported: "domain is not supported"
-      invalid_or_expired_code: "invalid or expired code"
-      incorrect_password_or_email: "incorrect password or email"
-      email_address_already_confirmed: "email address has already been confirmed"
-      user_not_found: "user not found"
+      format_invalid: "format is invalid"
+      domain_not_supported: "domain is not supported"
+      json_schema_invalid: "JSON schema is invalid"
+      not_yet_validated: "not yet validated"
+
+  activemodel:
+    attributes:
+      users/email_confirmation:
+        email: "Email address"
+        code: "Code"
+      users/password_reset:
+        email: "Email address"
+        code: "Verification Code"
+        password: "New Password"
+      users/session:
+        email: "Email address"
+        password: "Password"
+        remember_me: "Remember me"
+      users/change_email_confirmation:
+        email: "Current Email"
+        change_email: "New Email"
+        password: "Current Password"
+      users/change_email_reversion:
+        code: "Verification Code"
+
+      admin_users/email_confirmation:
+        email: "Email address"
+        code: "Code"
+      admin_users/password_reset:
+        email: "Email address"
+        code: "Verification Code"
+        password: "New Password"
+      admin_users/session:
+        email: "Email address"
+        password: "Password"
+        remember_me: "Remember me"
+
+    errors:
+      models:
+        application_result:
+          format: "%{message}"
+          attributes:
+            user_not_found:
+              invalid: "user not found"
+            admin_user_not_found:
+              invalid: "admin user not found"
+            email_address_already_confirmed:
+              invalid: "email address has already been confirmed"
+            new_email_address_already_confirmed:
+              invalid: "new email address has already been confirmed"
+            new_email_not_associated_with_code:
+              invalid: "new email address is not associated with verification code"
+            old_email_not_associated_with_code:
+              invalid: "old email address is not associated with verification code"
+            incorrect_password_or_email:
+              invalid: "incorrect password or email"
+            invalid_or_expired_token_or_code:
+              invalid: "invalid or expired token or code"
+            incorrect_current_email:
+              invalid: "incorrect current email"
 
   activerecord:
     errors:
       models:
         server:
           verified_server_with_same_name_exist: "There is already a verified server with same name for this game. You can try to rename yours"
+
+  users_mailer:
+    email_confirmation:
+      subject: "Email Confirmation: verification code"
+    password_reset:
+      subject: "Password Reset: verification code"
+    change_email_reversion:
+      subject: "Change Email: reversion link"
+    change_email:
+      subject: "Change Email: verification code"
+
+  admin_users_mailer:
+    email_confirmation:
+      subject: "Email Confirmation: verification code"
+    password_reset:
+      subject: "Password Reset: verification code"
+
+  users:
+    email_confirmations:
+      verification_code_sent: "Verification code has been sent to your email."
+      email_address_confirmed: "Email address has been confirmed."
+      set_password_for_your_account: "Set a password for your account."
+      new:
+        email_confirmation: "Email Confirmation"
+        email_help_html: "We'll send you a message with a <strong>verification code</strong> to confirm your email address."
+        submit: "Send verification code"
+      edit:
+        title: "Verification Code"
+        code_help: "Enter the verification code we have sent to your email"
+        submit: "Confirm my email address"
+
+    password_resets:
+      verification_code_sent: "Verification code has been sent to your email."
+      password_set: "Your password has been set."
+      new:
+        title: "Reset Password"
+        email_help_html: We'll send you a message with a <strong>verification code</strong> to set or reset your password.
+        submit: "Send verification code"
+      edit:
+        title: "Set your password"
+        code_help: "Enter the verification code we have sent to your email."
+        password_help: "Minimum password length is 8 characters."
+        submit: "Set password"
+
+    sessions:
+      logged_in: "You are logged in."
+      logged_out: "Your have been logged out."
+      logged_out_all: "Your have been logged out from all sessions."
+      logged_in_already: "You are logged in already."
+      new:
+        dont_have_account: "Don't have an account?"
+        click_here_to_sign_up: "Click here to Sign Up"
+
+        forgot_your_password: "Forgot your password?"
+        click_here_to_reset_password: "Click here to Reset Password"
+
+    change_email_confirmations:
+      verification_code_sent: "Verification code has been sent to your email"
+      email_address_changed: "Email address has been changed."
+      new:
+        title: "Change Email"
+        email_help: "We'll send you a message with a link you can use to revert this change, valid for 30 days."
+        change_email_help: "We'll send you a message with the link to confirm this new email address."
+        submit: "Change email"
+      edit:
+        title: "Change Email: confirmation"
+        code_help: "Enter the verification code we have sent to your email"
+        submit: "Confirm my New Email address"
+
+    change_email_reversions:
+      email_restored: "Email address has been restored."
+      edit:
+        title: "Change email: reversion"
+        code_help: "Enter the verification code we have sent to your email"
+        submit: "Confirm and restore my email address"
+
+  admin_users:
+    email_confirmations:
+      verification_code_sent: "Verification code has been sent to your email."
+      email_address_confirmed: "Email address has been confirmed."
+      set_password_for_your_account: "Set a password for your account."
+      new:
+        email_confirmation: "Email Confirmation"
+        email_help_html: "We'll send you a message with a <strong>verification code</strong> to confirm your email address."
+        submit: "Send verification code"
+      edit:
+        title: "Verification Code"
+        code_help: "Enter the verification code we have sent to your email"
+        submit: "Confirm my email address"
+
+    password_resets:
+      verification_code_sent: "Verification code has been sent to your email."
+      password_set: "Your password has been set."
+      new:
+        title: "Reset Password"
+        email_help_html: We'll send you a message with a <strong>verification code</strong> to set or reset your password.
+        submit: "Send verification code"
+      edit:
+        title: "Set your password"
+        code_help: "Enter the verification code we have sent to your email."
+        password_help: "Minimum password length is 8 characters."
+        submit: "Set password"
+
+    sessions:
+      logged_in: "You are logged in."
+      logged_out: "Your have been logged out."
+      logged_out_all: "Your have been logged out from all sessions."
+      logged_in_already: "You are logged in already."
+      new:
+        forgot_your_password: "Forgot your password?"
+        click_here_to_reset_password: "Click here to Reset Password"
+
+  inside:
+    servers:
+      unarchive:
+        success: "Server has been unarchived."
+      mark_for_deletion:
+        success: "Server has been marked to be deleted."
+      unmark_for_deletion:
+        success: "Server has been unmarked for deletion."
+      max_verified_servers_per_account: "You already have too many verified servers associated with your account."
+      max_not_verified_servers_per_account: "You have many servers pending verification. Please verify them first before adding more servers."

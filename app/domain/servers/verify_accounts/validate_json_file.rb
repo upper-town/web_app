@@ -25,7 +25,7 @@ module Servers
 
       def initialize(data)
         @data = data
-        @errors = [:not_validated_yet]
+        @errors = [:not_yet_validated]
       end
 
       def valid?
@@ -49,7 +49,7 @@ module Servers
 
       def validate_schema
         unless JSON::Validator.validate(JSON_FILE_SCHEMA, data)
-          @errors << :invalid_json_schema
+          @errors << :json_schema_invalid
         end
       end
 

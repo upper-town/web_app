@@ -8,7 +8,7 @@ class ValidateSiteUrlTest < ActiveSupport::TestCase
   it "initializes with errors not empty before calling #valid? or #invalid?" do
     validator = described_class.new("https://google.com/")
 
-    assert_includes(validator.errors, :not_validated_yet)
+    assert_includes(validator.errors, :not_yet_validated)
   end
 
   describe "#valid? and #invalid?" do
@@ -27,7 +27,7 @@ class ValidateSiteUrlTest < ActiveSupport::TestCase
 
           assert_not(validator.valid?, "Failed for #{invalid_site_url.inspect}")
           assert(validator.invalid?)
-          assert_includes(validator.errors, :format_is_not_valid)
+          assert_includes(validator.errors, :format_invalid)
         end
       end
     end
@@ -46,7 +46,7 @@ class ValidateSiteUrlTest < ActiveSupport::TestCase
 
       assert_not(validator.valid?)
       assert(validator.invalid?)
-      assert_includes(validator.errors, :format_is_not_valid)
+      assert_includes(validator.errors, :format_invalid)
     end
 
     describe "reserved names" do
@@ -110,7 +110,7 @@ class ValidateSiteUrlTest < ActiveSupport::TestCase
                   "Failed for #{reserved_name.inspect} and #{site_url_with_reserved_domain.inspect}"
                 )
                 assert(validator.invalid?)
-                assert_includes(validator.errors, :domain_is_not_supported)
+                assert_includes(validator.errors, :domain_not_supported)
               end
             end
           end

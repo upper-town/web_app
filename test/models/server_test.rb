@@ -85,30 +85,32 @@ class ServerTest < ActiveSupport::TestCase
 
     it "has many webhook_configs" do
       server = create_server
-      server_webhook_config1 = create_server_webhook_config(server:)
-      server_webhook_config2 = create_server_webhook_config(server:)
+      webhook_config1 = create_webhook_config(source: server)
+      webhook_config2 = create_webhook_config(source: server)
 
       assert_equal(
-        [server_webhook_config1, server_webhook_config2].sort,
+        [webhook_config1, webhook_config2].sort,
         server.webhook_configs.sort
       )
       server.destroy!
-      assert_raises(ActiveRecord::RecordNotFound) { server_webhook_config1.reload }
-      assert_raises(ActiveRecord::RecordNotFound) { server_webhook_config2.reload }
+      assert_raises(ActiveRecord::RecordNotFound) { webhook_config1.reload }
+      assert_raises(ActiveRecord::RecordNotFound) { webhook_config2.reload }
     end
 
-    it "has many webhook_events" do
+    it "has many webhook_events through webhook_config" do
       server = create_server
-      server_webhook_event1 = create_server_webhook_event(server:)
-      server_webhook_event2 = create_server_webhook_event(server:)
+      webhook_config = create_webhook_config(source: server)
+      webhook_event1 = create_webhook_event(config: webhook_config)
+      webhook_event2 = create_webhook_event(config: webhook_config)
+      _another_webhook_event = create_webhook_event
 
       assert_equal(
-        [server_webhook_event1, server_webhook_event2].sort,
+        [webhook_event1, webhook_event2].sort,
         server.webhook_events.sort
       )
       server.destroy!
-      assert_raises(ActiveRecord::RecordNotFound) { server_webhook_event1.reload }
-      assert_raises(ActiveRecord::RecordNotFound) { server_webhook_event2.reload }
+      assert_raises(ActiveRecord::RecordNotFound) { webhook_event1.reload }
+      assert_raises(ActiveRecord::RecordNotFound) { webhook_event2.reload }
     end
   end
 
@@ -208,7 +210,7 @@ class ServerTest < ActiveSupport::TestCase
 
       server = build_server(site_url: "abc://game")
       server.validate
-      assert(server.errors.of_kind?(:site_url, :format_is_not_valid))
+      assert(server.errors.of_kind?(:site_url, :format_invalid))
 
       server = build_server(site_url: "https://server-1.game.company.com")
       server.validate
@@ -217,10 +219,10 @@ class ServerTest < ActiveSupport::TestCase
 
     it "validates verified_server_with_same_name_exist" do
       game = create_game
-      server = build_server(name: "Server Name", game: game)
+      server = build_server(name: "Server Name", game:)
       existing_verified_server = create_server(
         name: "Server Name",
-        game: game,
+        game:,
         verified_at: Time.current
       )
 
@@ -308,6 +310,14 @@ class ServerTest < ActiveSupport::TestCase
         [server2],
         described_class.not_verified
       )
+    end
+  end
+
+  describe "#site_url_checksum" do
+    it "returns the last 8 hexdigits of site_url SHA256" do
+      server = create_server(site_url: "https://game-server.company.com/")
+
+      assert_equal("28c62f1f", server.site_url_checksum)
     end
   end
 
@@ -420,30 +430,30 @@ class ServerTest < ActiveSupport::TestCase
   end
 
   describe "#webhook_config" do
-    describe "when enabled server_webhook_config exists for event_type" do
+    describe "when enabled webhook_config exists for event_type" do
       it "returns it" do
         server = create_server
-        server_webhook_config = create_server_webhook_config(
-          server: server,
+        webhook_config = create_webhook_config(
+          source: server,
           event_types: ["test.event"],
           disabled_at: nil
         )
 
-        assert_equal(server_webhook_config, server.webhook_config("test.event"))
+        assert_equal(webhook_config, server.webhook_config("test.event"))
       end
     end
 
-    describe "when enabled server_webhook_config does not exit for event_type" do
+    describe "when enabled webhook_config does not exit for event_type" do
       it "returns nil" do
         another_server = create_server
-        _another_server_webhook_config = create_server_webhook_config(
-          server: another_server,
+        _another_webhook_config = create_webhook_config(
+          source: another_server,
           event_types: ["test.event"],
           disabled_at: nil
         )
         server = create_server
-        _server_webhook_config = create_server_webhook_config(
-          server: server,
+        _webhook_config = create_webhook_config(
+          source: server,
           event_types: ["test.event"],
           disabled_at: Time.current
         )
@@ -454,11 +464,11 @@ class ServerTest < ActiveSupport::TestCase
   end
 
   describe "#webhook_config?" do
-    describe "when enabled server_webhook_config exists for event_type" do
+    describe "when enabled webhook_config exists for event_type" do
       it "returns true" do
         server = create_server
-        _server_webhook_config = create_server_webhook_config(
-          server: server,
+        _webhook_config = create_webhook_config(
+          source: server,
           event_types: ["test.event"],
           disabled_at: nil
         )
@@ -467,17 +477,17 @@ class ServerTest < ActiveSupport::TestCase
       end
     end
 
-    describe "when enabled server_webhook_config does not exit for event_type" do
+    describe "when enabled webhook_config does not exit for event_type" do
       it "returns false" do
         another_server = create_server
-        _another_server_webhook_config = create_server_webhook_config(
-          server: another_server,
+        _another_webhook_config = create_webhook_config(
+          source: another_server,
           event_types: ["test.event"],
           disabled_at: nil
         )
         server = create_server
-        _server_webhook_config = create_server_webhook_config(
-          server: server,
+        _webhook_config = create_webhook_config(
+          source: server,
           event_types: ["test.event"],
           disabled_at: Time.current
         )
@@ -488,11 +498,11 @@ class ServerTest < ActiveSupport::TestCase
   end
 
   describe "#integrated?" do
-    describe "when enabled server_webhook_config exists for server_vote.created" do
+    describe "when enabled webhook_config exists for server_vote.created" do
       it "returns true" do
         server = create_server
-        _server_webhook_config = create_server_webhook_config(
-          server: server,
+        _webhook_config = create_webhook_config(
+          source: server,
           event_types: ["server_vote.created"],
           disabled_at: nil
         )
@@ -501,17 +511,17 @@ class ServerTest < ActiveSupport::TestCase
       end
     end
 
-    describe "when enabled server_webhook_config does not exit for server_vote.created" do
+    describe "when enabled webhook_config does not exit for server_vote.created" do
       it "returns false" do
         another_server = create_server
-        _another_server_webhook_config = create_server_webhook_config(
-          server: another_server,
+        _another_webhook_config = create_webhook_config(
+          source: another_server,
           event_types: ["server_vote.created"],
           disabled_at: nil
         )
         server = create_server
-        _server_webhook_config = create_server_webhook_config(
-          server: server,
+        _webhook_config = create_webhook_config(
+          source: server,
           event_types: ["server_vote.created"],
           disabled_at: Time.current
         )

@@ -14,12 +14,6 @@ class CreateAdminUsers < ActiveRecord::Migration[7.1]
       t.integer :sign_in_count,   null: false, default: 0
       t.integer :failed_attempts, null: false, default: 0
 
-      t.string   :change_email
-      t.datetime :change_email_confirmed_at
-      t.datetime :change_email_confirmation_sent_at
-      t.datetime :change_email_reverted_at
-      t.datetime :change_email_reversion_sent_at
-
       t.datetime :locked_at
       t.string   :locked_reason
       t.text     :locked_comment

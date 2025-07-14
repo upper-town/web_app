@@ -18,11 +18,13 @@ module EnvTestHelper
   end
 
   def env_with_backup_and_restore
-    original_env_hash = ENV.to_h
+    begin
+      original_env_hash = ENV.to_h
 
-    yield
-
-    ENV.clear
-    ENV.update(original_env_hash)
+      yield
+    ensure
+      ENV.clear
+      ENV.update(original_env_hash)
+    end
   end
 end

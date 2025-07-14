@@ -1,0 +1,19 @@
+<p>
+  Welcome <%= @email %>!
+</p>
+
+<p>
+  <%= link_to(
+    "Confirmation link",
+    edit_admin_users_email_confirmation_url(token: @email_confirmation_token)
+  ) %>
+</p>
+
+
+<p>
+  Here is your verification code:
+</p>
+
+<p>
+  <%= @email_confirmation_code %>
+</p>

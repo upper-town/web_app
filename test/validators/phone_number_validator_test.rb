@@ -13,7 +13,7 @@ class PhoneNumberValidatorTest < ActiveSupport::TestCase
         validator = described_class.new(attributes: [:phone_number])
         validator.validate(record)
 
-        assert(record.errors.of_kind?(:phone_number, :not_valid))
+        assert(record.errors.of_kind?(:phone_number, :invalid))
       end
     end
 

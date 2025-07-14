@@ -11,15 +11,15 @@ class PaginationCursorTest < ActiveSupport::TestCase
       [
         [" ",    nil,    "desc"],
         [" ",    " ",    "desc"],
-        [" ",    "xxxx", "desc"],
+        [" ",    "xxx",  "desc"],
         ["desc", nil,    "desc"],
         ["asc",  nil,    "asc"],
         ["desc", " ",    "desc"],
         ["asc",  " ",    "asc"],
-        ["desc", "xxxx", "desc"],
-        ["asc",  "xxxx", "desc"],
-        ["xxxx", "asc",  "asc"],
-        ["xxxx", "desc", "desc"],
+        ["desc", "xxx",  "desc"],
+        ["asc",  "xxx",  "desc"],
+        ["xxx",  "asc",  "asc"],
+        ["xxx",  "desc", "desc"],
         ["desc", "asc",  "asc"],
         ["asc",  "desc", "desc"]
       ].each do |order, request_order_param, expected_order|
@@ -27,7 +27,7 @@ class PaginationCursorTest < ActiveSupport::TestCase
         pagination_cursor = described_class.new(
           relation,
           request,
-          order: order
+          order:
         )
 
         assert_equal(expected_order, pagination_cursor.order)
@@ -78,9 +78,9 @@ class PaginationCursorTest < ActiveSupport::TestCase
         pagination_cursor = described_class.new(
           relation,
           request,
-          per_page: per_page,
-          per_page_max: per_page_max,
-          per_page_from_request: per_page_from_request
+          per_page:,
+          per_page_max:,
+          per_page_from_request:
         )
 
         assert_equal(expected_per_page, pagination_cursor.per_page)
@@ -106,7 +106,7 @@ class PaginationCursorTest < ActiveSupport::TestCase
         pagination_cursor = described_class.new(
           relation,
           request,
-          indicator: indicator
+          indicator:
         )
 
         assert_equal(expected_indicator, pagination_cursor.indicator)
@@ -253,11 +253,11 @@ class PaginationCursorTest < ActiveSupport::TestCase
         pagination_cursor = described_class.new(
           relation,
           request,
-          cursor_column: cursor_column,
-          cursor_type: cursor_type,
-          order: order,
-          indicator: indicator,
-          cursor: cursor
+          cursor_column:,
+          cursor_type:,
+          order:,
+          indicator:,
+          cursor:
         )
 
         assert(expected_cursor == pagination_cursor.cursor)
