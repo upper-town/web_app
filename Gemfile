@@ -69,7 +69,7 @@ end
 
 # ------------------------------------------------------------------------------
 
-gem "mission_control-jobs", "~> 1.0"
+gem "mission_control-jobs", "~> 1.1"
 gem "view_component"
 gem "json-schema"
 gem "countries"

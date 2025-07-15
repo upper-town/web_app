@@ -201,7 +201,7 @@ GEM
     minitest-rails (8.0.0)
       minitest (~> 5.20)
       railties (>= 8.0.0, < 8.1.0)
-    mission_control-jobs (1.0.2)
+    mission_control-jobs (1.1.0)
       actioncable (>= 7.1)
       actionpack (>= 7.1)
       activejob (>= 7.1)
@@ -303,7 +303,7 @@ GEM
       zeitwerk (~> 2.6)
     rainbow (3.1.1)
     rake (13.3.0)
-    rdoc (6.14.1)
+    rdoc (6.14.2)
       erb
       psych (>= 4.0.0)
     regexp_parser (2.10.0)
@@ -468,7 +468,7 @@ DEPENDENCIES
   kamal
   mailcatcher
   minitest-rails
-  mission_control-jobs (~> 1.0)
+  mission_control-jobs (~> 1.1)
   overmind
   pg (~> 1.1)
   phonelib
