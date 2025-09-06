@@ -3,7 +3,7 @@
 module Servers
   class VerifySchedulerJob < ApplicationJob
     queue_as "low"
-    # TODO: rewrite lock: :while_executing)
+    limits_concurrency key: ->(*) { "0" }
 
     def perform
       Server.select(:id).not_archived.each do |server|

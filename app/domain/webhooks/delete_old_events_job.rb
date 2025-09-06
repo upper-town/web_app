@@ -3,7 +3,7 @@
 module Webhooks
   class DeleteOldEventsJob < ApplicationJob
     queue_as "low"
-    # TODO: rewrite lock: :while_executing)
+    limits_concurrency key: ->(*) { "0" }
 
     def perform
       old_webhook_events_query.delete_all

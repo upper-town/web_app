@@ -2,7 +2,7 @@
 
 module Webhooks
   class PublishEventJob < ApplicationJob
-    # TODO: rewrite lock: :while_executing)
+    limits_concurrency key: ->(webhook_event) { webhook_event }
 
     def perform(webhook_event)
       result = PublishEvent.call(webhook_event)

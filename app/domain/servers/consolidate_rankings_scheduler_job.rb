@@ -2,7 +2,7 @@
 
 module Servers
   class ConsolidateRankingsSchedulerJob < ApplicationJob
-    # TODO: rewrite lock: :while_executing)
+    limits_concurrency key: ->(method) { method }
 
     METHODS = ["current", "all"]
 

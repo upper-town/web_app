@@ -3,7 +3,7 @@
 module Servers
   class DeleteMarkedForDeletionJob < ApplicationJob
     queue_as "low"
-    # TODO: rewrite lock: :while_executing)
+    limits_concurrency key: ->(*) { "0" }
 
     def perform
       marked_for_deletion_servers.each do |server|

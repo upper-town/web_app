@@ -25,8 +25,8 @@
   <meta name="turbo-prefetch" content="true">
 </head>
 <body data-controller="browser-time-zone" data-turbo-prefetch="false">
-  <% if Rails.env.development? && params.key?(:development_info) %>
-    <%= render('shared/development_info') %>
+  <% if Rails.env.development? && params.key?(:dev_info) %>
+    <%= render('shared/dev_info') %>
   <% end %>
   <%= render('shared/noscript') %>
   <%= render('shared/header') %>

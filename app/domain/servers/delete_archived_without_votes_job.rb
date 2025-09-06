@@ -3,7 +3,7 @@
 module Servers
   class DeleteArchivedWithoutVotesJob < ApplicationJob
     queue_as "low"
-    # TODO: rewrite lock: :while_executing)
+    limits_concurrency key: ->(*) { "0" }
 
     def perform
       archived_servers_without_votes.each do |server|

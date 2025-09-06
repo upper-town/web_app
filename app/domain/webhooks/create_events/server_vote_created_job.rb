@@ -3,7 +3,7 @@
 module Webhooks
   module CreateEvents
     class ServerVoteCreatedJob < ApplicationJob
-      # TODO: rewrite lock: :while_executing)
+      limits_concurrency key: ->(server_vote) { server_vote }
 
       EVENT_TYPE = "server_vote.created"
 

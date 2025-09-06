@@ -2,7 +2,7 @@
 
 module Servers
   class ConsolidateVoteCountsJob < ApplicationJob
-    # TODO: rewrite lock: :while_executing)
+    limits_concurrency key: ->(server, *) { server }
 
     def perform(server, method = "current")
       case method
