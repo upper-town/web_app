@@ -5,6 +5,26 @@ require "test_helper"
 class FeatureFlagTest < ActiveSupport::TestCase
   let(:described_class) { FeatureFlag }
 
+  describe "normalizations" do
+    it "normalizes name" do
+      feature_flag = create_feature_flag(name: "\n\t Some  feature \n")
+
+      assert_equal("some_feature", feature_flag.name)
+    end
+
+    it "normalizes value" do
+      feature_flag = create_feature_flag(value: "\n\t True : User_1, User_2 \n")
+
+      assert_equal("true:user_1,user_2", feature_flag.value)
+    end
+
+    it "normalizes comment" do
+      feature_flag = create_feature_flag(comment: "\n\t Some  comment \n")
+
+      assert_equal("Some comment", feature_flag.comment)
+    end
+  end
+
   describe ".enabled? and .disabled?" do
     describe "when feature flag is not found" do
       it "returns accordingly" do

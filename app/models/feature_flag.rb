@@ -40,6 +40,10 @@ class FeatureFlag < ApplicationRecord
   ENABLED_SEPARATOR = ":"
   FFID_SEPARATOR    = ","
 
+  normalizes :name,    with: NormalizeNameKey
+  normalizes :value,   with: ->(str) { str.gsub(/[[:space:]]/, "").downcase }
+  normalizes :comment, with: NormalizeDescription
+
   def self.enabled?(name, record_or_ffid = nil)
     value = fetch_value(StringHelper.remove_whitespaces(name.to_s))
     return false unless value
