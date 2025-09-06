@@ -76,7 +76,6 @@ gem "phonelib"
 
 group :development, :test do
   gem "dotenv", require: false
-  gem "simplecov", require: false
 
   gem "rubocop", require: false
   gem "rubocop-capybara", require: false
@@ -97,6 +96,7 @@ end
 
 group :test do
   gem "minitest-rails"
+  gem "simplecov", require: false
   gem "vcr"
   gem "webmock"
 end

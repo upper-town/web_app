@@ -3,8 +3,10 @@
 ENV["APP_ENV"] ||= "test"
 ENV["RAILS_ENV"] ||= "test"
 
-require "simplecov"
-SimpleCov.start "rails"
+if ENV.fetch("COVERAGE", "false") == "true"
+  require "simplecov"
+  SimpleCov.start "rails"
+end
 
 require_relative "../config/environment"
 
@@ -35,7 +37,7 @@ end
 module ActiveSupport
   class TestCase
     # Run tests in parallel with specified workers
-    parallelize(workers: :number_of_processors)
+    parallelize(workers: :number_of_processors) unless ENV.fetch("COVERAGE", "false") == "true"
 
     include ActiveJobTestSetup
     include CacheTestSetup
