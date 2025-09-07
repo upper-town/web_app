@@ -14,15 +14,15 @@ end
 BCrypt::Engine.cost = BCrypt::Engine::MIN_COST
 
 Rails.application.routes.default_url_options = {
-  host: web_app_host,
-  port: web_app_port
+  host: AppUtil.web_app_host,
+  port: AppUtil.web_app_port
 }
 
 Rails.application.configure do
-  config.hosts << web_app_host
+  config.hosts << AppUtil.web_app_host
   config.host_authorization = { exclude: ->(request) { request.path == "/up" } }
 
-  config.eager_load = ["true", "1"].include?(ENV.fetch("CI", nil))
+  config.eager_load = AppUtil.env_var_enabled?("CI")
   config.enable_reloading = false
   config.consider_all_requests_local = true
   config.server_timing = false
@@ -31,7 +31,7 @@ Rails.application.configure do
 
   config.log_tags = [:request_id]
 
-  if ENV["TEST_LOGGER"] == true
+  if AppUtil.env_var_enabled?("TEST_LOGGER")
     config.log_level = :debug
   else
     config.logger = Logger.new(nil)
@@ -51,8 +51,8 @@ Rails.application.configure do
 
   config.action_controller.raise_on_missing_callback_actions = true
   config.action_controller.default_url_options = {
-    host: web_app_host,
-    port: web_app_port
+    host: AppUtil.web_app_host,
+    port: AppUtil.web_app_port
   }
   config.action_controller.perform_caching = false
   config.action_controller.allow_forgery_protection = false
@@ -95,8 +95,8 @@ Rails.application.configure do
   # action_mailer
 
   config.action_mailer.default_url_options = {
-    host: web_app_host,
-    port: web_app_port
+    host: AppUtil.web_app_host,
+    port: AppUtil.web_app_port
   }
   config.action_mailer.perform_caching = false
   config.action_mailer.raise_delivery_errors = true

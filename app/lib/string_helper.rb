@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module StringHelper
-  TRUE_STRINGS = ["true", "t", "1", "on", "enabled"]
+  TRUE_STRINGS = ["true", "t", "1", "on", "yes", "y", "enable", "enabled"]
 
   extend self
 

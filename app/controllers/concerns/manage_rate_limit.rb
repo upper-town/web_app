@@ -9,7 +9,7 @@ module ManageRateLimit
     end
 
     def rate_limit_disabled?
-      Rails.env.local? && ENV.fetch("RATE_LIMIT_DISABLED", "false") == "true"
+      Rails.env.local? && AppUtil.env_var_enabled?("RATE_LIMIT_DISABLED")
     end
   end
 

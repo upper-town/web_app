@@ -42,7 +42,7 @@ module ManageCaptcha
   end
 
   def captcha_disabled?
-    Rails.env.local? && ENV.fetch("CAPTCHA_DISABLED", "false") == "true"
+    Rails.env.local? && AppUtil.env_var_enabled?("CAPTCHA_DISABLED")
   end
 
   def perform_captcha_skip

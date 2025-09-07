@@ -287,6 +287,6 @@ to `true` while running the test command. For example,
 `VCR_RECORD_ALL=true bin/rails test test/services/some_class_test.rb`.
 
 This feature is provided by setting [`default_cassette_options`] `:record`
-to `:all` in VCR configuration when `ENV["VCR_RECORD_ALL"]` is set to `"true"`
+to `:all` in VCR configuration when `VCR_RECORD_ALL` is enabled.
 
 [`default_cassette_options`]: https://relishapp.com/vcr/vcr/v/6-1-0/docs/configuration/default-cassette-options

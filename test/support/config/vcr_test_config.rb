@@ -5,7 +5,7 @@ VCR.configure do |c|
   c.hook_into :webmock
   c.ignore_localhost = true
 
-  if ENV.fetch("VCR_RECORD_ALL", "false") == "true"
+  if AppUtil.env_var_enabled?("VCR_RECORD_ALL")
     c.default_cassette_options[:record] = :all
   end
 

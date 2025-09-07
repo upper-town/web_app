@@ -16,22 +16,34 @@ class StringHelperTest < ActiveSupport::TestCase
         ["t",       true],
         ["1",       true],
         ["on",      true],
+        ["yes",     true],
+        ["y",       true],
+        ["enable",  true],
         ["enabled", true],
 
         [" true \n",    true],
         [" t \n",       true],
         [" 1 \n",       true],
         [" on \n",      true],
+        [" yes \n",     true],
+        [" y \n",       true],
+        [" enable \n",  true],
         [" enabled \n", true],
 
         ["TRUE",    true],
         ["T",       true],
         ["ON",      true],
+        ["YES",     true],
+        ["Y",       true],
+        ["ENABLE",  true],
         ["ENABLED", true],
 
         [" TRUE \n",    true],
         [" T \n",       true],
         [" ON \n",      true],
+        [" YES \n",     true],
+        [" Y \n",       true],
+        [" ENABLE \n",  true],
         [" ENABLED \n", true]
       ].each do |value, expected_boolean|
         returned = described_class.to_boolean(value)

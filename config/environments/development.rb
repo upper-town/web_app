@@ -5,12 +5,12 @@ require "active_support/core_ext/integer/time"
 BCrypt::Engine.cost = BCrypt::Engine::DEFAULT_COST
 
 Rails.application.routes.default_url_options = {
-  host: web_app_host,
-  port: web_app_port
+  host: AppUtil.web_app_host,
+  port: AppUtil.web_app_port
 }
 
 Rails.application.configure do
-  config.hosts << web_app_host
+  config.hosts << AppUtil.web_app_host
   config.host_authorization = { exclude: ->(request) { request.path == "/up" } }
 
   config.eager_load = false
@@ -36,8 +36,8 @@ Rails.application.configure do
 
   config.action_controller.raise_on_missing_callback_actions = true
   config.action_controller.default_url_options = {
-    host: web_app_host,
-    port: web_app_port
+    host: AppUtil.web_app_host,
+    port: AppUtil.web_app_port
   }
   if Rails.root.join("tmp/caching-dev.txt").exist?
     config.action_controller.perform_caching = true
@@ -95,8 +95,8 @@ Rails.application.configure do
   # action_mailer
 
   config.action_mailer.default_url_options = {
-    host: web_app_host,
-    port: web_app_port
+    host: AppUtil.web_app_host,
+    port: AppUtil.web_app_port
   }
   config.action_mailer.perform_caching = false
   config.action_mailer.raise_delivery_errors = true

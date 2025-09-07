@@ -3,7 +3,7 @@
 module RequestTestHelper
   def build_request(
     method: "GET",
-    url: "http://#{web_app_host}:#{web_app_port}/",
+    url: "http://#{AppUtil.web_app_host}:#{AppUtil.web_app_port}/",
     params: {},
     headers: {},
     env: {},

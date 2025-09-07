@@ -5,8 +5,8 @@ module CapybaraTestSetup
 
   class_methods do
     def capybara_default_driver
-      headful  = ENV.fetch("HEADFUL", "false") == "true"
-      headless = ENV.fetch("HEADLESS", "true") == "true"
+      headful  = AppUtil.env_var_enabled?("HEADFUL")
+      headless = AppUtil.env_var_enabled?("HEADLESS")
 
       if headful || !headless
         :selenium
@@ -23,8 +23,8 @@ module CapybaraTestSetup
   def setup
     super
 
-    Capybara.app_host = "http://#{web_app_host}:#{web_app_port}"
-    Capybara.server_host = web_app_host
-    Capybara.server_port = web_app_port
+    Capybara.app_host = "http://#{AppUtil.web_app_host}:#{AppUtil.web_app_port}"
+    Capybara.server_host = AppUtil.web_app_host
+    Capybara.server_port = AppUtil.web_app_port
   end
 end

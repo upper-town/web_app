@@ -4,30 +4,14 @@ require_relative "boot"
 
 require "rails/all"
 
+require_relative "../lib/app_util"
+
 require "dotenv" if Rails.env.local?
 
 if Rails.env.development?
   Dotenv.load(".env.local", ".env")
 elsif Rails.env.test?
   Dotenv.load(".env.test.local", ".env.test", ".env.local", ".env")
-end
-
-# General helper methods
-
-def running_assets_precompile?
-  ["true", "1"].include?(ENV.fetch("SECRET_KEY_BASE_DUMMY", nil))
-end
-
-def show_active_record_log
-  ActiveRecord::Base.logger = Logger.new($stdout)
-end
-
-def web_app_host
-  ENV.fetch("APP_HOST", "upper.town")
-end
-
-def web_app_port
-  ENV.fetch("APP_PORT", "3000")
 end
 
 # Require the gems listed in Gemfile, including any gems
@@ -58,7 +42,7 @@ module WebApp
 
     config.active_model.i18n_customize_full_message = true
 
-    unless running_assets_precompile?
+    unless AppUtil.running_assets_precompile?
       config.active_record.encryption.primary_key =
         ENV.fetch("ACTIVE_RECORD_ENCRYPTION_PRIMARY_KEY").split(",")
       config.active_record.encryption.deterministic_key =

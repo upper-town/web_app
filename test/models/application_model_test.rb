@@ -74,7 +74,7 @@ class ApplicationModelTest < ActiveSupport::TestCase
     instance = model_class.new
 
     assert_equal(
-      "http://#{web_app_host}:#{web_app_port}/",
+      "http://#{AppUtil.web_app_host}:#{AppUtil.web_app_port}/",
       instance.some_url
     )
   end

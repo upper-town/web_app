@@ -16,7 +16,7 @@ module Seeds
     def user_hashes
       1.upto(10).map do |n|
         {
-          email: "user_#{n}@#{web_app_host}",
+          email: "user_#{n}@#{AppUtil.web_app_host}",
           password_digest: Seeds::Common.encrypt_password("testpass"),
           email_confirmed_at: Time.current
         }
