@@ -5,8 +5,8 @@ module CapybaraTestSetup
 
   class_methods do
     def capybara_default_driver
-      headful  = AppUtil.env_var_enabled?("HEADFUL")
-      headless = AppUtil.env_var_enabled?("HEADLESS")
+      headful  = AppUtil.env_var_enabled?("HEADFUL") || AppUtil.env_var_enabled?("DEV_TOOLS")
+      headless = AppUtil.env_var_enabled?("HEADLESS", default: "true")
 
       if headful || !headless
         :selenium
@@ -17,7 +17,12 @@ module CapybaraTestSetup
   end
 
   included do
-    driven_by(capybara_default_driver)
+    driven_by(capybara_default_driver) do |capabilities|
+      if AppUtil.env_var_enabled?("DEV_TOOLS")
+        capabilities.add_argument("--auto-open-devtools-for-tabs")
+        capabilities.add_preference("devtools", "preferences" => { "currentDockState" => '"bottom"' })
+      end
+    end
   end
 
   def setup

@@ -3,15 +3,15 @@
 module AppUtil
   extend self
 
-  def env_var_enabled?(name)
-    value = ENV.fetch(normalize_env_var_name(name), nil)
+  def env_var_enabled?(name, default: nil)
+    value = ENV.fetch(normalize_env_var_name(name), default)
 
     !value.nil? &&
       ["true", "t", "1", "on", "yes", "y", "enable", "enabled"].include?(value.strip.downcase)
   end
 
-  def env_var_disabled?(name)
-    !env_var_enabled?(name)
+  def env_var_disabled?(...)
+    !env_var_enabled?(...)
   end
 
   def normalize_env_var_name(name)
