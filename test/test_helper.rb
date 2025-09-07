@@ -3,12 +3,13 @@
 ENV["APP_ENV"] ||= "test"
 ENV["RAILS_ENV"] ||= "test"
 
+require_relative "../config/environment"
+
 if ENV.fetch("COVERAGE", "false") == "true"
   require "simplecov"
-  SimpleCov.start "rails"
+  require "simplecov-lcov"
+  require_relative "../config/coverage"
 end
-
-require_relative "../config/environment"
 
 # Prevent database truncation if the environment is production
 abort("The Rails environment is running in production mode!") if Rails.env.production?
