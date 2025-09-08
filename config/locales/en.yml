@@ -82,6 +82,13 @@ en:
 
     errors:
       models:
+        image_uploaded_file:
+          format: "%{message}"
+          attributes:
+            byte_size:
+              invalid: "File size is too large. Maximum allowed size: %{max_byte_size}"
+            content_type:
+              invalid: "Invalid content type. Allowed types: %{allowed_content_types}"
         application_result:
           format: "%{message}"
           attributes:

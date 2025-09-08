@@ -2,46 +2,46 @@
 
 require "test_helper"
 
-class ServerBannerImageUploadedFileTest < ActiveSupport::TestCase
-  let(:described_class) { ServerBannerImageUploadedFile }
+class ImageUploadedFileTest < ActiveSupport::TestCase
+  let(:described_class) { ImageUploadedFile }
 
   describe "validations" do
     it "validates byte_size" do
       instance = described_class.new(uploaded_file: nil)
       instance.validate
-      assert(instance.errors.key?(:byte_size).blank?)
+      assert_not(instance.errors.key?(:byte_size))
 
       instance = described_class.new(uploaded_file: StringIO.new("aaa"))
       instance.validate
-      assert(instance.errors.key?(:byte_size).blank?)
+      assert_not(instance.errors.key?(:byte_size))
 
       instance = described_class.new(uploaded_file: StringIO.new("a" * 512 * 1024))
       instance.validate
-      assert(instance.errors.key?(:byte_size).blank?)
+      assert_not(instance.errors.key?(:byte_size))
 
-      instance = described_class.new(uploaded_file: StringIO.new(("a" * 512 * 1024) + "a"))
+      instance = described_class.new(uploaded_file: StringIO.new("a" * 512 * (1024 + 1)))
       instance.validate
-      assert(instance.errors.key?(:byte_size).present?)
-      assert(instance.errors[:byte_size].any? { it.match?(/File size is too large. Maximum allowed size/) })
+      assert(instance.errors.of_kind?(:byte_size, :invalid))
+      assert(instance.errors.full_messages_for(:byte_size).any? { it == "File size is too large. Maximum allowed size: 512 KB" })
     end
 
     it "validates content_type" do
       instance = described_class.new(uploaded_file: nil)
       instance.validate
-      assert(instance.errors.key?(:content_type).blank?)
+      assert_not(instance.errors.key?(:content_type))
 
       instance = described_class.new(uploaded_file: StringIO.new("aaa"))
       instance.validate
-      assert(instance.errors.key?(:content_type).present?)
-      assert(instance.errors[:content_type].any? { it.match?(/Invalid content type. Allowed types/) })
+      assert(instance.errors.of_kind?(:content_type, :invalid))
+      assert(instance.errors.full_messages_for(:content_type).any? { it == "Invalid content type. Allowed types: image/png, image/jpeg" })
 
       instance = described_class.new(uploaded_file: StringIO.new(png_1px))
       instance.validate
-      assert(instance.errors.key?(:content_type).blank?)
+      assert_not(instance.errors.key?(:content_type))
 
       instance = described_class.new(uploaded_file: StringIO.new(jpeg_1px))
       instance.validate
-      assert(instance.errors.key?(:content_type).blank?)
+      assert_not(instance.errors.key?(:content_type))
     end
   end
 
