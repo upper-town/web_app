@@ -2,11 +2,9 @@
 
 module Seeds
   class Runner
-    include Callable
+    prepend Callable
 
     def call
-      return unless Rails.env.development?
-
       admin_user_ids = CreateAdminUsers.call
       _admin_account_ids = CreateAdminAccounts.call(admin_user_ids)
 

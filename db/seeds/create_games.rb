@@ -2,11 +2,9 @@
 
 module Seeds
   class CreateGames
-    include Callable
+    prepend Callable
 
     def call
-      return unless Rails.env.development?
-
       result = Game.insert_all(game_hashes)
       result.rows.flatten # game_ids
     end

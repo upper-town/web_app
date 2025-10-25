@@ -2,7 +2,7 @@
 
 module Seeds
   class CreateServers
-    include Callable
+    prepend Callable
 
     attr_reader :game_ids
 
@@ -11,8 +11,6 @@ module Seeds
     end
 
     def call
-      return unless Rails.env.development?
-
       server_ids = []
 
       game_ids.map do |game_id|

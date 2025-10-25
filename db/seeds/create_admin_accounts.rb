@@ -2,7 +2,7 @@
 
 module Seeds
   class CreateAdminAccounts
-    include Callable
+    prepend Callable
 
     attr_reader :admin_user_ids
 
@@ -11,8 +11,6 @@ module Seeds
     end
 
     def call
-      return unless Rails.env.development?
-
       result = AdminAccount.insert_all(admin_account_hashes)
       result.rows.flatten # account_ids
     end

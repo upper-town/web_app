@@ -2,11 +2,9 @@
 
 module Seeds
   class CreateAdminUsers
-    include Callable
+    prepend Callable
 
     def call
-      return unless Rails.env.development?
-
       result = AdminUser.insert_all(normal_admin_user_hashes.append(super_admin_user_hash))
       result.rows.flatten # admin_user_ids
     end
@@ -16,7 +14,7 @@ module Seeds
     def normal_admin_user_hashes
       1.upto(10).map do |n|
         {
-          email: "admin_user_#{n}@#{AppUtil.web_app_host}",
+          email: "admin.user#{n}@#{AppUtil.web_app_host}",
           password_digest: Seeds::Common.encrypt_password("testpass"),
           email_confirmed_at: Time.current
         }
@@ -25,7 +23,7 @@ module Seeds
 
     def super_admin_user_hash
       {
-        email: "super_admin_user@#{AppUtil.web_app_host}",
+        email: "super.admin.user@#{AppUtil.web_app_host}",
         password_digest: Seeds::Common.encrypt_password("testpass"),
         email_confirmed_at: Time.current
       }
