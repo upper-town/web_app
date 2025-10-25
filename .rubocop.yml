@@ -16,6 +16,7 @@ AllCops:
   Exclude:
     - vendor/**/*
     - db/*schema.rb
+    - db/migrate/*.rb
   NewCops: enable
   TargetRubyVersion: 3.4.4
 

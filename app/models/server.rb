@@ -5,7 +5,7 @@ class Server < ApplicationRecord
 
   belongs_to :game
 
-  has_one :banner_image, class_name: "ServerBannerImage", dependent: :destroy
+  has_one_attached :banner_image
 
   has_many :votes, class_name: "ServerVote", dependent: :destroy
   has_many :stats, class_name: "ServerStat", dependent: :destroy
@@ -82,6 +82,18 @@ class Server < ApplicationRecord
 
   def not_verified?
     !verified?
+  end
+
+  def banner_image_approved?
+    banner_image.present? && banner_image_approved_at.present?
+  end
+
+  def approve_banner_image!
+    update!(banner_image_approved_at: Time.current)
+  end
+
+  def unapprove_banner_image!
+    update!(banner_image_approved_at: nil)
   end
 
   def webhook_config(event_type)

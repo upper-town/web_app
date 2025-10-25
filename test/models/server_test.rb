@@ -14,9 +14,9 @@ class ServerTest < ActiveSupport::TestCase
 
     it "has one banner_image" do
       server = create_server
-      server_banner_image = create_server_banner_image(server:)
+      server.banner_image.attach(io: StringIO.new(png_1px), filename: "test.png")
 
-      assert_equal(server_banner_image, server.banner_image)
+      assert(server.banner_image.present?)
     end
 
     it "has many votes" do
@@ -529,5 +529,11 @@ class ServerTest < ActiveSupport::TestCase
         assert_not(server.integrated?)
       end
     end
+  end
+
+  let(:png_1px) do
+    "\x89PNG\r\n\x1A\n\x00\x00\x00\rIHDR\x00\x00\x00\x01\x00\x00\x00\x01\b" \
+    "\x06\x00\x00\x00\x1F\x15\xC4\x89\x00\x00\x00\rIDATx\xDAc\xFC\xCF\xC0P" \
+    "\x0F\x00\x04\x85\x01\x80\x84\xA9\x8C!\x00\x00\x00\x00IEND\xAEB`\x82"
   end
 end

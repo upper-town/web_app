@@ -21,7 +21,7 @@ module Inside
 
     def create
       @server = Server.new(server_params)
-      server_banner_image_uploaded_file = ServerBannerImageUploadedFile.new(
+      server_banner_image = ServerBannerImage.new(
         uploaded_file: params.require(:server)[:banner_image]
       )
 
@@ -31,8 +31,8 @@ module Inside
         return
       end
 
-      if server_banner_image_uploaded_file.invalid?
-        server_banner_image_uploaded_file.errors.each do |error|
+      if server_banner_image.invalid?
+        server_banner_image.errors.each do |error|
           @server.errors.add(:banner_image, error)
         end
         render(:new, status: :unprocessable_entity)
@@ -43,7 +43,7 @@ module Inside
       result = Servers::Create.new(
         @server,
         current_account,
-        server_banner_image_uploaded_file
+        server_banner_image
       ).call
 
       if result.success?

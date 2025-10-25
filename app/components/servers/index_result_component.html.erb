@@ -1,7 +1,7 @@
 <div class="max-w-[750px] mb-5 mx-auto">
-  <%#
-    BannerImage
-  %>
+  <% if server.banner_image_approved? %>
+    <%= image_tag(server.banner_image) %>
+  <% end %>
 
   <div class="bg-slate-100 py-2">
     <div class="flex mb-2 items-stretch text-lg md:text-xl font-bold">

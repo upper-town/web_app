@@ -186,22 +186,6 @@ module ActiveRecordFactoryTestHelper
     build_server_account(...).tap { it.save! }
   end
 
-  # ServerBannerImage
-
-  def build_server_banner_image(**kwargs)
-    set_attr(kwargs, :server,       build_server)
-    set_attr(kwargs, :content_type, "image/png")
-    set_attr(kwargs, :blob,         "")
-    set_attr(kwargs, :byte_size,    0)
-    set_attr(kwargs, :checksum,     "")
-
-    ServerBannerImage.new(**kwargs)
-  end
-
-  def create_server_banner_image(...)
-    build_server_banner_image(...).tap { it.save! }
-  end
-
   # ServerStat
 
   def build_server_stat(**kwargs)

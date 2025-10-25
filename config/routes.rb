@@ -21,7 +21,6 @@ Rails.application.routes.draw do
     resources :server_votes, as: "votes", path: "votes", only: [:index, :new, :create]
   end
   resources :server_votes, only: [:show]
-  resources :server_banner_images, only: [:show]
 
   # /users
 
