@@ -24,6 +24,19 @@ class WebhookConfigTest < ActiveSupport::TestCase
         webhook_config.events.sort
       )
     end
+
+    it "has many batches" do
+      webhook_config = create_webhook_config
+
+      webhook_batch1 = create_webhook_batch(config: webhook_config)
+      webhook_batch2 = create_webhook_batch(config: webhook_config)
+      _webhook_batch3 = create_webhook_batch
+
+      assert_equal(
+        [webhook_batch1, webhook_batch2].sort,
+        webhook_config.batches.sort
+      )
+    end
   end
 
   describe "normalizations" do
@@ -31,22 +44,20 @@ class WebhookConfigTest < ActiveSupport::TestCase
       webhook_config = create_webhook_config(
         event_types: ["\n\t [server_ vote.* \n", "Server.Updated,123", 123, nil, " "]
       )
-
       assert_equal(["server_vote.*", "server.updated"], webhook_config.event_types)
+
+      webhook_config = create_webhook_config(event_types: ["*"])
+      assert_equal(["*"], webhook_config.event_types)
     end
 
     it "normalizes secret" do
-      webhook_config = create_webhook_config(
-        secret: " aaaaaaaa \naaaaaaaa \t\n"
-      )
+      webhook_config = create_webhook_config(secret: " aaaaaaaa \naaaaaaaa \t\n")
 
       assert_equal("aaaaaaaaaaaaaaaa", webhook_config.secret)
     end
 
     it "normalizes method" do
-      webhook_config = create_webhook_config(
-        method: " [PO \nst \t\n"
-      )
+      webhook_config = create_webhook_config(method: " [PO \nst \t\n")
 
       assert_equal("POST", webhook_config.method)
     end
@@ -111,9 +122,9 @@ class WebhookConfigTest < ActiveSupport::TestCase
         event_types: ["server_vote.created"],
         disabled_at: Time.current
       )
-      _webhook_config4 = create_webhook_config(
+      webhook_config4 = create_webhook_config(
         source:,
-        event_types: ["test.event"],
+        event_types: ["test"],
         disabled_at: nil
       )
       webhook_config5 = create_webhook_config(
@@ -128,6 +139,15 @@ class WebhookConfigTest < ActiveSupport::TestCase
           webhook_config5
         ].sort,
         described_class.for(source, "server_vote.created").sort
+      )
+
+      assert_equal(
+        [
+          webhook_config1,
+          webhook_config4,
+          webhook_config5
+        ].sort,
+        described_class.for(source).sort
       )
     end
   end

@@ -35,6 +35,10 @@ Rails.root.glob("test/support/helpers/*.rb").each do |file|
   require file
 end
 
+Rails.root.glob("test/support/factories/*.rb").each do |file|
+  require file
+end
+
 module ActiveSupport
   class TestCase
     # Run tests in parallel with specified workers
@@ -45,7 +49,7 @@ module ActiveSupport
     include CurrentTestSetup
     include MailerTestSetup
 
-    include ActiveRecordFactoryTestHelper
+    include ApplicationRecordTestFactoryHelper
     include EnvTestHelper
     include RailsEnvTestHelper
     include RequestTestHelper

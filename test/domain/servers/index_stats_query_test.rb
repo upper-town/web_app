@@ -236,10 +236,10 @@ class Servers::IndexStatsQueryTest < ActiveSupport::TestCase
     end
 
     Server.find_each do |server|
-      Servers::ConsolidateVoteCounts.new(server).process(week_time, year_time)
+      Servers::ConsolidateVoteCounts.call(server, nil, week_time, year_time)
     end
     Game.find_each do |game|
-      Servers::ConsolidateRankings.new(game).process(week_time, year_time)
+      Servers::ConsolidateRankings.call(game, nil, week_time, year_time)
     end
   end
 end

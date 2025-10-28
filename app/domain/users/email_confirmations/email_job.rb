@@ -4,7 +4,6 @@ module Users
   module EmailConfirmations
     class EmailJob < ApplicationJob
       queue_as "critical"
-      limits_concurrency key: ->(user) { user }
 
       def perform(user)
         email_confirmation_code = user.generate_code!(:email_confirmation)

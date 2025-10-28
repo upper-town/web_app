@@ -16,31 +16,26 @@ module AdminUsers
     end
 
     def call
-      if admin_user_exists?
-        if (admin_user = authenticate_admin_user)
-          count_sign_in_attempt(succeeded: true)
-          Result.success(admin_user:)
-        else
-          count_sign_in_attempt(succeeded: false)
-          Result.failure(:incorrect_password_or_email)
-        end
+      admin_user = find_admin_user
+      return Result.failure(:incorrect_password_or_email) unless admin_user
+
+      if authenticate_admin_user
+        admin_user.increment!(:sign_in_count)
+        Result.success(admin_user:)
       else
+        admin_user.increment!(:failed_attempts)
         Result.failure(:incorrect_password_or_email)
       end
     end
 
     private
 
-    def admin_user_exists?
-      AdminUser.exists?(email:)
+    def find_admin_user
+      AdminUser.find_by(email:)
     end
 
     def authenticate_admin_user
       AdminUser.authenticate_by(email:, password:)
-    end
-
-    def count_sign_in_attempt(succeeded:)
-      AdminUsers::CountSignInAttemptsJob.perform_later(email, succeeded)
     end
   end
 end

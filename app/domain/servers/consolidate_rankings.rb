@@ -2,26 +2,19 @@
 
 module Servers
   class ConsolidateRankings
-    attr_reader :game
+    include Callable
 
-    def initialize(game)
+    attr_reader :game, :periods, :past_time, :current_time
+
+    def initialize(game, periods = nil, past_time = nil, current_time = nil)
       @game = game
+      @periods = periods || Periods::PERIODS
+      @past_time = past_time
+      @current_time = current_time
     end
 
-    def process_current
-      current_time = Time.current
-
-      process(current_time, current_time)
-    end
-
-    def process_all
-      current_time = Time.current
-
-      process(nil, current_time)
-    end
-
-    def process(past_time, current_time)
-      Periods::PERIODS.each do |period|
+    def call
+      periods.each do |period|
         Periods.loop_through(period, past_time, current_time) do |reference_date, _reference_range|
           update_server_stats(period, reference_date)
         end

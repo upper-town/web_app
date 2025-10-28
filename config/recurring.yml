@@ -1,68 +1,46 @@
-# production:
-#   periodic_cleanup:
-#     class: CleanSoftDeletedRecordsJob
-#     queue: background
-#     args: [ 1000, { batch_size: 500 } ]
-#     schedule: every hour
-#   periodic_command:
-#     command: "SoftDeletedRecord.due.delete_all"
-#     priority: 2
-#     schedule: at 5am every day
+webhooks_publisher_job:
+  class: Webhooks::PublisherJob
+  schedule: "*/5 * * * * *"
 
+servers_stats_consolidator_job:
+  class: Servers::StatsConsolidatorJob
+  schedule: "* * * * *"
 
-# TODO: define these jobs
+servers_stats_previous_consolidator_job_week:
+  class: Servers::StatsPreviousConsolidatorJob
+  schedule: "15 0 * * 1"
+  args: ["week"]
 
-# servers_consolidate_vote_counts_scheduler_job_current:
-#   cron: "0 1 * * *"
-#   class: Servers::ConsolidateVoteCountsSchedulerJob
-#   args: ["current"]
-#   queue: default
+servers_stats_previous_consolidator_job_month:
+  class: Servers::StatsPreviousConsolidatorJob
+  schedule: "30 0 1 * *"
+  args: ["month"]
 
-# servers_consolidate_vote_counts_scheduler_job_all:
-#   cron: "0 1 1 * *"
-#   class: Servers::ConsolidateVoteCountsSchedulerJob
-#   args: ["all"]
-#   queue: default
+servers_stats_previous_consolidator_job_year:
+  class: Servers::StatsPreviousConsolidatorJob
+  schedule: "45 0 1 1 *"
+  args: ["year"]
 
-# servers_consolidate_rankings_scheduler_job_current:
-#   cron: "0 2 * * *"
-#   class: Servers::ConsolidateRankingsSchedulerJob
-#   args: ["current"]
-#   queue: default
+servers_verifier_job:
+  class: Servers::VerifierJob
+  schedule: "0 2 * * *"
 
-# servers_consolidate_rankings_scheduler_job_all:
-#   cron: "0 2 1 * *"
-#   class: Servers::ConsolidateRankingsSchedulerJob
-#   args: ["all"]
-#   queue: default
+clear_solid_queue_finished_jobs:
+  command: "SolidQueue::Job.clear_finished_in_batches(sleep_between_batches: 0.5)"
+  schedule: "15 * * * *"
 
-# servers_verify_scheduler_job:
-#   cron: "0 3 * * *"
-#   class: Servers::VerifySchedulerJob
-#   args: []
-#   queue: default
+servers_delete_archived_without_votes_job:
+  class: Servers::DeleteArchivedWithoutVotesJob
+  schedule: "0 3 * * *"
 
-# servers_delete_archived_without_votes_job:
-#   cron: "0 5 * * *"
-#   class: Servers::DeleteArchivedWithoutVotesJob
-#   args: []
-#   queue: default
+servers_delete_marked_for_deletion_job:
+  class: Servers::DeleteMarkedForDeletionJob
+  schedule: "15 3 * * *"
 
-# servers_delete_marked_for_deletion_job:
-#   cron: "0 6 * * *"
-#   class: Servers::DeleteMarkedForDeletionJob
-#   args: []
-#   queue: default
+delete_expired_tokens_job:
+  class: DeleteExpiredTokensJob
+  schedule: "30 3 * * *"
 
-# webhooks_delete_old_events_job:
-#   cron: "0 4 * * *"
-#   class: Webhooks::DeleteOldEventsJob
-#   args: []
-#   queue: default
-
-# delete_expired_tokens_job:
-#   cron: "0 5 * * *"
-#   class: DeleteExpiredTokensJob
-#   args: []
-#   queue: default
-
+webhooks_delete_old_events_job:
+  class: Webhooks::DeleteOldEventsJob
+  schedule: "45 3 * * *"

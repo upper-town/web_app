@@ -55,8 +55,16 @@ module Periods
   end
 
   def loop_through(period, past_time = nil, current_time = nil)
-    past_time = (past_time.nil? || past_time < min_past_time) ? min_past_time : past_time.utc
-    current_time = current_time.nil? ? Time.current.utc : current_time.utc
+    past_time =
+      if past_time.nil?
+        Time.current.utc
+      elsif past_time < min_past_time
+        min_past_time
+      else
+        past_time.utc
+      end
+
+    current_time = current_time.nil? ? past_time : current_time.utc
 
     if past_time > current_time
       raise "Invalid past_time or current_time for Periods.loop_through"

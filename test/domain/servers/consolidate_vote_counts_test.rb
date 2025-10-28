@@ -5,7 +5,7 @@ require "test_helper"
 class Servers::ConsolidateVoteCountsTest < ActiveSupport::TestCase
   let(:described_class) { Servers::ConsolidateVoteCounts }
 
-  describe "#process_current" do
+  describe "#call when processing current" do
     it "consolidates vote counts for the current year, month, week" do
       env_with_values("PERIODS_MIN_PAST_TIME" => "2023-01-01T00:00:00Z") do
         current_time = Time.iso8601("2024-09-08T18:00:00Z")
@@ -48,7 +48,7 @@ class Servers::ConsolidateVoteCountsTest < ActiveSupport::TestCase
 
         travel_to(current_time) do
           assert_difference(-> { ServerStat.count }, 15) do
-            described_class.new(server).process_current
+            described_class.call(server)
           end
 
           assert_equal(15, ServerStat.where(vote_count_consolidated_at: current_time).count)
@@ -57,7 +57,7 @@ class Servers::ConsolidateVoteCountsTest < ActiveSupport::TestCase
 
         travel_to(current_time + 1.hour) do
           assert_no_difference(-> { ServerStat.count }) do
-            described_class.new(server).process_current
+            described_class.call(server)
           end
 
           assert_equal(15, ServerStat.where(vote_count_consolidated_at: current_time + 1.hour).count)
@@ -126,7 +126,7 @@ class Servers::ConsolidateVoteCountsTest < ActiveSupport::TestCase
 
         travel_to(current_time) do
           assert_difference(-> { ServerStat.count }, 31) do
-            described_class.new(server).process_all
+            described_class.call(server, nil, Periods.min_past_time, current_time)
           end
 
           assert_equal(31, ServerStat.where(vote_count_consolidated_at: current_time).count)
@@ -135,7 +135,7 @@ class Servers::ConsolidateVoteCountsTest < ActiveSupport::TestCase
 
         travel_to(current_time + 1.hour) do
           assert_no_difference(-> { ServerStat.count }) do
-            described_class.new(server).process_all
+            described_class.call(server, nil, Periods.min_past_time, current_time)
           end
 
           assert_equal(31, ServerStat.where(vote_count_consolidated_at: current_time + 1.hour).count)

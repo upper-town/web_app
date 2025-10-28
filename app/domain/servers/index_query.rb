@@ -25,7 +25,7 @@ module Servers
     private
 
     def sql_left_join_server_stats
-      <<-SQL.squish
+      <<~SQL
         LEFT JOIN "server_stats" ON
               "server_stats"."server_id" = "servers"."id"
           AND "server_stats"."game_id"   = "servers"."game_id"
@@ -35,14 +35,14 @@ module Servers
     end
 
     def sql_on_period_and_reference_date
-      <<-SQL.squish
+      <<~SQL
             "server_stats"."period"         = #{quote_for_sql(period)}
         AND "server_stats"."reference_date" = #{quote_for_sql(Periods.reference_date_for(period, current_time))}
       SQL
     end
 
     def sql_on_country_code
-      <<-SQL.squish
+      <<~SQL
         "server_stats"."country_code" = #{
           country_code == ServerStat::ALL ? quote_for_sql(ServerStat::ALL) : '"servers"."country_code"'
         }
@@ -50,7 +50,7 @@ module Servers
     end
 
     def sql_order
-      <<-SQL.squish
+      <<~SQL
         "server_stats"."ranking_number" ASC,
         "server_stats"."vote_count"     DESC,
         "servers"."id"                  DESC

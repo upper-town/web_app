@@ -1,11 +1,12 @@
 # frozen_string_literal: true
 
 class WebhookConfig < ApplicationRecord
-  METHODS = ["POST", "GET", "PUT", "PATCH"]
+  METHODS = ["POST", "PUT", "PATCH"]
 
   belongs_to :source, polymorphic: true
 
-  has_many :events, class_name: "WebhookEvent", dependent: :destroy
+  has_many :events,  class_name: "WebhookEvent", dependent: :destroy
+  has_many :batches, class_name: "WebhookBatch", dependent: :destroy
 
   encrypts :secret
 
@@ -25,8 +26,12 @@ class WebhookConfig < ApplicationRecord
     where.not(disabled_at: nil)
   end
 
-  def self.for(source, event_type)
-    enabled.where(source:).filter { |config| config.subscribed?(event_type) }
+  def self.for(source, event_type = nil)
+    if event_type.blank?
+      enabled.where(source:)
+    else
+      enabled.where(source:).filter { |config| config.subscribed?(event_type) }
+    end
   end
 
   def enabled?

@@ -52,7 +52,7 @@ module Servers
     end
 
     def sql_left_join_server_stats
-      <<-SQL.squish
+      <<~SQL
         LEFT JOIN "server_stats" ON
               "server_stats"."server_id" = "servers"."id"
           AND "server_stats"."game_id"   = "servers"."game_id"
@@ -63,7 +63,7 @@ module Servers
 
     def sql_on_periods_and_reference_dates
       conditions = Periods::PERIODS.map do |period|
-        <<-SQL.squish
+        <<~SQL
               "server_stats"."period"         = #{quote_for_sql(period)}
           AND "server_stats"."reference_date" = #{quote_for_sql(Periods.reference_date_for(period, current_time))}
         SQL
@@ -73,7 +73,7 @@ module Servers
     end
 
     def sql_on_country_code
-      <<-SQL.squish
+      <<~SQL
         (
              "server_stats"."country_code" = #{quote_for_sql(ServerStat::ALL)}
           OR "server_stats"."country_code" = "servers"."country_code"
@@ -82,7 +82,7 @@ module Servers
     end
 
     def sql_select_fields
-      <<-SQL.squish
+      <<~SQL
         "servers"."id",
         "server_stats"."country_code"   AS "stat_country_code",
         "server_stats"."period"         AS "stat_period",

@@ -4,7 +4,6 @@ module AdminUsers
   module PasswordResets
     class EmailJob < ApplicationJob
       queue_as "critical"
-      limits_concurrency key: ->(admin_user) { admin_user }
 
       def perform(admin_user)
         password_reset_code = admin_user.generate_code!(:password_reset)

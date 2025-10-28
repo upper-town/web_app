@@ -12,21 +12,45 @@ class WebhookEventTest < ActiveSupport::TestCase
 
       assert_equal(webhook_config, webhook_event.config)
     end
+
+    it "optionally belongs to batch" do
+      webhook_event = create_webhook_event
+
+      assert_nil(webhook_event.batch)
+
+      webhook_batch = create_webhook_batch
+      webhook_event.update!(batch: webhook_batch)
+
+      assert_equal(webhook_batch, webhook_event.batch)
+    end
   end
 
   describe "validations" do
-    it "validates status" do
-      webhook_event = build_webhook_event(status: " ")
+    it "validates type" do
+      webhook_event = build_webhook_event(type: " ")
       webhook_event.validate
-      assert(webhook_event.errors.of_kind?(:status, :blank))
+      assert(webhook_event.errors.of_kind?(:type, :blank))
 
-      webhook_event = build_webhook_event(status: "aaaaaaaa")
+      webhook_event = build_webhook_event(type: "aaaaaaaa")
       webhook_event.validate
-      assert(webhook_event.errors.of_kind?(:status, :inclusion))
+      assert(webhook_event.errors.of_kind?(:type, :inclusion))
 
-      webhook_event = build_webhook_event(status: "pending")
+      webhook_event = build_webhook_event(type: "server_vote.created")
       webhook_event.validate
-      assert_not(webhook_event.errors.key?(:status))
+      assert_not(webhook_event.errors.key?(:type))
+    end
+  end
+
+  describe ".unbatched" do
+    it "returns events with webhook_batch_id nil" do
+      webhook_event1 = create_webhook_event
+      _webhook_event2 = create_webhook_event(batch: create_webhook_batch)
+      webhook_event3 = create_webhook_event
+
+      assert_equal(
+        [webhook_event1, webhook_event3].sort,
+        described_class.unbatched.sort
+      )
     end
   end
 
@@ -38,139 +62,6 @@ class WebhookEventTest < ActiveSupport::TestCase
         webhook_event.source,
         webhook_event.config.source
       )
-    end
-  end
-
-  describe "#pending?" do
-    describe "when status is pending" do
-      it "returns true" do
-        webhook_event = build_webhook_event(status: "pending")
-
-        assert(webhook_event.pending?)
-      end
-    end
-
-    describe "when status is not pending" do
-      it "returns false" do
-        webhook_event = build_webhook_event(status: "failed")
-
-        assert_not(webhook_event.pending?)
-      end
-    end
-  end
-
-  describe "#retry?" do
-    describe "when status is retry" do
-      it "returns true" do
-        webhook_event = build_webhook_event(status: "retry")
-
-        assert(webhook_event.retry?)
-      end
-    end
-
-    describe "when status is not retry" do
-      it "returns false" do
-        webhook_event = build_webhook_event(status: "failed")
-
-        assert_not(webhook_event.retry?)
-      end
-    end
-  end
-
-  describe "#delivered?" do
-    describe "when status is delivered" do
-      it "returns true" do
-        webhook_event = build_webhook_event(status: "delivered")
-
-        assert(webhook_event.delivered?)
-      end
-    end
-
-    describe "when status is not delivered" do
-      it "returns false" do
-        webhook_event = build_webhook_event(status: "failed")
-
-        assert_not(webhook_event.delivered?)
-      end
-    end
-  end
-
-  describe "#failed?" do
-    describe "when status is failed" do
-      it "returns true" do
-        webhook_event = build_webhook_event(status: "failed")
-
-        assert(webhook_event.failed?)
-      end
-    end
-
-    describe "when status is not failed" do
-      it "returns false" do
-        webhook_event = build_webhook_event(status: "pending")
-
-        assert_not(webhook_event.failed?)
-      end
-    end
-  end
-
-  describe "#maxed_failed_attempts?" do
-    describe "when failed_attempts is equal to the limit" do
-      it "returns true" do
-        webhook_event = create_webhook_event(
-          failed_attempts: described_class::MAX_FAILED_ATTEMPTS
-        )
-
-        assert(webhook_event.maxed_failed_attempts?)
-      end
-    end
-
-    describe "when failed_attempts is greater than the limit" do
-      it "returns true" do
-        webhook_event = create_webhook_event(
-          failed_attempts: 26
-        )
-
-        assert(webhook_event.maxed_failed_attempts?)
-      end
-    end
-
-    describe "when failed_attempts is less than the limit" do
-      it "returns false" do
-        webhook_event = create_webhook_event(
-          failed_attempts: 24
-        )
-
-        assert_not(webhook_event.maxed_failed_attempts?)
-      end
-    end
-  end
-
-  describe "#retry_in" do
-    describe "when status is not retry" do
-      it "returns nil" do
-        webhook_event = create_webhook_event(status: "pending")
-
-        assert_nil(webhook_event.retry_in)
-      end
-    end
-
-    describe "when status is retry" do
-      it "returns seconds based on failed_attempts" do
-        webhook_event = create_webhook_event(
-          status: "retry",
-          failed_attempts: 12
-        )
-
-        called = 0
-        SecureRandom.stub(:rand, ->(arg) do
-          called += 1
-          assert_equal(10, arg)
-          5
-        end) do
-          assert_equal(20856, webhook_event.retry_in)
-        end
-        assert_equal(1, called)
-      end
     end
   end
 end

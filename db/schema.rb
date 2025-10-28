@@ -314,6 +314,17 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_08_151610) do
     t.index ["email"], name: "index_users_on_email", unique: true
   end
 
+  create_table "webhook_batches", force: :cascade do |t|
+    t.bigint "webhook_config_id", null: false
+    t.string "status", null: false
+    t.integer "failed_attempts", default: 0, null: false
+    t.jsonb "metadata", default: {}, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["status"], name: "index_webhook_batches_on_status"
+    t.index ["webhook_config_id"], name: "index_webhook_batches_on_webhook_config_id"
+  end
+
   create_table "webhook_configs", force: :cascade do |t|
     t.string "source_type", null: false
     t.bigint "source_id", null: false
@@ -329,20 +340,17 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_08_151610) do
   end
 
   create_table "webhook_events", force: :cascade do |t|
-    t.uuid "uuid", default: -> { "gen_random_uuid()" }, null: false
     t.bigint "webhook_config_id", null: false
+    t.bigint "webhook_batch_id"
+    t.uuid "uuid", null: false
     t.string "type", null: false
-    t.string "status", null: false
     t.jsonb "data", default: {}, null: false
-    t.jsonb "metadata", default: {}, null: false
-    t.integer "failed_attempts", default: 0, null: false
-    t.datetime "last_published_at"
-    t.datetime "delivered_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["type"], name: "index_webhook_events_on_type"
-    t.index ["uuid"], name: "index_webhook_events_on_uuid", unique: true
-    t.index ["webhook_config_id"], name: "index_webhook_events_on_webhook_config_id"
+    t.index ["uuid"], name: "index_webhook_events_on_uuid"
+    t.index ["webhook_batch_id"], name: "index_webhook_events_on_webhook_batch_id"
+    t.index ["webhook_config_id", "uuid"], name: "index_webhook_events_on_webhook_config_id_and_uuid", unique: true
   end
 
   add_foreign_key "accounts", "users"
@@ -367,5 +375,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_08_151610) do
   add_foreign_key "servers", "games"
   add_foreign_key "sessions", "users"
   add_foreign_key "tokens", "users"
+  add_foreign_key "webhook_batches", "webhook_configs"
+  add_foreign_key "webhook_events", "webhook_batches"
   add_foreign_key "webhook_events", "webhook_configs"
 end

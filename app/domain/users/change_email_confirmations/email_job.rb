@@ -4,7 +4,6 @@ module Users
   module ChangeEmailConfirmations
     class EmailJob < ApplicationJob
       queue_as "critical"
-      limits_concurrency key: ->(user) { user }
 
       def perform(user)
         change_email_reversion_token,

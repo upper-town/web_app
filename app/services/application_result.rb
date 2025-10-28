@@ -34,6 +34,8 @@ class ApplicationResult < ApplicationModel
       errors.add(DEFAULT_ERROR_KEY, value) if value.present?
     when ActiveModel::Errors
       errors.merge!(value)
+    when StandardError
+      errors.add(DEFAULT_ERROR_KEY, "#{value.class}: #{value.message}")
     when true
       errors.add(DEFAULT_ERROR_KEY, DEFAULT_ERROR_TYPE)
     when nil, false

@@ -3,12 +3,10 @@
 module Servers
   class DeleteMarkedForDeletionJob < ApplicationJob
     queue_as "low"
-    limits_concurrency key: ->(*) { "0" }
 
     def perform
-      marked_for_deletion_servers.each do |server|
-        DestroyJob.perform_later(server)
-      end
+      jobs = marked_for_deletion_servers.map { DestroyJob.new(it) }
+      ActiveJob.perform_all_later(jobs)
     end
 
     def marked_for_deletion_servers

@@ -100,6 +100,14 @@ class ApplicationResultTest < ActiveSupport::TestCase
       )
     end
 
+    it "adds to errors from StandardError" do
+      result = described_class.new
+      result.add_error(StandardError.new("error message"))
+
+      assert(result.errors.of_kind?(:base, "StandardError: error message"))
+      assert_equal({ base: ["StandardError: error message"] }, result.errors.messages)
+    end
+
     it "adds to errors from true with default error" do
       result = described_class.new
       result.add_error(true)

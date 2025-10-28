@@ -2,26 +2,19 @@
 
 module Servers
   class ConsolidateVoteCounts
-    attr_reader :server
+    include Callable
 
-    def initialize(server)
+    attr_reader :server, :periods, :past_time, :current_time
+
+    def initialize(server, periods = nil, past_time = nil, current_time = nil)
       @server = server
+      @periods = periods || Periods::PERIODS
+      @past_time = past_time
+      @current_time = current_time
     end
 
-    def process_current
-      current_time = Time.current
-
-      process(current_time, current_time)
-    end
-
-    def process_all
-      current_time = Time.current
-
-      process(nil, current_time)
-    end
-
-    def process(past_time, current_time)
-      Periods::PERIODS.each do |period|
+    def call
+      periods.each do |period|
         Periods.loop_through(period, past_time, current_time) do |reference_date, reference_range|
           upsert_server_stats_per_country_code(period, reference_date, reference_range)
           upsert_server_stats_all(period, reference_date, reference_range)

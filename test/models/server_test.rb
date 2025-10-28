@@ -435,11 +435,11 @@ class ServerTest < ActiveSupport::TestCase
         server = create_server
         webhook_config = create_webhook_config(
           source: server,
-          event_types: ["test.event"],
+          event_types: ["test"],
           disabled_at: nil
         )
 
-        assert_equal(webhook_config, server.webhook_config("test.event"))
+        assert_equal(webhook_config, server.webhook_config("test"))
       end
     end
 
@@ -448,17 +448,17 @@ class ServerTest < ActiveSupport::TestCase
         another_server = create_server
         _another_webhook_config = create_webhook_config(
           source: another_server,
-          event_types: ["test.event"],
+          event_types: ["test"],
           disabled_at: nil
         )
         server = create_server
         _webhook_config = create_webhook_config(
           source: server,
-          event_types: ["test.event"],
+          event_types: ["test"],
           disabled_at: Time.current
         )
 
-        assert_nil(server.webhook_config("test.event"))
+        assert_nil(server.webhook_config("test"))
       end
     end
   end
@@ -469,11 +469,11 @@ class ServerTest < ActiveSupport::TestCase
         server = create_server
         _webhook_config = create_webhook_config(
           source: server,
-          event_types: ["test.event"],
+          event_types: ["test"],
           disabled_at: nil
         )
 
-        assert(server.webhook_config?("test.event"))
+        assert(server.webhook_config?("test"))
       end
     end
 
@@ -482,17 +482,17 @@ class ServerTest < ActiveSupport::TestCase
         another_server = create_server
         _another_webhook_config = create_webhook_config(
           source: another_server,
-          event_types: ["test.event"],
+          event_types: ["test"],
           disabled_at: nil
         )
         server = create_server
         _webhook_config = create_webhook_config(
           source: server,
-          event_types: ["test.event"],
+          event_types: ["test"],
           disabled_at: Time.current
         )
 
-        assert_not(server.webhook_config?("test.event"))
+        assert_not(server.webhook_config?("test"))
       end
     end
   end

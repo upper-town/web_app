@@ -6,22 +6,45 @@ class Servers::CreateVoteTest < ActiveSupport::TestCase
   let(:described_class) { Servers::CreateVote }
 
   describe "#call" do
+    describe "when server_vote is already persisted" do
+      it "returns failure and does not create server_vote nor webhook events" do
+        server = create_server
+        server_vote = create_server_vote
+        account = create_account
+
+        webhooks_create_events_called = 0
+        Webhooks::CreateEvents.stub(:call, ->(*) { webhooks_create_events_called += 1 ; nil }) do
+          result = nil
+          assert_no_difference(-> { ServerVote.count }) do
+            result = described_class.new(server, server_vote, "1.1.1.1", account).call
+          end
+
+          assert(result.failure?)
+          assert(result.errors.of_kind?(:base, :invalid))
+          assert_equal(server_vote, result.server_vote)
+        end
+        assert_equal(0, webhooks_create_events_called)
+      end
+    end
+
     describe "when server_vote is invalid for some reason" do
-      it "returns failure" do
+      it "returns failure and does not create server_vote nor webhook events" do
         server = create_server(archived_at: Time.current)
         server_vote = build_server_vote
         account = create_account
 
-        result = nil
-        assert_no_difference(-> { ServerVote.count }) do
-          result = described_class.new(server, server_vote, "1.1.1.1", account).call
+        webhooks_create_events_called = 0
+        Webhooks::CreateEvents.stub(:call, ->(*) { webhooks_create_events_called += 1 ; nil }) do
+          result = nil
+          assert_no_difference(-> { ServerVote.count }) do
+            result = described_class.new(server, server_vote, "1.1.1.1", account).call
+          end
+
+          assert(result.failure?)
+          assert(result.errors[:server].any? { it.include?("cannot be archived") })
+          assert_equal(server_vote, result.server_vote)
         end
-
-        assert(result.failure?)
-        assert(result.errors[:server].any? { it.include?("cannot be archived") })
-
-        assert_no_enqueued_jobs(only: Servers::ConsolidateVoteCountsJob)
-        assert_no_enqueued_jobs(only: Webhooks::CreateEvents::ServerVoteCreatedJob)
+        assert_equal(0, webhooks_create_events_called)
       end
     end
 
@@ -31,43 +54,52 @@ class Servers::CreateVoteTest < ActiveSupport::TestCase
         server_vote = build_server_vote
         account = create_account
 
-        called = 0
-        server_vote.stub(:save!, -> { called += 1 ; raise ActiveRecord::ActiveRecordError }) do
-          assert_no_difference(-> { ServerVote.count }) do
-            assert_raises(ActiveRecord::ActiveRecordError) do
-              described_class.new(server, server_vote, "1.1.1.1", account).call
+        server_vote_save_called = 0
+        webhooks_create_events_called = 0
+        Webhooks::CreateEvents.stub(:call, ->(*) { webhooks_create_events_called += 1 ; nil }) do
+          server_vote.stub(:save!, -> { server_vote_save_called += 1 ; raise ActiveRecord::ActiveRecordError }) do
+            assert_no_difference(-> { ServerVote.count }) do
+              assert_raises(ActiveRecord::ActiveRecordError) do
+                described_class.new(server, server_vote, "1.1.1.1", account).call
+              end
             end
           end
         end
-        assert_equal(1, called)
-
-        assert_no_enqueued_jobs(only: Servers::ConsolidateVoteCountsJob)
-        assert_no_enqueued_jobs(only: Webhooks::CreateEvents::ServerVoteCreatedJob)
+        assert_equal(1, server_vote_save_called)
+        assert_equal(0, webhooks_create_events_called)
       end
     end
 
     describe "when everything is correct" do
-      it "returns success, creates server_vote and enqueues jobs" do
+      it "returns success, creates server_vote and webhook events" do
         server = create_server
         server_vote = build_server_vote(reference: "anything123456")
         account = create_account
 
-        result = nil
-        assert_difference(-> { ServerVote.count }, 1) do
-          result = described_class.new(server, server_vote, "1.1.1.1", account).call
+        webhooks_create_events_called = 0
+        Webhooks::CreateEvents.stub(:call, ->(*webhooks_create_events_args) do
+          webhooks_create_events_called += 1
+          assert_equal(
+            [server, "server_vote.created", server_vote],
+            webhooks_create_events_args
+          )
+          nil
+        end) do
+          result = nil
+          assert_difference(-> { ServerVote.count }, 1) do
+            result = described_class.new(server, server_vote, "1.1.1.1", account).call
+          end
+
+          assert(result.success?)
+          assert_equal(ServerVote.last, result.server_vote)
+          assert_equal(server, result.server_vote.server)
+          assert_equal(server.game, result.server_vote.game)
+          assert_equal(server.country_code, result.server_vote.country_code)
+          assert_equal("1.1.1.1", result.server_vote.remote_ip)
+          assert_equal("anything123456", result.server_vote.reference)
+          assert_equal(account, result.server_vote.account)
         end
-
-        assert(result.success?)
-        assert_equal(ServerVote.last, result.server_vote)
-        assert_equal(server, result.server_vote.server)
-        assert_equal(server.game, result.server_vote.game)
-        assert_equal(server.country_code, result.server_vote.country_code)
-        assert_equal("1.1.1.1", result.server_vote.remote_ip)
-        assert_equal("anything123456", result.server_vote.reference)
-        assert_equal(account, result.server_vote.account)
-
-        assert_enqueued_with(job: Servers::ConsolidateVoteCountsJob, args: [server, "current"], queue: "critical")
-        assert_enqueued_with(job: Webhooks::CreateEvents::ServerVoteCreatedJob, args: [result.server_vote])
+        assert_equal(1, webhooks_create_events_called)
       end
     end
   end

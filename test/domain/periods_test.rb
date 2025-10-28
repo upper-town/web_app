@@ -281,31 +281,33 @@ class PeriodsTest < ActiveSupport::TestCase
 
     describe "default values and fallbacks" do
       describe "when past_time is nil" do
-        it "falls back to a mininum past time" do
-          around_loop_through do
-            yielded_args = []
+        it "falls back to Time.current" do
+          travel_to("2024-06-15T00:00:00Z") do
+            around_loop_through do
+              yielded_args = []
 
-            described_class.loop_through(
-              "year",
-              nil,
-              Time.iso8601("2025-08-31T21:00:00-03")
-            ) do |*args|
-              yielded_args << args
-            end
+              described_class.loop_through(
+                "year",
+                nil,
+                Time.iso8601("2025-08-31T21:00:00-03")
+              ) do |*args|
+                yielded_args << args
+              end
 
-            assert_equal(
-              [
+              assert_equal(
                 [
-                  Date.iso8601("2024-12-31"),
-                  Time.iso8601("2024-01-01T00:00:00Z")..Time.iso8601("2024-12-31T23:59:59.999999999Z")
+                  [
+                    Date.iso8601("2024-12-31"),
+                    Time.iso8601("2024-01-01T00:00:00Z")..Time.iso8601("2024-12-31T23:59:59.999999999Z")
+                  ],
+                  [
+                    Date.iso8601("2025-12-31"),
+                    Time.iso8601("2025-01-01T00:00:00Z")..Time.iso8601("2025-12-31T23:59:59.999999999Z")
+                  ]
                 ],
-                [
-                  Date.iso8601("2025-12-31"),
-                  Time.iso8601("2025-01-01T00:00:00Z")..Time.iso8601("2025-12-31T23:59:59.999999999Z")
-                ]
-              ],
-              yielded_args
-            )
+                yielded_args
+              )
+            end
           end
         end
       end
@@ -341,7 +343,7 @@ class PeriodsTest < ActiveSupport::TestCase
       end
 
       describe "when current_time is nil" do
-        it "falls back to application Time.current" do
+        it "falls back to application past_time" do
           around_loop_through do
             yielded_args = []
 
@@ -361,10 +363,6 @@ class PeriodsTest < ActiveSupport::TestCase
                   Date.iso8601("2024-12-31"),
                   Time.iso8601("2024-01-01T00:00:00Z")..Time.iso8601("2024-12-31T23:59:59.999999999Z")
                 ],
-                [
-                  Date.iso8601("2025-12-31"),
-                  Time.iso8601("2025-01-01T00:00:00Z")..Time.iso8601("2025-12-31T23:59:59.999999999Z")
-                ]
               ],
               yielded_args
             )

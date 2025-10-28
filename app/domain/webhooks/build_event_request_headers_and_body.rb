@@ -4,10 +4,10 @@ module Webhooks
   class BuildEventRequestHeadersAndBody
     include Callable
 
-    attr_reader :webhook_event
+    attr_reader :webhook_batch
 
-    def initialize(webhook_event)
-      @webhook_event = webhook_event
+    def initialize(webhook_batch)
+      @webhook_batch = webhook_batch
     end
 
     def call
@@ -20,14 +20,15 @@ module Webhooks
     private
 
     def build_request_body
-      {
-        "webhook_event" => {
-          "type"              => webhook_event.type,
-          "data"              => webhook_event.data,
-          "last_published_at" => webhook_event.last_published_at.iso8601,
-          "failed_attempts"   => webhook_event.failed_attempts
+      webhook_batch.events.map do |webhook_event|
+        {
+          "type"            => webhook_event.type,
+          "data"            => webhook_event.data,
+          "failed_attempts" => webhook_batch.failed_attempts,
+          "created_at"      => webhook_event.created_at,
+          "updated_at"      => webhook_event.updated_at
         }
-      }.to_json
+      end.to_json
     end
 
     def build_request_headers(request_signature)
@@ -38,7 +39,7 @@ module Webhooks
     end
 
     def build_request_signature(request_body)
-      secret = webhook_event.config.secret
+      secret = webhook_batch.config.secret
 
       OpenSSL::HMAC.hexdigest("sha256", secret, request_body)
     end

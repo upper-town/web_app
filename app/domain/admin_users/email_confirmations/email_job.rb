@@ -4,7 +4,6 @@ module AdminUsers
   module EmailConfirmations
     class EmailJob < ApplicationJob
       queue_as "critical"
-      limits_concurrency key: ->(admin_user) { admin_user }
 
       def perform(admin_user)
         email_confirmation_token = admin_user.generate_token!(:email_confirmation)

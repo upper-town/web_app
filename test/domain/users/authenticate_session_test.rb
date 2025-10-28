@@ -7,42 +7,45 @@ class Users::AuthenticateSessionTest < ActiveSupport::TestCase
 
   describe "#call" do
     describe "when user is not found" do
-      it "returns failure and does not count sign-in attempt" do
-        email    = "user@upper.town"
+      it "returns failure" do
+        email = "user@upper.town"
         password = "testpass"
 
-        result = described_class.new(email, password).call
+        result = described_class.call(email, password)
 
         assert(result.failure?)
         assert_nil(result.user)
         assert(result.errors.key?(:incorrect_password_or_email))
-        assert_no_enqueued_jobs(only: Users::CountSignInAttemptsJob)
       end
     end
 
     describe "when user is found" do
       describe "when authentication succeeds" do
         it "returns success and counts sign-in attempt" do
-          user = create_user(email: "user@upper.town", password: "testpass")
+          user = create_user(email: "user@upper.town", password: "testpass", sign_in_count: 0, failed_attempts: 0)
 
-          result = described_class.new("user@upper.town", "testpass").call
+          result = described_class.call("user@upper.town", "testpass")
 
           assert(result.success?)
           assert_equal(user, result.user)
-          assert_enqueued_with(job: Users::CountSignInAttemptsJob, args: ["user@upper.town", true])
+          user.reload
+          assert_equal(1, user.sign_in_count)
+          assert_equal(0, user.failed_attempts)
         end
       end
 
       describe "when authentication fails" do
         it "returns failure and counts sign-in attempt" do
-          create_user(email: "user@upper.town", password: "testpass")
+          user = create_user(email: "user@upper.town", password: "testpass", sign_in_count: 0, failed_attempts: 0)
 
-          result = described_class.new("user@upper.town", "xxxxxxxx").call
+          result = described_class.call("user@upper.town", "xxxxxxxx")
 
           assert(result.failure?)
           assert_nil(result.user)
           assert(result.errors.key?(:incorrect_password_or_email))
-          assert_enqueued_with(job: Users::CountSignInAttemptsJob, args: ["user@upper.town", false])
+          user.reload
+          assert_equal(0, user.sign_in_count)
+          assert_equal(1, user.failed_attempts)
         end
       end
     end

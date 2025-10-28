@@ -18,6 +18,10 @@ module Servers
     end
 
     def call
+      if server_vote.persisted?
+        return Result.failure(server_vote:)
+      end
+
       server_vote.server = server
       server_vote.game = server.game
       server_vote.country_code = server.country_code
@@ -25,27 +29,15 @@ module Servers
       server_vote.account = account
 
       if server_vote.invalid?
-        return Result.failure(server_vote.errors)
+        return Result.failure(server_vote.errors, server_vote:)
       end
 
-      server_vote.save!
-
-      enqueue_consolidate_vote_counts
-      enqueue_webhook_event_create
+      ActiveRecord::Base.transaction do
+        server_vote.save!
+        Webhooks::CreateEvents.call(server, WebhookEvent::SERVER_VOTE_CREATED, server_vote)
+      end
 
       Result.success(server_vote:)
-    end
-
-    private
-
-    def enqueue_consolidate_vote_counts
-      ConsolidateVoteCountsJob
-        .set(queue: "critical")
-        .perform_later(server_vote.server, "current")
-    end
-
-    def enqueue_webhook_event_create
-      Webhooks::CreateEvents::ServerVoteCreatedJob.perform_later(server_vote)
     end
   end
 end

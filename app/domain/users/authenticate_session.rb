@@ -16,31 +16,26 @@ module Users
     end
 
     def call
-      if user_exists?
-        if (user = authenticate_user)
-          count_sign_in_attempt(succeeded: true)
-          Result.success(user:)
-        else
-          count_sign_in_attempt(succeeded: false)
-          Result.failure(:incorrect_password_or_email)
-        end
+      user = find_user
+      return Result.failure(:incorrect_password_or_email) unless user
+
+      if authenticate_user
+        user.increment!(:sign_in_count)
+        Result.success(user:)
       else
+        user.increment!(:failed_attempts)
         Result.failure(:incorrect_password_or_email)
       end
     end
 
     private
 
-    def user_exists?
-      User.exists?(email:)
+    def find_user
+      User.find_by(email:)
     end
 
     def authenticate_user
       User.authenticate_by(email:, password:)
-    end
-
-    def count_sign_in_attempt(succeeded:)
-      Users::CountSignInAttemptsJob.perform_later(email, succeeded)
     end
   end
 end

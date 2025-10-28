@@ -76,7 +76,7 @@ Rails.application.configure do
   # solid_queue
 
   config.solid_queue.connects_to = { database: { writing: :queue } }
-  config.solid_queue.shutdown_timeout = 15
+  config.solid_queue.shutdown_timeout = 30
 
   # mission_control
 

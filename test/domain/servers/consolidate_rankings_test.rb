@@ -5,7 +5,7 @@ require "test_helper"
 class Servers::ConsolidateRankingsTest < ActiveSupport::TestCase
   let(:described_class) { Servers::ConsolidateRankings }
 
-  describe "#process_current" do
+  describe "#call when processing current" do
     it "consolidates rankings for the current year, month, week" do
       env_with_values("PERIODS_MIN_PAST_TIME" => "2023-01-01T00:00:00Z") do
         current_time = Time.iso8601("2024-09-08T18:00:00Z")
@@ -57,13 +57,13 @@ class Servers::ConsolidateRankingsTest < ActiveSupport::TestCase
 
         travel_to(current_time) do
           assert_difference(-> { ServerStat.count }, 15) do
-            Servers::ConsolidateVoteCounts.new(server1).process_current
-            Servers::ConsolidateVoteCounts.new(server2).process_current
-            Servers::ConsolidateVoteCounts.new(server3).process_current
+            Servers::ConsolidateVoteCounts.call(server1)
+            Servers::ConsolidateVoteCounts.call(server2)
+            Servers::ConsolidateVoteCounts.call(server3)
           end
 
           assert_no_difference(-> { ServerStat.count }) do
-            described_class.new(game).process_current
+            described_class.call(game)
           end
 
           assert_equal(15, ServerStat.where(ranking_number_consolidated_at: current_time).count)
@@ -72,13 +72,13 @@ class Servers::ConsolidateRankingsTest < ActiveSupport::TestCase
 
         travel_to(current_time + 1.hour) do
           assert_no_difference(-> { ServerStat.count }) do
-            Servers::ConsolidateVoteCounts.new(server1).process_current
-            Servers::ConsolidateVoteCounts.new(server2).process_current
-            Servers::ConsolidateVoteCounts.new(server3).process_current
+            Servers::ConsolidateVoteCounts.call(server1)
+            Servers::ConsolidateVoteCounts.call(server2)
+            Servers::ConsolidateVoteCounts.call(server3)
           end
 
           assert_no_difference(-> { ServerStat.count }) do
-            described_class.new(game).process_current
+            described_class.call(game)
           end
 
           assert_equal(15, ServerStat.where(ranking_number_consolidated_at: current_time + 1.hour).count)
@@ -88,7 +88,7 @@ class Servers::ConsolidateRankingsTest < ActiveSupport::TestCase
     end
   end
 
-  describe "#process_all" do
+  describe "#call when processing all" do
     it "consolidates rankings for all years, months, weeks" do
       env_with_values("PERIODS_MIN_PAST_TIME" => "2023-01-01T00:00:00Z") do
         current_time = Time.iso8601("2024-09-08T18:00:00Z")
@@ -166,13 +166,13 @@ class Servers::ConsolidateRankingsTest < ActiveSupport::TestCase
 
         travel_to(current_time) do
           assert_difference(-> { ServerStat.count }, 41) do
-            Servers::ConsolidateVoteCounts.new(server1).process_all
-            Servers::ConsolidateVoteCounts.new(server2).process_all
-            Servers::ConsolidateVoteCounts.new(server3).process_all
+            Servers::ConsolidateVoteCounts.call(server1, nil, Periods.min_past_time, current_time)
+            Servers::ConsolidateVoteCounts.call(server2, nil, Periods.min_past_time, current_time)
+            Servers::ConsolidateVoteCounts.call(server3, nil, Periods.min_past_time, current_time)
           end
 
           assert_no_difference(-> { ServerStat.count }) do
-            described_class.new(game).process_all
+            described_class.call(game, nil, Periods.min_past_time, current_time)
           end
 
           assert_equal(41, ServerStat.where(ranking_number_consolidated_at: current_time).count)
@@ -181,13 +181,13 @@ class Servers::ConsolidateRankingsTest < ActiveSupport::TestCase
 
         travel_to(current_time + 1.hour) do
           assert_no_difference(-> { ServerStat.count }) do
-            Servers::ConsolidateVoteCounts.new(server1).process_all
-            Servers::ConsolidateVoteCounts.new(server2).process_all
-            Servers::ConsolidateVoteCounts.new(server3).process_all
+            Servers::ConsolidateVoteCounts.call(server1, nil, Periods.min_past_time, current_time)
+            Servers::ConsolidateVoteCounts.call(server2, nil, Periods.min_past_time, current_time)
+            Servers::ConsolidateVoteCounts.call(server3, nil, Periods.min_past_time, current_time)
           end
 
           assert_no_difference(-> { ServerStat.count }) do
-            described_class.new(game).process_all
+            described_class.call(game, nil, Periods.min_past_time, current_time)
           end
 
           assert_equal(41, ServerStat.where(ranking_number_consolidated_at: current_time + 1.hour).count)

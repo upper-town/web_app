@@ -3,20 +3,18 @@
 module Servers
   class DeleteArchivedWithoutVotesJob < ApplicationJob
     queue_as "low"
-    limits_concurrency key: ->(*) { "0" }
 
     def perform
-      archived_servers_without_votes.each do |server|
-        DestroyJob.perform_later(server)
-      end
+      jobs = archived_servers_without_votes.map { DestroyJob.new(it) }
+      ActiveJob.perform_all_later(jobs)
     end
 
     def archived_servers_without_votes
       Server
+        .distinct
         .select(:id)
         .archived
         .where.missing(:votes)
-        .distinct
     end
   end
 end

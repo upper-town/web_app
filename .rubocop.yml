@@ -51,7 +51,10 @@ Layout/LineEndStringConcatenationIndentation:
 Layout/LineLength:
   Exclude:
     - test/**/*_test.rb
+    - test/**/*_test_factory.rb
   Max: 110
+Layout/MultilineMethodCallBraceLayout:
+  Enabled: false
 Layout/MultilineMethodCallIndentation:
   Enabled: false
 Layout/SpaceBeforeSemicolon:
@@ -132,6 +135,8 @@ Rails/ActionOrder:
     - destroy
 Rails/ApplicationController:
   Enabled: false
+Rails/ApplicationJob:
+  Enabled: false
 Rails/Blank:
   Enabled: false
 Rails/Delegate:
@@ -143,6 +148,8 @@ Rails/I18nLazyLookup:
 Rails/RedundantPresenceValidationOnBelongsTo:
   Enabled: false
 Rails/SkipsModelValidations:
+  Enabled: false
+Rails/SquishedSQLHeredocs:
   Enabled: false
 Style/ClassAndModuleChildren:
   Enabled: false
@@ -208,6 +215,8 @@ Style/TernaryParentheses:
 Style/TrailingCommaInArguments:
   Enabled: true
 Style/TrailingCommaInArrayLiteral:
+  Enabled: false
+Style/TrailingCommaInHashLiteral:
   Enabled: false
 Style/TrailingUnderscoreVariable:
   Enabled: false
