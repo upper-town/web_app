@@ -16,7 +16,7 @@ module ManageRateLimit
   private
 
   def render_rate_limited(view)
-    flash.now[:alert] = t("shared.message.please_try_again_later_too_many_requests")
+    flash.now[:alert] = t("shared.messages.please_try_again_later_too_many_requests")
     render(view, status: :too_many_requests)
   end
 end

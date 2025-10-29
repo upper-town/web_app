@@ -137,20 +137,20 @@ class WebhookBatchTest < ActiveSupport::TestCase
     it "updates batch as not delivered" do
       webhook_batch = create_webhook_batch(
         status: "queued",
-        failed_attempts: 24,
+        failed_attempts: 23,
         metadata: { "notice" => "error", "other" => "nothing" }
       )
 
       webhook_batch.not_delivered!({ "notice" => "another error" })
 
       assert_equal("queued", webhook_batch.status)
-      assert_equal(25, webhook_batch.failed_attempts)
+      assert_equal(24, webhook_batch.failed_attempts)
       assert_equal({ "notice" => "another error", "other" => "nothing" }, webhook_batch.metadata)
 
       webhook_batch.not_delivered!({ "notice" => "too many errors" })
 
       assert_equal("failed", webhook_batch.status)
-      assert_equal(26, webhook_batch.failed_attempts)
+      assert_equal(25, webhook_batch.failed_attempts)
       assert_equal({ "notice" => "too many errors", "other" => "nothing" }, webhook_batch.metadata)
     end
   end

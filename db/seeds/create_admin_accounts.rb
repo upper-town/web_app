@@ -2,7 +2,7 @@
 
 module Seeds
   class CreateAdminAccounts
-    prepend Callable
+    include Callable
 
     attr_reader :admin_user_ids
 
@@ -28,12 +28,12 @@ module Seeds
     def super_admin_account_hashes
       [
         {
-          id: 101,
-          admin_user_id: 101,
+          id: 11,
+          admin_user_id: 11,
         },
         {
-          id: 102,
-          admin_user_id: 102,
+          id: 22,
+          admin_user_id: 22,
         }
       ]
     end

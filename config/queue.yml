@@ -1,33 +1,17 @@
 development:
   dispatchers:
     - polling_interval: 1
-      batch_size: 500
-      concurrency_maintenance_interval: 600
   workers:
-    - queues: "*"
-      processes: 1
-      threads: 1
-      polling_interval: 0.5
+    - queues: ["critical", "default", "low"]
+      polling_interval: 1
 
 production:
   dispatchers:
     - polling_interval: 1
-      batch_size: 500
-      concurrency_maintenance_interval: 600
   workers:
-    - queues: ["polling"]
-      processes: 1
-      threads: 2
-      polling_interval: 0.5
     - queues: ["critical", "default", "low"]
-      processes: 1
-      threads: 2
-      polling_interval: 0.5
+      polling_interval: 1
     - queues: ["default", "critical", "low"]
-      processes: 1
-      threads: 2
-      polling_interval: 0.5
+      polling_interval: 1
     - queues: ["low", "critical", "default"]
-      processes: 1
-      threads: 2
-      polling_interval: 0.5
+      polling_interval: 1

@@ -47,7 +47,7 @@ class WebhookBatch < ApplicationRecord
   def delivered!(metadata = {})
     update!(
       status: DELIVERED,
-      metadata: self.metadata.merge(metadata)
+      metadata: self.metadata.deep_merge(metadata)
     )
   end
 
@@ -55,9 +55,9 @@ class WebhookBatch < ApplicationRecord
     self.failed_attempts += 1
 
     update!(
-      status: failed_attempts > ApplicationJob::MAX_ATTEMPTS ? FAILED : status,
+      status: failed_attempts >= ApplicationJob::ATTEMPTS ? FAILED : QUEUED,
       failed_attempts:,
-      metadata: self.metadata.merge(metadata)
+      metadata: self.metadata.deep_merge(metadata)
     )
   end
 end

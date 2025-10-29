@@ -117,7 +117,7 @@ class Server < ApplicationRecord
   def verified_server_with_same_name_exist
     return if not_verified?
 
-    if Server.verified.exists?(name:, game_id:)
+    if Server.verified.where.not(id:).exists?(name:, game_id:)
       errors.add(:name, :verified_server_with_same_name_exist)
     end
   end

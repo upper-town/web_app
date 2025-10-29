@@ -2,14 +2,29 @@
 
 module Seeds
   class CreateGames
-    prepend Callable
+    include Callable
 
     def call
+      Game.insert_all(demo_game_hashes)
+
       result = Game.insert_all(game_hashes)
       result.rows.flatten # game_ids
     end
 
     private
+
+    def demo_game_hashes
+      [
+        {
+          id:          100,
+          slug:        "demo-game",
+          name:        "Demo Game",
+          site_url:    "https://example.com/demo-game/",
+          description: "",
+          info:        ""
+        },
+      ]
+    end
 
     def game_hashes
       [

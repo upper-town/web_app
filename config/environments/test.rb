@@ -34,7 +34,7 @@ Rails.application.configure do
   if AppUtil.env_var_enabled?("TEST_LOGGER")
     config.log_level = :debug
   else
-    config.logger = Logger.new(nil)
+    config.logger    = Logger.new(nil)
     config.log_level = :fatal
   end
 

@@ -21,7 +21,7 @@ Rails.application.configure do
   config.force_ssl = false
 
   config.log_level = :debug
-  config.log_tags = [:request_id]
+  config.log_tags  = [:request_id]
 
   # cache_store
 
@@ -77,6 +77,7 @@ Rails.application.configure do
 
   config.solid_queue.connects_to = { database: { writing: :queue } }
   config.solid_queue.shutdown_timeout = 30
+  config.solid_queue.logger = ActiveSupport::Logger.new(Rails.root.join("log/development-jobs.log"))
 
   # mission_control
 

@@ -3,8 +3,8 @@
 class CreateServerVotes < ActiveRecord::Migration[7.1]
   def change
     create_table :server_votes do |t|
-      t.string :reference, null: false, default: ""
-      t.string :remote_ip, null: false, default: ""
+      t.string :reference, null: true
+      t.string :remote_ip, null: false
 
       t.references :account, null: true, foreign_key: true, index: false
 
@@ -12,7 +12,7 @@ class CreateServerVotes < ActiveRecord::Migration[7.1]
       t.string     :country_code, null: false
       t.references :server,       null: false, foreign_key: true, index: false
 
-      t.uuid :uuid, null: false, default: "gen_random_uuid()"
+      t.uuid :uuid, null: false, default: "uuidv7()"
 
       t.timestamps
     end

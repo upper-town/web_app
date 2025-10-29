@@ -5,6 +5,8 @@ class ServerVote < ApplicationRecord
   belongs_to :game
   belongs_to :account, optional: true
 
+  normalizes :reference, with: ->(str) { str.blank? ? nil : str.strip }
+
   validates :country_code, inclusion: { in: Server::COUNTRY_CODES }
   validate :server_available
 

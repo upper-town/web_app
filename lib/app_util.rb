@@ -23,7 +23,7 @@ module AppUtil
   end
 
   def show_active_record_log
-    ActiveRecord::Base.logger = Logger.new($stdout)
+    ActiveRecord::Base.logger = ActiveSupport::Logger.new($stdout)
   end
 
   def web_app_host

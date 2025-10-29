@@ -3,16 +3,26 @@
 module Webhooks
   class PublishBatchJob < ApplicationJob
     def perform(webhook_batch)
-      ActiveRecord::Base.transaction do
-        webhook_batch.delivered!({ "notice" => "" })
+      return unless webhook_batch.queued?
 
-        headers, body = BuildEventRequestHeadersAndBody.call(webhook_batch)
-        send_request(webhook_batch, headers, body)
+      begin
+        ActiveRecord::Base.transaction do
+          webhook_batch.delivered!
+
+          headers, body = BuildEventRequestHeadersAndBody.call(webhook_batch)
+          send_request(webhook_batch, headers, body)
+        end
+      rescue StandardError => e
+        webhook_batch.not_delivered!(
+          {
+            "failed_attempts" => {
+              (webhook_batch.failed_attempts + 1) => "#{e.class}: #{e.message}: #{Time.current.iso8601}"
+            }
+          }
+        )
+
+        raise e
       end
-    rescue StandardError => e
-      webhook_batch.not_delivered!({ "notice" => "#{e.class}: #{e.message}" })
-
-      raise e
     end
 
     private
