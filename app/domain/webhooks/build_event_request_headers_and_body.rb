@@ -22,11 +22,11 @@ module Webhooks
     def build_request_body
       webhook_batch.events.map do |webhook_event|
         {
-          "type"            => webhook_event.type,
-          "data"            => webhook_event.data,
-          "failed_attempts" => webhook_batch.failed_attempts,
-          "created_at"      => webhook_event.created_at,
-          "updated_at"      => webhook_event.updated_at
+          "uuid"       => webhook_event.uuid,
+          "type"       => webhook_event.type,
+          "data"       => webhook_event.data,
+          "metadata"   => webhook_event.metadata,
+          "created_at" => webhook_event.created_at
         }
       end.to_json
     end

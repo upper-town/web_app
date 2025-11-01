@@ -2,7 +2,7 @@
 
 module Seeds
   class CreateAdminAccounts
-    prepend Callable
+    include Callable
 
     attr_reader :admin_user_ids
 
@@ -32,8 +32,8 @@ module Seeds
           admin_user_id: 101,
         },
         {
-          id: 102,
-          admin_user_id: 102,
+          id: 202,
+          admin_user_id: 202,
         }
       ]
     end

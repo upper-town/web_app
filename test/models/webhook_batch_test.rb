@@ -123,35 +123,44 @@ class WebhookBatchTest < ActiveSupport::TestCase
     it "updates batch as delivered" do
       webhook_batch = create_webhook_batch(
         status: "pending",
-        metadata: { "notice" => "message", "other" => "nothing" }
+        metadata: { "notice" => "message", "other" => { "1" => "aaaa", "2" => "bbbb" } }
       )
 
-      webhook_batch.delivered!({ "notice" => "message CHANGED" })
+      webhook_batch.delivered!({ "notice" => "message CHANGED", "other" => { "2" => "xxxx" } })
 
       assert_equal("delivered", webhook_batch.status)
-      assert_equal({ "notice" => "message CHANGED", "other" => "nothing" }, webhook_batch.metadata)
+      assert_equal(
+        { "notice" => "message CHANGED", "other" => { "1" => "aaaa", "2" => "xxxx" } },
+        webhook_batch.metadata
+      )
     end
   end
 
   describe "not_delivered!" do
     it "updates batch as not delivered" do
       webhook_batch = create_webhook_batch(
-        status: "queued",
-        failed_attempts: 24,
-        metadata: { "notice" => "error", "other" => "nothing" }
+        status: "pending",
+        failed_attempts: 23,
+        metadata: { "notice" => "message", "other" => { "1" => "aaaa", "2" => "bbbb" } }
       )
 
       webhook_batch.not_delivered!({ "notice" => "another error" })
 
       assert_equal("queued", webhook_batch.status)
-      assert_equal(25, webhook_batch.failed_attempts)
-      assert_equal({ "notice" => "another error", "other" => "nothing" }, webhook_batch.metadata)
+      assert_equal(24, webhook_batch.failed_attempts)
+      assert_equal(
+        { "notice" => "another error", "other" => { "1" => "aaaa", "2" => "bbbb" } },
+        webhook_batch.metadata
+      )
 
-      webhook_batch.not_delivered!({ "notice" => "too many errors" })
+      webhook_batch.not_delivered!({ "notice" => "too many errors", "other" => { "2" => "xxxx" } })
 
       assert_equal("failed", webhook_batch.status)
-      assert_equal(26, webhook_batch.failed_attempts)
-      assert_equal({ "notice" => "too many errors", "other" => "nothing" }, webhook_batch.metadata)
+      assert_equal(25, webhook_batch.failed_attempts)
+      assert_equal(
+        { "notice" => "too many errors", "other" => { "1" => "aaaa", "2" => "xxxx" } },
+        webhook_batch.metadata
+      )
     end
   end
 end

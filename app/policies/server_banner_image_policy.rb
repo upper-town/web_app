@@ -12,6 +12,10 @@ class ServerBannerImagePolicy
   end
 
   def allowed?
-    current_admin_user || server.banner_image_approved?
+    if current_admin_user
+      server.banner_image.present?
+    else
+      server.banner_image_approved?
+    end
   end
 end

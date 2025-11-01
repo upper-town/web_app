@@ -2,6 +2,8 @@
 
 module Webhooks
   class PublisherJob < ApplicationPollingJob
+    limits_concurrency key: "0", on_conflict: :discard
+
     def perform
       WebhookConfig
         .enabled

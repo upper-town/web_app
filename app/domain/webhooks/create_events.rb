@@ -14,7 +14,7 @@ module Webhooks
       @source = source
       @type = type
       @data_args = data_args
-      @uuid = uuid || SecureRandom.uuid
+      @uuid = uuid || SecureRandom.uuid_v7
     end
 
     def call

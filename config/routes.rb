@@ -63,7 +63,6 @@ Rails.application.routes.draw do
       root to: "dashboards#show"
 
       resource  :dashboard, only: [:show]
-      resource  :demo, only: [:show]
       resources :users, only: [:index, :show, :edit]
       resources :admin_users
       resources :servers, only: [:index, :show, :new, :create, :edit, :update]
@@ -71,6 +70,18 @@ Rails.application.routes.draw do
       constraints(Admin::JobsConstraint.new) do
         mount MissionControl::Jobs::Engine, at: "/jobs"
       end
+    end
+  end
+
+  # /demo/
+
+  constraints(Demo::Constraint.new) do
+    scope(path: "demo", module: "demo", as: "demo") do
+      root to: "home#index"
+
+      get "upper_town_8ca7fa4c.json" => "home#upper_town_json"
+
+      resource :webhook_events, only: [:create]
     end
   end
 

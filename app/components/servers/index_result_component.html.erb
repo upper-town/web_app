@@ -1,5 +1,5 @@
 <div class="max-w-[750px] mb-5 mx-auto">
-  <% if server.banner_image_approved? %>
+  <% if ServerBannerImagePolicy.new(server, request).allowed? %>
     <%= image_tag(server.banner_image) %>
   <% end %>
 

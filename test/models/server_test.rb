@@ -238,6 +238,11 @@ class ServerTest < ActiveSupport::TestCase
 
       server.validate
       assert_not(server.errors.key?(:name))
+
+      server.save!
+
+      server.description = "Just changing something for update"
+      server.save!
     end
   end
 

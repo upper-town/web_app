@@ -6,6 +6,32 @@ class Webhooks::PublishBatchJobTest < ActiveSupport::TestCase
   let(:described_class) { Webhooks::PublishBatchJob }
 
   describe "#perform" do
+    describe "when webhook_batch status is not 'queued'" do
+      it "raises an error" do
+        webhook_config = create_webhook_config(
+          method: "POST",
+          url: "https://game.company.com/webhook_events",
+          secret: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        )
+        webhook_batch = create_webhook_batch(
+          config: webhook_config,
+          status: "delivered"
+        )
+        webhook_request = stub_webhook_request(
+          url: "https://game.company.com/webhook_events",
+          method: :post,
+          response_status: 200
+        )
+
+        error = assert_raises(StandardError) do
+          described_class.new.perform(webhook_batch)
+        end
+
+        assert_not_requested(webhook_request)
+        assert_match(/invalid webhook_batch.status: delivered/, error.message)
+      end
+    end
+
     describe "when webhook request responds with 4xx status" do
       it "raises an error" do
         webhook_config = create_webhook_config(
@@ -13,46 +39,52 @@ class Webhooks::PublishBatchJobTest < ActiveSupport::TestCase
           url: "https://game.company.com/webhook_events",
           secret: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
         )
-        webhook_batch = create_webhook_batch(config: webhook_config, status: "queued", failed_attempts: 5)
-        create_webhook_event(
+        webhook_batch = create_webhook_batch(
+          config: webhook_config,
+          status: "queued",
+          failed_attempts: 5
+        )
+        webhook_event1 = create_webhook_event(
+          uuid: "88888888-8888-8888-8888-888888888888",
           config: webhook_config,
           batch: webhook_batch,
           type: "server_vote.created",
           data: { "server_vote" => { "uuid" => "11111111-1111-1111-1111-111111111111" } },
-          created_at: "2025-01-01T12:00:01Z",
-          updated_at: "2025-01-01T12:00:11Z"
+          metadata: {},
+          created_at: "2025-01-01T12:00:01Z"
         )
-        create_webhook_event(
+        webhook_event2 = create_webhook_event(
+          uuid: "99999999-9999-9999-9999-999999999999",
           config: webhook_config,
           batch: webhook_batch,
           type: "server_vote.created",
           data: { "server_vote" => { "uuid" => "22222222-2222-2222-2222-222222222222" } },
-          created_at: "2025-01-01T12:00:02Z",
-          updated_at: "2025-01-01T12:00:22Z"
+          metadata: {},
+          created_at: "2025-01-01T12:00:02Z"
         )
         expected_body = [
           {
+            "uuid" => webhook_event1.uuid,
             "type" => "server_vote.created",
             "data" => {
               "server_vote" => { "uuid" => "11111111-1111-1111-1111-111111111111" }
             },
-            "failed_attempts" => 5,
+            "metadata" => {},
             "created_at" => "2025-01-01T12:00:01.000Z",
-            "updated_at" => "2025-01-01T12:00:11.000Z"
           },
           {
+            "uuid" => webhook_event2.uuid,
             "type" => "server_vote.created",
             "data" => {
               "server_vote" => { "uuid" => "22222222-2222-2222-2222-222222222222" }
             },
-            "failed_attempts" => 5,
+            "metadata" => {},
             "created_at" => "2025-01-01T12:00:02.000Z",
-            "updated_at" => "2025-01-01T12:00:22.000Z"
           }
         ].to_json
         expected_headers = {
           "Content-Type" => "application/json",
-          "X-Signature"  => "13655a5402705ebf320c612c76555d6cf9f98a35c0a694a6019891f27f3f2b13"
+          "X-Signature"  => "3f6d4da98e9ed3d710cb88aa525577900b0f30f75aced80e0ffd5de8b0a76c43"
         }
         webhook_request = stub_webhook_request(
           url: "https://game.company.com/webhook_events",
@@ -70,7 +102,7 @@ class Webhooks::PublishBatchJobTest < ActiveSupport::TestCase
         webhook_batch.reload
         assert(webhook_batch.queued?)
         assert_equal(6, webhook_batch.failed_attempts)
-        assert_match(/Faraday::BadRequestError/, webhook_batch.metadata["notice"])
+        assert_match(/Faraday::BadRequestError/, webhook_batch.metadata["failed_attempts"]["6"])
       end
     end
 
@@ -81,46 +113,52 @@ class Webhooks::PublishBatchJobTest < ActiveSupport::TestCase
           url: "https://game.company.com/webhook_events",
           secret: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
         )
-        webhook_batch = create_webhook_batch(config: webhook_config, status: "queued", failed_attempts: 5)
-        create_webhook_event(
+        webhook_batch = create_webhook_batch(
+          config: webhook_config,
+          status: "queued",
+          failed_attempts: 5
+        )
+        webhook_event1 = create_webhook_event(
+          uuid: "88888888-8888-8888-8888-888888888888",
           config: webhook_config,
           batch: webhook_batch,
           type: "server_vote.created",
           data: { "server_vote" => { "uuid" => "11111111-1111-1111-1111-111111111111" } },
-          created_at: "2025-01-01T12:00:01Z",
-          updated_at: "2025-01-01T12:00:11Z"
+          metadata: {},
+          created_at: "2025-01-01T12:00:01Z"
         )
-        create_webhook_event(
+        webhook_event2 = create_webhook_event(
+          uuid: "99999999-9999-9999-9999-999999999999",
           config: webhook_config,
           batch: webhook_batch,
           type: "server_vote.created",
           data: { "server_vote" => { "uuid" => "22222222-2222-2222-2222-222222222222" } },
-          created_at: "2025-01-01T12:00:02Z",
-          updated_at: "2025-01-01T12:00:22Z"
+          metadata: {},
+          created_at: "2025-01-01T12:00:02Z"
         )
         expected_body = [
           {
+            "uuid" => webhook_event1.uuid,
             "type" => "server_vote.created",
             "data" => {
               "server_vote" => { "uuid" => "11111111-1111-1111-1111-111111111111" }
             },
-            "failed_attempts" => 5,
+            "metadata" => {},
             "created_at" => "2025-01-01T12:00:01.000Z",
-            "updated_at" => "2025-01-01T12:00:11.000Z"
           },
           {
+            "uuid" => webhook_event2.uuid,
             "type" => "server_vote.created",
             "data" => {
               "server_vote" => { "uuid" => "22222222-2222-2222-2222-222222222222" }
             },
-            "failed_attempts" => 5,
+            "metadata" => {},
             "created_at" => "2025-01-01T12:00:02.000Z",
-            "updated_at" => "2025-01-01T12:00:22.000Z"
           }
         ].to_json
         expected_headers = {
           "Content-Type" => "application/json",
-          "X-Signature"  => "13655a5402705ebf320c612c76555d6cf9f98a35c0a694a6019891f27f3f2b13"
+          "X-Signature"  => "3f6d4da98e9ed3d710cb88aa525577900b0f30f75aced80e0ffd5de8b0a76c43"
         }
         webhook_request = stub_webhook_request(
           url: "https://game.company.com/webhook_events",
@@ -138,7 +176,7 @@ class Webhooks::PublishBatchJobTest < ActiveSupport::TestCase
         webhook_batch.reload
         assert(webhook_batch.queued?)
         assert_equal(6, webhook_batch.failed_attempts)
-        assert_match(/Faraday::ServerError/, webhook_batch.metadata["notice"])
+        assert_match(/Faraday::ServerError/, webhook_batch.metadata["failed_attempts"]["6"])
       end
     end
 
@@ -149,46 +187,52 @@ class Webhooks::PublishBatchJobTest < ActiveSupport::TestCase
           url: "https://game.company.com/webhook_events",
           secret: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
         )
-        webhook_batch = create_webhook_batch(config: webhook_config, status: "queued", failed_attempts: 5)
-        create_webhook_event(
+        webhook_batch = create_webhook_batch(
+          config: webhook_config,
+          status: "queued",
+          failed_attempts: 5
+        )
+        webhook_event1 = create_webhook_event(
+          uuid: "88888888-8888-8888-8888-888888888888",
           config: webhook_config,
           batch: webhook_batch,
           type: "server_vote.created",
           data: { "server_vote" => { "uuid" => "11111111-1111-1111-1111-111111111111" } },
-          created_at: "2025-01-01T12:00:01Z",
-          updated_at: "2025-01-01T12:00:11Z"
+          metadata: {},
+          created_at: "2025-01-01T12:00:01Z"
         )
-        create_webhook_event(
+        webhook_event2 = create_webhook_event(
+          uuid: "99999999-9999-9999-9999-999999999999",
           config: webhook_config,
           batch: webhook_batch,
           type: "server_vote.created",
           data: { "server_vote" => { "uuid" => "22222222-2222-2222-2222-222222222222" } },
-          created_at: "2025-01-01T12:00:02Z",
-          updated_at: "2025-01-01T12:00:22Z"
+          metadata: {},
+          created_at: "2025-01-01T12:00:02Z"
         )
         expected_body = [
           {
+            "uuid" => webhook_event1.uuid,
             "type" => "server_vote.created",
             "data" => {
               "server_vote" => { "uuid" => "11111111-1111-1111-1111-111111111111" }
             },
-            "failed_attempts" => 5,
+            "metadata" => {},
             "created_at" => "2025-01-01T12:00:01.000Z",
-            "updated_at" => "2025-01-01T12:00:11.000Z"
           },
           {
+            "uuid" => webhook_event2.uuid,
             "type" => "server_vote.created",
             "data" => {
               "server_vote" => { "uuid" => "22222222-2222-2222-2222-222222222222" }
             },
-            "failed_attempts" => 5,
+            "metadata" => {},
             "created_at" => "2025-01-01T12:00:02.000Z",
-            "updated_at" => "2025-01-01T12:00:22.000Z"
           }
         ].to_json
         expected_headers = {
           "Content-Type" => "application/json",
-          "X-Signature"  => "13655a5402705ebf320c612c76555d6cf9f98a35c0a694a6019891f27f3f2b13"
+          "X-Signature"  => "3f6d4da98e9ed3d710cb88aa525577900b0f30f75aced80e0ffd5de8b0a76c43"
         }
         webhook_request = stub_webhook_request(
           url: "https://game.company.com/webhook_events",
@@ -207,7 +251,7 @@ class Webhooks::PublishBatchJobTest < ActiveSupport::TestCase
         webhook_batch.reload
         assert(webhook_batch.queued?)
         assert_equal(6, webhook_batch.failed_attempts)
-        assert_match(/Faraday::ConnectionFailed/, webhook_batch.metadata["notice"])
+        assert_match(/Faraday::ConnectionFailed/, webhook_batch.metadata["failed_attempts"]["6"])
       end
     end
 
@@ -218,46 +262,52 @@ class Webhooks::PublishBatchJobTest < ActiveSupport::TestCase
           url: "https://game.company.com/webhook_events",
           secret: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
         )
-        webhook_batch = create_webhook_batch(config: webhook_config, status: "queued", failed_attempts: 25)
-        create_webhook_event(
+        webhook_batch = create_webhook_batch(
+          config: webhook_config,
+          status: "queued",
+          failed_attempts: 24
+        )
+        webhook_event1 = create_webhook_event(
+          uuid: "88888888-8888-8888-8888-888888888888",
           config: webhook_config,
           batch: webhook_batch,
           type: "server_vote.created",
           data: { "server_vote" => { "uuid" => "11111111-1111-1111-1111-111111111111" } },
-          created_at: "2025-01-01T12:00:01Z",
-          updated_at: "2025-01-01T12:00:11Z"
+          metadata: {},
+          created_at: "2025-01-01T12:00:01Z"
         )
-        create_webhook_event(
+        webhook_event2 = create_webhook_event(
+          uuid: "99999999-9999-9999-9999-999999999999",
           config: webhook_config,
           batch: webhook_batch,
           type: "server_vote.created",
           data: { "server_vote" => { "uuid" => "22222222-2222-2222-2222-222222222222" } },
-          created_at: "2025-01-01T12:00:02Z",
-          updated_at: "2025-01-01T12:00:22Z"
+          metadata: {},
+          created_at: "2025-01-01T12:00:02Z"
         )
         expected_body = [
           {
+            "uuid" => webhook_event1.uuid,
             "type" => "server_vote.created",
             "data" => {
               "server_vote" => { "uuid" => "11111111-1111-1111-1111-111111111111" }
             },
-            "failed_attempts" => 25,
+            "metadata" => {},
             "created_at" => "2025-01-01T12:00:01.000Z",
-            "updated_at" => "2025-01-01T12:00:11.000Z"
           },
           {
+            "uuid" => webhook_event2.uuid,
             "type" => "server_vote.created",
             "data" => {
               "server_vote" => { "uuid" => "22222222-2222-2222-2222-222222222222" }
             },
-            "failed_attempts" => 25,
+            "metadata" => {},
             "created_at" => "2025-01-01T12:00:02.000Z",
-            "updated_at" => "2025-01-01T12:00:22.000Z"
           }
         ].to_json
         expected_headers = {
           "Content-Type" => "application/json",
-          "X-Signature"  => "30a5a1f2810f62c83e43f6e3373ae776e89107b8dc0955090431f7d6bffde8db"
+          "X-Signature"  => "3f6d4da98e9ed3d710cb88aa525577900b0f30f75aced80e0ffd5de8b0a76c43"
         }
         webhook_request = stub_webhook_request(
           url: "https://game.company.com/webhook_events",
@@ -274,8 +324,8 @@ class Webhooks::PublishBatchJobTest < ActiveSupport::TestCase
         assert_requested(webhook_request)
         webhook_batch.reload
         assert(webhook_batch.failed?)
-        assert_equal(26, webhook_batch.failed_attempts)
-        assert_match(/Faraday::ServerError/, webhook_batch.metadata["notice"])
+        assert_equal(25, webhook_batch.failed_attempts)
+        assert_match(/Faraday::ServerError/, webhook_batch.metadata["failed_attempts"]["25"])
       end
     end
 
@@ -286,46 +336,52 @@ class Webhooks::PublishBatchJobTest < ActiveSupport::TestCase
           url: "https://game.company.com/webhook_events",
           secret: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
         )
-        webhook_batch = create_webhook_batch(config: webhook_config, status: "queued", failed_attempts: 5)
-        create_webhook_event(
+        webhook_batch = create_webhook_batch(
+          config: webhook_config,
+          status: "queued",
+          failed_attempts: 5
+        )
+        webhook_event1 = create_webhook_event(
+          uuid: "88888888-8888-8888-8888-888888888888",
           config: webhook_config,
           batch: webhook_batch,
           type: "server_vote.created",
           data: { "server_vote" => { "uuid" => "11111111-1111-1111-1111-111111111111" } },
-          created_at: "2025-01-01T12:00:01Z",
-          updated_at: "2025-01-01T12:00:11Z"
+          metadata: {},
+          created_at: "2025-01-01T12:00:01Z"
         )
-        create_webhook_event(
+        webhook_event2 = create_webhook_event(
+          uuid: "99999999-9999-9999-9999-999999999999",
           config: webhook_config,
           batch: webhook_batch,
           type: "server_vote.created",
           data: { "server_vote" => { "uuid" => "22222222-2222-2222-2222-222222222222" } },
-          created_at: "2025-01-01T12:00:02Z",
-          updated_at: "2025-01-01T12:00:22Z"
+          metadata: {},
+          created_at: "2025-01-01T12:00:02Z"
         )
         expected_body = [
           {
+            "uuid" => webhook_event1.uuid,
             "type" => "server_vote.created",
             "data" => {
               "server_vote" => { "uuid" => "11111111-1111-1111-1111-111111111111" }
             },
-            "failed_attempts" => 5,
+            "metadata" => {},
             "created_at" => "2025-01-01T12:00:01.000Z",
-            "updated_at" => "2025-01-01T12:00:11.000Z"
           },
           {
+            "uuid" => webhook_event2.uuid,
             "type" => "server_vote.created",
             "data" => {
               "server_vote" => { "uuid" => "22222222-2222-2222-2222-222222222222" }
             },
-            "failed_attempts" => 5,
+            "metadata" => {},
             "created_at" => "2025-01-01T12:00:02.000Z",
-            "updated_at" => "2025-01-01T12:00:22.000Z"
           }
         ].to_json
         expected_headers = {
           "Content-Type" => "application/json",
-          "X-Signature"  => "13655a5402705ebf320c612c76555d6cf9f98a35c0a694a6019891f27f3f2b13"
+          "X-Signature"  => "3f6d4da98e9ed3d710cb88aa525577900b0f30f75aced80e0ffd5de8b0a76c43"
         }
         webhook_request = stub_webhook_request(
           url: "https://game.company.com/webhook_events",
@@ -343,7 +399,7 @@ class Webhooks::PublishBatchJobTest < ActiveSupport::TestCase
         webhook_batch.reload
         assert(webhook_batch.delivered?)
         assert_equal(5, webhook_batch.failed_attempts)
-        assert(webhook_batch.metadata["notice"].blank?)
+        assert(webhook_batch.metadata.blank?)
       end
 
       describe "other config methods" do
@@ -353,46 +409,52 @@ class Webhooks::PublishBatchJobTest < ActiveSupport::TestCase
             url: "https://game.company.com/webhook_events",
             secret: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
           )
-          webhook_batch = create_webhook_batch(config: webhook_config, status: "queued", failed_attempts: 5)
-          create_webhook_event(
+          webhook_batch = create_webhook_batch(
+            config: webhook_config,
+            status: "queued",
+            failed_attempts: 5
+          )
+          webhook_event1 = create_webhook_event(
+            uuid: "88888888-8888-8888-8888-888888888888",
             config: webhook_config,
             batch: webhook_batch,
             type: "server_vote.created",
             data: { "server_vote" => { "uuid" => "11111111-1111-1111-1111-111111111111" } },
-            created_at: "2025-01-01T12:00:01Z",
-            updated_at: "2025-01-01T12:00:11Z"
+            metadata: {},
+            created_at: "2025-01-01T12:00:01Z"
           )
-          create_webhook_event(
+          webhook_event2 = create_webhook_event(
+            uuid: "99999999-9999-9999-9999-999999999999",
             config: webhook_config,
             batch: webhook_batch,
             type: "server_vote.created",
             data: { "server_vote" => { "uuid" => "22222222-2222-2222-2222-222222222222" } },
-            created_at: "2025-01-01T12:00:02Z",
-            updated_at: "2025-01-01T12:00:22Z"
+            metadata: {},
+            created_at: "2025-01-01T12:00:02Z"
           )
           expected_body = [
             {
+              "uuid" => webhook_event1.uuid,
               "type" => "server_vote.created",
               "data" => {
                 "server_vote" => { "uuid" => "11111111-1111-1111-1111-111111111111" }
               },
-              "failed_attempts" => 5,
+              "metadata" => {},
               "created_at" => "2025-01-01T12:00:01.000Z",
-              "updated_at" => "2025-01-01T12:00:11.000Z"
             },
             {
+              "uuid" => webhook_event2.uuid,
               "type" => "server_vote.created",
               "data" => {
                 "server_vote" => { "uuid" => "22222222-2222-2222-2222-222222222222" }
               },
-              "failed_attempts" => 5,
+              "metadata" => {},
               "created_at" => "2025-01-01T12:00:02.000Z",
-              "updated_at" => "2025-01-01T12:00:22.000Z"
             }
           ].to_json
           expected_headers = {
             "Content-Type" => "application/json",
-            "X-Signature"  => "13655a5402705ebf320c612c76555d6cf9f98a35c0a694a6019891f27f3f2b13"
+            "X-Signature"  => "3f6d4da98e9ed3d710cb88aa525577900b0f30f75aced80e0ffd5de8b0a76c43"
           }
           webhook_request = stub_webhook_request(
             url: "https://game.company.com/webhook_events",
@@ -410,7 +472,7 @@ class Webhooks::PublishBatchJobTest < ActiveSupport::TestCase
           webhook_batch.reload
           assert(webhook_batch.delivered?)
           assert_equal(5, webhook_batch.failed_attempts)
-          assert(webhook_batch.metadata["notice"].blank?)
+          assert(webhook_batch.metadata.blank?)
         end
 
         it "works with PATCH" do
@@ -419,46 +481,52 @@ class Webhooks::PublishBatchJobTest < ActiveSupport::TestCase
             url: "https://game.company.com/webhook_events",
             secret: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
           )
-          webhook_batch = create_webhook_batch(config: webhook_config, status: "queued", failed_attempts: 5)
-          create_webhook_event(
+          webhook_batch = create_webhook_batch(
+            config: webhook_config,
+            status: "queued",
+            failed_attempts: 5
+          )
+          webhook_event1 = create_webhook_event(
+            uuid: "88888888-8888-8888-8888-888888888888",
             config: webhook_config,
             batch: webhook_batch,
             type: "server_vote.created",
             data: { "server_vote" => { "uuid" => "11111111-1111-1111-1111-111111111111" } },
-            created_at: "2025-01-01T12:00:01Z",
-            updated_at: "2025-01-01T12:00:11Z"
+            metadata: {},
+            created_at: "2025-01-01T12:00:01Z"
           )
-          create_webhook_event(
+          webhook_event2 = create_webhook_event(
+            uuid: "99999999-9999-9999-9999-999999999999",
             config: webhook_config,
             batch: webhook_batch,
             type: "server_vote.created",
             data: { "server_vote" => { "uuid" => "22222222-2222-2222-2222-222222222222" } },
-            created_at: "2025-01-01T12:00:02Z",
-            updated_at: "2025-01-01T12:00:22Z"
+            metadata: {},
+            created_at: "2025-01-01T12:00:02Z"
           )
           expected_body = [
             {
+              "uuid" => webhook_event1.uuid,
               "type" => "server_vote.created",
               "data" => {
                 "server_vote" => { "uuid" => "11111111-1111-1111-1111-111111111111" }
               },
-              "failed_attempts" => 5,
+              "metadata" => {},
               "created_at" => "2025-01-01T12:00:01.000Z",
-              "updated_at" => "2025-01-01T12:00:11.000Z"
             },
             {
+              "uuid" => webhook_event2.uuid,
               "type" => "server_vote.created",
               "data" => {
                 "server_vote" => { "uuid" => "22222222-2222-2222-2222-222222222222" }
               },
-              "failed_attempts" => 5,
+              "metadata" => {},
               "created_at" => "2025-01-01T12:00:02.000Z",
-              "updated_at" => "2025-01-01T12:00:22.000Z"
             }
           ].to_json
           expected_headers = {
             "Content-Type" => "application/json",
-            "X-Signature"  => "13655a5402705ebf320c612c76555d6cf9f98a35c0a694a6019891f27f3f2b13"
+            "X-Signature"  => "3f6d4da98e9ed3d710cb88aa525577900b0f30f75aced80e0ffd5de8b0a76c43"
           }
           webhook_request = stub_webhook_request(
             url: "https://game.company.com/webhook_events",
@@ -476,7 +544,7 @@ class Webhooks::PublishBatchJobTest < ActiveSupport::TestCase
           webhook_batch.reload
           assert(webhook_batch.delivered?)
           assert_equal(5, webhook_batch.failed_attempts)
-          assert(webhook_batch.metadata["notice"].blank?)
+          assert(webhook_batch.metadata.blank?)
         end
       end
     end

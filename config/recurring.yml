@@ -26,8 +26,9 @@ servers_verifier_job:
   schedule: "0 2 * * *"
 
 clear_solid_queue_finished_jobs:
-  command: "SolidQueue::Job.clear_finished_in_batches(sleep_between_batches: 0.5)"
+  command: "SolidQueue::Job.clear_finished_in_batches(batch_size: 1000, sleep_between_batches: 0.6)"
   schedule: "15 * * * *"
+  queue: "low"
 
 servers_delete_archived_without_votes_job:
   class: Servers::DeleteArchivedWithoutVotesJob

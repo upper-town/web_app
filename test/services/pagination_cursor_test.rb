@@ -116,10 +116,10 @@ class PaginationCursorTest < ActiveSupport::TestCase
 
   describe "#cursor and #cursor_id" do
     it "gets cursor and loads cursor_id" do
-      _dummy1 = create_dummy(id: 1, uuid: SecureRandom.uuid, date: "2024-09-01", datetime: "2024-09-01T12:00:00.000001Z", decimal: "0.000001".to_d, float: 0.000001)
-      _dummy2 = create_dummy(id: 2, uuid: SecureRandom.uuid, date: "2024-09-02", datetime: "2024-09-01T12:00:00.000002Z", decimal: "0.000002".to_d, float: 0.000002)
-      dummy4  = create_dummy(id: 4, uuid: SecureRandom.uuid, date: "2024-09-04", datetime: "2024-09-01T12:00:00.000004Z", decimal: "0.000004".to_d, float: 0.000004)
-      _dummy5 = create_dummy(id: 5, uuid: SecureRandom.uuid, date: "2024-09-05", datetime: "2024-09-01T12:00:00.000005Z", decimal: "0.000005".to_d, float: 0.000005)
+      _dummy1 = create_dummy(id: 1, uuid: SecureRandom.uuid_v7, date: "2024-09-01", datetime: "2024-09-01T12:00:00.000001Z", decimal: "0.000001".to_d, float: 0.000001)
+      _dummy2 = create_dummy(id: 2, uuid: SecureRandom.uuid_v7, date: "2024-09-02", datetime: "2024-09-01T12:00:00.000002Z", decimal: "0.000002".to_d, float: 0.000002)
+      dummy4  = create_dummy(id: 4, uuid: SecureRandom.uuid_v7, date: "2024-09-04", datetime: "2024-09-01T12:00:00.000004Z", decimal: "0.000004".to_d, float: 0.000004)
+      _dummy5 = create_dummy(id: 5, uuid: SecureRandom.uuid_v7, date: "2024-09-05", datetime: "2024-09-01T12:00:00.000005Z", decimal: "0.000005".to_d, float: 0.000005)
       relation  = Dummy.all
       [
         # integer
@@ -675,11 +675,11 @@ class PaginationCursorTest < ActiveSupport::TestCase
       describe "string, date, datetime, decimal, float column_type" do
         it "returns accordingly" do
           dummies = [
-            create_dummy(uuid: SecureRandom.uuid, date: "2024-09-01", datetime: "2024-09-01T12:00:00.000001Z", decimal: "0.000001".to_d, float: 0.000001), # index 0
-            create_dummy(uuid: SecureRandom.uuid, date: "2024-09-02", datetime: "2024-09-01T12:00:00.000002Z", decimal: "0.000002".to_d, float: 0.000002), # index 1
-            create_dummy(uuid: SecureRandom.uuid, date: "2024-09-03", datetime: "2024-09-01T12:00:00.000003Z", decimal: "0.000003".to_d, float: 0.000003), # index 2
-            create_dummy(uuid: SecureRandom.uuid, date: "2024-09-04", datetime: "2024-09-01T12:00:00.000004Z", decimal: "0.000004".to_d, float: 0.000004), # index 3
-            create_dummy(uuid: SecureRandom.uuid, date: "2024-09-05", datetime: "2024-09-01T12:00:00.000005Z", decimal: "0.000005".to_d, float: 0.000005) # index 4
+            create_dummy(uuid: SecureRandom.uuid_v7, date: "2024-09-01", datetime: "2024-09-01T12:00:00.000001Z", decimal: "0.000001".to_d, float: 0.000001), # index 0
+            create_dummy(uuid: SecureRandom.uuid_v7, date: "2024-09-02", datetime: "2024-09-01T12:00:00.000002Z", decimal: "0.000002".to_d, float: 0.000002), # index 1
+            create_dummy(uuid: SecureRandom.uuid_v7, date: "2024-09-03", datetime: "2024-09-01T12:00:00.000003Z", decimal: "0.000003".to_d, float: 0.000003), # index 2
+            create_dummy(uuid: SecureRandom.uuid_v7, date: "2024-09-04", datetime: "2024-09-01T12:00:00.000004Z", decimal: "0.000004".to_d, float: 0.000004), # index 3
+            create_dummy(uuid: SecureRandom.uuid_v7, date: "2024-09-05", datetime: "2024-09-01T12:00:00.000005Z", decimal: "0.000005".to_d, float: 0.000005) # index 4
           ]
           relation = Dummy.order(id: :desc)
           request = build_request(url: "http://uppertown.test/servers")

@@ -1,9 +1,18 @@
 # frozen_string_literal: true
 
 # rubocop:disable Rails/I18nLocaleTexts
-module Admin
-  class DemosController < BaseController
-    def show
+module Demo
+  class HomeController < BaseController
+    def upper_town_json
+      render json: {
+        "accounts" => [
+          "11111111-1111-1111-1111-111111111111",
+          "22222222-2222-2222-2222-222222222222"
+        ]
+      }
+    end
+
+    def index
       # Rails expected Flash keys
 
       flash.now[:notice] = {

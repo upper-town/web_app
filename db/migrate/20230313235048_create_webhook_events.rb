@@ -6,9 +6,10 @@ class CreateWebhookEvents < ActiveRecord::Migration[7.1]
       t.references :webhook_config, null: false, foreign_key: true, index: false
       t.references :webhook_batch,  null: true,  foreign_key: true, index: false
 
-      t.uuid   :uuid, null: false
-      t.string :type, null: false
-      t.jsonb  :data, null: false, default: {}
+      t.uuid   :uuid,     null: false
+      t.string :type,     null: false
+      t.jsonb  :data,     null: false, default: {}
+      t.jsonb  :metadata, null: false, default: {}
 
       t.timestamps
     end

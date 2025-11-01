@@ -29,8 +29,9 @@
 
 en:
   shared:
-    message:
+    messages:
       please_try_again_later_too_many_requests: "Please try again later. Too many requests."
+      too_many_votes_for_game: "You have already voted for this game! You can vote once every %{time} per game."
 
     button:
       submit: "Submit"

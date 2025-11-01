@@ -1,9 +1,5 @@
 <h1>Demo Page</h1>
 
-<% if signed_in_admin_user? %>
-  <%= link_to("Sign Out", users_sign_out_path)  %>
-<% end %>
-
 <%= link_to("I'm a primary button link", "#", class: 'btn btn-primary') %>
 <%= link_to("I'm a secondary button link", "#", class: 'btn btn-secondary') %>
 <%= link_to("I'm a info button link", "#", class: 'btn btn-info') %>

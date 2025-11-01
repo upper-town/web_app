@@ -2,7 +2,7 @@
 
 module Seeds
   class Runner
-    prepend Callable
+    include Callable
 
     def call
       admin_user_ids = CreateAdminUsers.call
@@ -13,6 +13,8 @@ module Seeds
 
       game_ids = CreateGames.call
       _server_ids = CreateServers.call(game_ids)
+
+      _webhook_config_ids = CreateWebhookConfigs.call
     end
   end
 end

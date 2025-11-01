@@ -56,12 +56,16 @@ class ValidateSiteUrl
   private
 
   def validate_format
+    return if demo_site_url?
+
     unless site_url.match?(PATTERN)
       @errors << :format_invalid
     end
   end
 
   def validate_site_url_domain
+    return if demo_site_url?
+
     if match_reserved_domain?
       @errors << :domain_not_supported
     end
@@ -77,5 +81,9 @@ class ValidateSiteUrl
     parts = host.split(".")
 
     parts.last(3).any? { |part| RESERVED_NAMES.include?(part) }
+  end
+
+  def demo_site_url?
+    Rails.env.development? && site_url == ENV.fetch("DEMO_SITE_URL", "")
   end
 end

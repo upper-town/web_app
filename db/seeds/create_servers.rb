@@ -2,7 +2,7 @@
 
 module Seeds
   class CreateServers
-    prepend Callable
+    include Callable
 
     attr_reader :game_ids
 
@@ -11,6 +11,9 @@ module Seeds
     end
 
     def call
+      result = Server.insert_all(demo_server_hashes)
+      ActiveJob.perform_all_later(result.rows.flatten.map { Servers::VerifyJob.new(Server.new(id: it)) })
+
       server_ids = []
 
       game_ids.map do |game_id|
@@ -27,6 +30,20 @@ module Seeds
     end
 
     private
+
+    def demo_server_hashes
+      [
+        {
+          id:           100,
+          game_id:      100,
+          name:         "Demo Server",
+          country_code: "US",
+          site_url:     "http://#{AppUtil.web_app_host}:#{AppUtil.web_app_port}/demo",
+          description:  "",
+          info:         ""
+        }
+      ]
+    end
 
     def build_attributes_for_server(game_id, n, country_code)
       name = "Server-#{n}"
