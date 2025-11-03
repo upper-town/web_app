@@ -4,32 +4,34 @@ class CountrySelectComponent < ViewComponent::Base
   attr_reader(
     :form,
     :only_in_use,
-    :default_value,
-    :selected_value,
-    :blank_name
+    :with_continents,
+    :blank_name,
+    :selected_value
   )
 
-  def initialize(form, only_in_use: false, default_value: nil, selected_value: nil, blank_name: "All")
+  def initialize(
+    form,
+    only_in_use: false,
+    with_continents: false,
+    blank_name: "All",
+    selected_value: nil
+  )
     super()
 
     @form = form
     @only_in_use = only_in_use
-    @default_value = default_value
-    @selected_value = selected_value
+    @with_continents = with_continents
     @blank_name = blank_name
+    @selected_value = selected_value
 
-    @query = CountrySelectOptionsQuery.new(only_in_use:)
+    @query = CountrySelectOptionsQuery.new(only_in_use:, with_continents:)
   end
 
   def blank_option
     [blank_name, nil]
   end
 
-  def popular_options
-    @popular_options ||= @query.popular_options
-  end
-
-  def other_options
-    @other_options ||= @query.other_options
+  def options
+    @options ||= @query.call
   end
 end

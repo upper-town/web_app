@@ -24,7 +24,6 @@ module Servers
 
       server_vote.server = server
       server_vote.game = server.game
-      server_vote.country_code = server.country_code
       server_vote.remote_ip = remote_ip
       server_vote.account = account
 

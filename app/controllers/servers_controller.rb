@@ -6,14 +6,14 @@ class ServersController < ApplicationController
 
     @game = game_from_params
     @period = period_from_params
-    @country_code = country_code_from_params
+    @country_codes = country_codes_from_params
 
     @selected_value_game_id = @game ? @game.id : nil
     @selected_value_period = @period
-    @selected_value_country_code = @country_code
+    @selected_value_country_codes = @country_codes ? @country_codes.join(",") : nil
 
     @pagination = Pagination.new(
-      Servers::IndexQuery.new(@game, @period, @country_code, current_time).call,
+      Servers::IndexQuery.new(@game, @period, @country_codes, current_time).call,
       request,
       per_page: 10
     )
@@ -36,9 +36,11 @@ class ServersController < ApplicationController
   private
 
   def game_from_params
-    if params[:game_id].blank?
+    value = params[:game_id]
+
+    if value.blank?
       nil
-    elsif (game = Game.find_by(id: params[:game_id]))
+    elsif (game = Game.find_by(id: value))
       game
     else
       raise InvalidQueryParamError
@@ -46,20 +48,24 @@ class ServersController < ApplicationController
   end
 
   def period_from_params
-    if params[:period].blank?
+    value = params[:period]
+
+    if value.blank?
       Periods::MONTH
-    elsif Periods::PERIODS.include?(params[:period])
-      params[:period]
+    elsif Periods::PERIODS.include?(value)
+      value
     else
       raise InvalidQueryParamError
     end
   end
 
-  def country_code_from_params
-    if params[:country_code].blank?
-      ServerStat::ALL
-    elsif ServerStat::COUNTRY_CODES.include?(params[:country_code])
-      params[:country_code]
+  def country_codes_from_params
+    values = StringHelper.values_list_uniq(params[:country_codes] || "")
+
+    if values.empty?
+      nil
+    elsif values.all? { Server::COUNTRY_CODES.include?(it) }
+      values
     else
       raise InvalidQueryParamError
     end

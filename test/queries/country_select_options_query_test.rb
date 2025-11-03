@@ -14,20 +14,29 @@ class CountrySelectOptionsQueryTest < ActiveSupport::TestCase
         create_server(country_code: "BR")
         create_server(country_code: "AR")
 
-        expected_popular_options = build_country_code_options(["BR", "US", "AR"])
-        expected_other_options = build_country_code_options(Server::COUNTRY_CODES - ["BR", "US", "AR"])
-
         query = described_class.new(cache_enabled: false)
 
         assert_equal(
-          [
-            expected_popular_options,
-            expected_other_options
-          ],
+          build_country_code_options(Server::COUNTRY_CODES),
           query.call
         )
-        assert_equal(expected_popular_options, query.popular_options)
-        assert_equal(expected_other_options, query.other_options)
+      end
+
+      describe "with_continents: true" do
+        it "returns options with label and value for all server countries and its continents" do
+          create_server(country_code: "US")
+          create_server(country_code: "US")
+          create_server(country_code: "BR")
+          create_server(country_code: "BR")
+          create_server(country_code: "AR")
+
+          query = described_class.new(with_continents: true, cache_enabled: false)
+
+          assert_equal(
+            build_continents_and_country_code_options(Server::COUNTRY_CODES),
+            query.call
+          )
+        end
       end
     end
 
@@ -39,51 +48,29 @@ class CountrySelectOptionsQueryTest < ActiveSupport::TestCase
         create_server(country_code: "BR")
         create_server(country_code: "AR")
 
-        expected_popular_options = build_country_code_options(["BR", "US", "AR"])
-        expected_other_options = build_country_code_options([])
-
         query = described_class.new(only_in_use: true, cache_enabled: false)
 
         assert_equal(
-          [
-            expected_popular_options,
-            expected_other_options
-          ],
+          build_country_code_options(["BR", "US", "AR"]),
           query.call
         )
-        assert_equal(expected_popular_options, query.popular_options)
-        assert_equal(expected_other_options, query.other_options)
       end
 
-      it "returns a limit of popular countries" do
-        create_server(country_code: "AR")
-        create_server(country_code: "BE")
-        create_server(country_code: "BR")
-        create_server(country_code: "CA")
-        create_server(country_code: "ES")
-        create_server(country_code: "FR")
-        create_server(country_code: "GB")
-        create_server(country_code: "MX")
-        create_server(country_code: "PT")
-        create_server(country_code: "US")
-        create_server(country_code: "UY")
+      describe "with_continents: true" do
+        it "returns options with label and value only for server countries and its continents" do
+          create_server(country_code: "US")
+          create_server(country_code: "US")
+          create_server(country_code: "BR")
+          create_server(country_code: "BR")
+          create_server(country_code: "AR")
 
-        expected_popular_options = build_country_code_options(
-          ["AR", "BE", "BR", "CA", "ES", "FR", "GB", "MX", "PT", "US"]
-        )
-        expected_other_options = build_country_code_options(["UY"])
+          query = described_class.new(only_in_use: true, with_continents: true, cache_enabled: false)
 
-        query = described_class.new(only_in_use: true)
-
-        assert_equal(
-          [
-            expected_popular_options,
-            expected_other_options
-          ],
-          query.call
-        )
-        assert_equal(expected_popular_options, query.popular_options)
-        assert_equal(expected_other_options, query.other_options)
+          assert_equal(
+            build_continents_and_country_code_options(["US", "BR", "AR"]),
+            query.call
+          )
+        end
       end
     end
 
@@ -99,12 +86,9 @@ class CountrySelectOptionsQueryTest < ActiveSupport::TestCase
         Rails.cache.stub(:fetch, ->(key, options, &block) do
           called += 1
           assert_equal("country_select_options_query:only_in_use", key)
-          assert_equal({ expires_in: 5.minutes }, options)
+          assert_equal({ expires_in: 1.minute }, options)
           assert_equal(
-            [
-              build_country_code_options(["BR", "US", "AR"]),
-              build_country_code_options([])
-            ],
+            build_country_code_options(["BR", "US", "AR"]),
             block.call
           )
         end) do
@@ -116,12 +100,9 @@ class CountrySelectOptionsQueryTest < ActiveSupport::TestCase
         Rails.cache.stub(:fetch, ->(key, options, &block) do
           called += 1
           assert_equal("country_select_options_query", key)
-          assert_equal({ expires_in: 5.minutes }, options)
+          assert_equal({ expires_in: 1.minute }, options)
           assert_equal(
-            [
-              build_country_code_options(["BR", "US", "AR"]),
-              build_country_code_options(Server::COUNTRY_CODES - ["BR", "US", "AR"])
-            ],
+            build_country_code_options(Server::COUNTRY_CODES),
             block.call
           )
         end) do
@@ -132,11 +113,27 @@ class CountrySelectOptionsQueryTest < ActiveSupport::TestCase
     end
   end
 
-  def build_country_code_options(country_codes)
-    country_codes.map do |country_code|
-      country = ISO3166::Country.new(country_code)
+  def build_continents_and_country_code_options(country_codes)
+    options = []
 
-      ["#{country.emoji_flag} #{country.common_name}", country_code]
-    end
+    country_codes
+      .map { ISO3166::Country.new(it) }
+      .sort_by { [it.continent, it.common_name] }
+      .group_by { it.continent }
+      .each do |continent, countries|
+        options << [continent, countries.map { it.alpha2 }.join(","), { class: "fw-bold" }]
+        options.concat(build_country_code_options(countries.map(&:alpha2)))
+      end
+
+    options
+  end
+
+  def build_country_code_options(country_codes)
+    country_codes
+      .map { ISO3166::Country.new(it) }
+      .sort_by { it.common_name }
+      .map do |country|
+        ["#{country.emoji_flag} #{country.common_name}", country.alpha2]
+      end
   end
 end

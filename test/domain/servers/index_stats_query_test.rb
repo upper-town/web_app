@@ -52,143 +52,62 @@ class Servers::IndexStatsQueryTest < ActiveSupport::TestCase
         assert_equal(
           {
             Server.find_by!(name: "Server 1").id => {
-              "US" => {
-                "year"  => { ranking_number: 1, vote_count: 300 },
-                "month" => { ranking_number: 3, vote_count:  30 },
-                "week"  => { ranking_number: 4, vote_count:   3 }
-              },
-              "all" => {
-                "year"  => { ranking_number: 1, vote_count: 300 },
-                "month" => { ranking_number: 5, vote_count:  30 },
-                "week"  => { ranking_number: 6, vote_count:   3 }
-              }
+              "year"  => { ranking_number: 1, vote_count: 300 },
+              "month" => { ranking_number: 5, vote_count:  30 },
+              "week"  => { ranking_number: 6, vote_count:   3 }
             },
             Server.find_by!(name: "Server 2").id => {
-              "US" => {
-                "year"  => { ranking_number: 3, vote_count: 160 },
-                "month" => { ranking_number: 1, vote_count: 150 },
-                "week"  => { ranking_number: 2, vote_count:  10 }
-              },
-              "all" => {
-                "year"  => { ranking_number: 5, vote_count: 160 },
-                "month" => { ranking_number: 1, vote_count: 150 },
-                "week"  => { ranking_number: 4, vote_count:  10 }
-              }
+              "year"  => { ranking_number: 5, vote_count: 160 },
+              "month" => { ranking_number: 1, vote_count: 150 },
+              "week"  => { ranking_number: 4, vote_count:  10 }
             },
             Server.find_by!(name: "Server 3").id => {
-              "US" => {
-                "year"  => { ranking_number: 2, vote_count: 175 },
-                "month" => { ranking_number: 2, vote_count: 100 },
-                "week"  => { ranking_number: 1, vote_count:  75 }
-              },
-              "all" => {
-                "year"  => { ranking_number: 3, vote_count: 175 },
-                "month" => { ranking_number: 3, vote_count: 100 },
-                "week"  => { ranking_number: 2, vote_count:  75 }
-              }
+              "year"  => { ranking_number: 3, vote_count: 175 },
+              "month" => { ranking_number: 3, vote_count: 100 },
+              "week"  => { ranking_number: 2, vote_count:  75 }
             },
             Server.find_by!(name: "Server 4").id => {
-              "US" => {
-                "year"  => { ranking_number: 4, vote_count: 30 },
-                "month" => { ranking_number: 5, vote_count:  5 },
-                "week"  => { ranking_number: 3, vote_count:  5 }
-              },
-              "all" => {
-                "year"  => { ranking_number: 7, vote_count: 30 },
-                "month" => { ranking_number: 8, vote_count:  5 },
-                "week"  => { ranking_number: 5, vote_count:  5 }
-              }
+              "year"  => { ranking_number: 7, vote_count: 30 },
+              "month" => { ranking_number: 8, vote_count:  5 },
+              "week"  => { ranking_number: 5, vote_count:  5 }
             },
             Server.find_by!(name: "Server 5").id => {
-              "US" => {
-                "year"  => { ranking_number: 5, vote_count: 20 },
-                "month" => { ranking_number: 4, vote_count: 10 }
-              },
-              "all" => {
-                "year"  => { ranking_number: 8, vote_count: 20 },
-                "month" => { ranking_number: 7, vote_count: 10 }
-              }
+              "year"  => { ranking_number: 8, vote_count: 20 },
+              "month" => { ranking_number: 7, vote_count: 10 }
             },
             Server.find_by!(name: "Server 6").id => {
-              "US" => {
-                "year"  => { ranking_number: 6, vote_count: 10 }
-              },
-              "all" => {
-                "year"  => { ranking_number: 9, vote_count: 10 }
-              }
+              "year"  => { ranking_number: 9, vote_count: 10 }
             },
             # Server.find_by!(name: 'Server 7').id => {},
             Server.find_by!(name: "Server 8").id => {
-              "BR" => {
-                "year"  => { ranking_number: 1, vote_count: 200 },
-                "month" => { ranking_number: 3, vote_count:  20 },
-                "week"  => { ranking_number: 3, vote_count:  1 }
-              },
-              "all" => {
-                "year"  => { ranking_number: 2, vote_count: 200 },
-                "month" => { ranking_number: 6, vote_count:  20 },
-                "week"  => { ranking_number: 7, vote_count:   1 }
-              }
+              "year"  => { ranking_number: 2, vote_count: 200 },
+              "month" => { ranking_number: 6, vote_count:  20 },
+              "week"  => { ranking_number: 7, vote_count:   1 }
             },
             Server.find_by!(name: "Server 9").id => {
-              "BR" => {
-                "year"  => { ranking_number: 2, vote_count: 170 },
-                "month" => { ranking_number: 1, vote_count: 100 },
-                "week"  => { ranking_number: 2, vote_count:  60 }
-              },
-              "all" => {
-                "year"  => { ranking_number: 4, vote_count: 170 },
-                "month" => { ranking_number: 2, vote_count: 100 },
-                "week"  => { ranking_number: 3, vote_count:  60 }
-              }
+              "year"  => { ranking_number: 4, vote_count: 170 },
+              "month" => { ranking_number: 2, vote_count: 100 },
+              "week"  => { ranking_number: 3, vote_count:  60 }
             },
             Server.find_by!(name: "Server 10").id => {
-              "BR" => {
-                "year"  => { ranking_number: 3, vote_count: 80 },
-                "month" => { ranking_number: 2, vote_count: 80 },
-                "week"  => { ranking_number: 1, vote_count: 80 }
-              },
-              "all" => {
-                "year"  => { ranking_number: 6, vote_count: 80 },
-                "month" => { ranking_number: 4, vote_count: 80 },
-                "week"  => { ranking_number: 1, vote_count: 80 }
-              }
+              "year"  => { ranking_number: 6, vote_count: 80 },
+              "month" => { ranking_number: 4, vote_count: 80 },
+              "week"  => { ranking_number: 1, vote_count: 80 }
             },
             Server.find_by!(name: "Server 11").id => {
-              "US" => {
-                "year"  => { ranking_number: 1, vote_count: 220 },
-                "month" => { ranking_number: 3, vote_count:  25 },
-                "week"  => { ranking_number: 3, vote_count:   2 }
-              },
-              "all" => {
-                "year"  => { ranking_number: 1, vote_count: 220 },
-                "month" => { ranking_number: 3, vote_count:  25 },
-                "week"  => { ranking_number: 3, vote_count:   2 }
-              }
+              "year"  => { ranking_number: 1, vote_count: 220 },
+              "month" => { ranking_number: 3, vote_count:  25 },
+              "week"  => { ranking_number: 3, vote_count:   2 }
             },
             Server.find_by!(name: "Server 12").id => {
-              "US" => {
-                "year"  => { ranking_number: 2, vote_count: 190 },
-                "month" => { ranking_number: 1, vote_count: 110 },
-                "week"  => { ranking_number: 2, vote_count:  40 }
-              },
-              "all" => {
-                "year"  => { ranking_number: 2, vote_count: 190 },
-                "month" => { ranking_number: 1, vote_count: 110 },
-                "week"  => { ranking_number: 2, vote_count:  40 }
-              }
+              "year"  => { ranking_number: 2, vote_count: 190 },
+              "month" => { ranking_number: 1, vote_count: 110 },
+              "week"  => { ranking_number: 2, vote_count:  40 }
             },
             Server.find_by!(name: "Server 13").id => {
-              "US" => {
-                "year"  => { ranking_number: 3, vote_count: 50 },
-                "month" => { ranking_number: 2, vote_count: 50 },
-                "week"  => { ranking_number: 1, vote_count: 50 }
-              },
-              "all" => {
-                "year"  => { ranking_number: 3, vote_count: 50 },
-                "month" => { ranking_number: 2, vote_count: 50 },
-                "week"  => { ranking_number: 1, vote_count: 50 }
-              }
+              "year"  => { ranking_number: 3, vote_count: 50 },
+              "month" => { ranking_number: 2, vote_count: 50 },
+              "week"  => { ranking_number: 1, vote_count: 50 }
             }
           },
           query_result(Server.pluck(:id), current_time)
@@ -213,7 +132,6 @@ class Servers::IndexStatsQueryTest < ActiveSupport::TestCase
         create_server_vote(
           server:,
           game: server.game,
-          country_code: server.country_code,
           created_at: week_time
         )
       end
@@ -221,7 +139,6 @@ class Servers::IndexStatsQueryTest < ActiveSupport::TestCase
         create_server_vote(
           server:,
           game: server.game,
-          country_code: server.country_code,
           created_at: month_time
         )
       end
@@ -229,7 +146,6 @@ class Servers::IndexStatsQueryTest < ActiveSupport::TestCase
         create_server_vote(
           server:,
           game: server.game,
-          country_code: server.country_code,
           created_at: year_time
         )
       end

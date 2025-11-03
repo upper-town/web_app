@@ -221,7 +221,6 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_01_150630) do
   end
 
   create_table "server_stats", force: :cascade do |t|
-    t.string "country_code", null: false
     t.datetime "created_at", null: false
     t.bigint "game_id", null: false
     t.string "period", null: false
@@ -232,13 +231,12 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_01_150630) do
     t.datetime "updated_at", null: false
     t.bigint "vote_count", default: 0, null: false
     t.datetime "vote_count_consolidated_at"
-    t.index ["period", "reference_date", "game_id", "country_code", "server_id"], name: "index_server_stats_on_period_reference_app_country_server", unique: true
+    t.index ["period", "reference_date", "game_id", "server_id"], name: "index_server_stats_on_period_reference_app_country_server", unique: true
     t.index ["server_id"], name: "index_server_stats_on_server_id"
   end
 
   create_table "server_votes", force: :cascade do |t|
     t.bigint "account_id"
-    t.string "country_code", null: false
     t.datetime "created_at", null: false
     t.bigint "game_id", null: false
     t.string "reference"
@@ -248,7 +246,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_01_150630) do
     t.uuid "uuid", default: -> { "uuidv7()" }, null: false
     t.index ["account_id"], name: "index_server_votes_on_account_id"
     t.index ["created_at"], name: "index_server_votes_on_created_at"
-    t.index ["game_id", "country_code"], name: "index_server_votes_on_game_id_and_country_code"
+    t.index ["game_id"], name: "index_server_votes_on_game_id"
     t.index ["server_id"], name: "index_server_votes_on_server_id"
     t.index ["uuid"], name: "index_server_votes_on_uuid", unique: true
   end

@@ -70,26 +70,28 @@ running the processes.
 
 ### Testing Framework
 
-This project uses the [Minitest] framework. The spec DSL with it/describe blocks
-is available for use through the [`minitest-rails`] gem.
+This project uses the [Minitest] framework.
 
-For assertions though, prefer normal test assertions over spec expectations.
+The spec DSL with `it`/`describe` blocks is available for use through the
+[`minitest-rails`] gem. For assertions though, prefer normal test assertions
+over spec expectations.
+
+Inherit from the appropriate Rails test case class.
 
 [Minitest]: https://github.com/minitest/minitest
 [`minitest-rails`]: https://rubygems.org/gems/minitest-rails
 
-### ActiveRecord Factories for Tests
+### ApplicationRecord Factories for Tests
 
-Factories are defined in `test/support/active_record_factory_test_helper.rb`
+Factories are defined in `test/support/factories/`. Factories should represent
+minimum-valid records, so you can skip setting attributes that are optional.
 
-Factories should represent minimum-valid records, so you can skip setting
-attributes that are optional.
-
-In tests, use factories to create/build records for test cases. Set the
-attributes that are important for your test case, and let the factory take
+In tests, use factories to create/build records for the test cases. Set the
+attributes that are important for your test case and let the factory take
 care of the other attributes for you.
 
-Factory helper methods are included in Minitest through `test/test_helper.rb`,
+Factory helper methods are included in `ActiveSupport::TestCase` through
+`include ApplicationRecordTestFactoryHelper` in `test/test_helper.rb`,
 so you can call them directly in tests cases. For example:
 
 ```rb

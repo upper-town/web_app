@@ -7,7 +7,6 @@ class ServerVote < ApplicationRecord
 
   normalizes :reference, with: ->(str) { str.blank? ? nil : str.strip }
 
-  validates :country_code, inclusion: { in: Server::COUNTRY_CODES }
   validate :server_available
 
   private

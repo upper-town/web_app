@@ -94,7 +94,6 @@ class Servers::CreateVoteTest < ActiveSupport::TestCase
           assert_equal(ServerVote.last, result.server_vote)
           assert_equal(server, result.server_vote.server)
           assert_equal(server.game, result.server_vote.game)
-          assert_equal(server.country_code, result.server_vote.country_code)
           assert_equal("1.1.1.1", result.server_vote.remote_ip)
           assert_equal("anything123456", result.server_vote.reference)
           assert_equal(account, result.server_vote.account)

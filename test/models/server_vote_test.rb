@@ -30,13 +30,6 @@ class ServerVoteTest < ActiveSupport::TestCase
   end
 
   describe "validations" do
-    it "validates country_code" do
-      server_vote = build_server_vote(country_code: "123456")
-      server_vote.validate
-
-      assert(server_vote.errors.of_kind?(:country_code, :inclusion))
-    end
-
     it "validates server_available" do
       server = create_server(archived_at: Time.current)
       server_vote = build_server_vote(server:)

@@ -17,7 +17,6 @@ module Webhooks
             "uuid"         => server_vote.uuid,
             "game_id"      => server_vote.game_id,
             "server_id"    => server_vote.server_id,
-            "country_code" => server_vote.country_code,
             "reference"    => server_vote.reference,
             "remote_ip"    => server_vote.remote_ip,
             "account_uuid" => server_vote.account&.uuid,

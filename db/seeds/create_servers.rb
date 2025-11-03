@@ -21,6 +21,10 @@ module Seeds
         result = Server.insert_all(server_hashes)
         server_ids.concat(result.rows.flatten)
 
+        server_hashes = 1.upto(2).map { |n| build_attributes_for_server(game_id, n, "CA") }
+        result = Server.insert_all(server_hashes)
+        server_ids.concat(result.rows.flatten)
+
         server_hashes = 1.upto(5).map { |n| build_attributes_for_server(game_id, n, "BR") }
         result = Server.insert_all(server_hashes)
         server_ids.concat(result.rows.flatten)
@@ -46,8 +50,8 @@ module Seeds
     end
 
     def build_attributes_for_server(game_id, n, country_code)
-      name = "Server-#{n}"
-      site_url = "https://server-#{n}.company.com/"
+      name = "Server-#{country_code}-#{n}"
+      site_url = "https://server-#{country_code.downcase}-#{n}.company.com/"
       description = "Zzz Zzz Zzz"
       info = [
         "Aaa Bbb Ccc",

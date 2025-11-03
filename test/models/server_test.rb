@@ -318,6 +318,28 @@ class ServerTest < ActiveSupport::TestCase
     end
   end
 
+  describe "#country" do
+    it "returns Country object" do
+      server = build_server(country_code: nil)
+
+      assert_nil(server.country)
+
+      server.country_code = ""
+
+      assert_nil(server.country)
+
+      server.country_code = "US"
+
+      assert_kind_of(ISO3166::Country, server.country)
+      assert_same(server.country, server.country)
+
+      server.country_code = "BR"
+
+      assert_kind_of(ISO3166::Country, server.country)
+      assert_same(server.country, server.country)
+    end
+  end
+
   describe "#site_url_checksum" do
     it "returns the last 8 hexdigits of site_url SHA256" do
       server = create_server(site_url: "https://game-server.company.com/")

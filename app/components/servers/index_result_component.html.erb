@@ -7,7 +7,7 @@
     <div class="flex mb-2 items-stretch text-lg md:text-xl font-bold">
       <div class="grow-0 flex items-center p-3 bg-indigo-500 text-slate-50">
         <span>
-          <%= format_ranking_number(server_stats_hash.dig(country_code, period, :ranking_number)) %>
+          <%= format_ranking_number(server_stats_hash.dig(period, :ranking_number)) %>
         </span>
       </div>
       <div class="flex-auto flex items-center p-2 bg-slate-300">
@@ -20,8 +20,8 @@
     <div class="text-left font-semibold p-2">
       <%= server.game.name %>
       (
-        <span title="<%= server_country_code_common_name %>">
-          <%= server_country_code_emoji_flag %> <%= server.country_code %>
+        <span title="<%= server.country.common_name %>">
+          <%= server.country.emoji_flag %> <%= server.country_code %>
         </span>
       )
     </div>
@@ -34,13 +34,7 @@
 
     <div class="text-center bg-slate-200 mb-2">
       <div class="font-medium bg-slate-300 p-2">
-        Rankings
-        <span class="text-xs" title="<%= ranking_country_code_common_name %>">
-          (
-            <%= ranking_country_code_emoji_flag  %>
-            <%= country_code %>
-          )
-        </span>
+        World Ranking
       </div>
       <div class="flex divide-x divide-slate-50 p-2">
         <div class="text-center flex-auto">
@@ -50,7 +44,7 @@
             </span>
             <br>
             <span class="font-medium text-lg">
-              <%= format_ranking_number(server_stats_hash.dig(country_code, Periods::YEAR, :ranking_number)) %>
+              <%= format_ranking_number(server_stats_hash.dig(Periods::YEAR, :ranking_number)) %>
             </span>
           </div>
         </div>
@@ -61,7 +55,7 @@
             </span>
             <br>
             <span class="font-medium text-lg">
-              <%= format_ranking_number(server_stats_hash.dig(country_code, Periods::MONTH, :ranking_number)) %>
+              <%= format_ranking_number(server_stats_hash.dig(Periods::MONTH, :ranking_number)) %>
             </span>
           </div>
         </div>
@@ -72,7 +66,7 @@
             </span>
             <br>
             <span class="font-medium text-lg">
-              <%= format_ranking_number(server_stats_hash.dig(country_code, Periods::WEEK, :ranking_number)) %>
+              <%= format_ranking_number(server_stats_hash.dig(Periods::WEEK, :ranking_number)) %>
             </span>
           </div>
         </div>
@@ -91,7 +85,7 @@
             </span>
             <br>
             <span class="font-medium text-lg">
-              <%= format_vote_count(server_stats_hash.dig(country_code, Periods::YEAR, :vote_count)) %>
+              <%= format_vote_count(server_stats_hash.dig(Periods::YEAR, :vote_count)) %>
             </span>
           </div>
         </div>
@@ -102,7 +96,7 @@
             </span>
             <br>
             <span class="font-medium text-lg">
-              <%= format_vote_count(server_stats_hash.dig(country_code, Periods::MONTH, :vote_count)) %>
+              <%= format_vote_count(server_stats_hash.dig(Periods::MONTH, :vote_count)) %>
             </span>
           </div>
         </div>
@@ -113,7 +107,7 @@
             </span>
             <br>
             <span class="font-medium text-lg">
-              <%= format_vote_count(server_stats_hash.dig(country_code, Periods::WEEK, :vote_count)) %>
+              <%= format_vote_count(server_stats_hash.dig(Periods::WEEK, :vote_count)) %>
             </span>
           </div>
         </div>

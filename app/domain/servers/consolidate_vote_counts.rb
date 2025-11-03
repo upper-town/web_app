@@ -16,34 +16,14 @@ module Servers
     def call
       periods.each do |period|
         Periods.loop_through(period, past_time, current_time) do |reference_date, reference_range|
-          upsert_server_stats_per_country_code(period, reference_date, reference_range)
-          upsert_server_stats_all(period, reference_date, reference_range)
+          upsert_server_stats(period, reference_date, reference_range)
         end
       end
     end
 
     private
 
-    def upsert_server_stats_per_country_code(period, reference_date, reference_range)
-      game_country_code_vote_counts = game_country_code_vote_counts_query(reference_range)
-      vote_count_consolidated_at = Time.current
-
-      server_stat_hashes = game_country_code_vote_counts.map do |(game_id, country_code), vote_count|
-        {
-          period:,
-          reference_date:,
-          game_id:,
-          country_code:,
-          server_id: server.id,
-          vote_count:,
-          vote_count_consolidated_at:
-        }
-      end
-
-      server_stat_upsert(server_stat_hashes) unless server_stat_hashes.empty?
-    end
-
-    def upsert_server_stats_all(period, reference_date, reference_range)
+    def upsert_server_stats(period, reference_date, reference_range)
       game_vote_counts = game_vote_counts_query(reference_range)
       vote_count_consolidated_at = Time.current
 
@@ -52,7 +32,6 @@ module Servers
           period:,
           reference_date:,
           game_id:,
-          country_code: ServerStat::ALL,
           server_id: server.id,
           vote_count:,
           vote_count_consolidated_at:
@@ -69,18 +48,9 @@ module Servers
           :period,
           :reference_date,
           :game_id,
-          :country_code,
           :server_id
         ]
       )
-    end
-
-    def game_country_code_vote_counts_query(reference_range)
-      ServerVote
-        .where(server:)
-        .where(created_at: reference_range)
-        .group(:game_id, :country_code)
-        .count
     end
 
     def game_vote_counts_query(reference_range)

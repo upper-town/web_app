@@ -1,15 +1,15 @@
 <%= form_with(
   method: :get,
   data: {
-    'controller' => 'servers',
-    'action' => 'change->servers#filter'
+    "controller" => "servers",
+    "action" => "change->servers#filter"
   },
-  class: 'mb-2'
+  class: "mb-2"
 ) do |form| %>
   <%= render(GameSelectComponent.new(
     form,
     only_in_use: true,
-    blank_name: 'All',
+    blank_name: "All",
     selected_value: @selected_value_game_id
   )) %>
   <div class="flex">
@@ -20,17 +20,17 @@
     <%= render(CountrySelectComponent.new(
       form,
       only_in_use: true,
-      blank_name: 'All',
-      selected_value: @selected_value_country_code
+      with_continents: true,
+      selected_value: @selected_value_country_codes
     )) %>
   </div>
 <% end %>
 
-<%= render(PaginationComponent.new(@pagination, first_icon: '1st')) %>
-
 <% if @servers.empty? %>
   No results
 <% else %>
+  <%= render(PaginationComponent.new(@pagination, first_icon: "1st")) %>
+
   <ul>
     <% @servers.each do |server| %>
       <li>
@@ -38,13 +38,12 @@
           render(Servers::IndexResultComponent.new(
             server: server,
             server_stats_hash: @server_stats_hash[server.id] || {},
-            period: @period,
-            country_code: @country_code
+            period: @period
           ))
         %>
       </li>
     <% end %>
   </ul>
 
-  <%= render(PaginationComponent.new(@pagination, first_icon: '1st')) %>
+  <%= render(PaginationComponent.new(@pagination, first_icon: "1st")) %>
 <% end %>

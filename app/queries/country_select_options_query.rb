@@ -3,70 +3,73 @@
 class CountrySelectOptionsQuery
   include Callable
 
-  attr_reader :only_in_use, :cache_enabled, :cache_key, :cache_expires_in
+  attr_reader(
+    :only_in_use,
+    :with_continents,
+    :cache_enabled,
+    :cache_key,
+    :cache_expires_in
+  )
 
   CACHE_KEY = "country_select_options_query"
-  CACHE_EXPIRES_IN = 5.minutes
+  CACHE_EXPIRES_IN = 1.minute
 
   def initialize(
     only_in_use: false,
+    with_continents: false,
     cache_enabled: true,
     cache_key: CACHE_KEY,
     cache_expires_in: CACHE_EXPIRES_IN
   )
     @only_in_use = only_in_use
+    @with_continents = with_continents
     @cache_enabled = cache_enabled
     @cache_key = "#{cache_key}#{':only_in_use' if only_in_use}"
     @cache_expires_in = cache_expires_in
   end
 
   def call
-    country_code_options
-  end
+    with_cache_if_enabled do
+      server_country_codes =
+        if only_in_use
+          Server.distinct.pluck(:country_code)
+        else
+          Server::COUNTRY_CODES
+        end
 
-  def popular_options
-    country_code_options.first
-  end
-
-  def other_options
-    country_code_options.second
+      build_country_code_options(server_country_codes)
+    end
   end
 
   private
 
-  def country_code_options
-    with_cache_if_enabled do
-      server_country_codes = server_country_codes_query
-      popular_country_codes = server_country_codes.shift(10)
-
-      other_country_codes =
-        if only_in_use
-          server_country_codes.sort
-        else
-          (Server::COUNTRY_CODES - popular_country_codes).sort
-        end
-
-      [
-        build_country_code_options(popular_country_codes),
-        build_country_code_options(other_country_codes)
-      ]
-    end
-  end
-
-  def server_country_codes_query
-    Server
-      .group(:country_code)
-      .count
-      .sort_by { |country_code, count| [-count, country_code] }
-      .map { |country_code, _count| country_code }
-  end
-
   def build_country_code_options(country_codes)
-    country_codes.map do |country_code|
-      country = ISO3166::Country.new(country_code)
+    options = []
+    countries = country_codes.map { ISO3166::Country.new(it) }
 
-      ["#{country.emoji_flag} #{country.common_name}", country_code]
+    if with_continents
+      countries
+        .sort_by { [it.continent, it.common_name] }
+        .group_by { it.continent }
+        .each do |continent, countries|
+          options << build_option_for_continent(continent, countries)
+          countries.each { options << build_option_for_country(it) }
+        end
+    else
+      countries
+        .sort_by { it.common_name }
+        .each { options << build_option_for_country(it) }
     end
+
+    options
+  end
+
+  def build_option_for_continent(continent, countries)
+    [continent, countries.map { it.alpha2 }.join(","), { class: "fw-bold" }]
+  end
+
+  def build_option_for_country(country)
+    ["#{country.emoji_flag} #{country.common_name}", country.alpha2]
   end
 
   def with_cache_if_enabled(&)

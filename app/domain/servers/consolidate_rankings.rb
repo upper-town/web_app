@@ -24,28 +24,25 @@ module Servers
     private
 
     def update_server_stats(period, reference_date)
-      ordered_grouped_server_stats = ordered_grouped_server_stats_query(period, reference_date)
+      ordered_server_stats = ordered_server_stats_query(period, reference_date)
       ranking_number_consolidated_at = Time.current
 
-      ordered_grouped_server_stats.each do |_country_code, values|
-        values.each.with_index(1) do |(_country_code, id), index|
-          ServerStat
-            .where(id:)
-            .update_all(
-              ranking_number: index,
-              ranking_number_consolidated_at:
-            )
-        end
+      ordered_server_stats.each.with_index(1) do |id, index|
+        ServerStat
+          .where(id:)
+          .update_all(
+            ranking_number: index,
+            ranking_number_consolidated_at:
+          )
       end
     end
 
-    def ordered_grouped_server_stats_query(period, reference_date)
+    def ordered_server_stats_query(period, reference_date)
       ServerStat
         .where(period:, reference_date:, game:)
         .where.not(vote_count_consolidated_at: nil)
-        .order(:country_code, vote_count: :desc, id: :desc)
-        .pluck(:country_code, :id)
-        .group_by { |country_code, _id| country_code }
+        .order(vote_count: :desc, id: :desc)
+        .pluck(:id)
     end
   end
 end

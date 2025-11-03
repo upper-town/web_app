@@ -84,6 +84,15 @@ class Server < ApplicationRecord
     !verified?
   end
 
+  def country
+    if @_country_code != country_code
+      @_country_code = country_code
+      @_country = ISO3166::Country.new(country_code)
+    end
+
+    @_country
+  end
+
   def banner_image_approved?
     banner_image.present? && banner_image_approved_at.present?
   end

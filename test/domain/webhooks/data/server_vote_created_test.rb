@@ -13,7 +13,6 @@ class Webhooks::Data::ServerVoteCreatedTest < ActiveSupport::TestCase
       server_vote1 = create_server_vote(
         game:,
         server:,
-        country_code: "US",
         reference: "anything123456",
         remote_ip: "1.1.1.1",
         account: nil,
@@ -27,7 +26,6 @@ class Webhooks::Data::ServerVoteCreatedTest < ActiveSupport::TestCase
             "uuid"         => server_vote1.uuid,
             "game_id"      => game.id,
             "server_id"    => server.id,
-            "country_code" => "US",
             "reference"    => "anything123456",
             "remote_ip"    => "1.1.1.1",
             "account_uuid" => nil,
@@ -41,7 +39,6 @@ class Webhooks::Data::ServerVoteCreatedTest < ActiveSupport::TestCase
       server_vote2 = create_server_vote(
         game:,
         server:,
-        country_code: "US",
         reference: "anything123456",
         remote_ip: "1.1.1.1",
         account:,
@@ -55,7 +52,6 @@ class Webhooks::Data::ServerVoteCreatedTest < ActiveSupport::TestCase
             "uuid"         => server_vote2.uuid,
             "game_id"      => game.id,
             "server_id"    => server.id,
-            "country_code" => "US",
             "reference"    => "anything123456",
             "remote_ip"    => "1.1.1.1",
             "account_uuid" => account.uuid,

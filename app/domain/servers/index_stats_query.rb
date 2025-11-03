@@ -25,16 +25,9 @@ module Servers
     #
     # {
     #   <#Interger (Server.id)> => {
-    #     'US' => {
-    #       'year'  => { ranking_number: <#Interger>, vote_count: <#Interger> },
-    #       'month' => { ranking_number: <#Interger>, vote_count: <#Interger> },
-    #       'week'  => { ranking_number: <#Interger>, vote_count: <#Interger> },
-    #     },
-    #     'all' => {
-    #       'year'  => { ranking_number: <#Interger>, vote_count: <#Interger> },
-    #       'month' => { ranking_number: <#Interger>, vote_count: <#Interger> },
-    #       'week'  => { ranking_number: <#Interger>, vote_count: <#Interger> },
-    #     },
+    #     "year"  => { ranking_number: <#Interger>, vote_count: <#Interger> },
+    #     "month" => { ranking_number: <#Interger>, vote_count: <#Interger> },
+    #     "week"  => { ranking_number: <#Interger>, vote_count: <#Interger> },
     #   },
     #   ...
     # }
@@ -43,8 +36,7 @@ module Servers
         next unless row.stat_period
 
         hash[row.id] ||= {}
-        hash[row.id][row.stat_country_code] ||= {}
-        hash[row.id][row.stat_country_code][row.stat_period] = {
+        hash[row.id][row.stat_period] = {
           ranking_number: row.stat_ranking_number,
           vote_count:     row.stat_vote_count
         }
@@ -57,7 +49,6 @@ module Servers
               "server_stats"."server_id" = "servers"."id"
           AND "server_stats"."game_id"   = "servers"."game_id"
           AND #{sql_on_periods_and_reference_dates}
-          AND #{sql_on_country_code}
       SQL
     end
 
@@ -72,19 +63,9 @@ module Servers
       "( #{conditions.join(' OR ')} )"
     end
 
-    def sql_on_country_code
-      <<~SQL
-        (
-             "server_stats"."country_code" = #{quote_for_sql(ServerStat::ALL)}
-          OR "server_stats"."country_code" = "servers"."country_code"
-        )
-      SQL
-    end
-
     def sql_select_fields
       <<~SQL
         "servers"."id",
-        "server_stats"."country_code"   AS "stat_country_code",
         "server_stats"."period"         AS "stat_period",
         "server_stats"."ranking_number" AS "stat_ranking_number",
         "server_stats"."vote_count"     AS "stat_vote_count"

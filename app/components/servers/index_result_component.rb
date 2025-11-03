@@ -2,30 +2,14 @@
 
 module Servers
   class IndexResultComponent < ViewComponent::Base
-    attr_reader(
-      :server,
-      :server_stats_hash,
-      :period,
-      :country_code,
-      :server_country_code_common_name,
-      :server_country_code_emoji_flag,
-      :ranking_country_code_common_name,
-      :ranking_country_code_emoji_flag
-    )
+    attr_reader :server, :server_stats_hash, :period
 
-    def initialize(server:, server_stats_hash:, period:, country_code:)
+    def initialize(server:, server_stats_hash:, period:)
       super()
 
       @server = server
       @server_stats_hash = server_stats_hash
       @period = period
-      @country_code = country_code
-
-      @server_country_code_common_name, @server_country_code_emoji_flag =
-        common_name_and_emoji_flag(@server.country_code)
-
-      @ranking_country_code_common_name, @ranking_country_code_emoji_flag =
-        common_name_and_emoji_flag(@country_code)
     end
 
     def render?
@@ -55,16 +39,6 @@ module Servers
           precision: 4,
           units: { thousand: "k", million: "M", billion: "G", trillion: "T" }
         )
-      end
-    end
-
-    def common_name_and_emoji_flag(country_code)
-      if country_code == ServerStat::ALL
-        ["All", ServerStat::ALL_EMOJI_FLAG]
-      else
-        iso_country = ISO3166::Country.new(country_code)
-
-        [iso_country.common_name, iso_country.emoji_flag]
       end
     end
   end
