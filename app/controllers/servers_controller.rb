@@ -10,7 +10,7 @@ class ServersController < ApplicationController
 
     @selected_value_game_id = @game ? @game.id : nil
     @selected_value_period = @period
-    @selected_value_country_codes = @country_codes ? @country_codes.join(",") : nil
+    @selected_value_country_code = @country_codes ? @country_codes.join(",") : nil
 
     @pagination = Pagination.new(
       Servers::IndexQuery.new(@game, @period, @country_codes, current_time).call,
@@ -60,7 +60,7 @@ class ServersController < ApplicationController
   end
 
   def country_codes_from_params
-    values = StringHelper.values_list_uniq(params[:country_codes] || "")
+    values = StringHelper.values_list_uniq(params[:country_code] || "")
 
     if values.empty?
       nil

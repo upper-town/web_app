@@ -26,6 +26,7 @@ module Inside
       )
 
       if @server.invalid?
+        @server.move_errors(:game, :game_id)
         render(:new, status: :unprocessable_entity)
 
         return
