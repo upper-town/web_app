@@ -1,23 +1,23 @@
-<div class="max-w-[750px] mb-5 mx-auto">
+<div class="mx-auto mb-4">
   <% if ServerBannerImagePolicy.new(server, request).allowed? %>
     <%= image_tag(server.banner_image) %>
   <% end %>
 
-  <div class="bg-slate-100 py-2">
-    <div class="flex mb-2 items-stretch text-lg md:text-xl font-bold">
-      <div class="grow-0 flex items-center p-3 bg-indigo-500 text-slate-50">
+  <div class="py-2">
+    <div class="d-flex mb-2 align-items-stretch fs-5 fw-bold">
+      <div class="d-flex align-items-center flex-grow-0 p-3 bg-primary">
         <span>
           <%= format_ranking_number(server_stats_hash.dig(period, :ranking_number)) %>
         </span>
       </div>
-      <div class="flex-auto flex items-center p-2 bg-slate-300">
+      <div class="d-flex align-items-center flex-grow-1 p-2 bg-secondary">
         <span>
           <%= server.name %>
         </span>
       </div>
     </div>
 
-    <div class="text-left font-semibold p-2">
+    <div class="text-start fw-semibold p-2">
       <%= server.game.name %>
       (
         <span title="<%= server.country.common_name %>">
@@ -27,45 +27,45 @@
     </div>
 
     <% if server.description.present? %>
-      <div class="text-left p-1 mb-2">
+      <div class="text-start p-1 mb-2">
         <%= server.description %>
       </div>
     <% end %>
 
-    <div class="text-center bg-slate-200 mb-2">
-      <div class="font-medium bg-slate-300 p-2">
+    <div class="text-center mb-2">
+      <div class="fw-semibold bg-secondary p-2">
         World Ranking
       </div>
-      <div class="flex divide-x divide-slate-50 p-2">
-        <div class="text-center flex-auto">
-          <div class="p-1 <%= period == Periods::YEAR ? 'border-4 border-dashed border-indigo-500' : '' %>">
-            <span class="text-sm">
+      <div class="d-flex p-2">
+        <div class="text-center flex-grow-1">
+          <div class="p-1 <%= period == Periods::YEAR ? "border border-3 border-primary" : "" %>">
+            <span class="small">
               Year
             </span>
             <br>
-            <span class="font-medium text-lg">
+            <span class="fw-semibold fs-5">
               <%= format_ranking_number(server_stats_hash.dig(Periods::YEAR, :ranking_number)) %>
             </span>
           </div>
         </div>
-        <div class="text-center flex-auto">
-          <div class="p-1 <%= period == Periods::MONTH ? 'border-4 border-dashed border-indigo-500' : '' %>">
-            <span class="text-sm">
+        <div class="text-center flex-grow-1">
+          <div class="p-1 <%= period == Periods::MONTH ? "border border-3 border-primary" : "" %>">
+            <span class="small">
               Month
             </span>
             <br>
-            <span class="font-medium text-lg">
+            <span class="fw-semibold fs-5">
               <%= format_ranking_number(server_stats_hash.dig(Periods::MONTH, :ranking_number)) %>
             </span>
           </div>
         </div>
-        <div class="text-center flex-auto">
-          <div class="p-1 <%= period == Periods::WEEK ? 'border-4 border-dashed border-indigo-500' : '' %>">
-            <span class="text-sm">
+        <div class="text-center flex-grow-1">
+          <div class="p-1 <%= period == Periods::WEEK ? "border border-3 border-primary" : "" %>">
+            <span class="small">
               Week
             </span>
             <br>
-            <span class="font-medium text-lg">
+            <span class="fw-semibold fs-5">
               <%= format_ranking_number(server_stats_hash.dig(Periods::WEEK, :ranking_number)) %>
             </span>
           </div>
@@ -73,40 +73,40 @@
       </div>
     </div>
 
-    <div class="text-center bg-slate-200 mb-2">
-      <div class="uppercase font-medium bg-slate-300 p-2">
+    <div class="text-center mb-2">
+      <div class="fw-semibold bg-secondary p-2">
         Vote Count
       </div>
-      <div class="flex divide-x divide-slate-50 p-2">
-        <div class="text-center p-1 flex-auto">
-          <div class="p-1 <%= period == Periods::YEAR ? 'border-4 border-dashed border-indigo-500' : '' %>">
-            <span class="text-sm">
+      <div class="d-flex p-2">
+        <div class="text-center p-1 flex-grow-1">
+          <div class="p-1 <%= period == Periods::YEAR ? "border border-3 border-primary" : "" %>">
+            <span class="small">
               Year
             </span>
             <br>
-            <span class="font-medium text-lg">
+            <span class="fw-semibold fs-5">
               <%= format_vote_count(server_stats_hash.dig(Periods::YEAR, :vote_count)) %>
             </span>
           </div>
         </div>
-        <div class="text-center p-1 flex-auto">
-          <div class="p-1 <%= period == Periods::MONTH ? 'border-4 border-dashed border-indigo-500' : '' %>">
-            <span class="text-sm">
+        <div class="text-center p-1 flex-grow-1">
+          <div class="p-1 <%= period == Periods::MONTH ? "border border-3 border-primary" : "" %>">
+            <span class="small">
               Month
             </span>
             <br>
-            <span class="font-medium text-lg">
+            <span class="fw-semibold fs-5">
               <%= format_vote_count(server_stats_hash.dig(Periods::MONTH, :vote_count)) %>
             </span>
           </div>
         </div>
-        <div class="text-center p-1 flex-auto">
-          <div class="p-1 <%= period == Periods::WEEK ? 'border-4 border-dashed border-indigo-500' : '' %>">
-            <span class="text-sm">
+        <div class="text-center p-1 flex-grow-1">
+          <div class="p-1 <%= period == Periods::WEEK ? "border border-3 border-primary" : "" %>">
+            <span class="small">
               Week
             </span>
             <br>
-            <span class="font-medium text-lg">
+            <span class="fw-semibold fs-5">
               <%= format_vote_count(server_stats_hash.dig(Periods::WEEK, :vote_count)) %>
             </span>
           </div>
@@ -115,8 +115,8 @@
     </div>
 
     <div class="text-center p-1 mb-2">
-      <%= link_to("Vote Up", new_server_vote_path(server), class: 'btn btn-primary') %>
-      <%= link_to("More Info", server_path(server), class: 'btn btn-secondary') %>
+      <%= link_to("Vote Up", new_server_vote_path(server), class: "btn btn-primary") %>
+      <%= link_to("More Info", server_path(server), class: "btn btn-secondary") %>
     </div>
   </div>
 </div>

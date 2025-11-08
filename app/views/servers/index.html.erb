@@ -31,9 +31,9 @@
 <% else %>
   <%= render(PaginationComponent.new(@pagination, first_icon: "1st")) %>
 
-  <ul>
+  <ul class="list-group list-group-flush mb-3">
     <% @servers.each do |server| %>
-      <li>
+      <li class="list-group-item">
         <%=
           render(Servers::IndexResultComponent.new(
             server: server,
