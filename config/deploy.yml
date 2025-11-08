@@ -9,7 +9,12 @@ image: upper_town/web_app
 
 servers:
   web:
-    - upper.town
+    hosts:
+      - upper.town
+  workers:
+    hosts:
+      - upper.town
+    cmd: bin/jobs
 
 ssh:
   user: app
