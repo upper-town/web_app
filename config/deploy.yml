@@ -60,6 +60,7 @@ env:
     - TOKEN_ADMIN_API_SESSION_SALT
     - CODE_SALT
     - CODE_ADMIN_SALT
+    - SUPER_ADMIN_ACCOUNT_IDS
 
 aliases:
   console: app exec --interactive --reuse "bin/rails console"
