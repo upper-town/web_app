@@ -14,9 +14,12 @@ plugins:
 
 AllCops:
   Exclude:
-    - vendor/**/*
+    - Rakefile
+    - config.ru
+    - config/*.rb
     - db/*schema.rb
     - db/migrate/*.rb
+    - vendor/**/*
   NewCops: enable
   TargetRubyVersion: 3.4.4
 

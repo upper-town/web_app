@@ -1,8 +1,6 @@
-#!/usr/bin/env sh
+#!/usr/bin/env ruby
+require_relative "../config/boot"
+require "active_support/continuous_integration"
 
-export CI="true"
-
-bin/rubocop && \
-  bin/brakeman --no-pager && \
-  bin/importmap audit && \
-  bin/rails db:test:prepare test test:system
+CI = ActiveSupport::ContinuousIntegration
+require_relative "../config/ci.rb"
