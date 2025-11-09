@@ -5,7 +5,7 @@ module Servers
     class ValidateJsonFile
       JSON_FILE_MAX_ACCOUNTS_SIZE = 10
       JSON_FILE_SCHEMA = {
-        "id" => "/upper_town.json",
+        "id" => "/uppertown.json",
         "type" => "object",
         "required" => [
           "accounts"

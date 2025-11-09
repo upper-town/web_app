@@ -10,7 +10,7 @@ class CorsHeadersMiddleware
   def initialize(app)
     @app = app
 
-    @allow_origin = AppUtil.web_app_host
+    @allow_origin = AppUtil.webapp_host
   end
 
   def call(env)

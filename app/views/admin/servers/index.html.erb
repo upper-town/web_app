@@ -8,7 +8,7 @@
       collection: @servers,
       columns: [
         ['ID',      :id],
-        ['Actions', -> { |server| render(partial: 'edit_actions_index', locals: { server: server }) }],
+        ['Actions', ->(server) { render(partial: 'edit_actions_index', locals: { server: }) }],
       ],
     ))
   %>

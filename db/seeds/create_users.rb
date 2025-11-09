@@ -17,13 +17,13 @@ module Seeds
       [
         {
           id: 101,
-          email: "demo.user1@#{AppUtil.web_app_host}",
+          email: "demo.user1@#{AppUtil.webapp_host}",
           password_digest: Seeds::Common.encrypt_password("testpass"),
           email_confirmed_at: Time.current,
         },
         {
           id: 202,
-          email: "demo.user2@#{AppUtil.web_app_host}",
+          email: "demo.user2@#{AppUtil.webapp_host}",
           password_digest: Seeds::Common.encrypt_password("testpass"),
           email_confirmed_at: Time.current,
         }
@@ -33,7 +33,7 @@ module Seeds
     def user_hashes
       1.upto(10).map do |n|
         {
-          email: "user#{n}@#{AppUtil.web_app_host}",
+          email: "user#{n}@#{AppUtil.webapp_host}",
           password_digest: Seeds::Common.encrypt_password("testpass"),
           email_confirmed_at: Time.current
         }

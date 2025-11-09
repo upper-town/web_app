@@ -14,12 +14,12 @@ end
 BCrypt::Engine.cost = BCrypt::Engine::MIN_COST
 
 Rails.application.routes.default_url_options = {
-  host: AppUtil.web_app_host,
-  port: AppUtil.web_app_port
+  host: AppUtil.webapp_host,
+  port: AppUtil.webapp_port
 }
 
 Rails.application.configure do
-  config.hosts << AppUtil.web_app_host
+  config.hosts << AppUtil.webapp_host
   config.host_authorization = { exclude: ->(request) { request.path == "/up" } }
 
   config.eager_load = AppUtil.env_var_enabled?("CI")
@@ -51,8 +51,8 @@ Rails.application.configure do
 
   config.action_controller.raise_on_missing_callback_actions = true
   config.action_controller.default_url_options = {
-    host: AppUtil.web_app_host,
-    port: AppUtil.web_app_port
+    host: AppUtil.webapp_host,
+    port: AppUtil.webapp_port
   }
   config.action_controller.perform_caching = false
   config.action_controller.allow_forgery_protection = false
@@ -95,8 +95,8 @@ Rails.application.configure do
   # action_mailer
 
   config.action_mailer.default_url_options = {
-    host: AppUtil.web_app_host,
-    port: AppUtil.web_app_port
+    host: AppUtil.webapp_host,
+    port: AppUtil.webapp_port
   }
   config.action_mailer.perform_caching = false
   config.action_mailer.raise_delivery_errors = true

@@ -6,54 +6,54 @@ default: &default
   pool:     <%= ENV.fetch("POSTGRES_POOL",     "15") %>
   host:     <%= ENV.fetch("POSTGRES_HOST",     "localhost") %>
   port:     <%= ENV.fetch("POSTGRES_PORT",     "5432") %>
-  username: <%= ENV.fetch("POSTGRES_USER",     "upper_town") %>
+  username: <%= ENV.fetch("POSTGRES_USER",     "uppertown") %>
   password: <%= ENV.fetch("POSTGRES_PASSWORD", "testpass") %>
 
 test:
   <<: *default
-  database: web_app_test
+  database: webapp_test
   migrations_paths: db/migrate
 
 development:
   primary:
     <<: *default
-    database: web_app_development
+    database: webapp_development
     schema_dump: schema.rb
     migrations_paths: db/migrate
   queue:
     <<: *default
-    database: web_app_development_queue
+    database: webapp_development_queue
     schema_dump: queue_schema.rb
     migrations_paths: db/queue_migrate
   cache:
     <<: *default
-    database: web_app_development_cache
+    database: webapp_development_cache
     schema_dump: cache_schema.rb
     migrations_paths: db/cache_migrate
   cable:
     <<: *default
-    database: web_app_development_cable
+    database: webapp_development_cable
     schema_dump: cable_schema.rb
     migrations_paths: db/cable_migrate
 
 production:
   primary:
     <<: *default
-    database: web_app_production
+    database: webapp_production
     schema_dump: schema.rb
     migrations_paths: db/migrate
   queue:
     <<: *default
-    database: web_app_production_queue
+    database: webapp_production_queue
     schema_dump: queue_schema.rb
     migrations_paths: db/queue_migrate
   cache:
     <<: *default
-    database: web_app_production_cache
+    database: webapp_production_cache
     schema_dump: cache_schema.rb
     migrations_paths: db/cache_migrate
   cable:
     <<: *default
-    database: web_app_production_cable
+    database: webapp_production_cable
     schema_dump: cable_schema.rb
     migrations_paths: db/cable_migrate

@@ -3,9 +3,9 @@
 # export BWS_PROJECT_ID=
 # bin/kamal deploy
 
-service: web_app
+service: webapp
 
-image: upper_town/web_app
+image: uppertown/webapp
 
 servers:
   web:
@@ -22,7 +22,7 @@ ssh:
   config: true
   keys_only: true
   keys:
-    - "~/.ssh/app-upper_town-production"
+    - "~/.ssh/app-uppertown-production"
 
 proxy:
   ssl: true
@@ -44,7 +44,7 @@ env:
     RAILS_ENV: production
     RAILS_MAX_THREADS: 5
     POSTGRES_POOL: 25
-    POSTGRES_HOST: web_app-postgres
+    POSTGRES_HOST: webapp-postgres
     NOREPLY_EMAIL: noreply@upper.town
     PERIODS_MIN_PAST_TIME: "2024-01-01T00:00:00Z"
   secret:
@@ -74,7 +74,7 @@ aliases:
   dbc: app exec --interactive --reuse "bin/rails dbconsole --include-password"
 
 volumes:
-  - /mnt/uppertown_production_web_volume/storage:/rails/storage
+  - /mnt/uppertown_production_webapp_volume/storage:/rails/storage
 
 asset_path: /rails/public/assets
 
@@ -92,4 +92,4 @@ accessories:
         - POSTGRES_USER
         - POSTGRES_PASSWORD
     volumes:
-      - /mnt/uppertown_production_web_volume/postgres:/var/lib/postgresql
+      - /mnt/uppertown_production_webapp_volume/postgres:/var/lib/postgresql

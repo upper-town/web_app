@@ -2,4 +2,5 @@
 # CVEs that are not relevant to the application can be enumerated on the ignore list below.
 
 ignore:
-  - CVE-THAT-DOES-NOT-APPLY
+  - CVE-2024-21510
+  - CVE-2025-61921

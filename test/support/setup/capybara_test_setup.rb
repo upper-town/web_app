@@ -28,8 +28,8 @@ module CapybaraTestSetup
   def setup
     super
 
-    Capybara.app_host = "http://#{AppUtil.web_app_host}:#{AppUtil.web_app_port}"
-    Capybara.server_host = AppUtil.web_app_host
-    Capybara.server_port = AppUtil.web_app_port
+    Capybara.app_host = "http://#{AppUtil.webapp_host}:#{AppUtil.webapp_port}"
+    Capybara.server_host = AppUtil.webapp_host
+    Capybara.server_port = AppUtil.webapp_port
   end
 end

@@ -17,13 +17,13 @@ module Seeds
       [
         {
           id: 101,
-          email: "super.admin.user1@#{AppUtil.web_app_host}",
+          email: "super.admin.user1@#{AppUtil.webapp_host}",
           password_digest: Seeds::Common.encrypt_password("testpass"),
           email_confirmed_at: Time.current
         },
         {
           id: 202,
-          email: "super.admin.user2@#{AppUtil.web_app_host}",
+          email: "super.admin.user2@#{AppUtil.webapp_host}",
           password_digest: Seeds::Common.encrypt_password("testpass"),
           email_confirmed_at: Time.current
         }
@@ -33,7 +33,7 @@ module Seeds
     def admin_user_hashes
       1.upto(10).map do |n|
         {
-          email: "admin.user#{n}@#{AppUtil.web_app_host}",
+          email: "admin.user#{n}@#{AppUtil.webapp_host}",
           password_digest: Seeds::Common.encrypt_password("testpass"),
           email_confirmed_at: Time.current
         }

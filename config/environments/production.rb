@@ -4,10 +4,10 @@ require "active_support/core_ext/integer/time"
 
 BCrypt::Engine.cost = BCrypt::Engine::DEFAULT_COST
 
-Rails.application.routes.default_url_options = { host: AppUtil.web_app_host }
+Rails.application.routes.default_url_options = { host: AppUtil.webapp_host }
 
 Rails.application.configure do
-  config.hosts << AppUtil.web_app_host
+  config.hosts << AppUtil.webapp_host
   config.host_authorization = { exclude: ->(request) { request.path == "/up" } }
 
   config.eager_load = true
@@ -79,7 +79,7 @@ Rails.application.configure do
 
   # action_mailer
 
-  config.action_mailer.default_url_options = { host: AppUtil.web_app_host }
+  config.action_mailer.default_url_options = { host: AppUtil.webapp_host }
   config.action_mailer.perform_caching = true
   config.action_mailer.raise_delivery_errors = true
   config.action_mailer.delivery_method = :smtp

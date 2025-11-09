@@ -54,6 +54,6 @@ class RequestHelper
     parsed_uri = URI.parse(request.referer)
     return false unless ["http", "https"].include?(parsed_uri.scheme)
 
-    parsed_uri.host == AppUtil.web_app_host
+    parsed_uri.host == AppUtil.webapp_host
   end
 end

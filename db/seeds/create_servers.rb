@@ -42,7 +42,7 @@ module Seeds
           game_id:      100,
           name:         "Demo Server",
           country_code: "US",
-          site_url:     "http://#{AppUtil.web_app_host}:#{AppUtil.web_app_port}/demo",
+          site_url:     "http://#{AppUtil.webapp_host}:#{AppUtil.webapp_port}/demo",
           description:  "",
           info:         ""
         }

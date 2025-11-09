@@ -101,9 +101,9 @@ class RequestHelperTest < ActiveSupport::TestCase
       hidden_fields = described_class.new(request).hidden_fields_for_query({ "bbb" => "222" }, ["ccc"])
 
       assert(hidden_fields.html_safe?)
-      assert_includes(hidden_fields, '<input type="hidden" name="aaa" value="111" autocomplete="off" />')
-      assert_includes(hidden_fields, '<input type="hidden" name="bbb" value="222" autocomplete="off" />')
-      assert_includes(hidden_fields, '<input type="hidden" name="ddd" value="444" autocomplete="off" />')
+      assert_includes(hidden_fields, '<input type="hidden" name="aaa" value="111" />')
+      assert_includes(hidden_fields, '<input type="hidden" name="bbb" value="222" />')
+      assert_includes(hidden_fields, '<input type="hidden" name="ddd" value="444" />')
     end
   end
 
@@ -125,7 +125,7 @@ class RequestHelperTest < ActiveSupport::TestCase
         end
       end
 
-      describe "when scheme is http/https but host does not match web_app_host" do
+      describe "when scheme is http/https but host does not match webapp_host" do
         it "returns false" do
           [
             "https://example.com",
@@ -138,7 +138,7 @@ class RequestHelperTest < ActiveSupport::TestCase
         end
       end
 
-      describe "when scheme is http/https and host matches web_app_host" do
+      describe "when scheme is http/https and host matches webapp_host" do
         it "returns true" do
           [
             "https://uppertown.test",

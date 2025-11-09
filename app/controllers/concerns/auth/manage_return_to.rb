@@ -11,7 +11,7 @@ module Auth
     RETURN_TO_NAME = "return_to"
 
     def write_return_to(duration = 3.minutes)
-      return unless request.get?
+      return unless request.get? || request.head?
       return if ignored_return_to_paths.include?(request.path)
 
       write_json_cookie(

@@ -7,7 +7,7 @@ module Servers
 
       def initialize(server)
         @server = server
-        @json_file_path = "upper_town_#{server.site_url_checksum}.json"
+        @json_file_path = "uppertown_#{server.site_url_checksum}.json"
       end
 
       def call(current_time = Time.current)

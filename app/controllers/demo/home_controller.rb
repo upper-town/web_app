@@ -3,7 +3,7 @@
 # rubocop:disable Rails/I18nLocaleTexts
 module Demo
   class HomeController < BaseController
-    def upper_town_json
+    def uppertown_json
       render json: {
         "accounts" => [
           "11111111-1111-1111-1111-111111111111",

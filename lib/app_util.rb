@@ -26,11 +26,11 @@ module AppUtil
     ActiveRecord::Base.logger = ActiveSupport::Logger.new($stdout)
   end
 
-  def web_app_host
+  def webapp_host
     ENV.fetch("APP_HOST", "upper.town")
   end
 
-  def web_app_port
+  def webapp_port
     ENV.fetch("APP_PORT", "3000")
   end
 end

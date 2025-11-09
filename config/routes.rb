@@ -79,7 +79,7 @@ Rails.application.routes.draw do
     scope(path: "demo", module: "demo", as: "demo") do
       root to: "home#index"
 
-      get "upper_town_8ca7fa4c.json" => "home#upper_town_json"
+      get "uppertown_8ca7fa4c.json" => "home#uppertown_json"
 
       resource :webhook_events, only: [:create]
     end

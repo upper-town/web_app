@@ -11,7 +11,7 @@ class Servers::VerifyAccounts::PerformTest < ActiveSupport::TestCase
         server = create_server(site_url: "https://game-server.company.com/")
         json_file_head_request = stub_json_file_request(
           :head,
-          "https://game-server.company.com/upper_town_28c62f1f.json",
+          "https://game-server.company.com/uppertown_28c62f1f.json",
           response_timeout: true
         )
 
@@ -29,7 +29,7 @@ class Servers::VerifyAccounts::PerformTest < ActiveSupport::TestCase
         server = create_server(site_url: "https://game-server.company.com/")
         json_file_head_request = stub_json_file_request(
           :head,
-          "https://game-server.company.com/upper_town_28c62f1f.json",
+          "https://game-server.company.com/uppertown_28c62f1f.json",
           response_status: 500
         )
 
@@ -47,7 +47,7 @@ class Servers::VerifyAccounts::PerformTest < ActiveSupport::TestCase
         server = create_server(site_url: "https://game-server.company.com/")
         json_file_head_request = stub_json_file_request(
           :head,
-          "https://game-server.company.com/upper_town_28c62f1f.json",
+          "https://game-server.company.com/uppertown_28c62f1f.json",
           response_status: 400
         )
 
@@ -65,7 +65,7 @@ class Servers::VerifyAccounts::PerformTest < ActiveSupport::TestCase
         server = create_server(site_url: "https://game-server.company.com/")
         json_file_head_request = stub_json_file_request(
           :head,
-          "https://game-server.company.com/upper_town_28c62f1f.json",
+          "https://game-server.company.com/uppertown_28c62f1f.json",
           response_status: 200,
           response_headers: { "Content-Length" => "513" }
         )
@@ -84,7 +84,7 @@ class Servers::VerifyAccounts::PerformTest < ActiveSupport::TestCase
         server = create_server(site_url: "https://game-server.company.com/")
         json_file_head_request = stub_json_file_request(
           :head,
-          "https://game-server.company.com/upper_town_28c62f1f.json",
+          "https://game-server.company.com/uppertown_28c62f1f.json",
           response_status: 200,
           response_headers: { "Content-Length" => "512", "Content-Type" => "text/plain" }
         )
@@ -103,13 +103,13 @@ class Servers::VerifyAccounts::PerformTest < ActiveSupport::TestCase
         server = create_server(site_url: "https://game-server.company.com/")
         json_file_head_request = stub_json_file_request(
           :head,
-          "https://game-server.company.com/upper_town_28c62f1f.json",
+          "https://game-server.company.com/uppertown_28c62f1f.json",
           response_status: 200,
           response_headers: { "Content-Length" => "512", "Content-Type" => "application/json" }
         )
         json_file_get_request = stub_json_file_request(
           :get,
-          "https://game-server.company.com/upper_town_28c62f1f.json",
+          "https://game-server.company.com/uppertown_28c62f1f.json",
           response_timeout: true
         )
 
@@ -128,13 +128,13 @@ class Servers::VerifyAccounts::PerformTest < ActiveSupport::TestCase
         server = create_server(site_url: "https://game-server.company.com/")
         json_file_head_request = stub_json_file_request(
           :head,
-          "https://game-server.company.com/upper_town_28c62f1f.json",
+          "https://game-server.company.com/uppertown_28c62f1f.json",
           response_status: 200,
           response_headers: { "Content-Length" => "512", "Content-Type" => "application/json" }
         )
         json_file_get_request = stub_json_file_request(
           :get,
-          "https://game-server.company.com/upper_town_28c62f1f.json",
+          "https://game-server.company.com/uppertown_28c62f1f.json",
           response_status: 500
         )
 
@@ -153,13 +153,13 @@ class Servers::VerifyAccounts::PerformTest < ActiveSupport::TestCase
         server = create_server(site_url: "https://game-server.company.com/")
         json_file_head_request = stub_json_file_request(
           :head,
-          "https://game-server.company.com/upper_town_28c62f1f.json",
+          "https://game-server.company.com/uppertown_28c62f1f.json",
           response_status: 200,
           response_headers: { "Content-Length" => "512", "Content-Type" => "application/json" }
         )
         json_file_get_request = stub_json_file_request(
           :get,
-          "https://game-server.company.com/upper_town_28c62f1f.json",
+          "https://game-server.company.com/uppertown_28c62f1f.json",
           response_status: 400
         )
 
@@ -178,13 +178,13 @@ class Servers::VerifyAccounts::PerformTest < ActiveSupport::TestCase
         server = create_server(site_url: "https://game-server.company.com/")
         json_file_head_request = stub_json_file_request(
           :head,
-          "https://game-server.company.com/upper_town_28c62f1f.json",
+          "https://game-server.company.com/uppertown_28c62f1f.json",
           response_status: 200,
           response_headers: { "Content-Length" => "512", "Content-Type" => "application/json" }
         )
         json_file_get_request = stub_json_file_request(
           :get,
-          "https://game-server.company.com/upper_town_28c62f1f.json",
+          "https://game-server.company.com/uppertown_28c62f1f.json",
           response_status: 200,
           response_headers: { "Content-Length" => "512", "Content-Type" => "application/json" },
           response_body: '{""}'
@@ -205,13 +205,13 @@ class Servers::VerifyAccounts::PerformTest < ActiveSupport::TestCase
         server = create_server(site_url: "https://game-server.company.com/")
         json_file_head_request = stub_json_file_request(
           :head,
-          "https://game-server.company.com/upper_town_28c62f1f.json",
+          "https://game-server.company.com/uppertown_28c62f1f.json",
           response_status: 200,
           response_headers: { "Content-Length" => "512", "Content-Type" => "application/json" }
         )
         json_file_get_request = stub_json_file_request(
           :get,
-          "https://game-server.company.com/upper_town_28c62f1f.json",
+          "https://game-server.company.com/uppertown_28c62f1f.json",
           response_status: 200,
           response_headers: { "Content-Length" => "512", "Content-Type" => "application/json" },
           response_body: { "something" => "else" }.to_json
@@ -233,13 +233,13 @@ class Servers::VerifyAccounts::PerformTest < ActiveSupport::TestCase
         account1 = create_account
         json_file_head_request = stub_json_file_request(
           :head,
-          "https://game-server.company.com/upper_town_28c62f1f.json",
+          "https://game-server.company.com/uppertown_28c62f1f.json",
           response_status: 200,
           response_headers: { "Content-Length" => "512", "Content-Type" => "application/json" }
         )
         json_file_get_request = stub_json_file_request(
           :get,
-          "https://game-server.company.com/upper_town_28c62f1f.json",
+          "https://game-server.company.com/uppertown_28c62f1f.json",
           response_status: 200,
           response_headers: { "Content-Length" => "512", "Content-Type" => "application/json" },
           response_body: {
@@ -270,13 +270,13 @@ class Servers::VerifyAccounts::PerformTest < ActiveSupport::TestCase
         existing_server_account2 = create_server_account(server:, verified_at: 1.day.ago)
         json_file_head_request = stub_json_file_request(
           :head,
-          "https://game-server.company.com/upper_town_28c62f1f.json",
+          "https://game-server.company.com/uppertown_28c62f1f.json",
           response_status: 200,
           response_headers: { "Content-Length" => "512", "Content-Type" => "application/json" }
         )
         json_file_get_request = stub_json_file_request(
           :get,
-          "https://game-server.company.com/upper_town_28c62f1f.json",
+          "https://game-server.company.com/uppertown_28c62f1f.json",
           response_status: 200,
           response_headers: { "Content-Length" => "512", "Content-Type" => "application/json" },
           response_body: {
@@ -287,7 +287,7 @@ class Servers::VerifyAccounts::PerformTest < ActiveSupport::TestCase
         result = described_class.new(server).call
 
         assert(result.failure?)
-        assert(result.errors[:base].any? { it.include?('Empty "accounts" array in upper_town_28c62f1f.json') })
+        assert(result.errors[:base].any? { it.include?('Empty "accounts" array in uppertown_28c62f1f.json') })
 
         assert_nil(existing_server_account1.reload.verified_at)
         assert_nil(existing_server_account2.reload.verified_at)
@@ -308,13 +308,13 @@ class Servers::VerifyAccounts::PerformTest < ActiveSupport::TestCase
           existing_server_account2 = create_server_account(server:, account: account2, verified_at: 1.day.ago)
           json_file_head_request = stub_json_file_request(
             :head,
-            "https://game-server.company.com/upper_town_28c62f1f.json",
+            "https://game-server.company.com/uppertown_28c62f1f.json",
             response_status: 200,
             response_headers: { "Content-Length" => "512", "Content-Type" => "application/json" }
           )
           json_file_get_request = stub_json_file_request(
             :get,
-            "https://game-server.company.com/upper_town_28c62f1f.json",
+            "https://game-server.company.com/uppertown_28c62f1f.json",
             response_status: 200,
             response_headers: { "Content-Length" => "512", "Content-Type" => "application/json" },
             response_body: {

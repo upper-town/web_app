@@ -4,7 +4,7 @@ source "https://rubygems.org"
 
 # ------------------------------------------------------------------------------
 # Gemfile from running:
-#     rails new web_app --database=postgresql --skip-rubocop
+#     rails new webapp --database=postgresql --skip-rubocop
 
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
 gem "rails", "~> 8.1.1"
