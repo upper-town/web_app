@@ -74,7 +74,7 @@ aliases:
   dbc: app exec --interactive --reuse "bin/rails dbconsole --include-password"
 
 volumes:
-  - /home/app/storage:/rails/storage
+  - /mnt/uppertown_production_web_volume/storage:/rails/storage
 
 asset_path: /rails/public/assets
 
@@ -92,4 +92,4 @@ accessories:
         - POSTGRES_USER
         - POSTGRES_PASSWORD
     volumes:
-      - /home/app/postgres:/var/lib/postgresql
+      - /mnt/uppertown_production_web_volume/postgres:/var/lib/postgresql
